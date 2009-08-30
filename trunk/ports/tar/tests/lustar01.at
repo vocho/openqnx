@@ -1,0 +1,37 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([ustar: unsplittable file name])
+AT_KEYWORDS([longname ustar lustar01])
+
+m4_define([LONGNAME],
+          [this_is_a_very_long_name_for_a_file_designed_to_test_generation_of_ustar_archives_by_gnu_tar_semicolon_it_will_not_fit_the_name_field_and_cannot_be_split_between_name_and_prefix])
+
+AT_TAR_CHECK([
+genfile --file=LONGNAME
+tar cf archive LONGNAME
+],
+[2],
+[],
+[tar: LONGNAME: file name is too long (cannot be split); not dumped
+tar: Error exit delayed from previous errors
+],[],[],[ustar])
+
+AT_CLEANUP

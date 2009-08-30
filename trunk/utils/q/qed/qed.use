@@ -1,0 +1,4 @@
+%C	[-br] [file [commands]*]
+Options:
+ -b     Browse the file only. Do not allow writing the file back.
+ -r     Restrict ability to shell out, switch to different files, etc.

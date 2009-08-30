@@ -1,0 +1,10 @@
+fold - fold lines (POSIX)
+
+fold [-b] [-s] [-w width] [file....]
+Options:
+ -b      Count width in bytes rather then column positions.
+ -s      If a segment of a line contains a blank within the first width
+         column positions, break the line after the last such blank meeting
+         the width constraints.
+ -w      Specify the maximum line length.
+

@@ -1,0 +1,11 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto*/src/diff" pinfo="diff.pinfo"/>
+         <QPG:Add type="file" file="nto*/src/sdiff" pinfo="diff.pinfo"/>
+         <QPG:Add type="file" file="nto*/src/diff3" pinfo="diff.pinfo"/>
+         <QPG:Add type="file" file="nto*/src/cmp" pinfo="diff.pinfo"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

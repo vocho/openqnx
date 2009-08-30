@@ -1,0 +1,109 @@
+# Makefile for GNU Awk support library
+# Copy this file to 'awklib' subdirectory of main directory
+# and execute via relevant targets in your top Makefile
+#
+# This Makefile actually will work for awklib even when NOT
+# compiling with Atari Makefile!!!
+#
+# Copyright (C) 1995, 96 the Free Software Foundation, Inc.
+# 
+# This file is part of GAWK, the GNU implementation of the
+# AWK Programming Language.
+# 
+# GAWK is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# GAWK is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+
+SHELL = /bin/sh
+
+srcdir = .
+
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+
+CC = gcc
+CFLAGS = -g -O
+
+prefix = /usr/local
+exec_prefix = ${prefix}
+binprefix =
+manprefix =
+
+bindir = ${exec_prefix}/bin
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/man/man1
+manext = .1
+infodir = ${prefix}/info
+datadir = ${prefix}/share/awk
+libexecdir = ${exec_prefix}/libexec/awk
+
+# default names of library utilities; on some systems they may require
+# names with extenstions
+PWCAT = pwcat
+GRCAT = grcat
+# the following command used, when necessary, for edits when
+# creating igawk from igawk.sh
+GCOM = '{print}'
+GAWK = gawk
+# $(AWK) is a by default freshly compiled gawk or installed awk when
+# cross-compiling; it is used for edits, since we may compile not on
+# Unix machine and an utility like 'sed' may NOT exist there
+AWK = $(srcdir)/../$(GAWK)
+AUXPROGS = $(PWCAT) $(GRCAT)
+AUXAWK = passwd.awk group.awk
+
+all: stamp-eg $(AUXPROGS) igawk $(AUXAWK)
+
+stamp-eg: $(srcdir)/../doc/gawk.texi
+	rm -fr eg stamp-eg
+	$(AWK) -f $(srcdir)/extract.awk $(srcdir)/../doc/gawk.texi
+	@echo 'some makes are stupid and will not check a directory' > stamp-eg
+	@echo 'against a file, so this file is a place holder. gack.' >> stamp-eg
+
+$(PWCAT): $(srcdir)/eg/lib/pwcat.c
+	$(CC) $(CFLAGS) $(srcdir)/eg/lib/pwcat.c $(LDFLAGS) -o $@
+
+$(GRCAT): $(srcdir)/eg/lib/grcat.c
+	$(CC) $(CFLAGS) $(srcdir)/eg/lib/grcat.c $(LDFLAGS) -o $@
+
+igawk: $(srcdir)/eg/prog/igawk.sh
+	$(AWK) $(GCOM) $(srcdir)/eg/prog/igawk.sh > $@ ; chmod 755 $@
+
+passwd.awk: $(srcdir)/eg/lib/passwdawk.in
+	$(AWK) '{gsub(/\/usr\/local\/libexec\/awk/, "$(libexecdir)"); print}' \
+	$? > $@
+
+group.awk: $(srcdir)/eg/lib/groupawk.in
+	$(AWK) '{gsub(/\/usr\/local\/libexec\/awk/, "$(libexecdir)"); print}' \
+	$? > $@
+
+install: igawk $(AUXPROGS) $(AUXAWK)
+	$(INSTALL_PROGRAM) igawk $(bindir)/igawk && chmod 755 $(bindir)/igawk
+	for i in $(AUXPROGS) ; do \
+		$(INSTALL_PROGRAM) $$i $(libexecdir)/$$i ; \
+	done
+	for i in $(AUXAWK) $(srcdir)/eg/lib/*.awk ; do \
+		$(INSTALL_DATA) $$i $(datadir)/$$i ; \
+	done
+
+# libexecdir and bindir are removed in the top level Makefile's uninstall
+uninstall:
+	rm -fr $(libexecdir)/* $(datadir)/*
+	rm -f $(bindir)/igawk
+
+clean:
+	rm -f $(AUXPROGS) $(AUXAWK) igawk *~
+
+distclean: clean
+	rm -f Makefile

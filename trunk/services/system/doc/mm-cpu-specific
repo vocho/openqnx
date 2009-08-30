@@ -1,0 +1,412 @@
+Description of the CPU specific interface for the memory manager....
+
+=====================================================================
+uintptr_t
+cpu_sysvaddr_find(uintptr_t start, unsigned size); [optional]
+
+Calling environment:
+	Kernel initialization, running kernel.
+
+Description:
+	Search the system address space for a free range of virtual address
+	of at least 'size' bytes. As a hint, start the search at vaddr
+	'start'. Note that 'start' may not be in the valid range for
+	a system space virtual address. 
+	
+Returns:	
+	The start of the free virtual address range, or VA_INVALID if none available.
+
+Note:
+	This function does not have to be implemented if procnto can only
+	address memory in a one-to-one mapping region (e.g. MIPS).
+
+
+=====================================================================
+void *
+cpu_early_paddr_to_vaddr(paddr_t p, unsigned size, paddr_t *l2mem);
+
+Calling environment:
+	Kernel initialization.
+
+Description:
+	Given a physical address 'p' and a size 'size', create a
+	mapping in the system virtual address space to access the memory.
+	If memory is needed for page tables, use the physical address pointed at
+	by 'l2mem'. Note that 'l2mem' points the _end_ of a free range of
+	memory (the bottom bits of *l2mem will be 0x...fff). Use the
+	following algorithm to allocate the memory:
+
+		*l2mem -= __PAGESIZE; // Or whatever size is needed
+		l2paddr = *l2mem + 1;
+		
+	If no vaddrs are available, the routine should call crash().
+
+Returns:	
+	A pointer that, when referenced, will access the given physical
+	address. 
+	
+Note:
+	This routine doesn't have to be as sophisticated as it used to
+	be. The upper levels now arrange that it is only called with
+	QUANTUM_SIZE aligned paddr's and sizes. Also, it no longer has
+	to search to see if there's an already existing mapping for
+	the paddr - the upper level takes care of that as well.
+	
+
+=====================================================================
+unsigned
+cpu_whitewash(struct pa_quantum *paq);
+
+Calling environment:
+	Process manager.
+
+Description:
+	Given 'paq', the routine should make an effort to flush the
+	memory from any cache that is virtually indexed (to remove the
+	memory 'colour') and also set the memory contents to all zeroes.
+
+Returns:
+	A bitset with:
+		PAQ_FLAG_COLOUR_FIXED on if the colour has been removed,
+		PAQ_FLAG_ZEROED on if the memory has been zeroed.
+
+
+=====================================================================
+int 
+cpu_vmm_fault(struct fault_info *info);
+
+Calling environment:
+	On the kernel stack, but inkernel may or may not be set to
+	indicate that the kernel environment has been acquired.
+
+Description:
+	Given the fault information in 'info' (which may contain
+	CPU dependent fields), determine if the fault can be corrected,
+	not corrected, or needs further examination.
+
+Returns:
+	-2 attempt to reference a PTE_OP_BAD page and a SIGBUS should be delivered,
+	-1 if the fault is not correctable and a signal should be delivered,
+	+1 if the fault has been corrected and the instruction should be restarted,
+	 0 if the fault needs further examination to determine correct disposition.
+
+
+=====================================================================
+int
+cpu_vmm_mcreate(PROCESS *prp);
+
+Calling environment:
+	Kernel.
+
+Description:
+	Do the CPU specific actions required to create an address space
+	for the process 'prp'. Typically, allocation and initialization
+	of L1 page table memory.
+
+Returns:
+	EOK if everything went OK, an apporpriate errno value if something
+	went wrong.
+
+
+=====================================================================
+void
+cpu_vmm_mdestroy(PROCESS *prp);
+
+Calling environment:
+	Kernel.
+
+Description:
+	Do the CPU specific actions required to destroy an address space
+	for the process 'prp'. Typically, freeing the L1 & L2 page table
+	entries.	
+
+Returns:
+	None.
+
+
+=====================================================================
+int 
+cpu_pte_manipulate(struct mm_pte_manipulate *data);
+
+Calling environment:
+	Kernel (may change in future when manipulating user space vaddrs).
+
+Description:
+	Map/unmap/change protections for the vaddr range identified
+	by 'data'.
+
+	Only one of the following four bits will be on in data->op
+	PTE_OP_MAP		- create mappings
+	PTE_OP_UNMAP	- remove mappings
+	PTE_OP_PROT		- change permissions on mappings
+	PTE_OP_PREALLOC - preallocate any memory needed for the mapping (e.g. L2's)
+	PTE_OP_BAD		- mark the page as bad (see cpu_vmm_fault())
+
+	The following bits may also be on in data->op
+	PTE_OP_PREEMPT	- can check for preemption during operation
+	PTE_OP_RESTARTED- operation has been restarted after a preemption
+	PTE_OP_TEMP		- temp mapping, make pte only usable from procnto if possible
+
+Returns:
+	EOK if everything went OK, an appropriate errno value if something
+	went wrong. If PTE_OP_PREEMPT is specified and a preemption
+	is needed, return EINTR.
+
+Note:
+	The upper levels may request protection changes (or unmapping)
+	before a vaddr range has actually been mapped. This routine needs
+	to recognize this and make no changes to the page tables. A page
+	that has been marked by PTE_OP_BAD should not be modified by a
+	PTE_OP_PROT, but the 'badness' should be cleared by a PTE_OP_MAP
+	or PTE_OP_UNMAP.
+
+
+=====================================================================
+int 
+cpu_pte_split(uintptr_t split, struct mm_pte_manipulate *data);
+
+Calling environment:
+	Kernel (may change in future when manipulating user space vaddrs).
+
+Description:
+	We're about to call cpu_pte_manipulate(data). Make sure the
+	page tables don't have a PTE whose size is such that 'split'
+	occurs in the middle of it (make 'split' the start of a PTE
+	vaddr range). If 'split' is at the start of a PTE, but is
+	the data->start address, you also have to check that data->end
+	is greater than the page size.
+
+Returns:
+	EOK if everything went OK, an appropriate errno value if something
+	went wrong. If PTE_OP_PREEMPT is specified and a preemption is
+	needed, return EINTR. Set the data->split_end field to the end vaddr 
+	of the highest PTE being split. That is:
+
+		pte_vaddr = <starting vaddr of the PTE>;
+		pte_size  = <size in bytes of the PTE>;
+		if((pte_vaddr+pte_size-1) > data->split_end) {
+			data->split_end = pte_vaddr + pte_size - 1;
+		}
+
+Note:
+	This function does not have to be implemented if procnto only supports
+	one page size (CPU_SYSTEM_HAVE_MULTIPLE_PAGESIZES is VPS_NONE)
+
+
+=====================================================================
+int 
+cpu_pte_merge(struct mm_pte_manipulate *data);
+
+Calling environment:
+	Kernel (may change in future when manipulating user space vaddrs).
+
+Description:
+	We've just called cpu_pte_manipulate(data). Examine the data->start to
+	data->split_end range of the page tables and look for opportunities to 
+	merge PTE's into larger sizes. Remember to scan in front of data->start 
+	and beyond data->split_end when checking for contiguous ranges of PTE's.
+
+Returns:
+	EOK if everything went OK, an appropriate errno value if something
+	went wrong. If PTE_OP_PREEMPT is specified and a preemption
+	is needed, return EINTR.
+
+Note:
+	This function does not have to be implemented if procnto only supports
+	one page size (CPU_SYSTEM_HAVE_MULTIPLE_PAGESIZES is VPS_NONE)
+
+
+=====================================================================
+unsigned 
+cpu_vmm_vaddrinfo(PROCESS *prp, uintptr_t vaddr, paddr_t *paddrp, size_t *lenp);
+
+Calling Environment:
+	Kernel
+
+Description:
+	Given a process 'prp' and an virtual address 'vaddr', return
+	information PTE entry. "*paddrp" should be filled in with the
+	paddr of the vaddr (including page offset). The lenp parm may
+	be NULL. If not, "*lenp" should be filled in with the number of
+	bytes that the vaddr=>paddr translation is valid for. 
+
+Returns:
+	A bitset of PROT_READ, PROT_WRITE, PROT_EXEC indicating the
+	valid access permissions for the vaddr. If there's no mapping
+	present for the vaddr, PROT_NONE should be returned.
+
+Notes:
+	The 'prp' parameter may be NULL. In that case, a system address
+	is being requested, so using any page table is OK. If there
+	is a valid mapping for the vaddr, but there are no valid access
+	permissions (mprotect(....,PROT_NONE) was done), the return
+	should be MAP_PHYS|PROT_NONE (it's OK to turn on MAP_PHYS
+	for other valid mapping returns as well if that makes the 
+	code easier).
+	
+
+
+=====================================================================
+void
+cpu_colour_clean(struct pa_quantum *paq, int cacheop); [optional]
+
+Calling environment:
+	Kernel, Process manager.
+
+Description:
+	Given 'paq', the routine should perform the operation indicated
+	by 'cacheop' on the memory page. The operations are:
+
+	COLOUR_CLEAN_PURGE	- purge any entries from the cache for the page
+	COLOUR_CLEAN_FLUSH	- flush any entries from the cache for the page
+
+Returns:
+	Nothing.
+
+Notes:
+	This routine only needs to be implemented on systems where
+	the CPU_SYSTEM_HAVE_COLOURS macro is set to a non-zero value.
+	The routine must pay attention to the 'paq->colour' field when
+	doing the purging/flushing
+
+
+=====================================================================
+void 
+vmm_init_mem(int phase);
+
+Calling environment:
+	Kernel initialization for 'phase' == 0,
+	Process manager for 'phase' == 1.
+
+Description:
+	Performs whatever initialization of the MMU hardware that is
+	required for the CPU.
+
+Returns:
+	Nothing.
+
+
+=====================================================================
+int 
+vmm_aspace(PROCESS *actprp, PROCESS **pactprp);
+
+Calling Environment:
+	Kernel.
+
+Description:
+	Switches the MMU to the address space for 'actprp'.
+
+Returns:
+	Zero.
+
+
+=====================================================================
+int 
+vmm_map_xfer(PROCESS *actprp, PROCESS *prp,  IOV **piov, int *pparts, 
+		int *poff, IOV *pniov, int *pnparts, unsigned flags);
+
+Calling Environment:
+	Kernel.
+
+Description:
+	Set things up so that a portion of a non-active's address space 
+	is accessable from the active address space for message passing.
+
+Returns:
+	The number of bytes in the non-active address space that have
+	been mapped in.
+
+
+
+=====================================================================
+The following macros and structures need to be defined in the
+"memmgr/<cpu>/cpu_mm_internal.h" file.
+
+#define CPU_SYSTEM_PADDR_START	?
+#define CPU_SYSTEM_PADDR_END	?
+	Low and high ranges of memory that the system (kernel/proc) can quickly
+	get at.
+
+#define CPU_SYSTEM_PADDR_MUST	?
+	Whether the system can _only_ access paddrs in the above range.
+
+#define CPU_SYSTEM_HAVE_COLOURS	?
+	Whether the system has memory colours.
+
+#define CPU_SYSTEM_HAVE_MULTIPLE_PAGESIZES	VPS_NONE/VPS_AUTO/VPS_HIGHUSAGE
+	Whether the system supports multiple page sizes. If set to VPS_NONE,
+	the system only supports one page size. If set to VPS_AUTO, the system
+	automatically chooses the best page size that it can from the legal
+	values detailed in the pgszlist array (always sorted in highest to lowest
+	and terminated with a zero). If set to VPS_HIGHUSAGE, variable page sizes
+	are only done for shared memory objects with SHMCTL_HIGHUSAGE set. This
+	macro may not expand to a constant value (so that the cpu specific code
+	can run time select between each of the values).
+
+#define CPU_1TO1_IS_VADDR(v)	?
+	Return TRUE if vaddr is in the 1-to-1 mapping area, FALSE otherwise.
+
+#define CPU_1TO1_IS_PADDR(p)	?
+	Return TRUE if paddr is in the 1-to-1 mapping area, FALSE otherwise.
+
+#define CPU_1TO1_VADDR_BIAS		?
+	Amount to add to a paddr to turn it into its corresponding vaddr.
+
+#define CPU_1TO1_FLUSH(vaddr, len) [optional]
+	Perform a cache flush/invalidate operation on 'vaddr' for 'len' bytes.
+	This is called when unmapping addresses in the 1-to-1 mapping area.
+	Leave undefined if no cache maintainence is required for the 1-to-1
+	mapping area for the CPU.
+
+#define CPU_USER_VADDR_START	?
+	First legal virtual address for a user process (usually 0).
+
+#define CPU_USER_VADDR_END		?
+	Last legal virtual address for a user process (must be last byte of 
+	a page).
+
+#define CPU_SO_VADDR_START 		?
+	Starting default virtual address for memory mapped files.
+
+#define CPU_SHMEM_VADDR_START	?
+	Starting default virtual address for shared memory objects.
+
+#define CPU_ZERO_PAGE(dst, len, flags)	[optional]
+	Set 'len' bytes to zero, starting at 'dst'. Both parms must
+	page aligned. The 'flags' parm are the map flags for the
+	region. This macro is optional and, if not defined, defaults
+	to "memset(dst, 0, len)"
+
+#define CPU_CACHE_CONTROL(adp, dst, len, flags) [optional]
+	Perform a CacheControl operation on 'dst' for 'len' bytes in
+	address space 'adp'. The 'flags' indicates the cache operation
+	type. This macro is optional and, if not defined, defaults
+	to "CacheControl(dst, len, flags)".
+
+#define CPU_FAULT_ON_WRITE_WORKS	? [optional]
+	Set to a non-zero value if the CPU architecture properly supports
+	page faulting on a write when PROT_WRITE is not present in a
+	page's permission bits. Set to zero if the CPU does not properly
+	support such a fault. E.g. on a 386, the PROT_WRITE bit is ignored
+	when in supervisor mode and won't cause a fault. This macro is
+	optional and, if not defined, defaults to "1".
+
+#define CPU_GBL_VADDR_START		? [optional]
+#define CPU_GBL_VADDR_END		? [optional]
+	First and last legal virtual addresses for globally accessable memory.
+	Leave undefined if there is no such space for the CPU.
+	
+
+struct cpu_mm_aspace 			?
+	Structure containing all CPU specific fields needed for
+	an address space. There must be a field called "pgdir", which
+	contains the virutal address of the address space's L1
+	page table.
+
+=====================================================================
+The following structure needs to be defined in the
+"public/kernel/cpu_<cpu>.h" file:
+
+struct cpu_fault_info			?
+	Structure containing all the CPU specific fields needed for
+	page fault processing.

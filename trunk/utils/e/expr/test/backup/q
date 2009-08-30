@@ -1,0 +1,44 @@
+expr 12 \| 34 \| 12 \| 34 > /dev/null; echo Retval = $?
+expr 12 \| 34 \| \( 12 \| 34 \) > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) \| 12 \| 34 > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) \| \( 12 \| 34 \) > /dev/null; echo Retval = $?
+expr 12 \| 34 \& 34 \& 13 > /dev/null; echo Retval = $?
+expr 12 \| 34 \& \( 34 \& 13 \) > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) \& 34 \& 13 > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) \& \( 34 \& 13 \) > /dev/null; echo Retval = $?
+expr 12 \| 34 != 12 = 34 > /dev/null; echo Retval = $?
+expr 12 \| 34 != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) != 12 = 34 > /dev/null; echo Retval = $?
+expr \( 12 \| 34 \) != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr 34 \& 13 \& 34 \& 13 > /dev/null; echo Retval = $?
+expr 34 \& 13 \& \( 34 \& 13 \) > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) \& 34 \& 13 > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) \& \( 34 \& 13 \) > /dev/null; echo Retval = $?
+expr 34 \& 13 != 12 = 34 > /dev/null; echo Retval = $?
+expr 34 \& 13 != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) != 12 = 34 > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr 34 \& 13 - 12 + 34 > /dev/null; echo Retval = $?
+expr 34 \& 13 - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) - 12 + 34 > /dev/null; echo Retval = $?
+expr \( 34 \& 13 \) - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr 12 = 34 != 12 = 34 > /dev/null; echo Retval = $?
+expr 12 = 34 != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) != 12 = 34 > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) != \( 12 = 34 \) > /dev/null; echo Retval = $?
+expr 12 = 34 - 12 + 34 > /dev/null; echo Retval = $?
+expr 12 = 34 - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) - 12 + 34 > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr 12 = 34 / 4 \* 6 > /dev/null; echo Retval = $?
+expr 12 = 34 / \( 4 \* 6 \) > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) / 4 \* 6 > /dev/null; echo Retval = $?
+expr \( 12 = 34 \) / \( 4 \* 6 \) > /dev/null; echo Retval = $?
+expr 12 + 34 - 12 + 34 > /dev/null; echo Retval = $?
+expr 12 + 34 - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr \( 12 + 34 \) - 12 + 34 > /dev/null; echo Retval = $?
+expr \( 12 + 34 \) - \( 12 + 34 \) > /dev/null; echo Retval = $?
+expr 12 + 34 / 4 \* 6 > /dev/null; echo Retval = $?
+expr 12 + 34 / \( 4 \* 6 \) > /dev/null; echo Retval = $?
+expr \( 12 + 34 \) / 4 \* 6 > /dev/null; echo Retval = $?
+expr \( 12 + 34 \) / \( 4 \* 6 \) > /dev/null; echo Retval = $?

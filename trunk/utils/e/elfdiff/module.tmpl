@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<module name="elfdiff">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+     <GroupOwner>tools</GroupOwner>
+     <RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<component id="elfdiff" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				elfdiff
+			</location>
+		</component>
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/elf"/>
+		<part build="true" location="lib/compat"/>
+	</requires>
+
+</module>

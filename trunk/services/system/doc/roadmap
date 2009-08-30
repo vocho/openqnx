@@ -1,0 +1,128 @@
+
+Kernel Tech Roadmap
+
+***
+6.3
+***
+
+*KERNEL ITEMS*
+
+AM, mqueue 
+    - no QNET yet, Phase I
+
+phys alloc (BS, AM, 4wks/ea, 2wks/SK,HZ)
+
+sync hash table opt
+
+*LIBC*
+
+Dinkum C/C++
+
+malloc 
+
+SH memcpy opt
+
+*FILESYSTEMS*
+NAND
+
+*TOOLS ENABLING*
+
+Performance counters 
+
+SAT tweaks
+
+*OTHER ITEMS*
+
+Benchmarks
+
+DSP integration
+
+Power MGR
+
+********
+PAST 6.3
+********
+
+*KERNEL ITEMS*
+ 
+AM, mqueue
+
+kernel and proc slim down:
+	procfs (slim-down), resource database, getting rid of dead code, etc.
+
+QNET perf opts in kernel
+
+SMP opts
+ - scheduler
+ - data strcutures
+
+prioritized sync
+
+opts: timer list, pulse list
+
+Session improvement
+
+named semaphore optimization
+
+Start up proc with one thread (resolve all dead locks to handle memory low situation)
+
+advanced memory manager(variable page size, copy on write, etc)
+
+Get rid of non priority-inheritable cases (eg. sleepons) inside proc
+
+time slice inheritance
+
+*LIBC*
+
+resmgr improvement
+
+revisit _connect function, which can cause stack overflow
+
+Thread pool opts/algorithms 
+ 
+*Filesystems*
+
+New file system features
+
+pkgfs (under discussion)
+
+*CPU support*
+
+SH3D (kernel 4wk, FPU 8 - 12wk)
+
+SH5
+
+Motorola bookE (5 wks)
+
+XScale/Arm
+ - XScale MMX
+ - arm v6
+ - thumb
+
+BCM1400 and future
+
+Hyperthreading optimizations
+ 
+*Tools enabling*
+
+SAT
+
+Remote debug through serial support (8wks)
+
+Advanced breakpoints
+ 
+*Other items*
+
+HAT 2.0 
+
+Persistence store (6wks, first stage)
+
+Config mgr
+
+RapidIO 
+
+Hypertransport 
+
+kernel test coverage and critical path
+ 
+ 

@@ -1,0 +1,10 @@
+%C - Manipulate the comment section of an object file
+
+%C [-cdpV] [-a string] [-n name]* file...
+
+	-a string Append string to comment section
+	-c        Compress contents of comment section
+	-d        Delete comment section
+	-n name   Name of comment section (default: .comment)
+	-p        Print the contents of the comment section
+	-V        Print program version

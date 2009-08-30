@@ -1,0 +1,77 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description:
+# Restoring of directory modes and timestamps works correctly only
+# if the archive has normal member ordering, i.e. each directory
+# member is immediately followed by members located under that directory.
+# This is not true for incremental archives, where directory members
+# precede the non-directory ones. Due to this, GNU tar up to version 1.15.2  
+# failed to correctly restore directory timestamps from an incremental
+# archive if this directory contained some files in it. 
+#
+# References: <200511291228.47081.karaman@dssgmbh.de>
+
+AT_SETUP([restoring timestamps from incremental])
+AT_KEYWORDS([incremental timestamp restore incr02])
+
+AT_TAR_CHECK([
+# Create directory structure
+mkdir dir
+mkdir dir/subdir1
+mkdir dir/subdir2
+genfile --length 10 --file dir/subdir1/file
+
+# Save mtime for later comparison
+genfile --stat=mtime dir/subdir1 > ts
+
+# Create an archive. Using incremental mode makes sure the
+# archive will have a directory-first member ordering,
+# i.e.:
+# dir/
+# dir/subdir1/
+# dir/subdir2/
+# dir/subdir1/foofile
+#
+# When restoring from this directory structure, `dir/subdir2/' used to
+# trigger apply_nonancestor_delayed_set_stat() which restored stats for
+# `subdir1' prior to restoring `dir/subdir1/foofile'. Then, restoring the
+# latter clobbered the directory timestamp.
+
+tar -cf archive -g db dir
+
+# Move away the directory
+mv dir orig
+
+# Wait enough time for timestamps to differ in case of failure.
+sleep 5
+
+# Restore the directory
+tar -xf archive dir
+
+# Check the timestamp
+genfile --stat=mtime dir/subdir1 | diff ts -
+],
+[0],
+[],[],[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of incr02.at

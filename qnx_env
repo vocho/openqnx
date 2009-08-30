@@ -1,0 +1,7 @@
+export QNX_BASE=/xen/qnx640
+export QNX_TARGET=$QNX_BASE/target/qnx6
+export PATH=$PATH:$QNX_BASE/host/linux/x86/usr/bin
+export QNX_HOST=$QNX_BASE/host/linux/x86
+export MAKEFLAGS=-I$QNX_TARGET/usr/include
+export MKFILES_ROOT=$QNX_TARGET/usr/include/mk/
+export QCONF_OVERRIDE=/realtime/monartis/src/openqnx/qconf-override.mk

@@ -1,0 +1,6 @@
+	This is unmodified source.  I dumped the *.c *.h files from
+the libbz2 directory into the bzip2 dir and let them link static.
+The libbz2 library is everything but the bzip2.c file.  
+
+	The liscence stipulates that modified versions must be marked 
+as such.  As such, there is currently no qnx4 version.

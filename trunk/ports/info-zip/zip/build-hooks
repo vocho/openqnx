@@ -1,0 +1,81 @@
+function hook_preconfigure {
+  export TARGET_SYSNAME
+}
+
+function hook_postconfigure {
+        case ${TARGET_SYSNAME} in
+        nto)
+			sed -e's^unix/Makefile^Makefile^' -e's^-I\.^-I. -I..^' Makefile >$$
+			mv $$ Makefile	
+			;;
+        solaris)
+			sed -e's^unix/Makefile^Makefile^' -e's^-I\.^-I. -I..^' Makefile >$$
+			mv $$ Makefile	
+            ;;
+        linux)
+			sed -e's^unix/Makefile^Makefile^' -e's^-I\.^-I. -I..^' Makefile >$$
+			mv $$ Makefile	
+                ;;
+        win32)
+			sed -e's!^\(LOC = \)!\1 -I.. !' Makefile >$$
+			mv $$ Makefile	
+			# VPATH doesn't work for source in targets with an explicit rule.
+			# At least that's the empirical evidence for win32
+			for i in zipfile.c fileio.c util.c crypt.c match.S crc_i386.S
+			do
+		 			ln -s ../$i .
+			done
+            ;;
+        *)
+                echo "Don't have config for ${SYSNAME}"
+                exit 1
+                ;;
+        esac
+}
+
+function hook_premake {
+	case ${TARGET_SYSNAME} in
+	nto)
+		make_opts="ARCH=${cpudir} VPATH=.."
+		make_cmds=qnxnto
+		if [ ! -s unix ]; then 
+			ln -s ../unix unix
+		fi			
+		;;
+	win32)	
+		#make_CC="gcc -mno-cygwin"
+		
+		make_opts="VPATH=.. " 
+		if [ ! -s win32 ]; then
+			ln -s ../win32 win32
+		fi
+		;;
+	esac
+}
+
+function hook_postmake {
+	case ${TARGET_SYSNAME} in
+	nto)
+		rm unix
+		;;
+	solaris)
+		rm unix
+		;;
+	linux)
+		rm unix
+		;;
+	win32)
+		rm win32
+		;;
+	*)
+		;;
+	esac
+}
+
+function hook_pinfo {
+	gen_pinfo -e zip       usr/bin DESCRIPTION="InfoZIP archiver"   "USE=%1>%C -h"
+	gen_pinfo -e zipcloak  usr/bin DESCRIPTION="InfoZIP encrypter"  "USE=%1>%C -h"
+	gen_pinfo -e zipnote   usr/bin DESCRIPTION="InfoZIP note adder" "USE=%1>%C -h"
+	gen_pinfo -e zipsplit  usr/bin DESCRIPTION="InfoZIP splitter"   "USE=%1>%C -h"
+    #Should we generate a .pinfo for the 'zipgrep' shell script?
+}

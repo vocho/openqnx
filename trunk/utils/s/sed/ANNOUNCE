@@ -1,0 +1,11 @@
+GNU sed 3.02 is now available.  It fixes a bug in the parsing
+of character classes and two small packaging glitches that
+were in version 3.01.
+
+Sed is a "stream editor" -- used for scripted data transformations,
+such as transforming a data stream within a pipeline.
+
+Copies can be obtained by ftp from ftp.gnu.org:/pub/gnu/sed-3.02.tar.gz
+and from other sites (see the list of mirror sites at the end of
+this message).
+

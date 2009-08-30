@@ -1,0 +1,6 @@
+sysctl - get or set socket manager state
+
+sysctl [-n] variable ...
+sysctl [-n] -w variable=value ...
+sysctl [-n] -a
+sysctl [-n] -A

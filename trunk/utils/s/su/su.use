@@ -1,0 +1,8 @@
+%C [-c] [[-] username  [arg0 [ ...argN]]]
+
+Where:
+
+ -c <command>     run command in a shell
+ [-] username     is a user's login name. If preceeded by - argument, user's
+                  shell environment will be set up as if they had logged in.
+ arg0..N          a list of arguments passed verbatim to the shell.

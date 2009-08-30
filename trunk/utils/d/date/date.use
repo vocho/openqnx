@@ -1,0 +1,63 @@
+%-date
+%C - display or set the date and time (POSIX)
+
+%C	[-u] [-s seconds] [+<format>]
+	[-u] [-S seconds] [-r rate] <date>
+	-S
+Options:
+   -u           Perform operations using Coordinated Universal Time (UTC)
+                instead of local time.
+   -s seconds   Display the string equivalent of this date, supplied as
+                seconds since the start of the epoch. This value is used
+                instead of the system time value for the number of seconds. 
+   -t           Display the OS time as a long integer (only).
+Where:
+   +<format> is a format string containing text and field descriptors
+   which are in the form %<char>. e.g. "+%I O'Clock %p"
+
+   If any operands other than a +format are specified, date will asssume
+   the operands are a <date> that you want to set the QNX date and time
+   to. Only root will be allowed to change the date.
+
+   The following formats may be used for a <date> when setting the date/time:
+
+	[[[[CC]YY]MM]DD]hhmm[.SS]                        (touch utility format)
+	MMDDhhmm[YY]                                     (System V format)
+	day [month [year [hour [min [sec]]]]]] [am|pm]   (QNX 2.15 format)
+
+   Date will set only the software QNX clock. To transfer the software
+   time to the battery backed up hardware clock and vice-versa, use the
+   rtc utility.
+
+   See the printed manual for more detail on <date> and +<format> strings.
+%-clock
+%C	- display date and time on console (QNX)
+
+%C	[-u] [-s] [-f color] [-b color] [+<format>]
+Options:
+ -f color    Set foreground color.
+ -b color    Set background color.
+ -s          Sleep 1 second between display updates.
+ -u          Use Coordinated Universal Time (UTC).
+Where:
+   Foreground colors are:
+      black, blue , green , red , cyan , magenta , brown , white
+      dgray, bblue, bgreen, bred, bcyan, bmagenta, yellow, bwhite
+
+   Background colors are:
+      black, blue, green, red, cyan, magenta, brown, white
+
+   The default foreground is white. The default background is black.
+
+   +<format> is a format string containing text and field descriptors
+   which are in the form %<char>. e.g. "+%I O'Clock %p"
+   See the manual for more detail on the format string.
+Caveat:
+   Some machines have problems doing DMA (e.g. floppy I/O) while
+   video memory is being accessed. If you are running into problems
+   with this the -s option may be used to make video updates less
+   frequent. When -s is not used, clock will update the screen once
+   per 'tick' (typically 100 times per second). Be aware that other
+   video updates may cause a problem (windows, console writes) and
+   that you are taking a chance with your data if you use such
+   hardware.

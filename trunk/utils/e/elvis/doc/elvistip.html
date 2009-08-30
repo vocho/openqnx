@@ -1,0 +1,2061 @@
+<html><head>
+<title>Elvis-2.2_0 Tips</title>
+</head><body>
+
+<h1>16. TIPS</h1>
+This section of the manual explains some of the more complex, obscure,
+and useful features of Elvis (or larger subjects).
+The following subjects are discussed:
+<menu>
+<li><a href="#URLS">16.1 Information via the Web</a>
+<li><a href="#WEB">16.2 Using Elvis as a Web browser</a>
+<li><a href="#DEBUG">16.3 How to debug macros</a>
+<li><a href="#MAKE">16.4 Running your compiler from within Elvis</a>
+<li><a href="#INTER">16.5 Internationalization</a>
+<li><a href="#ALIAS">16.6 Aliases</a>
+<menu>
+<li><a href="#EXAMPLES">16.6.1 Some example aliases</a>
+<li><a href="#PROTO">16.6.2 Using aliases to add network protocols</a>
+</menu>
+<li><a href="#SPELL">16.7 The spell-checker</a>
+<li><a href="#AUTOCMD">16.8 Auto commands</a>
+<menu>
+<li><a href="#EVENTS">16.8.3 Events</a>
+<li><a href="#PATTERNS">16.8.4 Patterns</a>
+</menu>
+<li><a href="#FASTER">16.9 How to make Elvis run faster</a>
+</menu>
+
+<h2><a name="URLS"></a>16.1 Information via the Web</h2>
+Here are some URLs (World Wide Web links to other documents)
+which are relevant to vi.
+Each of these, in turn, has links to other sites.
+Directly or indirectly, these links will lead you to a huge amount
+of information about vi.
+
+<p>I've tried to limit this list to advertised sites;
+there are others that I run across occasionally, but their URLs
+tend to vary over time, so it isn't a good idea to place them in a
+static document such as this one.
+It makes for a short list, though.
+
+<dl>
+
+<dt><a href="ftp://ftp.cs.pdx.edu/pub/elvis/README.html">
+ftp://ftp.cs.pdx.edu/pub/elvis/README.html</a>
+<dd>The "home" site of Elvis.
+This is where you can find the latest official release.
+
+<dt><a href="ftp://ftp.cs.pdx.edu/pub/elvis/unreleased/README.html">
+ftp://ftp.cs.pdx.edu/pub/elvis/unreleased/README.html</a>
+<dd>Prerelease versions of Elvis can often be found here.
+Prerelease versions are identified by a letter appended to the version number
+they they're expected to be released as.  For example, 2.2a is a prerelease
+version of what will eventually be released as version 2.2.  Also, I append
+"-alpha" in the early stages when new features are still being added, or
+"-beta" if no new features are expected before the release.  Typically,
+new versions are uploaded once a month or so; watch for announcements on
+the <a href="news:comp.editors">comp.editors</a> newsgroup.
+
+<dt><a href="http://elvis.vi-editor.org/index.html">
+http://elvis.vi-editor.org/index.html</a>
+<dd>This where Herbert
+(a.k.a. Martin Dietze, who ported Elvis to <a href="elvisos.html#os2">OS/2</a>)
+is putting an Elvis home page.
+It has links to all relevant web pages, archives, and
+people's email addresses.
+The manual will also be available here.
+He is also considering adding a searchable online database of
+aliases and how-to articles.
+This may also become the preferred way to submit bug reports, suggestions,
+or any other contribution to the project.
+
+<dt><a href="http://georg.f-451.net/elvis/">
+http://georg.f-451.net/elvis/</a>
+<dd>This is Georg Neis' web page for Elvis.
+He's the maintainer of the Debian Elvis package.
+
+<dt><a href="http://groups.yahoo.com/group/elvis-editor/">
+http://groups.yahoo.com/group/elvis-editor/</a>
+<dd>This is a Yahoo mailing group.
+It is used mostly by Elvis' developers, but user questions are
+welcome too.
+
+<dt><a href="http://www.phys.columbia.edu/~flame/vi.htm">
+http://www.phys.columbia.edu/~flame/vi.htm</a>
+<dd>This is a Web page for Elvis, maintained by JaeSub Hong.
+It has some screen shots, macros, and syntax-coloring definitions.
+It also has the
+<a href="http://www.phys.columbia.edu/~flame/elvislib/elvis.html">online manual</a>.
+
+<dt><a href="http://www.thomer.com/vi/vi.html">
+http://www.thomer.com/vi/vi.html</a>
+<dd>"The VI lover's home page," by Thomer Gil.
+This contains links to a wide variety of vi documentation, and practically all vi clones.
+<em>A very good resource!</em>
+This is a new location; previously it was located at
+<a href="http://www.cs.vu.nl/~tmgil/vi.html">
+http://www.cs.vu.nl/~tmgil/vi.html</a>.
+
+<dt><a href="http://vi-editor.org/">vi-editor.org</a>
+<dd>Sven Guckes' generic vi page.
+He and Thomer Gil seem to have a friendly competition going on to see who
+can make the best vi page, and we are all beneficiaries.
+
+<dt><a href="http://www.bsyse.wsu.edu/~rnelson/editors/editors.htm">
+http://www.bsyse.wsu.edu/~rnelson/editors/editors.htm</a>
+<dd>A compendium of text editors.
+It describes all kinds of text editors, not just vi clones.
+It lists the features and supported platforms for each editor.
+
+<dt><a href="http://bluneon.gq.nu/puter/ed00.html">
+http://bluneon.gq.nu/puter/ed00.html</a>
+<dd>Another compendium of text editors.'
+This one is oriented toward writing natural language text,
+instead of computer source code.
+The maintainer specifically mentions the
+<a href="news:alt.tv.x-files.creative">alt.tv.x-files.creative</a> newsgroup.
+
+<dt><a href="http://darren.hiebert.com/ctags/">
+http://darren.hiebert.com/ctags/</a>
+<dd>Home page for Darren Hiebert's <strong>exuberant ctags</strong> program.
+It supports all features of Elvis' ctags, except for the "ln" attribute,
+and the "-r" flag for generating a "refs" file.
+Exuberant ctags has a smarter parsing algorithm, which causes it to generate
+fewer bogus tags (i.e., tags for things that really shouldn't have tags).
+It also adds the ability to generate tags for "enum" values and a few
+other useful things.
+
+<dt><a href="http://www.fleiner.com/jtags/">
+http://www.fleiner.com/jtags/</a>
+<dd>Home page of Claudio Fleiner's "jtags" program -- a tag file generator
+for Java source.
+
+<dt><a href="http://www.tamacom.com/global/">
+http://www.tamacom.com/global/</a>
+<dd>Home page for Shigio Yamaguchi's <strong>global</strong> function
+reference utility.  You can make Elvis use it instead of the normal built-in
+tag searcher by giving Elvis the following command:
+<pre>
+:se tagprg="global -t $1"</pre>
+
+<p>Once you have run <strong>global</strong>'s
+<code>gtags</code> utility, you can do some powerful things such as
+search for each place where a function (e.g., m_front()) is called, like this:
+<pre>
+:ta -r m_front</pre>
+
+<dt><a href="http://www.nicemice.net/par/">
+http://www.nicemice.net/par/</a>
+<dd>Home page for Adam Costello's <strong>par</strong> program, which is a much
+more sophisticated text formatter than the <a href="fmt.man">fmt</a> program
+distributed with Elvis.
+It even does a very good job of reformatting comments!
+Sadly, it is one of those rare programs that doesn't handle tab characters
+correctly.
+
+<dt><a href="http://www.cygwin.com/">
+http://www.cygwin.com/</a>
+<dd>This is the home page for the <a name=cygwin>CygWin</a>
+tools -- ports of GNU utilities to Microsoft Windows, by Cygnus and Red Hat.
+If you're looking for more Unix utilities to go with Elvis, this is the place.
+
+<dt><a href="ftp://alf.uib.no/pub/vi">
+ftp://alf.uib.no/pub/vi</a>
+<dd>An archive site containing many macro packages and other information about
+vi.  Nearly all of it should apply equally well to Elvis.
+
+<dt><a href="http://developer.berlios.de/projects/ex-vi/">
+http://developer.berlios.de/projects/ex-vi/</a>
+<dd>This is the source code to the <em>real</em> vi!
+
+<dt><a name="clones"></a><a href="http://www.vim.org/">
+http://www.vim.org/</a>
+<br><a href="http://invisible-island.net/vile/vile.html">
+http://invisible-island.net/vile/vile.html</a>
+<br><a href="http://www.bostic.com/vi/">
+http://www.bostic.com/vi/</a>
+<br><a href="http://www.winvi.de/">
+http://www.winvi.de/</a>
+<br><a href="http://www.fwiarda.com/software.htm#pvic">
+http://www.fwiarda.com/software.htm#pvic</a>
+<br><a href="http://jvi.sourceforge.net/">
+http://jvi.sourceforge.net/</a>
+<dd>These are the home pages for some other vi clones:
+vim, vile, nvi, WinVi, pvic, and javi respectively.
+The last one is interesting because it is written in Java!
+
+<dt><a href="http://www.vim.org/util.html">
+http://www.vim.org/util.html</a>
+<dd>The Vim utilities page.
+Most of these also work with Elvis.
+
+<dt><a href="ftp://ftp.funet.fi/pub/doc/posix/p1003.2a/d8/5.10">
+ftp://ftp.funet.fi/pub/doc/posix/p1003.2a/d8/5.10</a>
+<br><a href="ftp://ftp.funet.fi/pub/doc/posix/p1003.2a/d8/5.35">
+ftp://ftp.funet.fi/pub/doc/posix/p1003.2a/d8/5.35</a>
+<dd>These are old drafts of the  POSIX standards for
+ex and vi, respectively.
+These URLs might not be valid very long.
+
+<dt><a href="http://docs.freebsd.org/44doc/usd/12.vi/paper.html">
+http://docs.freebsd.org/44doc/usd/12.vi/paper.html</a>
+<dd>This is the official BSD documentation for vi.
+
+<dt><a href="http://roxanne.roxanne.org/~eric/vi_editor/">
+http://roxanne.roxanne.org/~eric/vi_editor/</a>
+<dd>An HTML version of
+<a href="mailto:ellidz@midway.uchicago.edu">E. Larry Lidz</a>' "vi editor FAQ".
+A plain-text version of this FAQ is occasionally posted in the
+<a href="news:comp.editors">comp.editors</a> newsgroup.
+(I think the official URL of the HTML version is
+<a href="http://www.macom.co.il/vi/index.html">http://www.macom.co.il/vi/index.html</a>,
+but that site seems to be unreachable now.)
+
+<dt><a href="http://alumni.caltech.edu/~dank/nansi/">
+http://alumni.caltech.edu/~dank/nansi/</a>
+<dd>This is a home page for the NANSI.SYS and NNANSI.SYS drivers, which
+accelerate the screen updates under MS-DOS.
+
+<dt><a href="ftp://ftp.leo.org:/pub/comp/os/os2/leo/gnu/emx+gcc/">
+ftp://ftp.leo.org:/pub/comp/os/os2/leo/gnu/emx+gcc/</a>
+<br><a href="ftp://ftp-os2.cdrom.com:/pub/os2/emx09d/">
+ftp://ftp-os2.cdrom.com:/pub/os2/emx09d/</a>
+<br><a href="ftp://ftp-os2.nmsu.edu:/pub/os2/dev/emx/v0.9d/">
+ftp://ftp-os2.nmsu.edu:/pub/os2/dev/emx/v0.9d/</a>
+<dd><a name="emx"></a>
+These are all places where you can find the EMX.DLL library for OS/2.
+The first one is the "home" site, and the others are popular OS/2 archives.
+You need EMX only if you want to run the "termcap" (<code>elvisemx.exe</code>)
+or "x11" (<code>elvisx11.exe</code>) versions of Elvis under OS/2.
+
+<dt><a href="http://set.gmd.de/~veit/os2/xf86os2.html">
+http://set.gmd.de/~veit/os2/xf86os2.html</a>
+<dd><a name="os2x11"></a>
+This is the home page for the OS/2 version of XFree86.
+You need this (in addition to EMX)
+if you want to run the graphical X11 version of Elvis.
+
+<dt><a href="ftp://ftp.ox.ac.uk/pub/wordlists/">
+ftp://ftp.ox.ac.uk/pub/wordlists/</a>
+<dd>A collection of word lists, for a variety of languages.
+This may be useful in conjunction with Elvis'
+<a href="#SPELL">spell checker</a>.
+The home page for these lists is
+<a href="http://www.hyphenologist.co.uk/">http://www.hyphenologist.co.uk/</a>.
+
+<dt><a href="http://www.mso.anu.edu.au/~ralph/OPTED/">
+http://www.mso.anu.edu.au/~ralph/OPTED/</a>
+<dd>OPTED is a public domain english-language dictionary,
+distributed as a set of HTML files.
+It is part of <a href="http://www.promo.net/pg/">Project Gutenburg</a>,
+and is derived from an old Webster's Unabridged Dictionary.
+This is more than just a word list -- it includes definitions for the words.
+
+<dt><a href="http://www.dcs.shef.ac.uk/research/ilash/Moby/">
+http://www.dcs.shef.ac.uk/research/ilash/Moby/</a>
+<dd>The Moby project -- a collection of word lists and similar resources.
+
+<dt><a href="http://www.htmlcodetutorial.com/quicklist.html">
+http://www.htmlcodetutorial.com/quicklist.html</a>
+<dd>This is an online HTML authoring site.
+Despite the name, it works better as a reference than as a tutorial.
+The above link is actually just a page within the larger site,
+because the main page
+(<a href="http://www.htmlcodetutorial.com/">http://www.htmlcodetutorial.com/</a>)
+has a big nasty pop-up advertisement.
+Sadly, their pages look ugly when viewed with Elvis because they depend
+on JavaScript and forms.
+</dl>
+
+<h2><a name="WEB"></a>16.2 Using Elvis as a Web browser</h2>
+
+<strong>NOTE:</strong> The following information doesn't apply to the MS-DOS
+version of Elvis, because that version doesn't support the <strong>ftp</strong>
+and <strong>http</strong> protocols.  But for Win32, Unix, and OS/2...
+
+<p>You can use Elvis as a light-weight Web browser.
+Surfing with Elvis isn't as much fun as surfing with a multimedia-capable
+browser such as Netscape or MSIE, but Elvis does have some advantages:
+it starts up much faster, it feels like vi, and you can edit whatever
+you download.
+
+<p>There's no special trick to loading a Web page.
+Just give a URL where Elvis expects a filename, and Elvis will read the
+Web page via the Internet.
+You can follow links in Web pages just as you do in Elvis' online manual.
+HTML pages are displayed in the "html" display mode, and anything else
+uses the "hex" or "normal" display mode by default.
+All data is fetched in binary so data files aren't mangled; however,
+this also means that newlines aren't converted, which may make non-HTML
+text files look ugly.
+
+<p>Elvis has built-in support for the HTTP and FTP protocols.
+Other protocols may be indirectly supported, via an HTTP proxy as indicated
+by the <a href="elvisnet.html#elvis.net">elvis.net</a> configuration file.
+
+<p>By default, FTP access is anonymous.
+However, if you give a file name which starts with "/~/" then Elvis will
+attempt to login to the FTP server using you own account, as described in the
+<a href="elvisnet.html#elvis.ftp">elvis.ftp or ~/.netrc</a> configuration file.
+You can also use "/~username/" to use some other user account listed in
+<code>.netrc</code>.
+For example, "ftp://localhost/directory/file" uses anonymous FTP, but
+"ftp://localhost/~/directory/file" uses your own account.
+
+<p>Elvis can write via FTP as well as read; see the
+<a href="elvisnet.html">Internet</a> chapter.
+
+<p>Elvis also doesn't support inline graphic images, but that isn't as big
+of a problem as you might think.
+If you download an image, Elvis will simply load it into a buffer and then
+display that buffer in the "hex" display mode.
+You can then write that buffer's contents to a file, or in Unix you can send it
+directly to an image viewer via a command such as "<code>:w !xv -</code>".
+
+<p>The easiest way to save an image (or any other buffer) to a local file
+is via the command "<code>:w&nbsp;(dirfile(filename))</code>".
+In fact, you might want to add the following lines to your ~/.exrc file
+to make the <kbd>(F2)</kbd> key save the current buffer to a file,
+and the <kbd>(F3)</kbd> key send it to the <code>xv</code> image viewer:
+<pre>
+	map #2 :w (dirfile(filename))^M
+	map #3 :w !xv -^M</pre>
+
+<p>To make images easier to fetch, any &lt;IMG SRC=<var>url</var>&gt; tag
+which isn't already part of a hypertext link will be interpreted as a link to
+the SRC <var>url</var>.
+This allows you to download an image by moving the cursor onto it and hitting
+the <kbd>(Enter)</kbd> key.
+
+<p>Elvis doesn't support frames either, so a similar trick was used for
+&lt;FRAME SRC=<var>url</var>&gt; tags.
+Elvis displays the name of each frame;
+those names serve as links to the contents of the frame.
+
+<p>Because Elvis is primarily an editor, not a Web browser, I deliberately
+made the "html" display mode rather picky, so that any questionable entities
+in your own HTML documents will call attention to themselves.
+When you're using Elvis to browse other peoples' documents, though, this
+can be annoying, so I modified it slightly to be more forgiving when you're
+viewing read-only documents.
+(All Web pages are read-only.)
+
+<p>And you already know that Elvis' support for the &lt;TABLE&gt; macros is
+very poor, right?
+If you encounter a Web page which looks really ugly in Elvis,
+you can bet it uses tables.
+
+<p>Elvis doesn't support forms, or secure connections.
+Well, Elvis can display mock-ups of forms; they just don't work.
+They probably never will.
+You have to draw the line somewhere.
+
+<p>Elvis doesn't always choose the best display mode for HTML pages.
+It uses "html" if the file name ends with ".html" or ".htm", or if the
+document's text begins with "&lt;!", "&lt;H", or "&lt;h".
+For all other documents, it uses the "normal" or "hex" display mode by default.
+If Elvis chooses the wrong display mode, you can use the
+<a href="elvisex.html#display">:display</a> command to switch to a
+different display mode.
+
+<p>The command "<code>:e foo</code>" will always load the local file "foo" from
+your current directory.
+This is true of all commands which normally act on files -- unless you
+give a complete URL, Elvis assumes it should work with local files.
+However, while in the "html" display mode, the command "<code>:ta foo</code>"
+will use the same protocol, site, and directory as the page you're already
+viewing, because that's how the "html" display mode interprets tags.
+
+<h2><a name="DEBUG"></a>16.3 How to debug macros</h2>
+
+There are two ways to create a macro in Elvis:
+You can either assign a series of commands to a keystroke (or series of
+keystrokes) via the <a href="elvisex.html#map">:map</a> command, or you
+can store a series of commands in a cut buffer and execute them via the
+visual <a href="elvisvi.html#at">@x</a> command.
+You will often use a combination of techniques, in which :map macro
+constructs a customized @x macro and runs it.
+
+<p>(<a href="elvistip.html#ALIAS">Aliases</a> are a separate issue,
+discussed later in this chapter.
+The information in this section does not apply to aliases.
+Elvis does not yet offer any special tools for debugging aliases.)
+
+<p>Elvis has several features that make debugging macros much easier.
+For example, you can create a window which continuously displays the
+contents of a given cut buffer, such as "m, via the command:
+<pre>
+	:(Elvis cut buffer m)split
+</pre>
+or, more concisely:
+<pre>
+	:("m)sp
+</pre>
+
+<p>Note: The cut buffer must exist before you can display it.
+Cut buffers are created the first time anything is yanked into them.
+
+<p>The <a href="elvisopt.html#maptrace">maptrace</a> option allows you to
+trace the execution of macros.
+You can either allow it to run through the macro, or wait for a keypress
+before each mapped command character.
+You can also use the <a href="elvisex.html#break">:break</a> and
+<a href="elvisex.html#unbreak">:unbreak</a> commands to set or clear a
+breakpoint on a given :map macro.
+Breakpoints cause the maptrace option to switch from "run" to "step" when
+that macro is expanded.
+
+<p>The <a href="elvisopt.html#maplog">maplog</a> option can be used to
+log the trace information to a buffer named "Elvis map log".
+The idea here is that you will give the command...
+<pre>
+	:se mt=r mlog=r
+</pre>
+... (or its full-length form, <code>:set maptrace=run maplog=reset</code>)
+before starting the macro, and then when the macro fails you can
+give the command...
+<pre>
+	:("Eml)sp
+</pre>
+... (or its full-length form, <code>:(Elvis map log)split</code>)
+to see what it was doing shortly before the failure.
+Note that the maplog option has no effect if maptrace is "off".
+
+<p><strong>Warning:</strong> Elvis has a single keystroke queue which is
+shared by all windows.
+Because of this, while Elvis is running a macro in one window you can't
+switch to another window and type in commands.
+Even if the GUI allows you to switch windows without using the keyboard,
+doing so will simply force the macro to continue execution in the new window.
+<em>So don't switch windows while a macro is running!</em>
+
+<p>Here's a debugging methodology that works for me:
+<ol>
+<li>Begin by loading the macro package and a test file.
+<li>Give the command "<code>:se mt=r mlog=r</code>", and run the macro.
+<li>If the macro fails, give the command "<code>:("Eml)sp</code>"
+    to find out what commands executed immediately before the failure.
+    In particular look for a :map macro that was expanded shortly before
+    the failure.
+<li>Set a breakpoint on that macro with "<code>:bre</code> <var>macrokey</var>".
+<li>Turn off logging, via "<code>:se mlog=o</code>".
+<li>Reload the test file.
+<li>Execute the macro again.  When the macro with the breakpoint is encountered,
+    Elvis will switch to single-step mode.  Step slowly through the next few
+    instructions, looking for one which does something unexpected.
+</ol>
+
+<p>If your macro reveals a bug in Elvis, please let me know!
+My email address is
+<a href="mailto:kirkenda@cs.pdx.edu">kirkenda@cs.pdx.edu</a>.
+Please tell me which version of Elvis you're using, as reported by the
+<a href="elvisex.html#version">:version</a> command.
+
+<h2><a name="MAKE"></a>16.4 Running your compiler from within Elvis</h2>
+
+Elvis can parse most compilers' error messages.
+When it parses an error message, Elvis loads the faulty file, moves the
+cursor to the line where the error was reported, and shows the descriptive
+portion of the error message on the bottom row of the window.
+You can step through all reported errors very quickly, making changes
+along the way.
+
+<p>Usually, you will invoke your compiler or "make" utility via the
+<a href="elvisex.html#cc">:cc</a> or <a href="elvisex.html#make">:make</a>
+commands.
+The only difference between these commands is that <code>:cc</code> invokes
+the program named by the <a href="elvisopt.html#ccprg">ccprg</a> option,
+and <code>:make</code> uses the <a href="elvisopt.html#makeprg">makeprg</a> option.
+
+<p>Both of those options' values are evaluated using the
+<a href="elvisexp.html#SIMPLER">simpler expression syntax,</a> with $1 set to
+any extra command-line parameters, and $2 set to the current file name.
+
+<p>You can also read error messages from some other program with the command
+"<a href="elvisex.html#errlist">:errlist !<var>program</var></a>",
+or read them from a file with the command
+"<a href="elvisex.html#errlist">:errlist <var>filename</var></a>".
+
+<p>I often invoke Elvis via the command "<code>elvis +make</code>" so
+Elvis will attempt to compile the program, and move the cursor to the
+first error (if there are any errors).
+
+<p>All of the compiler's output text is collected  into a buffer named
+"Elvis error list".
+If you wish, you can view this list in a separate window via this command:
+<pre>
+:(Elvis error list)split</pre>
+
+<p>Here's how Elvis parses each line of compiler output:
+Starting from the left, it divides the line into "words", which are defined as
+a series of letters, digits, and/or certain punctuation characters.
+
+<p>If the word is the name of an existing directory, then Elvis remembers
+that directory name.
+In later lines, Elvis will allow file names to be given relative to that
+directory, in addition to the current directory.
+This particular feature is intended to work with the directory lines
+generated by the GNU version of the "make" program.
+
+<p>If the word looks like a number, and no line number has been seen yet,
+then the word is taken to be a line number.
+If the word is the name of an existing, writable file
+(or any existing file if the <a href="elvisopt.html#anyerror">anyerror</a>
+option is set) in either the current directory or the directory remembered
+from a previous line as described above, then the word is taken to be a
+file name.
+Other words are ignored.
+
+<p>When Elvis has found both a file name and a line number, then it skips
+over any whitespace or punctuation immediately following them, and uses
+the remainder of the line as the error's description.
+
+<p>If Elvis fails to find a file name/line number pair, then it skips that
+whole line of compiler output.
+
+<p>Immediately after collecting compiler output, Elvis moves the cursor to
+the source of the first error.
+After that, you can use <a href="elvisex.html#errlist">:errlist</a>
+(with no arguments) or the visual <a href="elvisvi.html#*">*</a> command
+to step through each following error.
+
+<p>Each time Elvis collects a new set of error messages, it remembers how many
+lines are in each buffer.
+Later, when you insert or delete lines to correct an error, Elvis can
+compare the current number of lines to original number of lines, and adjust
+the reported line numbers accordingly.
+
+<a name="perlerr"></a>
+<p>Here's something that may be useful for PERL programmers.
+PERL's error messages follow two distinct formats:
+
+<blockquote>
+<var>description</var> <strong>in file</strong> <var>file</var> <strong>at line</strong> <var>line</var>
+<br><var>description</var> <strong>at</strong> <var>file</var> <strong>line</strong> <var>line</var>
+</blockquote>
+
+Neither of these looks like any recognizable compiler error message format;
+consequently, Elvis can't parse PERL's error messages directly.
+But here's a way around that.
+The following PERL program is a filter that reformats PERL's error messages
+to look like normal compiler error messages.
+<pre>
+	#!/usr/bin/perl
+	$\ = "\n";
+	while (&lt;&gt;) {
+	    chop;
+	    s/(.*) in file ([^ ]*) at line (\d*).*/$2($3): $1/;
+	    s/(.*) at ([^ ]*) line (\d*)\.$/$2($3): $1/;
+	    print;
+	}</pre>
+
+<p>To use this script, store it in a file named "perlerr" and turn on the file's "execute" permissions, and then set
+Elvis' <a href="elvisopt.html#ccprg">ccprg</a> option as follows:
+<table>
+<tr><td><strong>For CSH:</strong></td>
+<td><code>:set ccprg="perl -c ($1?$1:$2) |&amp; perlerr"</code></td></tr>
+<tr><td><strong>Other shells:</strong></td>
+<td><code>:set ccprg="perl -c ($1?$1:$2) 2&gt;&amp;1 | perlerr"</code></td></tr>
+</table>
+
+<p><strong>NOTE:</strong> You can't simply cut&amp;paste the above Perl script into a
+file, because it contains some HTML code which Perl wouldn't understand.
+(The diamond is written as "&amp;lt;&amp;gt;".)  A better way
+is to visually select those lines via the
+<a href="elvisvi.html#V">shift-V</a> command, and then use the
+<a href="#wascii">:wascii</a> alias to save the formatted
+text to a file as plain ASCII text.
+You'll still need to edit the text file to remove leading whitespace and possibly some blank lines, but that's pretty easy.
+
+<h2><a name="INTER"></a>16.5 Internationalization</h2>
+
+Elvis can be configured to translate its messages into different languages,
+and to use different symbol sets.
+These things are accomplished via the
+<a href="elvismsg.html#elvis.msg">elvis.msg</a> file and
+<a href="elvisex.html#digraph">:digraph</a> command, respectively.
+
+<p>Elvis locates the <code>elvis.msg</code> file during initialization.
+Ordinarily it searches through each directory named in the ELVISPATH
+environment variable.
+However, if there is an environment variable named LC_ALL, LC_MESSAGES,
+or LANG (listed in order or precedence) which is set to a non-null value,
+then Elvis will look for <code>elvis.msg</code> first in a subdirectory whose
+name matches the environment variable's value.
+For example, if LC_ALL is unset, LC_MESSAGES=german, and
+ELVISPATH=~/.elvis:/usr/local/lib/elvis, then Elvis would try to load
+its messages from...
+<ol>
+<li>~/.elvis/german/elvis.msg
+<li>~/.elvis/elvis.msg
+<li>/usr/local/lib/elvis/german/elvis.msg
+<li>/usr/local/lib/elvis/elvis.msg
+</ol>
+
+<p>The digraph table tells Elvis which pairs of ASCII characters can be
+combined to form a single non-ASCII character.  This table is configured
+via the <a href="elvisex.html#digraph">:digraph</a> command.
+To enter a digraph, type <kbd>&lt;Ctrl-K&gt;</kbd> and then the two ASCII
+characters.  Elvis will store the corresponding non-ASCII character instead
+of the two ASCII characters.
+See the <a href="elvisinp.html#DIG">Input Mode</a> chapter for more information.
+
+<p>The digraph table affects more than just keyboard input.
+It also affects "html" mode, and character type classifications.
+
+<p>Digraphs are used by the "html" display mode to translate
+<a href="elvisdm.html#htmlentities">character entities</a> into characters.
+For example, when Elvis encounters &amp;ntilde; in an HTML document,
+it tries to find a digraph which combines 'n' with '~'.
+If there is such a digraph, Elvis will use it to display an '&ntilde;';
+if not, then Elvis will display a plain 'n' character.
+
+<p>The digraph table affects the character classes, too.
+This, in turn, affects the definition of a "word", as used by the visual
+<a href="elvisvi.html#w">w</a> command, among others.
+A non-ascii character is treated as an uppercase letter if, according
+to the digraph table, it is the result of combining an ASCII uppercase letter
+with either a punctuation character or a second uppercase letter.
+A similar rule holds for lowercase letters.
+
+<p>Also, Elvis tries to find uppercase/lowercase pairs through the digraph
+table.
+This is used for case conversions, as performed by the visual <a href="elvisvi.html#~">~</a> command, or the <code>\U</code> metacharacter in the <a href="elvisex.html#substitute">:s/old/new</a> command.
+
+<p>There is no way to specify a sorting order.
+This means, in particular, that the
+<a href="elvisre.html">regular expression</a>
+<code>/[a-z]/</code> will only match the ASCII lowercase letters,
+not the non-ASCII ones. However,  the regular expression
+<code>/[[:lower:]]/</code> <em>will</em> match all lowercase letters
+including the non-ASCII ones.
+
+<p>The default <a href="elvisses.html#elvis.ini">elvis.ini</a> file tries
+to load digraphs by executing either
+<a href="elvisses.html#elvis.pc8">elvis.pc8</a> for MS-DOS, OS/2, or text-mode Win32,
+or <a href="elvisses.html#elvis.lat">elvis.lat</a> for any other operating
+system.
+
+<p>The "win32" version of the "termcap" user interface has a
+<a href="elvisopt.html#codepage">codepage</a> option which determines
+which symbol set is used for console output.
+If you change codepage, you should also adjust your digraph table.
+
+<h2><a name="ALIAS"></a>16.6 Aliases</h2>
+
+Aliases provide a simple way to add a new name for an existing ex command,
+or series of ex commands.
+
+<p>The syntax of Elvis' <a href="elvisex.html#alias">:alias</a> command
+is intended to resemble that of the <code>csh</code> Unix shell.  The simplest
+example of an alias is...
+<pre>
+:alias save w
+</pre>
+... which would allow you to write your file out by running ":save", as an
+alternative to the standard ":w".  If you pass any arguments to ":save" then
+they'll be appended to the ":w" command.  For example, ":save foo" would
+be interpreted as ":w foo".
+
+<p>Here's another example.  On Unix systems, this will make ":ls" display
+a directory listing.
+<pre>
+:alias ls !!ls -C</pre>
+
+<p>Note that the above example requires <em>two</em> exclamation marks.
+This is because the "!" character is special in aliases --
+Elvis' aliases allow you to use special symbols to indicate where arguments
+belong in the command text, and all of those symbols begin with a "!" character.
+When you invoke the alias, all of the symbols are replaced by argument values
+before the command text is executed.
+Here is a complete list of the replacement symbols:
+<pre graphic>
+     .--------.-------------------------------------------------.
+     | SYMBOL | REPLACED BY                                     |
+     |--------|-------------------------------------------------|
+     |   !&lt;   | first address line, if any addresses given      |
+     |   !&gt;   | last address line, if any addresses given       |
+     |   !%   | address range, if any addresses given           |
+     |   !?   | "!" if the alias is invoked with a "!" suffix   |
+     |   !*   | the entire argument string except for "!" suffix|
+     |   !^   | the first word from the argument string         |
+     |   !$   | the last word from the argument string          |
+     |   !$*  | all but the last word from the argument string  |
+     |   !<var>n</var>   | the <var>n</var>th word (where <var>n</var> is a single digit)        |
+     |   !<var>n</var>*  | everything from the <var>n</var>th word to the end         |
+     |   !!   | a single, literal "!" character                 |
+     | !<var>name</var>= | value from a <var>name</var>=<var>value</var> argument                |
+     | !<var>name</var>&amp; | <a href="elvisdm.html#urlencoded">URL-encoded</a> version of !<var>name</var>=                   |
+     ^--------^-------------------------------------------------^</pre>
+
+<p>Using any of the <strong>!*</strong>, <strong>!^</strong>,
+<strong>!$</strong>, <strong>!</strong><var>name</var><strong>=</strong>,
+<strong>!</strong><var>name</var><strong>&amp;</strong>, or
+<strong>!1</strong> through <strong>!9</strong> symbols
+in the command string has the side-effect of disabling the normal behavior of
+appending the arguments to the command.
+Or to phrase that another way: If the command text doesn't explicitly say
+what to do with arguments, then Elvis will assume it should simply append them.
+
+<p>The other symbols, such as <strong>!%</strong> and <strong>!?</strong>,
+have no such default behavior.  If your macro is going to use addresses or a
+"!" suffix, then you must explicitly include <strong>!%</strong> or
+<strong>!?</strong> (respectively) in the command string.
+
+<p>Here's a simple alias for playing around with these:
+<pre>
+:alias show echo !!&lt;=!&lt; !!%=!% !!?=!? !!*=!* !!^=!^ !!2=!2 !!$=!$</pre>
+
+<p>The <strong>!</strong><var>name</var><strong>=</strong> and
+<strong>!</strong><var>name</var><strong>&amp;</strong> symbols are intended
+mostly for use in <a href="#PROTO">user defined protocols</a>, where
+they offer an easy way to examine the values of URL form fields.
+In any other type of alias, they search through the alias's arguments
+for one of the form <var>name</var>=<var>value</var>, and return the
+<var>value</var> portion of that arguments.
+Note that "!=" (without a name) is not substituted, so you don't need
+to do anything special to use the != operator in expressions within aliases.
+
+<p>Here's a more sophisticated version of the ":save" alias.  This version
+allows you to use ":save!" as an alias for ":w!".
+<pre>
+:alias save w!?</pre>
+
+<p>Here's a macro that converts a range of lines to uppercase.  If invoked
+without any addresses, it will change only the current line, because that's
+the default for the <a href="elvisex.html#substitute">:s</a> command.
+<pre>
+:alias upper !%s/.*/\U&amp;/</pre>
+
+<p>You can define multi-line aliases by enclosing the lines in curly braces.
+The following example uses this technique to make a slightly smarter version
+of the "save" alias:
+<pre>
+:alias save {
+ "Write a file, but only if it has been modified
+ if modified
+ then w!? !*
+}</pre>
+
+<p>Note that the first line of the alias's body is a comment.
+(Comments start with a <a href="elvisex.html#QUOTE">"</a> character.)
+This is a good idea because when the <a href="elvisex.html#alias">:alias</a>
+command is invoked with no arguments, it lists the names and first lines of
+all aliases.
+Putting a descriptive comment in the first line allows you to see what each
+alias does simply by examining that list.
+
+<p>If a multi-line alias is going to use arguments, then it must include
+<strong>!*</strong>, <strong>!^</strong>, <strong>!$</strong>, or
+<strong>!</strong><var>n</var> symbols.  Elvis does <em>not</em>, by default,
+append arguments to the end of a multi-line alias; it only does that for
+single-line aliases.
+
+<p>An alias can have the same name as a built-in command, but aliases can't
+be recursive.  Together, these two rules mean that you can use an alias to
+change the behavior of a built-in command.  For example, the following alias
+makes the <a href="elvisex.html#write">:w</a> command perform an RCS checkout
+operation if you don't already have write permission for a file.
+The "w" command inside the command text refers to the normal
+<a href="elvisex.html#write">:write</a> command since it isn't allowed to be
+a recursive call to the "w" alias.
+<pre>
+:alias w {
+ "Write a file, checking it out first if necessary
+ if readonly &amp;&amp; "!%!?!*" == ""
+ then !!co -l %
+ then w!!
+ else !%w!? !*
+}
+</pre>
+
+You can optionally insert a ':' character between the '!' and the second
+character of any of these symbols.
+This has no effect; it is allowed simply to remain a little closer to CSH's
+alias syntax.
+
+<p>You can also optionally insert a '\' character between the '!' and the
+second character.
+This <em>does</em> have an effect:
+It causes a backslash to be inserted before any characters which would
+otherwise receive special treatment if they appeared in a regular expression.
+Specifically, it will always insert a backslash before '\', '/', '^', '$',
+'.', '[', or '*'.
+Note that this is <em>not</em> sensitive to the
+<a href="elvisopt.html#magic">magic</a> or
+<a href="elvisopt.html#magicchar">magicchar</a> options;
+in effect, it assumes that <code>magic</code> and <code>magicchar</code>
+are set to their default values.
+Also, it never inserts a backslash before a '?' character even if it is used
+in a regular expression which is delimited by '?' characters.
+The following "find" alias will search for literal text:
+<pre>
+:alias find /!\*
+</pre>
+
+In addition, you can optionally specify a default value for an argument,
+by placing the value in parentheses between the '!' and the second character.
+Here's an example which acts like echo, except that if you don't tell it what
+to echo then it will echo "Howdy!":
+<pre>
+:alias greet echo !(Howdy!)*
+</pre>
+
+If necessary, you can insert both a backslash and a parenthesized default value.
+The backslash quoting will be applied to the given argument value, but not the
+parenthesized default value.
+Here's a variation of the "find" alias which searches for literal text, or
+if you don't specify any text to find then it searches for a { character at
+the front of a line.
+<pre>
+:alias find /!(^{)\*
+</pre>
+
+Some vi commands are implemented via ex commands.  If you create an alias
+with the same name as a built-in ex command, then the corresponding visual
+command will be affected.  For example, the <a href="elvisvi.html#Z">ZZ</a>
+visual command runs <a href="elvisex.html#xit">:x</a>,
+so the following alias would break the <code>ZZ</code> command...
+<pre>
+:alias x echo Winners never quit, and quitters never win
+</pre>
+
+<h3><a name="EXAMPLES"></a>16.6.1 Some example aliases</h3>
+The distribution comes with some handy aliases in a file named
+<code>lib/elvis.ali</code>.
+I suggest you look at them.
+The simple ones should give you some ideas of how to structure your own aliases,
+and the complex examples will give you a feel of what can be accomplished.
+
+<p>Remember that the names of aliases must be spelled out in full;
+you can't abbreviate alias names the way can for built-ins.
+Also, you can display the definition of any alias by running
+"<code>:alias</code> <var>aliasname</var>".
+
+<p>These examples are intended to be useful as well as instructive.
+They are loaded automatically when Elvis starts.
+The aliases in that file include:
+<dl>
+
+<dt>:<a name="lf">lf</a> <code>[</code><var>directory</var><code>]</code>
+<dd>List the contents of the current directory, or of a named directory.
+On Unix systems this works by invoking "ls -CF" on the arguments;
+on other systems it invokes "dir/w".
+
+<dt>:<a name="pwd">pwd</a>
+<dd>Display the name of the current directory.
+
+<dt>:<a name="howto">howto</a><code>[</code>!<code>]</code> <var>word</var> <code>[</code><var>word2</var><code>]</code>
+<dd>Load the "How To" appendix in a separate window, and search for a topic
+containing the given word or words.
+The words should be typed in lowercase.
+If you want to search all lines (not just topic lines) then run
+<code>:howto!</code> (with a ! suffix).
+
+<dt>:<a name="kwic">kwic</a> <var>word</var>
+<dd>Build a table showing all occurrences of <var>word</var> in the online manual.
+This macro depends on the "grep" program to do the actual searching; if your
+system lacks "grep" then this won't work correctly.
+(Windows users should consider using the <a href="#cygwin">CygWin</a> tools.)
+
+<dt>:<a name="man">man</a> <code>[</code><var>section</var><code>]</code> <var>topic</var>
+<dd>Unix only.  Read a man-page and display it in a new window.
+
+<dt>:<a name="save">save</a> <code>[</code><var>filename</var><code>]</code>
+<dd>Write this file, but only if it has been modified.
+
+<dt>:<code>[</code><var>range</var><code>]</code><a name="ww">ww</a><code>[</code>!<code>]</code> <code>[</code><var>filename</var><code>]</code>
+<dd>Like the normal <a href="elvisex.html#write">:w</a> command, except that
+if you try to write a whole file back over itself, and that file is readonly,
+then the <code>:ww</code> alias will attempt to perform an RCS "checkout"
+operation on that file by running "<code>!co -l</code> <var>filename</var>".
+
+<dt>:<a name="courier">courier</a> <code>[</code><var>size</var><code>]</code> <code>["</code><b>bold</b><code>"]</code>
+<br>:<a name="luxi">luxi</a> <code>[</code><var>size</var><code>]</code> <code>["</code><b>bold</b><code>"]</code>
+<br>:<a name="andale">andale</a> <code>[</code><var>size</var><code>]</code>
+<dd>X11 only.  Select the Courier or Luxi mono fonts of the given size.
+If no size is specified, then it uses the default size, which is 14-point.
+
+<dt>:<a name="fork">fork</a> <var>program</var>
+<dd>X11 only.  Start running <var>program</var> in parallel with Elvis, with
+its stdio disconnected from Elvis.
+This is necessary because if you just ran
+"<code>:!</code><var>program</var> <code>&amp;</code>" Elvis would wait
+for the program to exit, so it could display the program's output in the
+Elvis window.
+
+<dt>:<a name="copying">copying</a>
+<dd>Display the license.
+
+<dt>:<a name="features">features</a>
+<dd>Report the configuration of your copy of Elvis.
+I.e., list the features which were enabled when Elvis was compiled.
+
+<dt>:<a name="customize">customize</a> <var>filename</var>
+<dd>Create a personal copy of one of Elvis' configuration files
+(unless you already have a personal copy of it),
+and start editing it.
+A typical example would be "<code>:customize&nbsp;elvis.syn</code>"
+to edit the syntax coloring rules.
+
+<dt>:<code>[</code><var>range</var><code>]</code><a name="left">left</a>
+<br>:<code>[</code><var>range</var><code>]</code><a name="right">right</a>
+<br>:<code>[</code><var>range</var><code>]</code><a name="center">center</a>
+<dd>For each line in the given range (or only the current line if no
+addresses are given), adjust the indentation so that its text is
+moved to the left, right, or center of the line.
+
+<dt>:<code>[</code><var>range</var><code>]</code><a name="wascii">wascii</a><code>[</code>!<code>]</code> <var>file</var>
+<dd>Write WYSIWYG formatted text out to a file as plain ASCII text.
+This is intended to make it easy to save ex scripts (or other source code)
+that are embedded within HTML pages such as this manual.
+It works by temporarily setting <a href="elvisopt.html#lptype">lptype</a>
+to "dumb", and then writing the text via <a href="elvisex.html#lpr">:lp</a>.
+
+<dt>:<code>[</code><var>range</var><code>]</code><a name="lpd">lpd</a><code>[</code>!<code>]</code> <var>file</var>
+<dd>Print text, formatting it in the current display mode, regardless of the
+buffer's usual display mode.
+It works by temporarily setting the buffer's
+<a href="elvisopt.html#bufdisplay">bufdisplay</a> option to the value of the
+window's <a href="elvisopt.html#display">display</a> option.
+
+<dt>:<code>[</code><var>range</var><code>]</code><a name="cfmt">cfmt</a>
+<dd>Adjust the line breaks in a C or C++ comment block.
+
+<dt>:<a name="wrapset">wrapset</a> <code>[</code><var>label</var><code>]</code> <var>optionname</var>
+<dd>Display the value of an option, inserting spaces after each comma and
+wrapping it to fit the width of the screen.
+The optional label may contain multiple words, and causes the option's value
+to be neatly indented.
+
+<dt>:<a name="text">text</a> <var>words</var>
+<br>:<a name="btext">btext</a> <var>words</var>
+<dd>Search through all the <code>*.c</code> or <code>*.h</code> files in the
+current directory for the given <var>words</var>, and treat the found
+locations as a series of matching tags.
+The <code>:text</code> alias moves the cursor to the first location; you
+can use an argumentless <a href="elvisex.html#tag">:tag</a> command to move'
+the each successive location.
+The <code>:btext</code> alias browses the matches, similar to the
+<a href="elvisex.html#browse">:browse</a> command.
+
+<dt>:<a name="load">load</a> <code>[</code><var>name</var><code>]</code>
+<dd>List the installed scripts, or run the script with a given <var>name</var>.
+The scripts reside in a "scripts/" subdirectory inside any of the directories
+listed in <a href="elvisopt.html#elvispath">elvispath</a>.
+Elvis comes with a variety of scripts to configure Elvis for various purposes.
+In most cases, if you run <a href="elvisex.html#mkexrc">:mkexrc</a> after
+running a script, then the effects of the script become permanent.
+
+<dt>:<a name="theme">theme</a> <code>[</code><var>name</var><code>]</code>
+<dd>List all installed themes, or load the theme with a given <var>name</var>.
+All of the themes use background images, and only the
+"<a href="elvisgui.html#x11">x11</a>" and
+"<a href="elvisgui.html#windows">windows</a>" interfaces
+currently support images,
+so this alias is only defined if you're using one of those.
+
+<p>Themes are basically the same as <a href="#load">:load</a> scripts.
+They just reside in a different subdirectory, and are intended to 
+configure colors instead of aliases and options.
+
+<dt>:<a name="mktheme">mktheme</a> <var>name</var>
+<dd>For "<a href="elvisgui.html#x11">x11</a>" and
+"<a href="elvisgui.html#windows">windows</a>" only.
+Create a theme by bundling up the current color configuration and the
+images it uses.
+You only need to do this if you want to share the theme;
+the <a href="elvisex.html#mkexrc">:mkexrc</a> command is perfectly capable
+of storing your color settings for your own use.
+<p>
+You should give this command in an empty edit buffer, with Elvis configured
+the way you want it to look, and any background images located in the
+<em>current</em> directory.
+After you run this alias, the edit buffer will be filled with an ex script and
+the images.
+You'll want to edit it to add a description, add your name to it, and maybe
+tweak the settings.
+Then save it to a file, and send file to me at
+<a href="mailto:kirkenda@cs.pdx.edu">kirkenda@cs.pdx.edu</a>.
+<p>
+The theme should set the foreground &amp; background for "normal", "idle",
+and the widgets and cursor.
+It may also set the background only of highlight faces such as "selection",
+"hlsearch", and "spell".
+Other faces, such as "comment", should not be set in the theme; instead,
+users are responsible for setting up their own favorite colors using the
+<a href="elvisex.html#color">:color</a> command's "or <var>colorname</var>"
+clauses to supply a variety of colors to choose from.
+
+<dt>readTHEME
+<dd>For "<a href="elvisgui.html#x11">x11</a>" and
+"<a href="elvisgui.html#windows">windows</a>" only.
+This alias isn't intended to be run by the user directly.
+Instead, it implements the "theme:" network protocol, using the
+techniques described in the next section.
+You can run "<code>:e theme:/</code>" to see a web page of downloadable themes.
+
+</dl>
+
+<h3><a name="PROTO"></a>16.6.2 Using aliases to add network protocols</h3>
+
+Elvis has built-in support for URLs that use the
+"<a href="elvisnet.html#FTP">ftp:</a>" and
+"<a href="elvisnet.html#HTTP">http:</a>" protocols,
+as well as the "file:" and "buffer:" pseudo-protocols that access local
+files or buffers.
+
+<p>Most Elvis versions also allow you to add support for new protocols
+by defining aliases that handle reading and writing via that protocol.
+(Expressions can use the <a href="elvisexp.html#feature">feature("proto")</a>
+function to test for this feature.)
+The aliases must have the names "read<var>XXX</var>" and "write<var>XXX</var>",
+where "<var>XXX</var>" is the uppercase name of the protocol.
+
+<p>The following example supports the "mailto:" protocol, on Unix/Linux systems:
+<pre>
+	alias readMAILTO {
+	  "initialize a mailto: message
+	  se noro reol=text
+	  if exists($HOME/".signature")
+	    read ~/.signature
+	    1 i --
+	  }
+	}
+	alias writeMAILTO {
+	  "send a mailto: message
+	  w !!mail -s"!(no subject)subject=" !2 &gt;/dev/null 2&gt;&amp;1
+	  se nomod
+	}</pre>
+
+<p>After loading these aliases, the command
+"<code>:e mailto:user@system.com</code>" will create an empty buffer named
+"mailto:user@system.com", and then run the <code>readMAILTO</code> alias
+with the cursor located in that buffer.
+
+<p>The first thing that <code>readMAILTO</code> does is turn off the
+<a href="elvisopt.html#readonly">readonly</a> option, and set the
+<a href="elvisopt.html#readeol">readeol</a> option to "text".
+Elvis normally sets these to <code>readonly</code> and <code>reol=binary</code>
+because that's safest when downloading files via FTP or HTTP.
+Since the whole point of the "mailto:" protocol is to write text, though,
+those settings are inappropriate, so <code>readMAILTO</code> changes them.
+
+<p>Other than that, <code>readMAILTO</code> merely needs to insert a copy
+of the ~/.signature file, if one exists.
+
+<p>You can then edit the message however you like, interactively.
+When you want to send the message,
+give the <a href="elvisex.html#write">:w</a> command.
+Because the buffer's name
+(actually the <a href="elvisopt.html#filename">filename</a> option)
+starts with "mailto:", Elvis knows it should use the <code>writeMAILTO</code>
+alias to write it.
+
+<p>The <code>writeMAILTO</code> alias pipes the message out to the
+standard Unix "mail" program.
+This is a little trickier than it should be, because "mail" can fork off
+a spooler process which can run for several minutes.
+This could make Elvis' <a href="elvisgui.html#x11">x11</a> user interface hang,
+because it waits for stdout/stderr to close before resuming its normal activity,
+and the spooler process inherits the stdout/stderr from the mail process.
+The solution is to redirect the mail process' stdout/stderr to
+<code>/dev/null</code>.
+
+<p>After that, it turns off the buffer's
+<a href="elvisopt.html#modified">modified</a> option, so that other commands
+will know it is safe to delete that buffer.
+
+<p>Both the <code>read</code><var>XXX</var> and <code>write</code><var>XXX</var>
+aliases are invoked with arguments derived from the URL.
+The arguments contain pieces of the URL, as follows:
+<pre graphic>
+.--------.-------------------------------------------------------.
+| SYMBOL | REPLACEMENT TEXT                                      |
+|--------|-------------------------------------------------------|
+|   !*   | Whole URL - protocol://sitename/resource#anchor?args  |
+|   !1   | Site name, if the URL contained one.                  |
+|   !2   | Resource name                                         |
+|   !3   | The anchor name, if the URL contained one.            |
+| !4 - !9| Form fields, if any (<var>name</var>=<var>value</var>, URL-decoded)         |
+| !<var>name</var>= | Value of the form field named <var>name</var>, URL-decoded       |
+| !<var>name</var>&amp; | Value of the form field named <var>name</var>, URL-encoded       |
+^--------^-------------------------------------------------------^
+
+<strong>Example:</strong>                                                  !term&amp;
+                                                         .------.
+  http://www.techweb.com/encyclopedia/defineterm.yb?term=firewall
+         ^------!1-----^^----------!2-------------^ ^-----!4----^</pre>
+<p>In the "mailto:" example above, <code>writeMAILTO</code> used !2 as the
+email address of the person being mailed to.
+It also used the subject field value, if one was supplied, but instead of
+trying to locate it by searching through !4 - !9, it searched by name
+using the <code>!</code><var>name</var><code>=</code> notation.
+Specifically, it used <code>"!(no subject)subject=</code>" to find the
+value of the <code>subject</code> field, or use "no subject" by default.
+
+<p>The difference between the <code>!</code><var>name</var><code>=</code> and
+<code>!</code><var>name</var><code>&amp;</code> notations is that
+<code>!</code><var>name</var><code>&amp;</code> is replaced with
+<a href="elvisdm.html#urlencoded">URL-encoding</a> intact, while
+<code>!</code><var>name</var><code>=</code> is replaced with the
+plain-text form of the parameter.
+So <code>!</code><var>name</var><code>&amp;</code> works better for
+plugging a parameter into a newly constructed URL, while
+<code>!</code><var>name</var><code>=</code> works better for most other
+purposes.
+
+<p>The <a href="elvisopt.html#userprotocol">userprotocol</a> option is turned
+on for buffers loaded via a <code>read<var>PROTOCOL</var></code> alias.
+The default <code>elvis.arf</code> script is sensitive to this; it skips
+certain setup steps, since the default setup steps might not be appropriate
+for a user-defined protocol.
+If you don't like this behavior,
+then simply add a "<code>set nouserprotocol</code>" command
+to your <code>read<var>PROTOCOL</var></code> alias.
+
+<h2><a name="SPELL"></a>16.7 The spell-checker</h2>
+Elvis can be compiled with a built-in spell checker.
+To find out if your version of Elvis includes the spell-check feature,
+run the following:
+<pre>
+	:calc feature("spell")</pre>
+
+<p>If it says <code>True</code> then you're all set.
+You should be able to enable spell-checking via the command:
+<pre>
+	:set spell</pre>
+<p>After that, any suspected misspellings will be highlighted.
+You can change the highlighting style via
+"<a href="elvisex.html#color">:color</a> spell ..."
+
+<h3>16.7.1 Dictionaries</h3>
+
+Elvis has two spelling dictionaries:
+One loaded from "tags" files, which is useful mostly for detecting misspelled
+function names while you're editing source code; and
+one for natural-language words, which can be loaded from a large sorted
+file, or configured via the <a href="elvisex.html#words">:words</a> command.
+
+<p>Elvis is intended primarily for editing the source code of programs.
+In source code, some words should be checked only against the "tags"
+dictionary (function names and data types), some should be checked against
+both dictionaries (comments, mostly), and some should be unchecked
+(variables, since they often are not listed in the "tags" file).
+Elvis' spell checker can do that!
+
+<p>The spell-checking rules are oriented around faces.
+Faces are also used to control the font &amp; color attributes of text,
+as configured via the <a href="elvisex.html#color">:color</a> command.
+Each face has a name, such as "comment" or "function".
+The spell checker doesn't care about the appearance of a face, but it
+cares a great deal about its name.
+
+<p>For each face, Elvis allows you to specify one of three levels of
+spell-checking:
+<pre graphic>
+          .------.-----------------------------------------.
+          | FLAG | TYPE OF SPELL-CHECKING PERFORMED        |
+          |------|-----------------------------------------|
+          |  *   | Check against both dictionaries         |
+          |  +   | Check against only the tags dictionary  |
+          |  -   | Don't perform any spell checking        |
+          ^------^-----------------------------------------^</pre>
+
+<p>By default, most faces check against both dictionaries.
+The <a href="elvisses.html#elvis.spe">elvis.spe</a> initialization file
+configures some faces to check against only the tags dictionary,
+or skip checking entirely.
+
+<p>If the defaults don't meet your needs, you can use the
+<a href="elvisex.html#check">:check</a> command to change the rules for
+any face.
+For example, the "variable" face isn't normally subjected to any type
+of spell checking.
+It would be nice if this could be checked against the tags dictionary,
+but most tags generators don't generate tags for all variables, so
+many valid variable names would be marked as misspelled.
+However, if you have a tags generator that does a thorough job on variables
+then you might want to enable spell-checking of variables against the tags
+dictionary.
+You probably wouldn't want to check variable names against the
+natural-language dictionary, though.
+The following command configures variable checking this way:
+<pre>
+	:check variable</pre>
+
+<p>Similarly, the "string" face isn't normally checked because
+strings tend to contain non-human text such as "\n" or "%d".
+If you want to enable checking against both dictionaries, you can
+use the following command:
+<pre>
+	:check *string</pre>
+
+<p>The "*" causes Elvis to use both dictionaries.
+In the earlier "variable" example, we could also have used a "+" flag to select
+just the tags dictionary, but that's the default so we omitted it.
+The "-" flag disables spell-checking:
+<pre>
+	:check -variable string</pre>
+
+<p>By the way, the <a href="elvisex.html#check">:check</a> command supports
+name completion, so you can use the <kbd>&lt;Tab&gt;</kbd> key to see what
+faces are available.
+
+<h3>16.7.2 Configuring the tags dictionary</h3>
+
+If any buffer has its <a href="elvisopt.html#spell">spell</a> option
+turned on, then Elvis will automatically load the tags dictionary from any
+"tags" files that it finds.
+(For a discussion of tags, see the <a href="elvistag.html">Tags</a> chapter,
+and the <a href="ctags.man">ctags man-page</a>.)
+
+<p>When loading tags, Elvis searches through all of the file names in the
+<a href="elvisopt.html#tags">tags</a> and
+<a href="elvisopt.html#elvispath">elvispath</a> options.
+If any of those names is a directory, then Elvis looks for a file named
+"tags" in that directory.
+
+<p>Elvis loads every tag from every file that it finds this way.
+All of these tag names are combined in RAM to form a single tags directory.
+Other tag information is ignored; Elvis only stores the names.
+
+<p>As long as you generate tags files in the usual way,
+Elvis should be able to find them without any trouble.
+
+<p>To make it even easier, if the "tags" file in the current directory
+is altered then Elvis will reload the tags dictionary automatically.
+(It doesn't check the "tags" files in other directories, though.)
+
+<p>All words in the tags dictionary are considered to be case-sensitive.
+
+<h3>16.7.3 Configuring the natural-language dictionary</h3>
+
+There are three ways to load words into the natural-language dictionary:
+the <a href="elvisopt.html#spelldict">spelldict</a> option, and the
+<a href="elvisex.html#words">:words</a> and
+<a href="elvisex.html#wordfile">:wordfile</a> commands.
+
+<p>The way Elvis uses this dictionary is a bit tricky.
+The first thing you must realize is that the dictionary is maintained in RAM.
+It can pull words from the <a href="elvisopt.html#spelldict">spelldict</a> file
+as needed, but that file isn't the dictionary -- the in-memory data structure
+is.
+
+<p>The next big quirk is that the dictionary contains both correct and
+misspelled words.
+Elvis must remember misspelled words so that it can recognize them again
+quickly, without having to look them up in the
+<a href="elvisopt.html#spelldict">spelldict</a> file every time.
+This is very important because Elvis spell-checks every word on the screen,
+after every keystroke.
+Elvis can check any word against its in-memory dictionary in a fraction of
+a microsecond, but file searches are far slower.
+
+<p>You can use the <a href="elvisex.html#word">:words</a> command to add words
+to the natural-language dictionary.
+If you precede the words with a "-" then they'll be flagged as being incorrect.
+Any time Elvis displays that word on the screen, it'll be shown highlighted
+as an error.
+Words added without a "-" flag will be added as correct words.
+
+<p>If Elvis looks for a word in its dictionary, and doesn't find it, then
+it will try to find the word in the
+<a href="elvisopt.html#spelldict">spelldict</a> file.
+If Elvis finds it, great!
+Elvis will add it to its dictionary as a correct word.
+Otherwise, Elvis will will try suffix substitution, as specified via the
+<a href="elvisopt.html#spellsuffix">spellsuffix</a> option, and check the
+resulting word against the 
+<a href="elvisopt.html#spelldict">spelldict</a> file again.
+If Elvis finds that word, then it will add both the found word and the original
+word, both flagged as correct words.
+Otherwise, Elvis will add the original word, flagged as incorrect.
+
+<p>Words pulled from the <a href="elvisopt.html#spelldict">spelldict</a> file
+are always considered to be case-insensitive, even if they're capitalized in
+that file.
+Words added via <a href="elvisex.html#wordfile">:wordfile</a> are also
+case-insensitive.
+However, words added via the <a href="elvisex.html#word">:words</a> command are
+considered to be case-insensitive only when they're given in lowercase;
+if the a word contains any uppercase letters then it will be case-sensitive.
+
+<p>Words added via <a href="elvisex.html#word">:word</a> or
+<a href="elvisex.html#wordfile">:wordfile</a> are flagged as being personal,
+unless you append a "!" suffix to the command name.
+The distinction between personal words and other natural-language words
+is important, because <a href="elvisex.html#mkexrc">:mkexrc</a> will store any
+personal words in your <code>.exrc</code> file.
+
+<h3>16.7.4 Correcting errors</h3>
+
+Elvis has no built-in command for finding and correcting all of the spelling
+errors in a file.
+For that, I recommend an external program such as <code>ispell</code>.
+
+<p>However, Elvis does have an <a href="elvisopt.html#spell">spell</a>
+option for highlighting misspelled words, and the
+<a href="elvisopt.html#show">show</a> option supports a "spell" keyword
+which displays suggested corrections at the bottom of the screen.
+It also has a <a href="elvisvi.html#gs">gs</a> command for
+moving to the next misspelled word.
+If the cursor is already on a misspelled word before <kbd>gs</kbd>,
+and the <code>show</code> option is presenting a list of suggestions,
+then you can invoke <kbd>gs</kbd> with a "count" argument to fix the current
+word before moving to the next word.
+If none of the suggested alternative spellings are correct, you can use
+<a href="elvisvi.html#c">c</a>
+<a href="elvisvi.html#gS">gS</a> (with an uppercase "S")
+to replace the word manually.
+
+<p>Elvis' built in calculator has  functions named <a href="elvisexp.html#spell">spell()</a> and
+<a href="elvisexp.html#spelltag">spelltag()</a>, which offer a way to access the
+spelling suggestions in your own aliases or scripts.
+
+<p>The <code>spell()</code> function only checks the in-memory dictionary;
+it doesn't scan the <a href="elvisopt.html#spelldict">spelldict</a> file.
+Because of this, you'll probably want to load all words from that file into
+memory.
+There are two ways to do that:
+either invoke the <a href="elvisex.html#wordfile">:wordfile</a> command
+explicitly,
+or set the <a href="elvisopt.html#spellautoload">spellautoload</a> option
+to have it be loaded automatically the first time you need it.
+
+<h2><a name="AUTOCMD"></a>16.8 Auto commands</h2>
+<h3>16.8.1 Overview of Auto Commands</h3>
+Auto commands give you a way to cause commands to be executed automatically
+whenever a certain event occurs.
+This is sort of like hardware interrupts.
+Many of the events resemble GUI events.
+
+<p>Elvis maintains a list of auto commands.
+Each auto command contains:
+<ul>
+<li>A group name, which makes it easier to list or edit related auto commands.
+<li>A set of <a href="#EVENTS">events</a> which trigger the auto command.
+<li>A set of <a href="#PATTERNS">patterns</a>.  Most events have a file name
+    associated with them; patterns allow you to selectively apply a given
+    auto command to only certain types of files.  Also, some events use names
+    of things other than files.
+<li>An <a href="elvisex.html">ex command line</a> to run.
+</ul>
+
+<p>The whole auto command feature is omitted from the MS-DOS version of
+Elvis, for the sake of compactness.
+Under MS-DOS, Elvis will continue to depend on
+<a href="elvisses.html#elvis.arf">elvis.arf</a> and the related files.
+
+<h3>16.8.2 Groups</h3>
+For ease of editing, auto commands may be divided into groups.
+Each group has a name.
+The default group is named "END", but other groups have no preset names;
+you can choose your own names.
+
+<p>To select a group for editing
+(and to create the group if it didn't exist before),
+use the <a href="elvisex.html#augroup">:augroup</a> command.
+Typically, you'll begin by using 
+"<a href="elvisex.html#augroup">:aug</a>&nbsp;<var>groupname</var>" to select
+a group to edit, then wipe out any existing auto commands in that group and
+define new ones, and then use
+"<a href="elvisex.html#augroup">:aug</a>&nbsp;<code>END</code>"
+to mark the end of the group.
+<pre>
+	:aug buflist
+	:au!
+	:au BufNewFile,BufReadPost * morebuffers
+	:au BufDelete * lessbuffers
+	:aug END</pre>
+
+<p>Note that the <a href="elvisex.html#augroup">:augroup</a> command
+only affects the behavior of later <a href="elvisex.html#autocmd">:autocmd</a>
+commands.
+Afterward, when events occur, they will trigger all appropriate auto commands
+regardless of the group name.
+I.e., groups are useful for editing the auto command list, but have no
+effect on its actions.
+
+<p>Well, actually there is one exception:
+The <a href="elvisex.html#doautocmd">:doau</a> command can optionally be told
+a specific group name to run.
+If you don't specify the group name, then it will trigger all appropriate
+events in all groups, just like a real
+(non-<a href="elvisex.html#doautocmd">:doau</a>) event.
+
+<p>Elvis' version of <a href="elvisex.html#augroup">:aug</a> has a minor
+extension beyond vim's capabilities:
+when invoked with <code>!</code> suffix
+("<code>:aug!</code> <var>groupname</var>")
+it marks that group as being a "system" group.
+Elvis' standard configuration scripts may use this notation to mark its own
+groups.
+The significance of this is, "system" groups aren't saved by the
+<a href="elvisex.html#mkexrc">:mkexrc</a> command --
+they don't need to be stored in your custom initialization file since they're
+created by a standard script.
+
+<h3><a name="EVENTS">16.8.3 Events</a></h3>
+
+<p>Event names are case-insensitive, so "BufCreate" can be written as
+"bufcreate", or even "BuFcReAtE".
+
+<p>The <a href="elvisex.html#doautocmd">:doau</a> command only accepts
+a single event name -- the one that it is supposed to simulate.
+However, the <a href="elvisex.html#autocmd">:au</a> command accepts a
+comma-delimited list of event names (without any whitespace between them),
+or <code>*</code> to represent all events.
+
+<p>When deleting/replacing events, if an auto command has been created with
+multiple events and you only delete/replace some of them, then the remaining
+ones will still be in effect.
+In other words, Elvis will remove the given events from each auto command's
+set of matching events, and will only completely delete an auto command if
+the remaining set of events is empty.
+(When deleting/replacing, it only effects auto commands where at least one
+of the new <a href="#PATTERNS">patterns</a> is identical to one of the
+existing <a href="#PATTERNS">patterns</a>.)
+
+<p>Here's a list of built-in events, and what they mean in Elvis.
+Note that even "Not implemented" events can be triggered explicitly by
+<a href="elvisex.html#doautocmd">:doau</a>, so they aren't totally useless.
+You can also create new events with the
+<a href="elvisex.html#auevent">:auevent</a> command.
+
+<dl>
+
+<dt><strong><a name="AliasEnter">AliasEnter</a></strong> <em>(not in vim)</em><dd>
+<em>At the start of an alias.</em>
+The pattern is compared to the name of the alias, not a file, but you can
+still use the "*" wildcard.
+One common use for this is to set local options.
+For example, if you like to use Perl-ish regular expressions for interactive
+commands but still want to use traditional regular expression syntax inside
+aliases, you could use the following to temporarily reset the
+<a href="elvisopt.html#magicchar">magicchar</a> and
+<a href="elvisopt.html#magicperl">magicperl</a> options while running aliases:
+<pre>
+	:au AliasEnter * local magicchar=^$.*[ nomagicperl</pre>
+
+<dt><strong><a name="AliasLeave">AliasLeave</a></strong> <em>(not in vim)</em><dd>
+<em>At the end of an alias.</em>
+The opposite of <a href="#AliasEnter">AliasEnter</a>, and not nearly as useful.
+Maybe good for tracing execution?
+
+<dt><strong><a name="BgChanged">BgChanged</a></strong> <em>(not in vim)</em><dd>
+<em>The normal background color is changed.</em>
+The <a href="elvisex.html#color">:color</a> command is used to change the
+normal background color.
+The pattern is compared to "light" or "dark", depending on the chosen color.
+You can use this to adjust other backgrounds:
+<pre>
+	:au BgChanged light color x11.spell on pink
+	:au BgChanged dark  color x11.spell on red</pre>
+
+<dt><strong><a name="BufCreate">BufCreate</a></strong><dd>
+<em>A user buffer is created.</em>
+A user buffer is one in which the <a href="elvisopt.html#internal">internal</a>
+option is off.
+All buffers that contain your text files are user buffers.
+
+<p>Vim also sends this event after a buffer is renamed, but Elvis doesn't
+normally.
+If you want to make Elvis perform <code>BufCreate</code> when a buffer is
+renamed, then make the <a href="#BufFilePost">BufFilePost</a> event run
+<br>"<a href="elvisex.html#doautocmd">:doau</a>&nbsp;<code>BufCreate</code>",
+like this:
+<pre>
+	:au BufFilePost * doau BufCreate</pre>
+
+<dt><strong><a name="BufDelete">BufDelete</a></strong><dd>
+<em>A user buffer is destroyed.</em>
+Note that Elvis has no explicit command for freeing buffers.
+It chooses when to free them automatically, if they aren't being used and
+haven't been modified.
+You can prevent Elvis from destroying a buffer by settings its
+<a href="elvisopt.html#retain">retain</a> option.
+
+<p>You could use this event with <a href="#BufCreate">BufCreate</a> to maintain
+a list of open buffers.
+The <code>data/scripts/xbuf.ex</code> file, distributed with Elvis, contains an example
+of how this might be done in Elvis' <a href="elvisgui.html#x11">x11</a>
+user interface.
+
+
+<dt><strong><a name="BufEnter">BufEnter</a></strong><dd>
+<em>A buffer becomes the "current" buffer.</em>
+Specifically, this event is triggered when the buffer-specific options
+are swapped in, to be accessible via commands such as
+<a href="elvisex.html#set">:set</a>, or in
+<a href="elvisexp.htm">expressions</a>.
+See also the <a href="#BufLeave">BufLeave</a> event.
+
+<p><strong>Warning:</strong>
+Elvis can switch buffers extremely often.
+For example, if you're using the "<a href="elvisgui.html#x11">x11</a>" user
+interface with multiple windows and toolbars, then Elvis will make each
+window's buffer be the "current" buffer while it is evaluating the states
+of each toolbar button, after each keystroke.
+
+<dt><strong><a name="BufFilePost">BufFilePost</a></strong><dd>
+<em>After changing a buffer's name.</em>
+A buffer's name can be changed two ways:
+explicitly via the <a href="elvisex.html#file">:file</a> command, or
+implicitly by saving an anonymous buffer out to a file.
+
+<dt><strong><a name="BufFilePre">BufFilePre</a></strong><dd>
+<em>Before changing a buffer's name.</em>
+See also the <a href="#BufFilePost">BufFilePost</a> event.
+
+<dt><strong><a name="BufHidden">BufHidden</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="BufLeave">BufLeave</a></strong><dd>
+<em>A buffer will no longer be the "current" buffer.</em>
+This is the other half of <a href="#BufEnter">BufEnter</a> event.
+When Elvis is switching buffers, it triggers a <code>BufLeave</code>
+event (with the old buffer) before switching, and a
+<a href="#BufEnter">BufEnter</a> event (with the new buffer) afterward.
+
+<dt><strong><a name="BufNewFile">BufNewFile</a></strong><dd>
+<em>A buffer is created for a file that doesn't exist yet.</em>
+This is similar to <a href="#BufReadPost">BufReadPost</a>, except that
+<code>BufNewFile</code> is triggered only when there is no file to be read.
+You can use this to create a skeleton version of a file.
+
+<dt><strong><a name="BufReadPost">BufReadPost</a></strong><dd>
+<em>After loading a file's contents.</em>
+See also <a href="#BufReadPre">BufReadPre</a> for before it has loaded,
+<a href="#FileReadPost">FileReadPost</a> for inserting text from another file
+into an existing file's buffer,
+and <a href="#FilterReadPost">FilterReadPost</a> for inserting from a filter.
+
+<dt><strong><a name="BufReadPre">BufReadPre</a></strong><dd>
+<em>Before loading a file's contents.</em>
+This is useful for setting the <a href="elvisopt.html#readeol">readeol</a>
+option.
+See also <a href="#BufReadPost">BufReadPost</a> for after it has loaded,
+<a href="#FileReadPre">FileReadPre</a> for inserting text from another file
+into an existing file's buffer,
+and <a href="#FilterReadPre">FilterReadPre</a> for inserting from a filter.
+
+<dt><strong><a name="BufRead">BufRead</a></strong><dd>
+<em>Synonym for <a href="#BufReadPost">BufReadPost</a> </em>
+
+<dt><strong><a name="BufUnload">BufUnload</a></strong><dd>
+<em>Immediately before</em> <a href="#BufDelete">BufDelete</a> <em>events,</em>
+for Elvis.
+Vim has an extra level of decrepitude for buffers, where the text has been
+discarded but the name and options have not yet been forgotten;
+vim performs BufUnload when a buffer enters this state, and <a href="#BufDelete">BufDelete</a>
+when it discards the rest of the buffer.
+Elvis doesn't have that intermediate step, so <code>BufUnload</code> and
+<a href="#BufDelete">BufDelete</a> are effectively the same thing.
+
+<dt><strong><a name="BufWritePost">BufWritePost</a></strong><dd>
+<em>After a buffer has been saved to its file.</em>
+
+<dt><strong><a name="BufWritePre">BufWritePre</a></strong><dd>
+<em>Before a buffer will be saved to its file.</em>
+If any auto command triggered by this event causes an error and the
+<a href="elvisopt.html#eventerrors">eventerrors</a> option is set,
+then the text will not be written.
+
+<dt><strong><a name="BufWrite">BufWrite</a></strong><dd>
+<em>Synonym for <a href="#BufWritePre">BufWritePre</a>.</em>
+
+<dt><strong><a name="CursorHold">CursorHold</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="DisplayEnter">DisplayEnter</a></strong> <em>(not in vim)</em><dd>
+<em>A window's display mode has changed.</em>
+This is useful for changing options in a display-mode dependent way.
+The pattern is compared to the name of the new display mode, not the
+file name.
+See <a href="#DisplayLeave">DisplayLeave</a> for a way to change them back
+afterward, or <a href="#DispMapEnter">DispMapEnter</a> for a way to adjust
+the map table.
+
+<dt><strong><a name="DisplayLeave">DisplayLeave</a></strong> <em>(not in vim)</em><dd>
+<em>A window's display mode is about to change.</em>
+This is useful for reverting options that were changed via a
+<a href="#DisplayEnter">DisplayEnter</a> event.
+The pattern is compared to the name of the new display mode, not the
+file name.
+
+<dt><strong><a name="DispMapEnter">DispMapEnter</a></strong> <em>(not in vim)</em><dd>
+<em>Keystrokes are received in a different display mode.</em>
+This is useful for installing <a href="elvisex.html#map">map</a>s that are
+only intended to be used in specific display modes.
+The pattern is compared against the name of the new display mode, not the
+file name.
+Note that this event can be triggered simply by switching windows, if the
+two windows are using different display modes.
+
+<p>Generally, Elvis will trigger a <a href="#DispMapLeave">DispMapLeave</a>
+event on the old mode before triggering the
+<code>DispMapEnter</code> event on the new mode.
+Both of these events will be triggered before the newly received keystrokes
+are subjected to maps.
+
+<dt><strong><a name="DispMapLeave">DispMapLeave</a></strong> <em>(not in vim)</em><dd>
+<em>Keystrokes are received after an old display mode is abandoned.</em>
+This is useful for removing display-sensitive
+<a href="elvisex.html#map">map</a>s that were installed via
+<a href="#DispMapEnter">DispMapEnter</a>.
+The pattern is compared against the name of the old display mode, not the
+file name.
+Note that this event can be triggered simply by switching windows, if the
+two windows are using different display modes.
+
+<dt><strong><a name="Edit">Edit</a></strong> <em>(Not in vim)</em><dd>
+<em>Text is changed.</em>
+While the event's auto commands are running, the <code>'[</code> and
+<code>']</code> marks indicate the changed region.
+
+<p>The Edit event is triggered every time the buffer is changed.
+If you want to trigger an event for only the <em>first</em>
+change to a buffer, then you can use the <a href="#OptSet">OptSet</a> event to
+watch for changes to the <a href="elvisopt.html#modified">modified</a> option.
+(However, <code>OptSet</code> doesn't set the
+<code>'[</code> and <code>']</code> marks.)
+
+<dt><strong><a name="FileAppendPost">FileAppendPost</a></strong><dd>
+<em>After appending all or part of the buffer onto a file.</em>
+
+<dt><strong><a name="FileAppendPre">FileAppendPre</a></strong><dd>
+<em>Before appending all or part of the buffer onto a file.</em>
+While the event's auto commands are running, the <code>'[</code> and
+<code>']</code> marks indicate the region to be written, and the
+<a href="elvisopt.html#aufilename">aufilename</a> option indicates the name
+of the file that it'll be written to.
+If any auto command triggered by this event causes an error and the
+<a href="elvisopt.html#eventerrors">eventerrors</a> option is set,
+then the text will not be written.
+
+<dt><strong><a name="FileChangedShell">FileChangedShell</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="FileEncoding">FileEncoding</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="FileReadPost">FileReadPost</a></strong><dd>
+<em>After inserting from a file.</em>
+This is different from <a href="#BufReadPost">BufReadPost</a>,
+which loads a file into a buffer.
+<code>FileReadPost</code> is triggered by the <a href="elvisex.html#read">:r</a>
+command, but not the <a href="elvisex.html#edit">:e</code> command.
+The auto command can use <code>'[</code> and <code>']</code> marks to
+determine which lines are new.
+See also <a href="#FileReadPre">FileReadPre</a> for before the text has been
+inserted, and <a href="#FilterReadPre">FilterReadPost</a> for reading from a
+filter program.
+
+<dt><strong><a name="FileReadPre">FileReadPre</a></strong><dd>
+<em>Before inserting from a file.</em>
+This is different from <a href="#BufReadPre">BufReadPre</a>,
+which loads a file into a buffer.
+<code>FileReadPre</code> is triggered by the <a href="elvisex.html#read">:r</a>
+command, but not the <a href="elvisex.html#edit">:e</code> command.
+See also <a href="#FileReadPost">FileReadPost</a> for after the text has been
+inserted, and <a href="#FilterReadPre">FilterReadPre</a> for reading from a
+filter program.
+
+<dt><strong><a name="FileType">FileType</a></strong><dd>
+<em>Not implemented.</em>
+Elvis doesn't have a "filetype" option, though I may add one later.
+The <a href="elvisopt.html#mapmode">mapmode</a>
+and <a href="elvisopt.html#bufdisplay">bufdisplay</a>
+options serve a similar purpose.
+
+<dt><strong><a name="FileWritePost">FileWritePost</a></strong><dd>
+<em>After writing all or part of the buffer out to a different file.</em>
+While the event's auto commands are running, the
+<a href="elvisopt.html#aufilename">aufilename</a> option indicates the name
+of the file that was written.
+
+<dt><strong><a name="FileWritePre">FileWritePre</a></strong><dd>
+<em>Before writing all or part of the buffer out to a different file.</em>
+While the event's auto commands are running, the <code>'[</code> and
+<code>']</code> marks indicate the region to be written, and the
+<a href="elvisopt.html#aufilename">aufilename</a> option indicates the name
+of the file that it'll be written to.
+If any auto command triggered by this event causes an error and the
+<a href="elvisopt.html#eventerrors">eventerrors</a> option is set,
+then the text will not be written.
+
+<dt><strong><a name="FilterReadPost">FilterReadPost</a></strong><dd>
+<em>After reading from a filter program.</em>
+The auto command can use <code>'[</code> and <code>']</code> marks to
+determine which lines are new.
+See also <a href="#FilterReadPre">FilterReadPre</a> for before the text has been
+inserted, and <a href="#FileReadPost">FileReadPost</a> for reading from a file.
+
+<dt><strong><a name="FilterReadPre">FilterReadPre</a></strong><dd>
+<em>Before reading from a filter program.</em>
+See also <a href="#FilterReadPost">FilterReadPost</a> for after the text has
+been inserted, and <a href="#FileReadPre">FileReadPre</a> for reading from a
+file.
+
+<dt><strong><a name="FilterWritePost">FilterWritePost</a></strong><dd>
+<em>After writing all or part of the buffer out to a filter program.</em>
+While the event's auto commands are running, the
+<a href="elvisopt.html#aufilename">aufilename</a> option sores a copy of
+the name stores a copy of the command that it is writing to.
+
+<dt><strong><a name="FilterWritePre">FilterWritePre</a></strong><dd>
+<em>Before writing all or part of the buffer out to a filter program.</em>
+While the event's auto commands are running, the <code>'[</code> and
+<code>']</code> marks indicate the region to be written, and the
+<a href="elvisopt.html#aufilename">aufilename</a> option stores a copy of
+the command that it is writing to.
+If any auto command triggered by this event causes an error and the
+<a href="elvisopt.html#eventerrors">eventerrors</a> option is set,
+then the text will not be written.
+
+<dt><strong><a name="FocusGained">FocusGained</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="FocusLost">FocusLost</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="GUIEnter">GUIEnter</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="OptChanged">OptChanged</a></strong> <em>(not in vim)</em><dd>
+<em>A particular option's value is changed.</em>
+The <a href="#PATTERNS">pattern</a> for this event is a list of option names,
+<strong>not</strong> file name wildcards.
+While the auto command is running,
+the <a href="elvisopt.html#aufilename">aufilename</a> option contains the name
+of the actual option that was changed.
+
+<p><strong>NOTE:</strong>
+Options changed via the
+<a href="elvisex.html#set">:set</a>,
+<a href="elvisex.html#let">:let</a>, and
+<a href="elvisex.html#local">:local</a>
+commands always trigger this event for any changed options, but
+some options are changed internally by Elvis as a normal consequence
+of operation, and
+those changes don't always trigger the <code>OptChanged</code> event.
+For example, the <a href="elvisopt.html#bufchars">bufchars</a> option
+changes any time you insert or delete text, but this doesn't trigger
+<a href="#OptChanged">OptChanged</a>.
+
+<dt><strong><a name="OptSet">OptSet</a></strong> <em>(not in vim)</em><dd>
+<em>A particular Boolean option is set or reset.</em>
+The <a href="#PATTERNS">pattern</a> for this event is a list of option names,
+<strong>not</strong> file name wildcards.
+To detect when a Boolean option is set (becomes true), use the name without
+any prefix; to detect when it is reset (becomes false), use the name with a
+"no" prefix.
+While the auto command is running,
+the <a href="elvisopt.html#aufilename">aufilename</a> option contains the name
+of the actual option that was changed,
+with a "no" prefix if it just became false.
+The following example causes the <a href="elvisopt.html#novice">novice</a>
+option to change a few other options:
+<pre>
+	:au OptSet novice set nomagic report=1 showmode</pre>
+
+<p><strong>NOTE:</strong>
+As with <a href="#OptChanged">OptChanged</a>,
+Elvis changes some options internally, and
+those changes don't always trigger an <code>OptSet</code> event.
+
+<dt><strong><a name="ScriptEnter">ScriptEnter</a></strong> <em>(not in vim)</em><dd>
+<em>At the start of a script.</em>
+The pattern is compared to the name of the script file.
+One common use for this event is for setting local options.
+For example, if you like to use Perl-ish regular expressions for interactive
+commands but still want to use traditional regular expression syntax inside
+scripts, you could use the following to temporarily reset the
+<a href="elvisopt.html#magicchar">magicchar</a> and
+<a href="elvisopt.html#magicperl">magicperl</a> options while running scripts:
+<pre>
+	:au ScriptEnter * local magicchar=^$.*[ nomagicperl</pre>
+
+<p>Note that <code>ScriptEnter</code> and <a href="#ScriptLeave">ScriptLeave</a>
+are executed both for scripts that are explicitly run via the
+<a href="elvisex.html#source">:so</a> command, and the configuration scripts
+that are run automatically:
+<a href="elvisses.html#elvis.brf">elvis.brf</a>,
+<a href="elvisses.html#elvis.arf">elvis.arf</a>,
+<a href="elvisses.html#elvis.bwf">elvis.bwf</a>, and
+<a href="elvisses.html#elvis.awf">elvis.awf</a>.
+
+<dt><strong><a name="ScriptLeave">ScriptLeave</a></strong> <em>(not in vim)</em><dd>
+<em>At the end of a script.</em>
+The opposite of <a href="#ScriptEnter">ScriptEnter</a>,
+and not nearly as useful.
+Maybe good for tracing execution?
+
+<dt><strong><a name="StdinReadPost">StdinReadPost</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="StdinReadPre">StdinReadPre</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="Syntax">Syntax</a></strong><dd>
+<em>Not implemented.</em>
+Elvis has no "syntax" option.
+The <a href="elvisopt.html#bufdisplay">bufdisplay</a> option serves a similar
+purpose, but isn't quite similar enough to justify triggering a
+<code>Syntax</code> event.
+You could have Elvis simulate it via the <a href="#OptChanged">OptChanged</a>
+event:
+<pre>
+	:au OptChanged bufdisplay doau Syntax</pre>
+
+<dt><strong><a name="TermChanged">TermChanged</a></strong><dd>
+<em>Not implemented.</em>
+Elvis doesn't allow the <a href="elvisopt.html#term">term</a> option to be
+changed after initialization is complete.
+
+<dt><strong><a name="User">User</a></strong><dd>
+<em>Never.</em>
+The <code>User</code> event can only be triggered explicitly via the
+<a href="elvisex.html#doautocmd">:doau</a> command.
+
+<dt><strong><a name="VimEnter">VimEnter</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="VimLeavePre">VimLeavePre</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="VimLeave">VimLeave</a></strong><dd>
+<em>Not implemented.</em>
+
+<dt><strong><a name="WinEnter">WinEnter</a></strong><dd>
+<em>A window becomes the "current" window.</em>
+Specifically, this is triggered when the window-specific options for a given
+window are swapped in so they're accessible via commands such as
+<a href="elvisex.html#set">:set</a>, and in
+<a href="elvisexp.html">expressions</a>.
+See also <a href="#BufEnter">BufEnter</a> and <a href="#WinLeave">WinLeave</a>.
+
+<p><strong>Warning:</strong>
+Elvis can switch windows extremely often.
+For example, if you're using the "<a href="elvisgui.html#x11">x11</a>" user
+interface with multiple windows and toolbars, then Elvis will make each
+window be the "current" window while it is evaluating the states
+of each toolbar's buttons, after each keystroke.
+
+<dt><strong><a name="WinLeave">WinLeave</a></strong><dd>
+<em>A window will no longer be the "current" window.</em>
+When switching from one window to another, Elvis will first trigger a
+<code>WinLeave</code> event (with the old window), then switch windows,
+and then trigger a <a href="#WinEnter">WinEnter</a> event (with the new window).
+See also <a href="#BufLeave">BufLeave</a>.
+
+</dl>
+
+<h3><a name="PATTERNS">16.8.4 Patterns</a></h3>
+
+Patterns are used mostly to select file names.
+They use the same "wildcard" characters that are used for matching filenames
+on the command line.
+Different operating systems have slightly different rules.
+Specifically...
+<ul>
+<li> "<code>*</code>" matches any text, of any length.
+     For example, "<code>*.html</code>" matches all the names that end with
+     ".html".
+<li> "<code>?</code>" matches any single character.
+<li> For all operating systems except MS-DOS, "<code>[</code><var>chars</var><code>]</code>" matches
+     any single character in the <var>chars</var> list.
+<li> For all operating systems except MS-DOS, "<code>[^</code><var>chars</var><code>]</code>" matches
+     any single character <strong>not</strong> in the <var>chars</var> list.
+<li> For Unix, letters are compared in a case-sensitive manner; for all
+     other operating systems, letters are compared case-insensitively.
+<li> Other characters must match exactly.
+</ul>
+
+<p>The contents of <code>[]</code> wildcards is always interpreted in
+a case-sensitive manner, even in operating systems such as Windows which
+are normally case-insensitive with respect to filenames.
+If you want a <code>[]</code> expression to be case-insensitive, then you
+must explicitly give both the uppercase and lowercase versions of the
+letter.
+
+<p>The <var>chars</var> list may be individual characters, or ranges of
+characters with a '-' between them.  For example, <code>[_a-zA-Z]</code>
+matches an underscore or a letter.
+
+<p>Although the syntax for <code>[]</code> wildcards is similar to the
+syntax for the <a href="elvisre.html#charlist">[]</a> metacharacter in regular expressions,
+the two are not the same.
+For example, you <strong>cannot</code> use <code>[[:alpha:]]</code> to match
+any locale-dependent letter in a filename wildcard, though you can in
+regular expressions.
+
+<h2><a name="FASTER"></a>16.9 How to make Elvis run faster</h2>
+This section describes some ways you can "tune" Elvis to run faster.
+None of these suggestions require recompiling Elvis.
+
+<p>For example, my computer (AMD K6-200) can run 10
+generations of the "life" macros in 41 seconds with the default configuration.  If I invoke Elvis with a reduced block size
+(<code>-b1024</code> on the command line) and an increased cache
+(<code>:set&nbsp;blkcache=200&nbsp;blkhash=300</code>),
+it can run 10 generations in just 24 seconds.
+
+<h3>The blksize option</h3>
+Elvis uses fixed-size blocks to store buffers.  The block size is chosen
+when the session file is created.  The default is 2048 bytes (or 1024 bytes
+for MS-DOS), but you can override that by invoking Elvis with a
+<strong>-b</strong><var>blksize</var> flag.
+The size must be a power of two, between 512 and 8192.
+
+<p>The <a href="elvisopt.html#blksize">blksize</a> option indicates the
+current block size.  This is a read-only option; once Elvis has started,
+(and hence has already created the session file) it is too late to request
+a different block size.
+
+<p>Generally, smaller blocks are better if your CPU is slow or you're only
+editing small files.  Larger blocks are better if your disk is slow (e.g., the
+temporary file is stored on a remote disk, accessed via a network) or you're
+editing large files.
+
+<h3>The block cache</h3>
+In the interest of speed, Elvis has its own cache of blocks from the session
+file.  The <a href="elvisopt.html#blkcache">blkcache</a> option tells Elvis
+how many blocks to store in the cache.  You can change this value at any time.
+If Elvis requires more cached blocks for a given editing operation than the
+blkcache allows, then Elvis ignores blkcache and loads the required blocks into
+the expanded cache; you can't make blkcache too small.
+The default blkcache is 20 (except for MS-DOS, where it is 10),
+and the upper bound is 200 blocks.
+In MS-DOS, setting blkcache too high can cause Elvis to crash.
+
+<p>The <a href="elvisopt.html#blkhit">blkhit</a>
+and <a href="elvisopt.html#blkmiss">blkmiss</a> options count the number
+of cache hits and misses, so you can compute the efficiency of the cache
+as follows:
+<pre>
+	:calc (bh*100/(bh+bm))"%"</pre>
+
+<p>You'll probably find that 98% or more of the block requests are being
+satisfied from the cache.  However, since each miss takes thousands of
+times longer to complete than a hit, each fraction of a percent means a lot.
+
+<p>In addition to the blocks themselves, the cache contains a hash table
+which allows Elvis to quickly determine whether a block is in the cache
+or not.  If you increase the size of the cache, then you'll probably want to
+increase the size of the table as well.  The table size is controlled by the
+<a href="elvisopt.html#blkhash">blkhash</a> option.  Ideally, it should
+be set to a prime number somewhat larger than blkcache...
+or simply the largest possible value, since hash table entries are small.
+The default is 61, and the upper bound is 300.
+
+<h3>Syncing</h3>
+Elvis has a <a href="elvisopt.html#sync">sync</a> option which, if set,
+causes Elvis to force all dirty blocks out to disk occasionally.  This is
+a <em>very</em> slow operation, so the sync option is normally turned off.
+If Elvis seems to be running exceptionally slowly, then you might want to
+verify that sync is off.
+You can check it by giving the command "<code>:set sync?</code>".
+
+<h3>Temporary files</h3>
+The session file, and any other temporary files, should be stored on a local
+hard disk.  Storing them on a network drive will slow Elvis down a lot.
+
+<p>The <a href="elvisopt.html#session">session</a> option indicates where
+the current session file is stored, and the
+<a href="elvisopt.html#sessionpath">sessionpath</a> option indicates which
+directories Elvis looked through when deciding where to put the session file.
+These are read-only options, since it is too late to choose a new location
+for the session file after the session file is already created.
+If you need to force Elvis to store its session files in a different
+directory, you should set the <code>SESSIONPATH</code> environment variable
+to a list of acceptable directories.  Elvis will use the first directory
+from that list which exists and is writable.
+
+<p>The <a href="elvisopt.html#directory">directory</a> option tells Elvis
+where to store other temporary files, such as those used for piping text
+through external programs.  You can change its value at any time.  (Note:
+the real vi also has a directory option, but only allows you to change it
+during initialization.)
+
+<h3>Screen updates</h3>
+Options which add information to the bottom row of the window, such as
+<a href="elvisopt.html#ruler">ruler</a> and
+<a href="elvisopt.html#showmode">showmode</a>, can slow down screen updates.
+If speed is critical, you should turn those options off.
+
+<p>The <a href="elvisopt.html#optimize">optimize</a> option attempts to
+eliminate superfluous screen updates while a macro is executing.
+It is normally on, but you may want to verify that.
+Some animation macros force it off.
+
+<p>Elvis also has an <a href="elvisopt.html#animation">animation</a> option
+which, if <a href="elvisopt.html#optimize">optimize</a> is on, causes Elvis
+to bypass some of the animation steps.  The default value is 3.  If animations
+look choppy then try reducing it to 1.  Or set it to 10 or so for faster
+animation.
+
+<p>The <a href="elvisopt.html">exrefresh</a> option controls whether
+Elvis should refresh the screen after each line output by an ex command, or
+wait until the command completes and then update the screen once.
+It is normally off, so the screen is only updated once.
+
+<p>Interestingly, the syntax-coloring display mode seems to run about as fast
+as the normal display mode.  One possible exception would be if you're running
+Elvis over a slow modem connection then the extra escape sequences required for
+sending color information may slow down screen updates.
+
+<p>If you have long lines, then Elvis may run somewhat faster when the
+<a href="elvisopt.html#wrap">wrap</a> option is set.  This is because Elvis
+always formats entire lines, even if only part of the line is visible on
+the screen, and the "nowrap" display style shows more long lines (one per row)
+than the "wrap" display style.
+
+<h3>Input</h3>
+The <a href="elvisopt.html#pollfrequency">pollfrequency</a> option indicates
+how often Elvis checks for an abort request from the user.  (Abort requests
+are usually given by typing ^C or by clicking on a window while a macro or
+other time-consuming command is running).  Smaller numbers give a quicker
+response to an abort request, but will cause the command itself to run slower.
+
+<p>The <a href="elvisopt.html#keytime">keytime</a> option indicates how long
+Elvis should wait after receiving an Esc character to distinguish between
+the &lt;Esc&gt; key, and some other function key which begins with an Esc.
+Longer times are more reliable, especially when you're running over a network.
+But shorter times allow a quicker response to the &lt;Esc&gt; key.
+
+<h3>MS-DOS-specific tips</h3>
+The single biggest improvement you can make is to switch from the 16-bit
+MS-DOS version to the 32-bit text-mode Win32 version.  It only runs under Windows95
+or WindowsNT, not MS-DOS, but you can make it run in full-screen mode which
+feels like MS-DOS.  And it is *much* faster, because I really had to mangle
+the MS-DOS version of Elvis to make it fit in the lower 640k.
+
+<p>The fancier ANSI drivers such as NANSI.SYS also help.  They allow Elvis
+to redraw the screen very quickly.  The <a href="#URLS">URLs</a> section
+of this chapter tells you where you can find NANSI.SYS on the Internet.
+
+<p>Installing <code>smartdrv.exe</code> can be a <em>big</em> help.
+Storing temporary files on a RAM disk (in extended/expanded memory please!)
+can also help.
+
+<p>Elvis also has a compile-time option, controlled by the
+<a name="FEATURE_RAM">FEATURE_RAM</a>
+declaration in <code>config.h</code>, which allows Elvis to store its buffers
+in EMS/XMS memory instead of a file.  This makes Elvis run <em>much</em>
+faster, but it has some disadvantages.  If Elvis crashes, there will be no
+way to recover the contents of the edit buffers.  Also the Microsoft functions
+for accessing EMS/XMS memory are very bulky, and also require a fairly large
+buffer; so if you enable FEATURE_RAM, then you must disable most of the other
+FEATURE_XXXX features in <code>config.h</code>, and even then Elvis may run out
+of memory occasionally.  If you enable FEATURE_RAM, then to actually use that
+feature, you must invoke Elvis with "-f ram" on the command line.
+
+<p>If you often use "-b 2048" or "-f ram", then you might consider setting up
+a batch file which runs them.  For example, you could create a
+<code>elvis.bat</code> file containing...
+<pre>
+	elvis.exe -b 2048 -f ram %1 %2 %3 %4 %5 %6 %7 %8 %9
+</pre>
+</body></html>

@@ -1,0 +1,30 @@
+lpr - off line print
+
+lpr [-Pprinter] [-#num] [-C class] [-J job] [-T title] [-U user] [-i
+         [numcols]] [-1234 font] [-wnum] [-cdfghlnmprstv] [name ...]
+
+Options:
+-c      	The files are assumed to contain data produced by cifplot(1)
+-d      	The files are assumed to contain data from tex 
+-f     		Use a filter which interprets the first character of each line as
+		a standard FORTRAN carriage control character.
+-g     		The files are assumed to contain standard plot data.
+-l      	Use a filter which allows control characters to be printed and
+		suppresses page breaks.
+-n      	The files are assumed to contain data from ditroff.
+-p      	Use pr to format the files (equivalent to print).
+-t      	The files are assumed to contain data from troff. 
+-v      	The files are assumed to contain a raster image. 
+-P      	Force output to a specific printer.  
+-h      	Suppress the printing of the burst page.
+-m      	Send mail upon completion.
+-r      	Remove the file upon completion. 
+-s      	Use symbolic links.  
+-#num   	The quantity num is the number of copies desired of each file
+-[1234]font 	Specifies a font to be mounted on font position i.
+-C class 	Job classification to use on the burst page.
+-J job  	Job name to print on the burst page.  
+-T title 	Title name for pr(1),  instead of the file name.
+-U user 	User name to print on the burst page.
+-i [numcols] 	The output is indented. 
+-wnum   	Uses num as the page width for pr(1).

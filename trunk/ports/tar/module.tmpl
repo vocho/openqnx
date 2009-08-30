@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<module name="make">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability supported="false">
+			<os name="linux">
+				<cpu isa="x86"/>
+			</os>
+			<os name="win32">
+				<cpu isa="x86"/>
+			</os>
+		</availability>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="tar_host" generated="true">
+			<location basedir="{os}-{cpu}-o/src" os="nto" isa="x86" runtime="true">tar</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="tar" generated="true">
+			<location basedir="{os}-{cpu}-{o|endian}/src" runtime="true">tar</location>
+		</component>
+		</package>
+	</contents>
+
+</module>

@@ -1,0 +1,210 @@
+.\" $Id: newgrp.1 153052 2008-08-13 01:17:50Z coreos $
+.\"
+.Dd February 7, 1998
+.Dt NEWGRP 1
+.Os "UNIX98 Experimental"
+.Sh NAME
+.Nm newgrp
+.Nd change to a new group
+.Sh SYNOPSIS
+.Nm newgrp
+.Op Fl l
+.Op Ar group
+.Sh DESCRIPTION
+The
+.Nm newgrp
+utility starts a new shell with the real group ID, effective group ID and
+saved set-user-ID set to the ID specified by the
+.Ar group
+operand.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl l
+Changes the environment to simulate a new login.
+The environment is discarded except for
+.Ev HOME ,
+.Ev SHELL ,
+.Ev PATH ,
+.Ev LOGNAME ,
+and
+.Ev USER
+which are set to the default values,
+.Ev TERM
+which is imported from your current environment and
+the current working directory which is left unchanged.
+Some unexported variables may be reset to default
+values by the new shell.
+.El
+.Pp
+If no options are specified,
+.Nm newgrp
+defaults to creating the new shell
+as if it were a subshell.
+The current working directory,
+file creation mask, and exported environment variables are preserved from
+the original environment.  Some unexported variables may be reset to default
+values by the new shell.
+.Pp
+The operands are as follows:
+.Bl -tag -width Ds
+.It Ar group
+A group name from the group database file or a non-negative numeric
+group ID.
+Specifies the group ID to which the real and effective group IDs will be set.
+If
+.Ar group
+is a non-negative numeric string and exists in the
+group database as a group name (see
+.Fn getgrnam
+),
+the numeric group ID associated with that group name will be used as
+the group ID.
+.El
+.Pp
+If the
+.Ar group
+operand was not specifed,
+.Nm newgrp
+will use the user's login group ID stored in the password file,
+.Pa /etc/passwd .
+The supplementary group IDs will be reset to the login values stored
+in the group database file
+.Pa /etc/group .
+.Pp
+One of the following conditions must be met before the group identifcation
+can be changed:
+.Bl -tag -width XXX
+.It 1)
+The user is the super-user.
+.It 2)
+The user has an entry in the password database,
+the specified group has an entry in the group database file and the user's
+group id, from the password file, matches that group.
+.It 3)
+The user has an entry in the password database,
+the specified group has an entry in the group database file and the user is
+listed as a member of that group.
+.It 4)
+The user is prompted for a group password and the authentication is
+successful.  This will only happen if the user has an entry in the password
+database, a group password is present in
+the group database file and the user does not satisy any of the other
+conditions.
+.El
+.Pp
+The failure of the
+.Nm newgrp
+utility to change the group identification, for any reason, will still result
+in the creation of a new shell.
+.\" The following requests should be uncommented and used where appropriate.
+.\" This next request is for sections 1, 6, 7 & 8 only
+.\" .Sh ENVIRONMENT
+.Sh FILES
+.Bl -tag -width XXXXXXXXXXX -compact
+.It Pa /etc/passwd
+password file
+.It Pa /etc/group
+group database file
+.El
+.Sh EXAMPLES
+To change you current group identification to group
+.Dq games ,
+enter:
+.Pp
+.Bd -literal -offset indent -compact
+newgrp games
+.Ed
+.Pp
+To change you current group identification back to your original group,
+enter:
+.Pp
+.Bd -literal -offset indent -compact
+newgrp
+.Ed
+.Sh DIAGNOSTICS
+The diagnostic messages produced by the
+.Nm newgrp
+utilty were not intended to be self-explanatory.
+.Pp
+If the
+.Nm newgrp
+utility succeeds in creating the new shell, the exit status will be that of
+the new shell.  Even though the new shell was created, some diagnostics
+may be displayed to indicate that problems occured
+during the execution of the utility:
+.Bl -tag -width XXXXXXXXXXXXXXXXXXXXXXX 
+.It \'Who are you?\'
+if you aren't the super-user and you don't have an entry in
+the password file.
+.It \'Who are you?\'
+the
+.Nm newgrp
+executable lost its set-root-ID-on-execution status.  Contact the
+system administrator.
+.It \'Sorry\'
+if the user does not qualify for group membership.
+.It \'Unknown group\'
+if you aren't the super-user and the group does not exist
+in the group database file.
+.El
+.Pp
+If the
+.Nm newgrp
+cannot create the new shell, the exit status will be non-zero.  One
+of the following diagnostics should
+be displayed:
+.Bl -tag -width XXXXXXXXXXXXXXXXXXXXXXX 
+.It \'Cannot change user id\'
+a catastrophe occurs and the process cannot
+lose the set-root-ID-on-execution status.
+.It \'You have no shell\'
+when the new shell cannot be executed.
+.El
+.Sh COMPATIBILITY
+The deprecated
+.Op Fl
+option is still supported in this implementation.  It is identical to the
+.Op Fl l
+option.
+The QNX4
+.Op Fl s
+option is allowed, but does not do anything useful because leaving the
+current environment unchanged is the default behaviour.
+.Sh SEE ALSO
+.Xr sh 1 ,
+.Xr id 1 ,
+.Xr group 5 ,
+.Xr passwd 5
+.Sh STANDARDS
+The
+.Nm newgrp
+utility was written to be
+.St -p1003.2
+compatible.
+.Sh HISTORY
+A
+.Nm newgrp
+utility appeared in
+.At v6 .
+.Sh AUTHOR
+Kirk Russell <kirk@qnx.com>
+.Sh CAVEATS
+The exit status of
+.Nm newgrp
+should be considered to be inapplicable.  Use the id(1) utility to determine
+if the group identification was changed or not.
+.Pp
+Some shells may execute the
+.Nm newgrp
+utility without a fork or use a built-in version.
+Therefore, exiting from this new shell will not
+result in the restoration of the original shell and a exit status may
+not be available.  If you want to use the command descripted in this
+document, you must specify the fullpath to
+.Nm newgrp .
+.Pp
+There is no convenient way to enter a password into the group data-base.
+Use of group passwords is not encouraged because by their very
+nature they encourage poor security practices.
+.\" .Sh BUGS

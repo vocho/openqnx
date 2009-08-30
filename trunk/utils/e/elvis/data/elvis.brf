@@ -1,0 +1,4 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TAKE A GUESS AT THE BUFFER'S TYPE (unless already known)
+if readeol == "text"
+then let! readeol=fileeol(filename)

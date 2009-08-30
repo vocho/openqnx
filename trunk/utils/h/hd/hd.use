@@ -1,0 +1,35 @@
+%-hd
+%C - dump file in various formats (QNX)
+
+%C	[-v] [-A format] [-t fmtstr]  [-n count] [-s skip] [file..]
+        default: -A x -t x1, prints ascii characters
+Options:
+ -v           Be verbose, display all input
+ -A format    Display the file offset field in one of the following formats
+              x      hexadecimal, 7 digits
+              o      octal, 10 digits
+              d      decimal, 9 digits
+              n      none (omit this field)
+ -t fmtstr    Display data field using this format specification
+ -n count     Display only count bytes,blocks,kilobytes or megabytes of input
+              based on trailing character (b,k or m)
+ -s skip      Skip skip bytes,blocks,kilobytes or megabytes of input
+              based on trailing character (b,k or m)
+ -8	      Use 8-bit ASCII characters (default 7-bit)
+%-od
+%C - dump file in various formats (POSIX)
+
+%C	[-v] [-A format] [-t fmtstr]  [-N count] [-j skip] [file..]
+        default: -A o -t oI
+Options:
+ -v           Be verbose, display all input
+ -A format    Display the file offset field in one of the following formats
+              x      hexadecimal, 7 digits
+              o      octal, 10 digits
+              d      decimal, 9 digits
+              n      none (omit this field)
+ -t fmtstr    Display data field using this format specification
+ -N count     Display only count bytes,blocks,kilobytes or megabytes of input
+              based on trailing character (b,k or m)
+ -j skip      Skip skip bytes,blocks,kilobytes or megabytes of input
+              based on trailing character (b,k or m)

@@ -1,0 +1,49 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# In previous versions a single -C option did not work with --same-order
+# (see same-order01.sh). However, multiple -C options worked OK. 
+# Test if we did not break the correct behavior.
+
+AT_SETUP([multiple -C options])
+AT_KEYWORDS([same-order same-order02])
+
+AT_TAR_CHECK([
+genfile -l 1024 -f file1
+genfile -l 1024 -f file2
+tar cf archive file1 file2
+
+mkdir en
+mkdir to
+
+HERE=`pwd`
+tar -xf archive --same-order -C $HERE/en file1 -C $HERE/to file2 || exit 1
+
+ls en
+echo separator
+ls to
+],
+[0],
+[file1
+separator
+file2
+])
+
+AT_CLEANUP

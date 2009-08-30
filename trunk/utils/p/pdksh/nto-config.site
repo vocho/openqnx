@@ -1,0 +1,62 @@
+# This file overrides configure determined values.
+# In case of cross-compilation, some host capabilities 
+# can not be checked. 
+# This file overrdies them.
+# 
+#
+
+#  QNX cross compiled binary.
+#
+#  undef GETTIMEOFDAY_CLOBBERS_LOCALTIME
+gl_cv_func_gettimeofday_clobber=no
+#  undef CHOWN_FAILS_TO_HONOR_ID_OF_NEGATIVE_ONE 1
+ac_cv_func_chown_works=yes
+#  define D_INO_IN_DIRENT 1
+gl_cv_struct_dirent_d_ino=yes
+#  define HAVE_CHOWN
+ac_cv_func_chown_works=yes
+#  define HAVE_UTIME_NULL = 1
+ac_cv_func_utime_null=yes
+#  define HAVE_WORKING_UTIMES 1
+gl_cv_func_working_utimes=yes
+#  define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
+ac_cv_func_lstat_dereferences_slashed_symlink=yes
+#  define HAVE_MALLOC
+ac_cv_func_malloc_0_nonnull=yes
+#  undef malloc
+gl_cv_func_malloc_0_nonnull=1
+#  undef HAVE_ULIMIT
+ac_cv_func_ulimit=no
+#  undef HAVE_ULIMIT_H
+ac_cv_header_ulimit_h=no
+#  undef HAVE_VALUES_H
+ac_cv_header_values_h=no
+#  define SYS_ERRLIST_DECLARED 1
+ksh_cv_decl_sys_errlist=yes
+#  undef HAVE_DEV_FD
+ksh_cv_dev_fd=no
+#  undef HAVE__SETJMP
+ac_cv_func__setjmp=no
+#  define HAVE_SIGSETJMP
+ac_cv_func_sigsetjmp=yes
+#  define HAVE_MMAP
+ac_cv_func_mmap=yes
+#  undef DUP2_BROKEN
+ksh_cv_dup2_clexec_ok=yes
+#  define POSIX_PGRP
+ksh_cv_pgrp_check=posix
+#  undef NEED_PGRP_SYNC
+ksh_cv_need_pgrp_sync=no
+#  define HAVE_MEMMOVE
+ksh_cv_func_memmove=yes
+#  undef TIMES_BROKEN
+ksh_cv_func_times_ok=yes
+#  undef OPENDIR_DOS_NONDIR
+ksh_cv_opendir_ok=yes
+#  define SIZEOF_INT
+ac_cv_sizeof_int=4
+#  define SIZEOF_LONG
+ac_cv_sizeof_long=4
+#  undef HAVE_GETRUSAGE
+ac_cv_func_getrusage=no
+

@@ -1,0 +1,86 @@
+.TH FMT 1 "" "" "User commands"
+.SH NAME
+fmt \- adjust line-length for paragraphs of text
+.SH SYNOPSIS
+.ad l
+.B fmt
+.RB [ \-w
+.I width
+|
+.BR \-\fIwidth ]
+.RB [ \-s ]
+.RB [ \-c ]
+.RB [ \-i
+.IR chars ]
+.RB [ \-C ]
+.RB [ \-M ]
+.RI [ file ]...
+.ad b
+.SH VERSION
+This page describes the
+.B Elvis 2.2_0
+version of
+.BR fmt .
+See
+.BR elvis (1).
+.SH DESCRIPTION
+.B fmt
+is a simple text formatter.
+It inserts or deletes newlines, as necessary, to make all lines in a
+paragraph be approximately the same width.
+It preserves indentation and word spacing.
+.PP
+If you don't name any files on the command line,
+then
+.B fmt
+will read from stdin.
+.PP
+It is typically used from within
+.BR vi (1)
+or
+.BR elvis (1)
+to adjust the line breaks
+in a single paragraph.
+To do this, move the cursor to the top of the paragraph,
+type "!}fmt", and
+hit <Return>.
+.SH OPTIONS
+.IP "\fB\-w\fP \fIwidth\fP or \fB\-\fP\fIwidth\fP"
+Use a line width of \fIwidth\fP characters instead of the default
+of 72 characters.
+.IP \fB\-s\fP
+Don't join lines shorter than the line width to fill paragraphs.
+.IP \fB\-c\fP
+Try to be smarter about crown margins.
+Specifically, this tells
+.B fmt
+to expect the first line of each paragraph to have a different
+indentation than subsequent lines.
+If text from the first input line is wrapped onto the second output line, then
+.B fmt
+will scan ahead to figure out what indentation it should use for the second
+output line, instead of reusing the first line's indentation.
+.IP "\fB\-i\fP \fIchars\fP"
+Allow the indentation text to include any character from
+.IR chars ,
+in addition to spaces and tabs.
+You should quote the
+.I chars
+list to protect it from the shell.
+.IP "\fB\-C\fP and \fB\-M\fP"
+These are shortcuts for combinations of other flags.
+.RB \" \-C \"
+is short for
+.RB \" "\-c \-i'/*'" \"
+and is useful for reformatting C/C++ comments.
+.RB \" \-M \"
+is short for
+.RB \" \-i'>' \"
+and is useful for reformatting email messages.
+.SH "SEE ALSO"
+.BR vi (1),
+.BR elvis (1)
+.SH AUTHOR
+Steve Kirkendall
+.br
+kirkenda@cs.pdx.edu

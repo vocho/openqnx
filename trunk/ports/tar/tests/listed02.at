@@ -1,0 +1,150 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Check if listed-incremental backups work for files moved from one directory
+# to another. 
+# Based on a script by Martin Simmons <ZYHYLCRMZPRP@spammotel.com>
+# References: 
+#  <20040626230315.163AA1D148@cpc5-cmbg1-6-0-cust208.cmbg.cable.ntl.com>
+#  http://lists.gnu.org/archive/html/bug-tar/2004-06/msg00028.html
+
+AT_SETUP([working --listed])
+AT_KEYWORDS([listed incremental listed02])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+echo Create directories
+
+mkdir tart
+sleep 1
+mkdir tart/c0
+sleep 1
+mkdir tart/c1
+sleep 1
+
+for file in tart/a1 tart/b1 tart/c0/cq1 tart/c0/cq2 tart/c1/ca1 tart/c1/ca2
+do
+  echo File $file > $file
+  sleep 1
+done
+
+sleep 1
+echo Creating main archive
+tar -c -v --listed-incremental=tart.incr1 -f archive.1 tart 2> err || exit 1
+
+# The above prints two lines to stderr announcing the new directories c0 and c1.
+# Ensure that they appear in this script's stderr in sorted order.
+sort err 1>&2; rm -f err
+
+sleep 1
+echo Modifying filesystem
+rm tart/a1
+
+mv tart/b1 tart/b2
+mv tart/c1 tart/c2
+touch tart/c2/ca3
+
+echo Directory contents
+find tart -print | sort 2>/dev/null
+
+sleep 1
+echo Creating incremental archive
+cp -p tart.incr1 tart.incr2
+tar -c -v --listed-incremental=tart.incr2 -f archive.2 tart || exit 1 
+
+sleep 1
+
+rm -rf tart/*
+echo Extracting main archive
+tar -x -v --listed-incremental=tart.incr1 -f archive.1 || exit 1
+echo Extracting incremental archive
+# This command should produce three messages about deletion
+# of the existing files, that may appear in any order. Piping
+# to sort makes sure we don't depend on any particular ordering.
+tar -x -v --listed-incremental=tart.incr2 -f archive.2 | sort 2>/dev/null 
+
+echo Final files:
+find tart -print | sort 2>/dev/null
+],
+[0],
+[Create directories
+Creating main archive
+tart/
+tart/c0/
+tart/c1/
+tart/a1
+tart/b1
+tart/c0/cq1
+tart/c0/cq2
+tart/c1/ca1
+tart/c1/ca2
+Modifying filesystem
+Directory contents
+tart
+tart/b2
+tart/c0
+tart/c0/cq1
+tart/c0/cq2
+tart/c2
+tart/c2/ca1
+tart/c2/ca2
+tart/c2/ca3
+Creating incremental archive
+tart/
+tart/c0/
+tart/c2/
+tart/b2
+tart/c2/ca3
+Extracting main archive
+tart/
+tart/c0/
+tart/c1/
+tart/a1
+tart/b1
+tart/c0/cq1
+tart/c0/cq2
+tart/c1/ca1
+tart/c1/ca2
+Extracting incremental archive
+tar: Deleting `tart/a1'
+tar: Deleting `tart/b1'
+tart/
+tart/b2
+tart/c0/
+tart/c2/
+tart/c2/ca3
+Final files:
+tart
+tart/b2
+tart/c0
+tart/c0/cq1
+tart/c0/cq2
+tart/c2
+tart/c2/ca1
+tart/c2/ca2
+tart/c2/ca3
+],
+[tar: tart/c0: Directory is new
+tar: tart/c1: Directory is new
+tar: tart/c2: Directory has been renamed from `tart/c1'
+],
+[],[],[gnu, oldgnu])
+
+AT_CLEANUP

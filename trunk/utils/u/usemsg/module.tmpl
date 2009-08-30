@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<module name="usemsg">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent></RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="usemsg" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				usemsg
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="usemsg_target" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				usemsg
+			</location>
+		</component>
+		</package>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+		<part build="false" location="lib/util"/>
+	</requires>
+
+</module>

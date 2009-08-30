@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<module name="resource_seed">
+	<type>Element</type>
+	<classification>Runtime</classification>
+
+	<description>
+	        <short>Utility to seed system resource manager</short>
+	        <abstract>The resource_seed utility seeds the system resource database manager with DMA 
+                      channels, IRQs, IO ports, memory ranges, etc. This allows device drivers which
+                      to request access to system resources (via the rsrcdbmgr_*() function calls) prior
+                      to using them, ensuring that no other running processes are already using the same
+                      resources.
+	        </abstract>
+	</description>
+
+	<supports> 
+		<availability>
+         <cpu isa="sh"><byteOrder>le</byteOrder></cpu>
+      </availability>
+	</supports>
+
+	<source available="false">
+		<location>.</location>
+	</source>
+
+     <GroupOwner>hw</GroupOwner>
+     <RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<component id="resource_seed" generated="true">
+			<location basedir="{cpu}/o{.:endian}"
+				runtime="true">resource_seed</location>
+		</component>	
+   </contents>
+	
+</module>

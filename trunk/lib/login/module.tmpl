@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<module name="login">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+				liblogin.a
+			</location>
+		</component>
+
+		<component id="SharedArchive" generated="true">
+			<kind type="library"/>
+			<location basedir="{os}/{cpu}/a{.:endian}.shared" runtime="false">
+				libloginS.a
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/util"/>
+	</requires>
+
+</module>

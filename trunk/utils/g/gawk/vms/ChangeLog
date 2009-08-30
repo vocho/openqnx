@@ -1,0 +1,192 @@
+Mon Aug  7 15:23:00 2000  Arnold D. Robbins  <arnold@skeeve.com>
+
+	* Release 3.0.6: Release tar file made.
+
+Sat Jul 15 20:52:09 2000  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (printf1, fusmnam, fnamedat, numindex,
+	  subslash, opasnslf, opasnidx, arynocls, getlnbuf,
+	  arysubnm, fnparydl): New basic tests.
+	(igncdym): New gawk.extensions test.
+	(nondec): Old gawk.extensions test commented out.
+
+Sun Jun 25 15:08:19 2000  Arnold D. Robbins  <arnold@skeeve.com>
+
+	* Release 3.0.5: Release tar file made.
+
+Wed Jun 30 16:14:36 1999  Arnold D. Robbins  <arnold@gnu.org>
+
+	* Release 3.0.4: Release tar file made.  This time for sure.
+
+Fri May  7 20:29:04 1999  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms-conf.h (__CRTL_VER): Add same override as __VMS_VER.
+
+Wed May  5 19:10:15 1999  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (nasty, zeroflag, getnr2tm, getnr2tb): New tests.
+
+Wed Nov 25 17:24:26 1998  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (vms_tests): New general target.
+	(vms_io1): New specific test.
+
+Thu May 15 12:49:08 1997  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.3: Release tar file made.
+
+Mon May 12 18:39:30 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (delarprm, prdupval): new `basic' tests.
+	  (nondec): new `gawk.extensions' test (commented out for now).
+	  (reint): move from `basic' to `gawk.extensions'.
+
+Mon May  5 21:40:07 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (clobber): new `basic' test.
+	  (pid): new test, replacing `specfile'.
+	  (pipeio2): new for `unix-tests'; can't execute this one under VMS.
+
+Mon May  5 21:23:52 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms_args.c (vms_arg_fixup): for the 2>&1 case, don't set the
+	  output filename to "sys$error" because that results in an extra
+	  empty file being created.
+
+	* vms_misc.c (vms_open):  explicitly specify stream_lf format
+	  when creating files rather than letting DECC$SHR make a new file
+	  inherit its record format from any earlier version of that file.
+
+	Suggested by Pete Cascio <pete@rmi.net>:
+
+	* vms_misc.c (vms_open): use full record sharing options when
+	  reading any record-oriented file, regardless of its organization.
+
+Mon Apr 21 19:22:12 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com (funstack): new `basic' test.
+	  (reint): add missing entry to `basic'.
+	  (pipeio1, specfile, strftlng): move from `basic' to `unix-tests'.
+	  (childin): skip due to known failure.
+	  (specfile): skip due to potentially confusing feedback.
+
+Thu Apr 24 23:18:04 1997  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* vms_popen.c, vms_misc.c, vms_gawk.c, vms_fwrite.c,
+	  vms_args.c: moved to generic GPL statement at top.
+
+Fri Apr 18 07:55:47 1997  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* BETA Release 3.0.34: Release tar file made.
+
+Wed Apr  2 18:17:30 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* descrip.mms, vmsbuild.com (PATCHLVL):  update to 3.
+
+	* vmstest.com (nlfldsep, splitvar, intest, nfldstr, nors,
+	  fnarydel, noparms, pipeio1):  new tests.
+
+Wed Jan 15 15:21:01 1997  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* redirect.h (stat, fstat):  do not declare these functions;
+	  rely on <stat.h> to do so.  There are too many DEC C version
+	  variants to handle otherwise.
+
+	From Martin Zinser <zinser@axp602.gsi.de>:
+
+	* descrip.mms (gawk.dvi):  update to build in [.doc] directory
+	  using texindex.c retained from an earlier gawk 2.x distribution.
+	  (texindex.exe):  don't assume VAX C.
+
+Wed Dec 25 11:25:22 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.2: Release tar file made.
+
+Mon Dec 23 20:51:27 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms_misc.c (vms_bcopy):  `bcopy' is defined as this in redirect.h.
+
+Thu Dec 19 17:49:31 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* redirect.h (strcasecmp, strncasecmp, tzset, tzname,
+	  daylight, timezone, altzone, bcopy, popen, pclose, unlink):
+	  New macros to avoid conflict with VMS V7.x DECC$SHR symbols.
+	  (close, dup, dup2, read):  Declare with full prototypes.
+	  (fstat, stat):  Ditto, and guard against conflicting DEC C
+	  declarations (which might have trailing elipsis).
+	* vms_misc.c (tzset, tzname, daylight, timezone, altzone):
+	  Suppress these if compiled with VMS_V7 defined [not supported].
+
+Mon Dec 16 14:32:08 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms_popen (popen):  Delete unprototyped declaration of strcmp()
+	  to avoid conflict with a strcmp macro in DEC C V5.0 header files.
+
+Tue Dec 10 23:09:26 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.1: Release tar file made.
+
+Fri Dec  6 20:55:57 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* redirect.h, vms-conf.h:  Refine Sep 20th change:  include
+	  <stdlib.h> and <string.h> in redirect.h rather than vms-conf.h
+	  so that it occurs for VMS POSIX as well as for normal VMS.
+
+Wed Nov 20 15:47:02 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* descrip.mms (LIBOBJS): Rename from GNUOBJS; add random.obj.
+	  (LIBSRC): Rename from GNUSRC; add random.c.
+	  (AWKSRC): Add random.h.
+	  (random.obj, builtin.obj): Depend upon random.h.
+	* vmsbuild.com: compile random.c, link random.obj.
+
+	* vmstest.com (childin): Split message about expected failure
+	  in order to avoid consecutive tick marks in the quoted string.
+
+Wed Nov 13 15:32:58 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vmstest.com: New file to execute test suite.
+
+Fri Nov  8 18:29:42 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	Revise makefiles so that no editing should be needed.
+
+	* descrip.mms: Use DEC C as the default compiler, since
+	  the same compile and link options for it can be used as-is
+	  on both VAX and Alpha.
+	  (GNUC, VAXC): New `make' macros for specifying an alternate
+	  compiler on the MMS or MMK command line.
+	  (PATCHLVL): Update to 1.
+	* vmsbuild.com: Make the equivalent changes.
+
+Mon Oct 28 17:02:39 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms.h (U_Long, U_Short): Replace u_long and u_short typedefs.
+	* vms_*.c: Use them.
+
+	* vms.h, vms_*.c: Change SYS$ and LIB$ routines to lower case
+	equivalents; fully prototype sys$ and lib$ routines rather than
+	just declare them.
+
+Fri Sep 20 17:33:05 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms-conf.h: directly include <stdlib.h> and <string.h>.
+	* vms-conf.h (strftime): delete this macro.
+	* redirect.h (strftime): define it here instead.
+
+Fri May 17 09:08:16 1996  Arnold Robbins  <arnold@skeeve.atl.ga.us>
+
+	* gawkmisc.vms (envsep): Now initialized to ',' instead of ':',
+	  per email from Pat Rankin.
+
+Thu Jan 11 15:20:14 1996  Pat Rankin  <rankin@eql.caltech.edu>
+
+	* vms-conf.h [#if __DECC]: Changes to support V5.x of DEC C.
+	(_DECC_V4SOURCE, __SOCKET_TYPEDEFS):  Define these to avoid
+	duplicate u_long and u_short typedefs.
+	(__VMS_VER): If value indicates VMS V6.2 or later, redefine it to
+	indicate V6.1 in order to avoid conflicting prototype for getopt.
+
+Wed Jan 10 22:58:55 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* ChangeLog created.

@@ -1,0 +1,28 @@
+%C	- change file modes (POSIX)
+
+%C	[-R] mode file...
+Options:
+ -R       Recursively change file mode bits.
+ -v       Verbose. Display to stdout the operations which are being
+          performed.
+Where:
+ mode     is a symbolic mode or an octal number.
+ file     is the pathname of a file whose file mode bits are to be modified.
+Note:
+ symbolic mode =   [who]op[perm][,symbolic mode...]
+
+   who  =   u   user
+            g   group
+            o   other
+            a   all
+
+   op   =   +   add
+            -   remove
+            =   explicit set
+
+   perm =   r   read
+            w   write
+            x   execute
+            X   execute (if file is a directory, or an execute bit is set)
+            s   set ID on execution
+            t   sticky bit

@@ -1,0 +1,1365 @@
+.\" =========================================================================
+.\" Copyright (c) 1990-2006 Info-ZIP.  All rights reserved.
+.\"
+.\" See the accompanying file LICENSE, version 2005-Feb-10 or later
+.\" (the contents of which are also included in zip.h) for terms of use.
+.\" If, for some reason, all these files are missing, the Info-ZIP license
+.\" also may be found at:  ftp://ftp.info-zip.org/pub/infozip/license.html
+.\" ==========================================================================
+.\"
+.\" zip.1 by Mark Adler, Jean-loup Gailly and R. P. C. Rodgers
+.\"
+.TH ZIP 1L "19 June 2006 (v2.32)" Info-ZIP
+.SH NAME
+zip, zipcloak, zipnote, zipsplit \- package and compress (archive) files
+.SH SYNOPSIS
+.B zip
+.RB [ \-aABcdDeEfFghjklLmoqrRSTuvVwXyz!@$ ]
+.RB [ \-b\ path ]
+.RB [ \-n\ suffixes ]
+.RB [ \-t\ mmddyyyy ]
+.RB [ \-tt\ mmddyyyy ]
+.I [ zipfile
+.I [ file1
+.IR file2 " .\|.\|." ]]
+.RB [ \-xi\ list ]
+.PP
+.B zipcloak
+.RB [ \-dhL ]
+.RB [ \-b\ path ]
+.I zipfile
+.PP
+.B zipnote
+.RB [ \-hwL ]
+.RB [ \-b\ path ]
+.I zipfile
+.PP
+.B zipsplit
+.RB [ \-hiLpst ]
+.RB [ \-n\ size ]
+.RB [ \-b\ path ]
+.I zipfile
+.SH DESCRIPTION
+.I zip
+is a compression and file packaging utility for Unix, VMS, MSDOS,
+OS/2, Windows NT, Minix, Atari and Macintosh, Amiga and Acorn RISC OS.
+.LP
+It is analogous to a combination of the UNIX commands
+.IR tar (1)
+and
+.IR compress (1)
+and is compatible with PKZIP (Phil Katz's ZIP for MSDOS systems).
+.LP
+A companion program
+.RI ( unzip (1L)),
+unpacks
+.I zip
+archives.
+The
+.I zip
+and
+.IR unzip (1L)
+programs can work with archives produced by PKZIP,
+and PKZIP and PKUNZIP can work with archives produced by
+.IR zip .
+.I zip
+version 2.32 is compatible with PKZIP 2.04.
+Note that PKUNZIP 1.10 cannot extract files produced by PKZIP 2.04
+or
+.I zip
+2.32. You must use PKUNZIP 2.04g or
+.I unzip
+5.0p1 (or later versions) to extract them.
+.PP
+For a brief help on \fIzip\fR and \fIunzip\fR,
+run each without specifying any parameters on the command line.
+.PP
+The program is useful for packaging a set of files for distribution;
+for archiving files;
+and for saving disk space by temporarily
+compressing unused files or directories.
+.LP
+The
+.I zip
+program puts one or more compressed files into a single
+.I zip
+archive,
+along with information about the files
+(name, path, date, time of last modification, protection,
+and check information to verify file integrity).
+An entire directory structure can be packed into a
+.I zip
+archive with a single command.
+Compression ratios of 2:1 to 3:1 are common for text files.
+.I zip
+has one compression method (deflation) and can also store files without
+compression.
+.I zip
+automatically chooses the better of the two for each file to be compressed.
+.LP
+The basic command format is
+.IP
+\fBzip\fR options archive inpattern inpattern ...
+.LP
+where \fBarchive\fR is a new or existing \fIzip\fR archive and \fBinpattern\fR is a directory or file path optionally including wildcards.
+When given the name of an existing
+.I zip
+archive,
+.I zip
+will replace identically named entries in the
+.I zip
+archive or add entries for new names.
+For example,
+if
+.I foo.zip
+exists and contains
+.I foo/file1
+and
+.IR foo/file2 ,
+and the directory
+.I foo
+contains the files
+.I foo/file1
+and
+.IR foo/file3 ,
+then:
+.IP
+\fCzip -r foo.zip foo\fP
+.LP
+or more concisely
+.IP
+\fCzip -r foo foo\fP
+.LP
+will replace
+.I foo/file1
+in
+.I foo.zip
+and add
+.I foo/file3
+to
+.IR foo.zip .
+After this,
+.I foo.zip
+contains
+.IR foo/file1 ,
+.IR foo/file2 ,
+and
+.IR foo/file3 ,
+with
+.I foo/file2
+unchanged from before.
+.LP
+If the file list is specified as
+.BR \-@ ,
+[Not on MacOS]
+.I zip
+takes the list of input files from standard input.
+Under UNIX,
+this option can be used to powerful effect in conjunction with the
+.IR find (1)
+command.
+For example,
+to archive all the C source files in the current directory and
+its subdirectories:
+.IP
+\fCfind . -name "*.[ch]" -print | zip source -@\fP
+.LP
+(note that the pattern \fB"*.[ch]"\fR must be quoted to keep the shell from
+expanding it).
+.I zip
+will also accept a single dash ("-") as the zip file name, in which case it
+will write the zip file to standard output, allowing the output to be piped
+to another program. For example:
+.IP
+\fCzip -r - . | dd of=/dev/nrst0 obs=16k\fP
+.LP
+would write the zip output directly to a tape with the specified block size
+for the purpose of backing up the current directory.
+.LP
+.I zip
+also accepts a single dash ("-") as the name of a file to be compressed, in
+which case it will read the file from standard input, allowing zip to take
+input from another program. For example:
+.IP
+\fCtar cf - . | zip backup -\fP
+.LP
+would compress the output of the tar command for the purpose of backing up
+the current directory. This generally produces better compression than
+the previous example using the
+.B \-r
+option, because
+.I zip
+can take advantage of redundancy between files. The backup can be restored
+using the command
+.IP
+\fCunzip -p backup | tar xf -\fP
+.LP
+When no zip file name is given and stdout is not a terminal,
+.I zip
+acts as a filter, compressing standard input to standard output.
+For example,
+.IP
+\fCtar cf - . | zip | dd of=/dev/nrst0 obs=16k\fP
+.LP
+is equivalent to
+.IP
+\fCtar cf - . | zip - - | dd of=/dev/nrst0 obs=16k\fP
+.LP
+.I zip
+archives created in this manner can be extracted with the program
+.I funzip
+which is provided in the
+.I unzip
+package, or by
+.I gunzip
+which is provided in the
+.I gzip
+package. For example:
+.IP
+\fCdd if=/dev/nrst0  ibs=16k | funzip | tar xvf -\fP
+.LP
+When changing an existing
+.I zip
+archive,
+.I zip
+will write a temporary file with the new contents,
+and only replace the old one when the process of creating the new version
+has been completed without error.
+.LP
+If the name of the
+.I zip
+archive does not contain an extension, the extension
+.IR .zip
+is added. If the name already contains an extension other than
+.IR .zip
+the existing extension is kept unchanged.
+.SH "OPTIONS"
+.TP
+.BI \-a
+[Systems using EBCDIC] Translate file to ASCII format.
+.TP
+.BI \-A
+Adjust self-extracting executable archive.
+A self-extracting executable archive is created by prepending
+the SFX stub to an existing archive. The
+.B \-A
+option tells
+.I zip
+to adjust the entry offsets stored
+in the archive to take into account this "preamble" data.
+.LP
+Note: self-extracting archives for the Amiga are a special case.
+At present, only the Amiga port of \fIzip\fR is capable of adjusting
+or updating these without corrupting them.
+.B \-J
+can be used to remove the SFX stub if other updates need to be made.
+.TP
+.BI \-B
+[VM/CMS and MVS] force file to be read binary (default is text).
+.TP
+.BI \-Bn
+[TANDEM] set Edit/Enscribe formatting options with n defined as
+.RS
+bit  0: Don't add delimiter (Edit/Enscribe)
+.RE
+.RS
+bit 1: Use LF rather than CR/LF as delimiter (Edit/Enscribe)
+.RE
+.RS
+bit  2: Space fill record to maximum record length (Enscribe)
+.RE
+.RS
+bit  3: Trim trailing space (Enscribe)
+.RE
+.RS
+bit 8: Force 30K (Expand) large read for unstructured files
+.RE
+.TP
+.BI \-b\ path
+Use the specified
+.I path
+for the temporary
+.I zip
+archive. For example:
+.RS
+.IP
+\fCzip -b /tmp stuff *\fP
+.RE
+.IP
+will put the temporary
+.I zip
+archive in the directory
+.IR /tmp ,
+copying over
+.I stuff.zip
+to the current directory when done. This option is only useful when
+updating an existing archive, and the file system containing this
+old archive does not have enough space to hold both old and new archives
+at the same time.
+.TP
+.B \-c
+Add one-line comments for each file.
+File operations (adding, updating) are done first,
+and the user is then prompted for a one-line comment for each file.
+Enter the comment followed by return, or just return for no comment.
+.TP
+.B \-d
+Remove (delete) entries from a
+.I zip
+archive.
+For example:
+.RS
+.IP
+\fCzip -d foo foo/tom/junk foo/harry/\\* \\*.o\fP
+.RE
+.IP
+will remove the entry
+.IR foo/tom/junk ,
+all of the files that start with
+.IR foo/harry/ ,
+and all of the files that end with
+.I \&.o
+(in any path).
+Note that shell pathname expansion has been inhibited with backslashes,
+so that
+.I zip
+can see the asterisks,
+enabling
+.I zip
+to match on the contents of the
+.I zip
+archive instead of the contents of the current directory.
+You can also use quotes to escape wildcards, as in
+.RS
+.IP
+\fCzip -d foo foo/tom/junk "foo/harry/*" "*.o"\fP
+.RE
+.IP
+Under systems where the shell does not expand wildcards, such as MSDOS,
+the backslashes are not needed.  The above would then be
+.RS
+.IP
+\fCzip -d foo foo/tom/junk foo/harry/* *.o\fP
+.RE
+.IP
+Under MSDOS,
+.B \-d
+is case sensitive when it matches names in the
+.I zip
+archive.
+This requires that file names be entered in upper case if they were
+zipped by PKZIP on an MSDOS system.
+.TP
+.B \-df
+[MacOS] Include only data-fork of files zipped into the archive.
+Good for exporting files to foreign operating-systems.
+Resource-forks will be ignored at all.
+.TP
+.B \-D
+Do not create entries in the zip
+archive for directories.  Directory entries are created by default so that
+their attributes can be saved in the zip archive.
+The environment variable ZIPOPT can be used to change the default options. For
+example under Unix with sh:
+.RS
+.IP
+ZIPOPT="-D"; export ZIPOPT
+.RE
+.IP
+(The variable ZIPOPT can be used for any option except
+.B \-i
+and
+.B \-x
+and can include several options.) The option
+.B \-D
+is a shorthand
+for
+.B \-x
+"*/" but the latter cannot be set as default in the ZIPOPT environment
+variable.
+.TP
+.B \-e
+Encrypt the contents of the zip
+archive using a password which is entered on the terminal in response
+to a prompt
+(this will not be echoed; if standard error is not a tty,
+.I zip
+will exit with an error).
+The password prompt is repeated to save the user from typing errors.
+Note that this encrypts with standard pkzip encryption which is considered
+weak.
+.TP
+.B \-E
+[OS/2] Use the .LONGNAME Extended Attribute (if found) as filename.
+.TP
+.B \-f
+Replace (freshen) an existing entry in the
+.I zip
+archive only if it has been modified more recently than the
+version already in the
+archive;
+unlike the update option
+.RB ( \-u )
+this will not add files that are not already in the
+.I zip
+archive.
+For example:
+.RS
+.IP
+\fCzip -f foo\fP
+.RE
+.IP
+This command should be run from the same directory from which the original
+.I zip
+command was run,
+since paths stored in
+.I zip
+archives are always relative.
+.IP
+Note that the timezone environment variable TZ should be set according to
+the local timezone in order for the
+.B \-f
+,
+.B \-u
+and
+.B \-o
+options to work correctly.
+The reasons behind this are somewhat subtle but have to do with the differences
+between the Unix-format file times (always in GMT) and most of the other
+operating systems (always local time) and the necessity to compare the two.
+A typical TZ value is ``MET-1MEST'' (Middle European time with automatic
+adjustment for ``summertime'' or Daylight Savings Time).
+.TP
+.B \-F
+Fix the
+.I zip
+archive. This option can be used if some portions of the archive
+are missing. It is not guaranteed to work, so you MUST make a backup
+of the original archive first.
+.IP
+When doubled as in
+.B \-FF
+the compressed sizes given inside the damaged archive are not trusted
+and zip scans for special signatures to identify the limits between
+the archive members. The single
+.B \-F
+is more reliable if the archive is not too much damaged, for example
+if it has only been truncated, so try this option first.
+.IP
+Neither option will recover archives that have been incorrectly
+transferred in ascii mode instead of binary. After the repair, the
+.B \-t
+option of
+.I unzip
+may show that some files have a bad CRC. Such files cannot be recovered;
+you can remove them from the archive using the
+.B \-d
+option of \fIzip\fR.
+.TP
+.B \-g
+Grow (append to) the specified
+.I zip
+archive, instead of creating a new one. If this operation fails,
+.I zip
+attempts to restore the archive to its original state. If the restoration
+fails, the archive might become corrupted. This option is ignored when
+there's no existing archive or when at least one archive member must be
+updated or deleted.
+.TP
+.B \-h
+Display the
+.I zip
+help information (this also appears if
+.I zip
+is run with no arguments).
+.TP
+.BI \-i\ files
+Include only the specified files, as in:
+.RS
+.IP
+\fCzip -r foo . -i \\*.c\fP
+.RE
+.IP
+which will include only the files that end in
+.IR \& .c
+in the current directory and its subdirectories. (Note for PKZIP
+users: the equivalent command is
+.RS
+.IP
+\fCpkzip -rP foo *.c\fP
+.RE
+.IP
+PKZIP does not allow recursion in directories other than the current one.)
+The backslash avoids the shell filename substitution, so that the
+name matching is performed by
+.I zip
+at all directory levels.  Not escaping wildcards on shells that do
+wildcard substitution before \fIzip\fR gets the command line may seem to
+work but files in subdirectories matching the pattern will never be
+checked and so not matched.  For shells, such as Win32 command
+prompts, that do not replace file patterns containing wildcards
+with the respective file names,
+.I zip
+will do the recursion and escaping the wildcards is not needed.
+.IP
+Also possible:
+.RS
+.IP
+\fCzip -r foo  . -i@include.lst\fP
+.RE
+.IP
+which will only include the files in the current directory and its
+subdirectories that match the patterns in the file include.lst, one file
+pattern per line.
+.TP
+.B \-I
+[Acorn RISC OS] Don't scan through Image files.  When used,
+.I zip
+will not
+consider Image files (eg. DOS partitions or Spark archives when SparkFS
+is loaded) as directories but will store them as single files.
+.IP
+For example, if you have SparkFS loaded, zipping a Spark archive will result
+in a zipfile containing a directory (and its content) while using the 'I'
+option will result in a zipfile containing a Spark archive. Obviously this
+second case will also be obtained (without the 'I' option) if SparkFS isn't
+loaded.
+.TP
+.B \-j
+Store just the name of a saved file (junk the path), and do not store
+directory names. By default,
+.I zip
+will store the full path (relative to the current path).
+.TP
+.B \-jj
+[MacOS] record Fullpath (+ Volname). The complete path including
+volume will be stored. By default the relative path will be stored.
+.TP
+.B \-J
+Strip any prepended data (e.g. a SFX stub) from the archive.
+.TP
+.B \-k
+Attempt to convert the names and paths to conform to MSDOS,
+store only the MSDOS attribute (just the user write attribute from UNIX),
+and mark the entry as made under MSDOS (even though it was not);
+for compatibility with PKUNZIP under MSDOS which cannot handle certain
+names such as those with two dots.
+.TP
+.B \-l
+Translate the Unix end-of-line character LF into the
+MSDOS convention CR LF. This option should not be used on binary files.
+This option can be used on Unix if the zip file is intended for PKUNZIP
+under MSDOS. If the input files already contain CR LF, this option adds
+an extra CR. This ensures that
+.I unzip \-a
+on Unix will get back an exact copy of the original file,
+to undo the effect of \fIzip \-l\fR.
+See the note on binary detection for
+.B \-ll
+below.
+.TP
+.B \-ll
+Translate the MSDOS end-of-line CR LF into Unix LF.
+This option should not be used on binary files and a warning will be
+issued when a file is converted that later is detected to be binary.
+This option can be used on MSDOS if the zip file is intended for unzip
+under Unix.
+.IP
+In Zip 2.31 and later, binary detection has been changed from a simple
+percentage of binary characters being considered binary to a more selective
+method that should consider files in many character sets,
+including \fIUTF-8\fP, that only include text characters in that character
+set to be text.
+This allows
+.I unzip -a
+to convert these files.
+.TP
+.B \-L
+Display the
+.I zip
+license.
+.TP
+.B \-m
+Move the specified files into the
+.I zip
+archive; actually,
+this deletes the target directories/files after making the specified
+.I zip
+archive. If a directory becomes empty after removal of the files, the
+directory is also removed. No deletions are done until
+.I zip
+has created the archive without error.
+This is useful for conserving disk space,
+but is potentially dangerous so it is recommended to use it in
+combination with
+.B \-T
+to test the archive before removing all input files.
+.TP
+.B \-MM
+All input patterns must match at least one file and all input files
+found must be readable.  Normally when an input pattern does not match
+a file the "name not matched" warning is issued and when an input file
+has been found but later is missing or not readable a missing or not
+readable warning is issued.  In either case
+.I zip
+continues creating the archive, with missing or unreadable new files
+being skipped and files already in the archive remaining unchanged.
+After the archive is created, if any files were not readable
+.I zip
+returns the OPEN error code (18 on most systems) instead of the normal
+success return (0 on most systems).  With
+.B \-MM
+set,
+.I zip
+exits as soon as an input pattern is not matched (whenever the
+"name not matched" warning would be issued) or when an input file is
+not readable.  In either case \fIzip\fR exits with an OPEN error
+and no archive is created.
+.IP
+This option is useful when a known list of files is to be zipped so
+any missing or unreadable files will result in an error.  It is less
+useful when used with wildcards, but \fIzip\fR will still exit with an
+error if any input pattern doesn't match at least one file and if any
+matched files are unreadable.  If you want to create the archive
+anyway and only need to know if files were skipped, don't use
+.B \-MM
+and just check the return code.
+.TP
+.BI \-n\ suffixes
+Do not attempt to compress files named with the given
+\fBsuffixes\fR.
+Such files are simply stored (0% compression) in the output zip file,
+so that
+.I zip
+doesn't waste its time trying to compress them.
+The suffixes are separated by
+either colons or semicolons.  For example:
+.RS
+.IP
+\fCzip -rn .Z:.zip:.tiff:.gif:.snd  foo foo\fP
+.RE
+.IP
+will copy everything from
+.I foo
+into
+.IR foo.zip ,
+but will store any files that end in
+.IR .Z ,
+.IR .zip ,
+.IR .tiff ,
+.IR .gif ,
+or
+.I .snd
+without trying to compress them
+(image and sound files often have their own specialized compression methods).
+By default,
+.I zip
+does not compress files with extensions in the list
+.I .Z:.zip:.zoo:.arc:.lzh:.arj.
+Such files are stored directly in the output archive.
+The environment variable ZIPOPT can be used to change the default options. For
+example under Unix with csh:
+.RS
+.IP
+\fCsetenv ZIPOPT "-n .gif:.zip"\fP
+.RE
+.IP
+To attempt compression on all files, use:
+.RS
+.IP
+\fCzip -n : foo\fP
+.RE
+.IP
+The maximum compression option
+.B \-9
+also attempts compression on all files regardless of extension.
+.IP
+On Acorn RISC OS systems the suffixes are actually filetypes (3 hex digit
+format). By default, zip does not compress files with filetypes in the list
+DDC:D96:68E (i.e. Archives, CFS files and PackDir files).
+.TP
+.B \-N
+[Amiga, MacOS] Save Amiga or MacOS filenotes as zipfile comments. They can be
+restored by using the
+.B \-N
+option of unzip. If
+.B \-c
+is used also, you are prompted for comments only for those files that do not
+have filenotes.
+.TP
+.B \-o
+Set the "last modified" time of the
+.I zip
+archive to the latest (oldest) "last modified" time
+found among the entries in the
+.I zip
+archive.
+This can be used without any other operations, if desired.
+For example:
+.RS
+.IP
+\fCzip -o foo\fP
+.RE
+.IP
+will change the last modified time of
+.I foo.zip
+to the latest time of the entries in
+.IR foo.zip .
+.TP
+\fB\-P\fP\ \fIpassword\fP
+use \fIpassword\fP to encrypt zipfile entries (if any).  \fBTHIS IS
+INSECURE!\fP  Many multi-user operating systems provide ways for any user to
+see the current command line of any other user; even on stand-alone systems
+there is always the threat of over-the-shoulder peeking.  Storing the plaintext
+password as part of a command line in an automated script is even worse.
+Whenever possible, use the non-echoing, interactive prompt to enter passwords.
+(And where security is truly important, use strong encryption such as Pretty
+Good Privacy instead of the relatively weak encryption provided by standard
+zipfile utilities.)
+.TP
+.B \-q
+Quiet mode;
+eliminate informational messages and comment prompts.
+(Useful, for example, in shell scripts and background tasks).
+.TP
+.BI \-Qn
+[QDOS] store information about the file in the file header with n defined as
+.RS
+bit  0: Don't add headers for any file
+.RE
+.RS
+bit  1: Add headers for all files
+.RE
+.RS
+bit  2: Don't wait for interactive key press on exit
+.RE
+.TP
+.B \-r
+Travel the directory structure recursively;
+for example:
+.RS
+.IP
+\fCzip -r foo.zip foo\fP
+.RE
+.IP
+or a bit more concisely
+.RS
+.IP
+\fCzip -r foo foo\fP
+.RE
+.IP
+In this case, all the files and directories in
+.I foo
+are saved in a
+.I zip
+archive named
+.IR foo.zip ,
+including files with names starting with ".",
+since the recursion does not use the shell's file-name substitution mechanism.
+If you wish to include only a specific subset of the files in directory
+.I foo
+and its subdirectories, use the
+.B \-i
+option to specify the pattern of files to be included.
+You should not use
+.B \-r
+with the name ".*",
+since that matches ".."
+which will attempt to zip up the parent directory
+(probably not what was intended).
+.TP
+.B \-R
+Travel the directory structure recursively starting at the
+current directory;
+for example:
+.RS
+.IP
+\fCzip -R foo '*.c'\fP
+.RE
+.IP
+In this case, all the files matching *.c in the tree starting at the
+current directory are stored into a
+.I zip
+archive named
+.IR foo.zip .
+Note for PKZIP users: the equivalent command is
+.RS
+.IP
+\fCpkzip -rP foo *.c\fP
+.RE
+.TP
+.B \-S
+[MSDOS, OS/2, WIN32 and ATARI] Include system and hidden files.
+.RS
+[MacOS] Includes finder invisible files, which are ignored otherwise.
+.RE
+.TP
+.BI \-t\ mmddyyyy
+Do not operate on files modified prior to the specified date,
+where
+.I mm
+is the month (0-12),
+.I dd
+is the day of the month (1-31),
+and
+.I yyyy
+is the year.
+The
+.I ISO 8601
+date format
+.I yyyy-mm-dd
+is also accepted.
+For example:
+.RS
+.IP
+\fCzip -rt 12071991 infamy foo\fP
+.IP
+\fCzip -rt 1991-12-07 infamy foo\fP
+.RE
+.IP
+will add all the files in
+.I foo
+and its subdirectories that were last modified on or after 7 December 1991,
+to the
+.I zip
+archive
+.IR infamy.zip .
+.TP
+.BI \-tt\ mmddyyyy
+Do not operate on files modified after or at the specified date,
+where
+.I mm
+is the month (0-12),
+.I dd
+is the day of the month (1-31),
+and
+.I yyyy
+is the year.
+The
+.I ISO 8601
+date format
+.I yyyy-mm-dd
+is also accepted.
+For example:
+.RS
+.IP
+\fCzip -rtt 11301995 infamy foo\fP
+.IP
+\fCzip -rtt 1995-11-30 infamy foo\fP
+.RE
+.IP
+will add all the files in
+.I foo
+and its subdirectories that were last modified before 30 November 1995,
+to the
+.I zip
+archive
+.IR infamy.zip .
+.TP
+.B \-T
+Test the integrity of the new zip file. If the check fails, the old zip file
+is unchanged and (with the
+.B \-m
+option) no input files are removed.
+.TP
+.B \-u
+Replace (update) an existing entry in the
+.I zip
+archive only if it has been modified more recently
+than the version already in the
+.I zip
+archive.
+For example:
+.RS
+.IP
+\fCzip -u stuff *\fP
+.RE
+.IP
+will add any new files in the current directory,
+and update any files which have been modified since the
+.I zip
+archive
+.I stuff.zip
+was last created/modified (note that
+.I zip
+will not try to pack
+.I stuff.zip
+into itself when you do this).
+.IP
+Note that the
+.B \-u
+option with no arguments acts like the
+.B \-f
+(freshen) option.
+.TP
+.B \-v
+Verbose mode or print diagnostic version info.
+.IP
+Normally, when applied to real operations, this option enables the display of a
+progress indicator during compression and requests verbose diagnostic
+info about zipfile structure oddities.
+.IP
+When
+.B \-v
+is the only command line argument, and either stdin or stdout is
+not redirected to a file,
+a diagnostic screen is printed. In addition to the help screen header
+with program name, version, and release date, some pointers to the Info-ZIP
+home and distribution sites are given. Then, it shows information about the
+target environment (compiler type and version, OS version, compilation date
+and the enabled optional features used to create the
+.I zip
+executable.
+.TP
+.B \-V
+[VMS] Save VMS file attributes and use portable form.
+.I zip
+archives created with this option are truncated at EOF but still may not be
+usable on other systems depending on the file types being zipped.
+.TP
+.B \-VV
+[VMS] Save VMS file attributes.
+.I zip
+archives created with this option include the entire file and should be able
+to recreate most VMS files on VMS systems but these archives will generally
+not be usable on other systems.
+.TP
+.B \-w
+[VMS] Append the version number of the files to the name,
+including multiple versions of files.  (default: use only
+the most recent version of a specified file).
+.TP
+.BI \-x\ files
+Explicitly exclude the specified files, as in:
+.RS
+.IP
+\fCzip -r foo foo -x \\*.o\fP
+.RE
+.IP
+which will include the contents of
+.I foo
+in
+.I foo.zip
+while excluding all the files that end in \fI.o\fP.
+The backslash avoids the shell filename substitution, so that the
+name matching is performed by
+.I zip
+at all directory levels.  If you do not escape wildcards in patterns
+it may seem to work but files in subdirectories will not be checked
+for matches.
+.IP
+Also possible:
+.RS
+.IP
+\fCzip -r foo foo -x@exclude.lst\fP
+.RE
+.IP
+which will include the contents of
+.I foo
+in
+.I foo.zip
+while excluding all the files that match the patterns in the file exclude.lst
+(each file pattern on a separate line).
+.TP
+.B \-X
+Do not save extra file attributes (Extended Attributes on OS/2, uid/gid
+and file times on Unix).
+.TP
+.B \-y
+Store symbolic links as such in the
+.I zip
+archive,
+instead of compressing and storing the file referred to by the link
+(UNIX only).
+.TP
+.B \-z
+Prompt for a multi-line comment for the entire
+.I zip
+archive.
+The comment is ended by a line containing just a period,
+or an end of file condition (^D on UNIX, ^Z on MSDOS, OS/2, and VMS).
+The comment can be taken from a file:
+.RS
+.IP
+\fCzip -z foo < foowhat\fP
+.RE
+.TP
+.BI \-#
+Regulate the speed of compression using the specified digit
+.IR # ,
+where
+.B \-0
+indicates no compression (store all files),
+.B \-1
+indicates the fastest compression method (less compression)
+and
+.B \-9
+indicates the slowest compression method (optimal compression, ignores
+the suffix list). The default compression level is
+.BR \-6.
+.TP
+.B \-!
+[WIN32] Use priviliges (if granted) to obtain all aspects of WinNT security.
+.TP
+.B \-@
+Take the list of input files from standard input. Only one filename per line.
+.TP
+.B \-$
+[MSDOS, OS/2, WIN32] Include the volume label for the drive holding
+the first file to be compressed.  If you want to include only the volume
+label or to force a specific drive, use the drive name as first file name,
+as in:
+.RS
+.IP
+\fCzip -$ foo a: c:bar\fP
+.RE
+.IP
+.SH "EXAMPLES"
+The simplest example:
+.IP
+\fCzip stuff *\fP
+.LP
+creates the archive
+.I stuff.zip
+(assuming it does not exist)
+and puts all the files in the current directory in it, in compressed form
+(the
+.I \&.zip
+suffix is added automatically,
+unless that archive name given contains a dot already;
+this allows the explicit specification of other suffixes).
+.LP
+Because of the way the shell does filename substitution,
+files starting with "." are not included;
+to include these as well:
+.IP
+\fCzip stuff .* *\fP
+.LP
+Even this will not include any subdirectories from the current directory.
+.LP
+To zip up an entire directory, the command:
+.IP
+\fCzip -r foo foo\fP
+.LP
+creates the archive
+.IR foo.zip ,
+containing all the files and directories in the directory
+.I foo
+that is contained within the current directory.
+.LP
+You may want to make a
+.I zip
+archive that contains the files in
+.IR foo ,
+without recording the directory name,
+.IR foo .
+You can use the
+.B \-j
+option to leave off the paths,
+as in:
+.IP
+\fCzip -j foo foo/*\fP
+.LP
+If you are short on disk space,
+you might not have enough room to hold both the original directory
+and the corresponding compressed
+.I zip
+archive.
+In this case, you can create the archive in steps using the
+.B \-m
+option.
+If
+.I foo
+contains the subdirectories
+.IR tom ,
+.IR dick ,
+and
+.IR harry ,
+you can:
+.IP
+\fCzip -rm foo foo/tom\fP
+.br
+\fCzip -rm foo foo/dick\fP
+.br
+\fCzip -rm foo foo/harry\fP
+.LP
+where the first command creates
+.IR foo.zip ,
+and the next two add to it.
+At the completion of each
+.I zip
+command,
+the last created archive is deleted,
+making room for the next
+.I zip
+command to function.
+.SH "PATTERN MATCHING"
+This section applies only to UNIX, though the ?, *, and [] special
+characters are implemented on other systems including MSDOS and Win32.
+Watch this space for details on MSDOS and VMS operation.
+.LP
+The UNIX shells
+.RI ( sh (1)
+and
+.IR csh (1))
+do filename substitution on command arguments.
+The special characters are:
+.TP
+.B ?
+match any single character
+.TP
+.B *
+match any number of characters (including none)
+.TP
+.B []
+match any character in the range indicated within the brackets
+(example: [a\-f], [0\-9]).
+.LP
+When these characters are encountered
+(without being escaped with a backslash or quotes),
+the shell will look for files relative to the current path
+that match the pattern,
+and replace the argument with a list of the names that matched.
+.LP
+The
+.I zip
+program can do the same matching on names that are in the
+.I zip
+archive being modified or,
+in the case of the
+.B \-x
+(exclude) or
+.B \-i
+(include) options, on the list of files to be operated on, by using
+backslashes or quotes to tell the shell not to do the name expansion.
+In general, when
+.I zip
+encounters a name in the list of files to do, it first looks for the name in
+the file system.  If it finds it, it then adds it to the list of files to do.
+If it does not find it, it looks for the name in the
+.I zip
+archive being modified (if it exists), using the pattern matching characters
+described above, if present.  For each match, it will add that name to the
+list of files to be processed, unless this name matches one given
+with the
+.B \-x
+option, or does not match any name given with the
+.B \-i
+option.
+.LP
+The pattern matching includes the path,
+and so patterns like \\*.o match names that end in ".o",
+no matter what the path prefix is.
+Note that the backslash must precede every special character (i.e. ?*[]),
+or the entire argument must be enclosed in double quotes ("").
+.LP
+In general, use backslash to make
+.I zip
+do the pattern matching with the
+.B \-f
+(freshen) and
+.B \-d
+(delete) options,
+and sometimes after the
+.B \-x
+(exclude) option when used with an appropriate operation (add,
+.BR \-u ,
+.BR \-f ,
+or
+.BR \-d ).
+.SH "ENVIRONMENT"
+.TP
+.B ZIPOPT
+contains default options that will be used when running
+.I zip
+.TP
+.B ZIP
+[Not on RISC OS and VMS] see ZIPOPT
+.TP
+.B Zip$Options
+[RISC OS] see ZIPOPT
+.TP
+.B Zip$Exts
+[RISC OS] contains extensions separated by a : that will cause
+native filenames with one of the specified extensions to
+be added to the zip file with basename and extension swapped.
+.I zip
+.TP
+.B ZIP_OPTS
+[VMS] see ZIPOPT
+.SH "SEE ALSO"
+compress(1),
+shar(1L),
+tar(1),
+unzip(1L),
+gzip(1L)
+.SH DIAGNOSTICS
+The exit status (or error level) approximates the exit codes defined by PKWARE
+and takes on the following values, except under VMS:
+.RS
+.IP 0
+normal; no errors or warnings detected.
+.IP 2
+unexpected end of zip file.
+.IP 3
+a generic error in the zipfile format was detected.  Processing may have
+completed successfully anyway; some broken zipfiles created by other
+archivers have simple work-arounds.
+.IP 4
+\fIzip\fP was unable to allocate memory for one or more buffers during
+program initialization.
+.IP 5
+a severe error in the zipfile format was detected.  Processing probably
+failed immediately.
+.IP 6
+entry too large to split (with \fIzipsplit\fP), read, or write
+.IP 7
+invalid comment format
+.IP 8
+.I zip \-T
+failed or out of memory
+.IP 9
+the user aborted \fIzip\fP prematurely with control-C (or similar)
+.IP 10
+\fIzip\fP encountered an error while using a temp file
+.IP 11
+read or seek error
+.IP 12
+\fIzip\fP has nothing to do
+.IP 13
+missing or empty zip file
+.IP 14
+error writing to a file
+.IP 15
+\fIzip\fP was unable to create a file to write to
+.IP 16
+bad command line parameters
+.IP 18
+\fIzip\fP could not open a specified file to read
+.RE
+.PP
+VMS interprets standard Unix (or PC) return values as other, scarier-looking
+things, so \fIzip\fP instead maps them into VMS-style status codes.  The
+current mapping is as follows:   1 (success) for normal exit,
+ and (0x7fff000? + 16*normal_zip_exit_status) for all errors, where the
+`?' is 0 (warning) for \fIzip\fP value 12, 2 (error) for the
+\fIzip\fP values 3, 6, 7, 9, 13, 16, 18,
+and 4 (fatal error) for the remaining ones.
+.PD
+.SH BUGS
+.I zip
+2.32 is not compatible with PKUNZIP 1.10. Use
+.I zip
+1.1 to produce
+.I zip
+files which can be extracted by PKUNZIP 1.10.
+.PP
+.I zip
+files produced by
+.I zip
+2.32 must not be
+.I updated
+by
+.I zip
+1.1 or PKZIP 1.10, if they contain
+encrypted members or if they have been produced in a pipe or on a non-seekable
+device. The old versions of
+.I zip
+or PKZIP would create an archive with an incorrect format.
+The old versions can list the contents of the zip file
+but cannot extract it anyway (because of the new compression algorithm).
+If you do not use encryption and use regular disk files, you do
+not have to care about this problem.
+.LP
+Under VMS,
+not all of the odd file formats are treated properly.
+Only stream-LF format
+.I zip
+files are expected to work with
+.IR zip .
+Others can be converted using Rahul Dhesi's BILF program.
+This version of
+.I zip
+handles some of the conversion internally.
+When using Kermit to transfer zip files from Vax to MSDOS, type "set
+file type block" on the Vax.  When transferring from MSDOS to Vax, type
+"set file type fixed" on the Vax.  In both cases, type "set file type
+binary" on MSDOS.
+.LP
+Under VMS, zip hangs for file specification that uses DECnet syntax
+.I foo::*.*.
+.LP
+On OS/2, \fIzip\fR cannot match some names, such as those including an
+exclamation mark or a hash sign.  This is a bug in OS/2 itself: the
+32-bit DosFindFirst/Next don't find such names.  Other programs such
+as GNU tar are also affected by this bug.
+.LP
+Under OS/2, the amount of Extended Attributes displayed by DIR is (for
+compatibility) the amount returned by the 16-bit version of
+DosQueryPathInfo(). Otherwise OS/2 1.3 and 2.0 would report different
+EA sizes when DIRing a file.
+However, the structure layout returned by the 32-bit DosQueryPathInfo()
+is a bit different, it uses extra padding bytes and link pointers (it's
+a linked list) to have all fields on 4-byte boundaries for portability
+to future RISC OS/2 versions. Therefore the value reported by
+.I zip
+(which uses this 32-bit-mode size) differs from that reported by DIR.
+.I zip
+stores the 32-bit format for portability, even the 16-bit
+MS-C-compiled version running on OS/2 1.3, so even this one shows the
+32-bit-mode size.
+.LP
+Development of \fIzip\fR\ 3.0 and \fIunzip\fR\ 6.0 are underway.  See those
+source distributions for
+many new features and the latest bug fixes.
+.SH AUTHORS
+Copyright (C) 1997-2006 Info-ZIP.
+.LP
+Copyright (C) 1990-1997 Mark Adler, Richard B. Wales, Jean-loup Gailly,
+Onno van der Linden, Kai Uwe Rommel, Igor Mandrichenko, John Bush and
+Paul Kienitz.
+Permission is granted to any individual or institution to use, copy, or
+redistribute this software so long as all of the original files are included,
+that it is not sold for profit, and that this copyright notice
+is retained.
+.LP
+LIKE ANYTHING ELSE THAT'S FREE, ZIP AND ITS ASSOCIATED UTILITIES ARE
+PROVIDED AS IS AND COME WITH NO WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+IMPLIED. IN NO EVENT WILL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY DAMAGES
+RESULTING FROM THE USE OF THIS SOFTWARE.
+.LP
+Please send bug reports and comments to:
+.IR zip-bugs
+at
+.IR www.info-zip.org .
+For bug reports, please include the version of
+.IR zip
+(see \fIzip\ \-h\fP),
+the make options used to compile it (see \fIzip\ \-v\fP),
+the machine and operating system in use,
+and as much additional information as possible.
+.SH ACKNOWLEDGEMENTS
+Thanks to R. P. Byrne for his
+.I Shrink.Pas
+program, which inspired this project,
+and from which the shrink algorithm was stolen;
+to Phil Katz for placing in the public domain the
+.I zip
+file format, compression format, and .ZIP filename extension, and for
+accepting minor changes to the file format; to Steve Burg for
+clarifications on the deflate format; to Haruhiko Okumura and Leonid
+Broukhis for providing some useful ideas for the compression
+algorithm; to Keith Petersen, Rich Wales, Hunter Goatley and Mark
+Adler for providing a mailing list and
+.I ftp
+site for the Info-ZIP group to use; and most importantly, to the
+Info-ZIP group itself (listed in the file
+.IR infozip.who )
+without whose tireless testing and bug-fixing efforts a portable
+.I zip
+would not have been possible.
+Finally we should thank (blame) the first Info-ZIP moderator,
+David Kirschbaum,
+for getting us into this mess in the first place.
+The manual page was rewritten for UNIX by R. P. C. Rodgers.
+.\" end of file

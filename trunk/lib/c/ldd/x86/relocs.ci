@@ -1,0 +1,197 @@
+/*
+Copyright 2001, QNX Software Systems Ltd. All Rights Reserved
+ 
+This source code has been published by QNX Software Systems Ltd. (QSSL).
+However, any use, reproduction, modification, distribution or transfer of
+this software, or any software which includes or is based upon any of this
+code, is only permitted under the terms of the QNX Realtime Plaform End User
+License Agreement (see licensing.qnx.com for details) or as otherwise
+expressly authorized by a written license agreement from QSSL. For more
+information, please email licensing@qnx.com.
+*/
+/* This is the CPU-specific file for the dynamic loader
+ * for i386's...
+ */
+
+/* This is the bind function used for lazy binding */
+
+void bind_func(void);
+	__asm__(
+		"\tbind_func:\n"
+		"\tcall\tresolve_func\n"
+		"\taddl\t$8,%esp\n"
+		"\tjmpl\t*%eax\n"
+                "\t.type\tbind_func,@function\n"
+                "\t.size\tbind_func,.-bind_func\n");
+
+/* 
+ * This is the _start_ function, the entry point into the program
+ * when linked with the shared lib.
+ */
+
+void _start_(void);
+        __asm__(
+                ".globl\t_start_\n"
+                "\t_start_:\n"
+		"\tpush\t%esp\n"	// Push esp, addr of startup frame
+                "\tcall\tldd\n"
+		"\taddl\t$4,%esp\n"
+#ifdef __PIC__
+                "\tcall\t1f\n"
+                "1:\tpop\t%ebx\n"
+                "\taddl\t$_GLOBAL_OFFSET_TABLE_+[.-1b],%ebx\n"
+                "\tleal\t_do_exit_fini@GOTOFF(%ebx),%edx\n"
+#else
+                "\tmovl\t$_do_exit_fini,%edx\n"
+#endif
+                "\tjmpl\t*%eax\n\t"
+                "\t.type\t_start_,@function\n"
+                "\t.size\t_start_,.-_start_\n"
+        );
+
+/*
+ * Resolve the GOT entries on x86. Pretty straightforward, got[1]
+ * is the list within which we need to resolve the relocations, got[2]
+ * is the lazy-binding function.
+ */
+
+void relocate_local_got(struct object *obj) {
+
+	obj->got[0] = RELOC(obj, obj->got[0]);
+	obj->got[1] = (uintptr_t) obj;
+	obj->got[2] = (uintptr_t) bind_func;
+}
+
+
+/* 
+ * And this is the function used to resolve the relocations.
+ * We keep a CPU-specifc one, so that we don't end up with a 
+ * huge switch/if hunk of code in ldd.c...
+ */
+
+static int resolve_rels(const Elf32_Rel *rel, int nrel, struct objlist *ol, int mode) {
+        struct object                   *obj = ol->object;
+        const list_head_t               *this = ol->root;
+        struct objlist                  o;
+		int								ret = 0;
+        /*
+         * if this is a DT_SYMBOLIC object, then make sure it gets searched
+         * first, by temporarily placing it at the head of the objlist
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                o.object = obj;
+                list_append(this, &o);
+        }
+        while (nrel--) {
+                const Elf32_Sym         *sym = &obj->symbols[ELF32_R_SYM(rel->r_info)];
+                const char                      *name = obj->strings + sym->st_name;
+                const Elf32_Sym         *tsym;
+                struct object           *tobj;
+                int                                     rtype;
+                unsigned long           *dst = RELOCP(obj, rel->r_offset);
+
+                rtype = ELF32_R_TYPE(rel->r_info);
+				if ( rtype == R_386_NONE ) {
+					/* Nothing to do... */
+					rel++;
+					continue;
+				}
+
+                /*
+                 * when searching for the source of a copy relocation don't
+                 * look for the symbol within the object being processed
+                 *
+                 * when processing jump slot relocations, the PLT symbol should
+                 * not be used.  The PLT symbol is detected by having
+                 * st_shndx == SHN_UNDEF and type == STT_FUNC and st_value != 0.
+                 * If the address of a function AND a call is taken by an
+                 * object to a function, then the linker should ONLY generate
+                 * an R_386_32 relocation so that the GOT entry will point to
+                 * the PLT entry for the function.  These PLT symbols should
+                 * only exist in the executable.
+                 *
+                 * Another thing we do here is to resolve the internal relative
+                 * relocs on the first bootstrapping pass (for libc.so). These
+                 * obviously don't get done again. We also have the ability to reverse
+                 * the global relative relocations, to "undo" our bootstrapping phase
+                 * and resolve the symbols in libc.so in the right context. For other
+                 * relocations, we don't need to undo them since there are no addends.
+                 */
+
+               if ((rtype == R_386_RELATIVE || ((mode == RTLD_LAZY) && rtype == R_386_JMP_SLOT))
+                       && !(obj->flags & OBJFLAG_RELSDONE)) {
+                       *dst = RELOC(obj, *dst);
+               } else if ((tsym = lookup_global(name, this, rtype == R_386_COPY ? obj : 0,
+                               rtype == R_386_JMP_SLOT, &tobj)) || 
+                               (ELF32_ST_BIND(sym->st_info) == STB_WEAK)) {
+                       uintptr_t        val = tsym ? RELOC(tobj, tsym->st_value) : 0;
+
+                       if (rtype == R_386_JMP_SLOT) {
+                               *dst = val;
+                       } else if (rtype == R_386_GLOB_DAT) {
+                               *dst = val;
+                       } else if (rtype == R_386_PC32) {
+                               *dst += (unsigned) RELOFFSET((obj->flags & OBJFLAG_REVERSED),
+                                       (val - (unsigned)dst));
+                       } else if (rtype == R_386_32) {
+                               *dst += (unsigned) RELOFFSET((obj->flags & OBJFLAG_REVERSED), (val));
+                       } else if (rtype == R_386_COPY && tsym) {
+                               xmemcpy(dst, (void *)val, tsym->st_size < sym->st_size ?
+                                       tsym->st_size : sym->st_size);
+                       } else if (tsym) {
+							write(STDERR_FILENO,"unknown relocation type\n",24);
+							ret = -1;
+                       } else {
+							write(STDERR_FILENO,"bad weak relocation type\n",25);
+							ret = -1;
+                       }
+               } else {
+                    if(rtype != R_386_RELATIVE && (!((mode == RTLD_LAZY) && (rtype == R_386_JMP_SLOT)))) {
+						write(STDERR_FILENO, "unknown symbol: ", 16);
+						write(STDERR_FILENO, name, strlen(name));
+						write(STDERR_FILENO, "\n", 1);
+						ret = -1;
+					}
+               }
+               rel++;
+       }
+
+        /*
+         * if the object was previously placed at the list head, remove it
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                list_delete(&o);
+        }
+        return ret;
+}
+
+static int resolve(const list_head_t *this, int mode) {
+	unsigned long		vec[50];
+	struct objlist		*o;
+	int					ret = 0;
+
+	list_backward(this, o) {
+		struct object		*obj = o->object;
+
+		vector_decode(vec, sizeof vec / sizeof *vec, obj->dynamic, 0);
+		if (!(obj->flags & OBJFLAG_RESOLVED)) {
+			if (vec[DT_REL] != -1) {
+				if (resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_REL]),
+						vec[DT_RELSZ] / sizeof(Elf32_Rel), o, RTLD_NOW)) {
+					ret = -1;
+				}
+			}
+			if (vec[DT_JMPREL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_JMPREL]),
+					vec[DT_PLTRELSZ] / sizeof(Elf32_Rel), o, mode)) {
+					ret = -1;
+				}
+			}
+		}
+		/* The internal relative relocs are done, don't do them again. */
+		obj->flags |= (OBJFLAG_RELSDONE | OBJFLAG_RESOLVED);
+	}
+	return ret;
+}

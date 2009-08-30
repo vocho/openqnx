@@ -1,0 +1,87 @@
+"
+T \a7 \ffoc?b2f\0a\0a\ffoc+\0a
+T \a1 \ff.-1|zcl\0a
+T \a4 \ff%zch-1\0a
+T \a6 \ff%zch+1\0a
+T \a9 \ff.+1|zcl\0a
+T \b1 \ff.-4|zcl\0a
+T \b9 \ff.+4|zcl\0a
+T \b6 \ffoe+om+zch+0b2t\0a\ffoa+/[^ 	]/;b2\0a\ffoa-.-1;/@(.)[^	 ]*[\09 ]*/\0a\ffoe-\0a
+T \b4 \ffoe+om+zch-1b1tzch+0b2tzch$b3\0a\ffoa-zch?[ 	]*[^ 	][^ 	]*?b1fzch/^[ 	]/b2\0a\ffoa+zch0?^.?zch$\0a\ffoe-\0a
+T \02 \ffvl+4zchl\0a
+T \05 \ffvl-4zchl\0a
+T \a0 \ff1zch1\0a
+T \a8 \ff$zch1\0a
+T \b0 \ff&zch1\0a
+T \b8 \ff&+22|zch1\0a
+T \b8 \ffu1tzv0\0a\ffb1f&+~-1|;b2\0a\ff&+22|\0a
+T \a2 \ffu1tzv0\0a\ffb1f@-~|;b2\0a\ff@-23|\0a
+T \aa \ffu1tzv0\0a\ffb1f@+~|;b2\0a\ff@+23|\0a
+T \b2 \ffvs-1\0a
+T \ba \ffvs1\0a
+T \a5 \ffvc\0a
+T \ac \ff%zcs%zcd\0a
+T \bc \ffzcp\0a
+T \7f \ff%zch-1%zcd\0a
+T \17 \ffzcer\0a
+T \18 \ff%zch1%zce$\0a
+T \19 \ff%zce$\0a
+T \ab \ffoi~\0a
+T \bb \ffoe+oi+%zcroe-\0a
+T \80 \ff%zch1\0a
+T \9f \ff%zch$\0a
+T \81 \ffon?b3t\0a\ffa\0a\ffb4\0a\ffon-zch1\0a\ffb2t\0a\ffd.+1|;b1f.-2|\0a
+T \82 \ffon?b3t\0a\ffi\0a\ffb4\0a\ffon-zch1\0a\ffb2t\0a\ffd\0a
+T \95 \ffad\0a
+T \96 \ffid\0a
+T \83 \ffd\0a
+T \84 \ffzq#b1f#zlfb2\0a\ffoe+ow-.,/^[ 	]*$/|zlfoe-\0a
+T \98 \ffzq#b1f#zlcb2\0a\ff.zlc\0a
+T \85 \ffoe+oa+oi-om+zch/@(1) /b1toi+\0a\ffzcc\0a\ffoe-\0a
+T \86 \ffzch$zch-1zch/ /b1toe+om+s/$/ /oe-\0a\ffj\0a
+T \99 \ffoe+oi+zcc\0a\ffoe-\0a
+T \9a \ffzch$j\0a
+T \87 \ffzlt\0a
+t \88 \ffol?b9ty"d-delete k-kopy m-move s-save p-print"dkmsspp "\0a\ff#db17\0a\ff#k.b16\0a\ff#m.b15\0a\ff#w @\0a\ffb13\0a\ff#w $lpt\0a\ffb11\0a\ffn\0a\fc
+T \fc \ffy"d-delete e-erase k-kopy m-move/erase M-move/delete s-save p-print"dekmMsp "\0a\ff#zldb8\0a\ff#zleb7\0a\ffzp#zlszlrb6\0a\ffzp#zlszlu#zlezlrb5\0a\ffzp#zlszlu#zldzlrb4\0a\ffzp#zlwb3\0a\ffzp#zlw"$lpt"b2\0a\ffn\0a
+"T \88 \ffol?b5ty"d-delete k-kopy m-move"dkm "\0a\ff#db11\0a\ff#k.b10\0a\ff#m.b9\0a\ffn\0a\ffy"d-delete e-erase k-kopy m-move/erase M-move/delete"dekmM "\0a\ff#zldb6\0a\ff#zleb5\0a\ffzp#zlszlrb4\0a\ffzp#zlszlu#zlezlrb3\0a\ffzp#zlszlu#zldzlrb2\0a\ffn\0a
+T \92 \ffy"l-line paste c-column paste"llc "\0a\ff.r @\0a\ffb2\0a\ffzpzlR\0a
+T \9b \ffzlu\0a
+T \9c \ffy"Enter k-kopy, m-move"km "\0a\ff#k.-1b3\0a\ff#m.-1b2\0a\ffn\0a
+T \89 \fe\ffoc+\0a\0a
+T \8A \fe\ff0zch$oc+\0a
+T \8b \ffoc-vl.\0a
+T \8c \ffoc-vr.\0a
+T \8d \ffoc-vl-1zchl\0a
+T \8e \ffoc-vl+1zchl\0a
+T \8f \ffoc-vr-1zchr\0a
+T \90 \ffoc-vr+1zchr\0a
+T \93 \ffzchl\0a
+T \94 \ffzchr\0a
+T \b7 \ffzmPlease use Ctrl - to learn\0a
+T \b3 \ffoe+oc+0zch20zmEnter key to learn\0a\ffl \fd\0a\ffoe-vs0\0a
+T \e1 \ffoa~\0a
+T \e2 \ffob~\0a
+T \e4 \ffod~\0a
+T \e6 \ffof~\0a
+T \ea \ffoj~\0a
+T \ec \ffol~\0a
+T \ed \ffom~\0a
+T \ef \ffzlo\0a
+T \f0 \ffzlp\0a
+T \e3 \ffzlj\0a
+T \f2 \ffor~\0a
+T \f3 \ffos~\0a
+T \f4 \ffot~\0a
+T \f7 \ffow~\0a
+T \fa \ffvz\0a
+T \1A \ff!qsh\a
+"The following commented out macro may be used as an aid in defining macros.
+"Read the section on MACROS in the ED manual.
+"t \ed \ffoc?b7f*da\0a\ffon-om+0zk1\0a\ffu1 s/\\\\\\\\/\\80/\0a\ffu1 s/\\\\0a/\\0a/\0a\ffu1 *s/\\80/\\\\\\\\/\0a\ff0zce255 1zch1b5\0a\ffom+\0a\ffu1 *s/$/\\\\0a/\0a\ffu40 1j\0a\ff1zk0zch1oc+\0a
+vc3
+vr60
+va1 6 1
+va2 0 6
+va3 7 1
+T \0f \11

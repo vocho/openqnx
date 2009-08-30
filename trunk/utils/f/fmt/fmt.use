@@ -1,0 +1,11 @@
+%C - formats concatenated input
+
+%C [-width] [-w width] [-m maximum] [-] [files]...
+Options:
+ width    - tries to have lines as close as possible to width.
+ maximum  - lines cannot be longer than maximum.
+ -        - read from standard input
+Note:
+ length defaults to 65 and the maximum to 75.  Non-indent tabs are
+ converted to spaces.  Tabs are used for indents where possible.
+ If no input files are given, standard input is read.

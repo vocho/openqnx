@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<module name="passwd">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<component id="passwd" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				passwd
+			</location>
+		</component>
+		<component id="config" generated="false">
+			<kind type="config"/>
+			<location basedir="config" subdirs="true">etc</location>
+		</component>
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/util"/>
+		<part build="true" location="lib/login"/>
+	</requires>
+
+</module>

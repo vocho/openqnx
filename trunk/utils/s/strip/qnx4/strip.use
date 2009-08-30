@@ -1,0 +1,8 @@
+%C	[-sv] file...
+where:
+ -s     keep debugging info
+ -v     print information about progress.
+
+Strip both removes debugging information and looks for opportunities
+to reduce the (on disk) size of executables.  -s inhibits the former.
+-v is mostly gibberish.

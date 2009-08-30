@@ -1,0 +1,16 @@
+%C - /dev/random service.
+
+%C [options]
+
+Options:
+    -h        Show this message.
+    -i<#>     Use interrupt <#> to collect entropy.
+    -t        Use high-performance clock for entropy.
+    -p        Poll system information from /proc for entropy.
+
+Example:
+    # Start random server, gathering entropy from /proc, HP timer, and 
+    # using PS/2 mouse interrupt 12.
+
+    random -i 12 -t -p &
+

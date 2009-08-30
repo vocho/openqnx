@@ -1,0 +1,4 @@
+Modifying this file will cause procnto to do a clean recompile for this CPU.
+You should put a comment in here as to the reason.
+
+2008/09/02 - changed SYSP_GETCOLOR & SYSP_ADDCOLOR in public/kernel/cpu_sh.h

@@ -1,0 +1,10 @@
+%C - shutdown the system (Neutrino)
+
+%C	[options]
+Options:
+ -S type  Shutdown type. Type: system|reboot (default:reboot).
+ -f       Fast shutdown.
+ -n node  Node to shutdown. Default is current node.
+ -b       Shutdown but do not reboot.  May not be used with -n node.
+ -q       Quiet.
+ -v       Verbose.

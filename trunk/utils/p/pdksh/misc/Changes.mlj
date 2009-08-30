@@ -1,0 +1,44 @@
+I got the pd-ksh from John MacMillan after he indicated that he
+had a version of it that had vi editing (I'd seen various versions
+with emacs-editing, but none with vi).
+
+It had a few bugs and areas which were not quite complete.  I fixed
+(or at least tried) to fix several; there are still some things
+which I plan on doing (or at least looking into).
+
+Bugs fixed (or at least abated):
+
+    vi-mode changes:
+    - Changed memcpy() to memmove(), which fixed the trashing of
+      the end of the edit buffer while inserting in the middle
+      of a line or with use of '#'
+    - using 'r' replacing the current character with ^@
+    - typing ctrl-c resulting in next command being garbled
+    - lack of support for '-' and '+' (pretty trivial)
+    - finish adding support for '*' (not entirely sure I'm freeing
+      malloc'ed memory correctly here, but I haven't had any problems)
+    - treats '_' as end of a word
+
+    general changes:
+    - reporting "not found" when a file actually doesn't have
+      the appropriate execute bit set (now says "cannot execute"
+      or "not found", as appropriate)
+
+
+Still to do:
+
+    vi changes:
+    - fix ctrl-r (I've come up with a hack, but it involves
+      redrawing the screen a lot when it isn't necessary; I
+      really wouldn't consider this a fix)
+    - add support for 'v'
+
+    general changes:
+    - seems to be a memory leak when executing shells in the
+      current shell; repeatedly executing ". /etc/profile"
+      increased the size of the program as reported in the
+      "SZ" field of "ps -l"
+    - don't give a file its complete pathname in argv[0]; only
+      its filename (religious issue?)
+    - history recall should start at the previous command, not
+      the current one (typing "r r" causes an infinite loop)

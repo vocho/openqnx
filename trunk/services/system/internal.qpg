@@ -1,0 +1,15 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="proc/*/*/procnto*.*" handling="exclude"/> 
+			<QPG:Add file="proc/*/*/procnto-600-smp_g" handling="exclude"/> 
+			<QPG:Add component="kernel" type="tree" file="public/kernel" install="/usr/include/kernel/"/>
+			<QPG:Add type="tree" file="public/c6x" install="/usr/include/c6x/" target="c6x" />
+			<QPG:Add component="kernel" filetype="exe" file="proc/*/*/procnto*_g" pinfo="$"/>
+			<QPG:Add component="kernel" filetype="exe" file="proc/*/*/procnto*gcc*" pinfo="$"/>
+			<QPG:Add component="kernel" filetype="exe" file="proc/mips/le.tx79/procnto-tx79" pinfo="$"/>
+			<QPG:Add proc="mipsbe" filetype="exe" component="cisco" file="proc/mips/be.cisco/procnto-cisco" pinfo="$"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

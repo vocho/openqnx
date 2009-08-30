@@ -1,0 +1,11 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add component="dev" type="file" file="nto/*/*/libelf.a" pinfo="$"/>
+			<QPG:Add component="dev" type="file" file="nto/*/*/libelfS.a" pinfo="$"/>
+			<QPG:Add component="dev" type="tree" file="public" install="/usr/include/"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

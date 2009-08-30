@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<module name="du">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+     <GroupOwner>tools</GroupOwner>
+     <RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="du" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				du
+			</location>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/util"/>
+	</requires>
+
+</module>

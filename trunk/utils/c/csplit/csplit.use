@@ -1,0 +1,19 @@
+%C - context split
+
+%C [-ks] [-f prefix] [-n digits] file arg1 [.. argn]
+Options:
+ -k         Leave previously created files intact.
+ -s         Suppress output of file size messages.
+ -f prefix  Use 'prefix' instead of "xx" to name output files. 
+ -n digits  digits is number of digits to append to prefix.  Default 2.
+ file       Input file.
+%C splits a file into n+1 sections as prescribed by arg1..argn.
+Each argument specifies where a section ends as follows:
+ /rexp/[relno]  Copy lines until the next line matches rexp.  A positive or
+                negative relno specifies a relative line number from the match.
+ %rexp%[relno]  Same as above, except the lines are discarded instead.
+ nlines         Copy nlines lines from file.
+ {num}          Repeat the preceding argument this number of times.
+Examples:
+ extract a uuencoded file: %C mail '%^begin%' '/^end/+1' '%.*%'
+ split a file into 3 parts of 1, 10 and 100 lines: %C file 1 10 100

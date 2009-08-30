@@ -1,0 +1,73 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: Incremental restore malfunctions if an archive member
+# changes type before restoration, e.g. from directory to file or vice
+# versa.
+# Reported by: Wolfram Kleff <bugreport@wkleff.intergenia.de>
+# References: <200605101232.25031.bugreport@wkleff.intergenia.de>
+
+AT_SETUP([changed file types in incrementals])
+AT_KEYWORDS([incremental chtype])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+AT_TAR_MKHIER([directory/b/c],[x])
+mkdir directory/a
+genfile --file directory/a/a
+
+echo First backup
+tar --create --file=archive.1 --listed-incremental=db.1 directory
+
+sleep 2
+
+# Remove directory b and create a file with this name.
+# Previous versions were not able to restore over this file.
+rm -r directory/b
+genfile --file directory/b
+genfile --file directory/a/b
+
+echo Second backup
+tar --create --file=archive.2 --listed-incremental=db.2 directory
+
+# Delete a
+rm -r directory
+
+echo Restore archive.1
+tar -xf archive.1 --listed-incremental=/dev/null
+echo Restore archive.2
+tar -xf archive.2 --listed-incremental=/dev/null
+find directory | sort
+],
+[0],
+[First backup
+Second backup
+Restore archive.1
+Restore archive.2
+directory
+directory/a
+directory/a/a
+directory/a/b
+directory/b
+],[],[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of chtype.at

@@ -1,0 +1,14 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/less" pinfo="$"/>
+		 <QPG:Add filetype="symlink" proc="x86" file="more" install="/bin/" linkto="../usr/bin/less"/>
+		 <QPG:Add filetype="symlink" proc="shle" file="more" install="/bin/" linkto="../usr/bin/less"/>
+		 <QPG:Add filetype="symlink" proc="armle" file="more" install="/bin/" linkto="../usr/bin/less"/>
+		 <QPG:Add filetype="symlink" proc="ppcbe" file="more" install="/bin/" linkto="../usr/bin/less"/>
+		 <QPG:Add filetype="symlink" proc="mipsle" file="more" install="/bin/" linkto="../usr/bin/less"/>
+		 <QPG:Add filetype="symlink" proc="mipsbe" file="more" install="/bin/" linkto="../usr/bin/less"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

@@ -1,0 +1,660 @@
+The command line options for mkifs
+==================================
+
+    mkifs [-l input-line] [-v] [input-file [output-file]]
+
+Options:
+    
+ -l inputline   Prefix a line to the input-file.
+ 
+    Prefix "inputline" to the input control file.
+    
+ -v 
+ 
+    Operate verbosely. Additional -V's increases the verbosity level.
+    
+The "input-file" provides the input control file for mkifs. It, prefixed
+by any "-l" lines, lists out the files that are to be included in the
+image file system being built. It also sets various attributes of those
+files in the image file system. If it is not specified, or consists of
+"-", standard input is used for the control file.
+
+The "output-file" gives the name of the file that the image file system
+is placed in. If it is not specified or given as a "-", standard output
+is used.
+
+The contents of the "MKIFS_PATH" environment variable are used as a colon
+separated list of directories to search for the host system files (if
+the "search=" attribute is not used). The default for the variable is:
+
+	/usr/nto/${CPU}/sys:/usr/nto/${CPU}/bin:
+	
+The default for the "CPU" environment variable is the same as the
+CPU of the host system.
+
+[Internal note: the above is a small lie. As a courtesy detail, the
+actual default for MKIFS_PATH is:
+
+	${QNX_TARGET}/${PROCESSOR}/sys:${QNX_TARGET}/${PROCESSOR}/bin:
+	
+and the QNX_TARGET variable is defaulted to "/usr/nto". For internal
+development, people should put "export QNX_TARGET=/usr/nto1.1" in their
+.profile files.]
+	
+    
+
+The control file command language for mkifs
+===========================================
+    
+Syntax:
+-------
+
+    control_file    ::= { <line> }
+    
+    line            ::= <attr_file_line> [ <comment> ]
+            
+    commment        ::= "#" rest_of_line
+    
+    attr_file_line  ::=  [ "[" <attributes> "]" ] [ <file_spec> ]
+    
+    file_spec       ::= <image_file_name> [ "=" <host_file_spec> ]
+    
+    host_file_spec  ::= <host_file_name>
+                    |   <file_data>
+                    
+    file_data       ::=  "{" escaped_text_including_newlines "}"
+    
+    attributes      ::= { [ "?" ] <one_attr> }
+                    
+    one_attr        ::= "+"|"-" "bigendian"
+					|   "cd=" <filename>
+                    |   "chain=" <addr>
+                    |   "code=" <uip_spec>
+                    |   "+"|"-" "compress"
+                    |   "data=" <uip_spec>
+                    |   "filter=" <filter_spec>
+                    |   "gid=" <id_spec>
+                    |   "image=" <addr_space_spec>
+                    |   "+"|"-" "keeplinked"
+                    |   "linker=" [ <linker_id_spec> ] <linker_spec>
+                    |   "+"|"-" "optional"
+                    |   "perms=" <perm_spec>
+                    |   "prefix=" <prefix_spec>
+                    |   "physical=" <boot_spec>
+                    |   "ram=" <addr_space_spec>
+                    |   "+"|"-" "raw"
+                    |   "+"|"-" "rom"
+                    |   "+"|"-" "script"
+                    |   "search=" <search_path>
+					|   "type=" <file_type>
+                    |   "uid=" <id_spec>
+                    |   "virtual=" <boot_spec>
+                    |   "+"|"-" "followlink"
+                    
+    id_spec         ::= number
+                    |   "*"
+	
+	boot_spec		::= [<cpu_name> ","] <bootfile_name> [" " <filter_args>]
+                    
+    perms_spec      ::= number
+                    |   "*"
+					| <symbolic_mode> { "," <symbolic_mode> }
+					
+	symbolic_mode	::= { <who_mode> } ( "-"|"="|"+" ) { <what_mode> }
+	
+	who_mode		::= "u"|"g"|"o"|"a"
+	
+	what_mode		::= "r"|"w"|"x"|"s"|"g"|"t"
+	
+	addr_space_spec	::= [<start_addr>] { <addr_space_sizing> }
+	
+	addr_space_sizing ::= "," <maxsize> 
+					|    "-" <end_addr>
+					|    "=" <totalsize>
+					|	 "%" <align>
+                    
+    start_addr      ::= number
+    end_addr        ::= number
+    maxsize         ::= number
+    totalsize       ::= number
+	align			::= number
+    
+    uip_spec        ::= "uip | "copy"
+	
+	linker_id_spec	::= "(" <num_list> ";" <num_list> ";" <num_list> ")"
+	
+	num_list		::= [ number { "," number } ]
+    
+    filter_spec     ::= shell_command_line
+                    
+    search_path     ::= <file_name> { ":" <file_name> }
+                    
+    image_file_name ::= <file_name>
+    
+    host_file_name  ::= <file_name>
+	
+	file_type		::= "file"
+					|	"link"
+					|	"fifo"
+    
+    file_name       ::= sequence_of_non_blank_characters
+                    |   """escaped_sequence_terminated_by_a_quote"""
+    
+   
+Descriptions:
+-------------
+
+    <attributes>
+    
+A a list of modifiers for the file characteristics in the image file system. 
+If there is no <file_spec> portion following the <attributes> specification, 
+then the attributes apply to all the files specified following. If there is 
+a <file_spec>, then the <attributes> only apply to the file(s) specified
+by that line. If the attribute name is preceeded by a "?" character. That
+use of the attribute is 'conditional'. The attribute is only processed
+if it has _not_ been already set in the control file.
+
+	bigendian - Set the byte order for the image file system to either 
+			big ("+bigendian") or little ("-bigendian") endian. This 
+			option does not normally need to be specified when building 
+			a bootable image since the bootfile will provide the required 
+			byte order. If a bootable file system is not being built or 
+			the bootfile does not say which byte order to use, the host 
+			system byte order is used in building the image file system.
+	
+    cd - Set the current working directory to this before attempting to
+            open the host file name. Default is the initial cwd.
+            
+    chain - Set the address the Neutrino will look for the next image
+            file system. Default is none.
+            
+    code - Set whether an executable code segment is used directly from
+            the image file system or copied when invoked. Default is 
+			use in place.
+            
+    compress - Set whether an executable is compressed within the image
+            file system. Default is false. (NOTE: not really implemented
+            yet).
+            
+    data - Set whether an executable data segment is used directly from
+            the image file system or copied when invoked. Default is 
+			use in place.
+            
+    filter - Run the host file through the filter program specified,
+            presenting the host file data as standard input to the program
+            and use the standard output from the program as the data
+            to be placed in the image file system. Default is no filter.
+            
+    gid - Set the group id number for the file. It may be either a number,
+            or "*", in which case the gid is taken from the host file. 
+            Initial value for this attribute is "*". 
+            
+    image - Set base and size limits for the image file system. 
+				start_addr -> base address of the image. Only matters when
+            			building a bootable image. Default is
+						dependent on whatever bootfile is selected.
+				end_addr -> the last allowable address in image. If the
+						output image exceeds this address an error is
+						reported. Default is no limit. 
+				maxsize -> the maximum allowed size of the image. If
+						the output image becomes larger than this value
+						an error is reported. Default is no limit.
+				totalsize -> the output image will be padded out to
+						this size. Default is none.
+				align -> the output image size will be padded out to
+						a multiple of this value. Default is four.
+			
+    keeplinked - If true and mkifs has to run a linker to position the
+			executable within the image file system, the output file
+			from the link is the basename of the hostpath with ".sym"
+			appended. E.g. If the host name is "../foo/bar", the output
+			name will be "bar.sym". If false, a generated temporary name
+			is used for the output file and it is deleted after mkifs
+			has run. The default is true if an image file name is
+			specified on the command line and false if the image is
+			sent to stdout.
+    
+   	linker - When building a bootable image, mkifs sometimes needs to 
+			run a linker on relocatable objects to position them within 
+			the image. This option allows the specification of 
+			printf-like formats to tell mkifs how to generate the linker 
+			command line (see below for details). This option does not 
+			normally need to be specifed since mkifs or a bootfile
+			provides a default. Different linkers can be used for 
+			different types of ELF files. If the first character of the
+			attribute value is an open parenthesis, "(", then it is
+			followed by a list of comma separated numbers giving the
+			allowable ELF machine numbers (EM_* constants) for the linker 
+			spec. The list of machine number is terminated by a semi-colon.
+			It is then followed by a list coma separated numbers giving
+			the list of acceptable ELF file types (ET_* constants).
+			That list is also terminated by a semi-colon. It is followed
+			by a third comma separated list of numbers giving ELF program
+			segment types (PT_* constants). The whole linker id spec
+			is terminated by a closing parenthesis, ")". If the id spec
+			is present, the linker spec is only used if the machine
+			number of the ELF input file matches one of the given numbers,
+			AND the ELF file type of input file matches one of the
+			given numbers AND at least one of the program segment types
+			in the input file matches one of the given numbers. If
+			the machine number list is empty, then any machine number
+			type in the input file is acceptable. If the program segment
+			number list is empty than any program segment number types
+			in the input file are acceptable. If the ELF file type
+			number list is empty, then ET_REL is assumed.
+			
+	optional - If true and the host file can not be found, output a
+			warning and continue building the image file system. If
+			false and the host file can not be found, output an error 
+			message and exit mkifs. Default is false. This attribute
+			can not be set to true for bootstrap executables (see
+			the "physical" attribute for more information).
+            
+    perms - Set the access permissions of the file. If a number, the
+            permissions are set to that (as in chmod). If "*", the
+            host file permissions are used. Otherwise a symbolic
+			mode string which is a subset of chmod's is used to
+			delete, add, or set permissions. Default is "*".
+            
+    prefix - Set the prefix on the target file names. Default is 
+            "proc/boot" when building a bootable image and "" when not.
+	
+	physical - This attribute indicates that a bootable file system is
+			being built. It may only be specified once in a control file.
+			The image will be run in physical memory mode. If there
+			is a "/" character in the value, the string in front of
+			that is taken to be the CPU type of the target system. The
+			CPU environment variable is set that string (this affects
+			the MKIFS_PATH search path for host files). The characters
+			after the slash (or the equal sign for the attribute if there
+			is no slash) up to the first blank character is taken to
+			be the bootfile name. The suffix ".boot" is appended to 
+			given name and MKIFS_PATH is searched for the file. See below
+			for more details on the contents of the file. Any characters
+			in the attribute value following a blank are used as arguments
+			to any image filter command specified by the boot file.
+			If no CPU type is specifed in the attribute value, the
+			host system CPU type is used. The contents of the host
+			file that this attribute applies to are parsed to discover
+			the bootstrap executables used to bring up the system.
+			Each line identifies one bootstrap executable. The first of 
+			these must be the Neutrino startup executable. The last must 
+			be ProcNto or a stand alone kernel executable. (The only other 
+			one allowed at the moment is kdebug, the kernel debugger). 
+    
+    ram - Set base and size limits for the R/W memory required by
+			executables in the image file system. This attribute
+			needs to be specfied if the the actual image is going
+			to be stored on a read-only device such as ROM or flash
+			memory.
+				addr -> base address of the ram. Only matters when
+            			building a bootable image. Default is
+						dependent on whatever bootfile is selected.
+				maxsize -> the maximum allowed size of ram. If
+						the output image requires more ram than this
+						an error is reported. Default is no limit.
+				totalsize -> the ram usage will be padded out to
+						this size. Default is none.
+				align -> the ram usage will be padded out to
+						a multiple of this value. Default is four.
+            
+    raw - If true, the file is treated as a data file, even if it would
+			normally be treated as an executable and be relocated. Default 
+			is false.
+        
+    rom - If true the image is assumed to be placed in rom (forcing 
+			executable data segments to be copied rather than use 
+			in place). Default is false.
+            
+    search - search for the file in the named locations on the host
+            system. The search directory portion of the host file name is 
+            not included in the name that is stored in the image file
+            system. The default is the contents of the MKIFS_PATH 
+            environment variable.
+			
+	script - If true, the host file is opened and proccessed as a script
+			file. Each line is parsed as command line to be run after the
+			process manager has initialized itself. If multiple files
+			are marked with +script, they are merged sequentially into
+			a single file in the image file system. See below for more 
+			details on the command line syntax. 
+			
+	type - Set the type of the files being created in the image file
+			system. Allowable types are:
+					link	- a symbolic link
+					fifo	- a named pipe
+					file	- a regular everyday file
+			Default is "file".
+    
+    uid - Set the user id number for the file. It may be either a number,
+            "*", in which case the uid is taken from the host file. 
+            Initial value for this attribute is "*". 
+			
+	virtual - Same as "physical=", only it builds a virtual memory system.
+
+	followlink - Determines if symbolic links on the host system 
+                 are resolved or left as links during a directory 
+				 inclusion. If followlink in set (the default) any
+				 linked files will be copied to the image, and any
+				 linked directories will be recursed into.  If 
+				 followlink is not set then the links are left as
+				 links, (and directories are not traversed).
+           
+    <file_spec>
+
+Specifies one or more files to be included in the image file system.
+The <image_file_name> portion gives the name as it will be known in
+the image file system (possibly preceeded by some prefix). If the
+<host_file_spec> portion is not present, the <image_file_name> also gives
+the host file name that is to be included in the image file system
+(possibly preceeded by some prefix). If the <host_file_spec> portion
+is specified, then that gives the name (or data) of the file on the host 
+system that is to be included. If the specified host name is a directory,
+then the <image_file_name> is also a directory and all the files and
+subdirectories underneath the host directory are included in the image
+file system. 
+
+
+    <file_data>
+    
+Instead of providing the name of file on the host system, the user can
+provide the data to be placed in the image file by enclosing it in
+brace brackets. Any closing brace in the file data has to be escaped
+by preceeding it with a backslash.
+
+
+Examples:
+---------
+
+------------------------------------------------------------
+    /home/bstecher/neutrino/file1
+    /home/bstecher/neutrino/file2
+------------------------------------------------------------
+
+Include "/home/bstecher/neutrino/file1" and "/home/bstecher/neutrino/file2"
+in the image file system.
+
+------------------------------------------------------------
+    /home/bstecher/neutrino
+------------------------------------------------------------
+
+Include all the files under the "/home/bstecher/neutrino" directory
+in the image file system.
+
+------------------------------------------------------------
+    [uid=10] /home/bstecher/neutrino/file1
+------------------------------------------------------------
+
+Include the ".../file1" file in the image file system and set its user id 
+to 10.
+
+------------------------------------------------------------
+    [gid=5] 
+    /home/bstecher/neutrino/file1
+    /home/bstecher/neutrino/file2
+------------------------------------------------------------
+
+Include both ".../file1" and ".../file2" in the file system and set
+both their group id's to 5.
+
+------------------------------------------------------------
+    /usr/nto/test = /home/bstecher/neutrino/file1
+------------------------------------------------------------
+
+Include ".../file1" in the file system, but make it known as "/usr/nto/test".
+
+------------------------------------------------------------
+    /usr/nto/test = {
+    my first line
+    my second line
+    my last line
+    }
+------------------------------------------------------------
+
+Include "/usr/nto/test" in the file system and set its contents to:
+
+    my first line
+    my second line
+    my last line
+
+------------------------------------------------------------
+    "/test/\"strange name" = {
+    my first line
+    }
+------------------------------------------------------------
+
+Include a file called:
+
+    /test/"strange name
+    
+in the image file system.
+
+
+The new command language for Neutrino script files
+==================================================
+
+A Neutrino script file is included in an image file system and identified 
+by the "+script" attribute. It consists of a sequences of commands 
+to be run in order by ProcNto to finish initializing a Neutrino system. 
+The basic command line looks like this:   
+
+    "[ <modifiers> "]" [<command_line>]
+    
+The modifiers consist of a list of blank separated items that modify how
+Neutrino runs the command. If there is a <command_line> following the 
+modifiers, they only affect that one command. If is no <command_line>, 
+the modifiers affect all following commands. Current modifiers are:
+
+    argv0= <name>
+    
+        Set the argv[0] element of the command argument entry. By default,
+        this is the same as the command name.
+        
+    +|- debug
+    
+        If "+debug" is specified, force the process to enter the kernel
+        debugger at startup. If "-debug" is specified, don't make the
+        process enter the kernel debugger at startup. The default
+        is "-debug".
+		
+	+|- external
+		Mkifs recognizes three internal commands: "display_msg", "reopen", 
+		and "waitfor", which it handles specially when parsing the 
+		script file. If you have an external command with one of those 
+		names, you can force mkifs to use that by specifying "+external". 
+		The default is "-external".
+
+    pri=<number>[f|r|o]      
+
+        Set the command's priority to <number>. If the priority value
+		is followed by 'f', 'r', or 'o', set the scheduling algorithm
+		to 'fifo', 'round-robin', or 'other', respectively. The default 
+		is '*' which means ProcNto's default.
+        
+    +|- session
+    
+        If "+session" is specified, make the process a session leader. If
+        "-session" is specified don't make the process a session leader.
+        The default is "-session".
+        
+Examples:
+---------
+
+These list out the full image file system control file, not just the
+script file.
+
+------------------------------------------------------------
+[physical=x86,bios] .bootstrap = {
+    startup.bios
+    ProcNto
+}
+[+script] .script = {
+    [pri=20f] Devc.con -n 9 &
+    reopen /dev/con1
+    [+session] esh
+}
+Devc.con
+esh
+------------------------------------------------------------
+
+------------------------------------------------------------
+[virtual=mipsbe,elf 20] .bootstrap = {
+    startup.c4500 -v
+    ProcNto -v
+}
+[+script] .script = {
+    [pri=20f] Devc.ser2681 &
+    reopen /dev/ser1
+    [+session] esh
+}
+Devc.ser2681
+esh
+------------------------------------------------------------
+
+(From here on down is esoteric information that most people won't
+care about).
+
+The bootfile
+============
+
+When building a bootable file system, a "bootfile" must be specified
+by the "physical=" or "virtual=" attributes. If the first character of the 
+bootfile is a "[", a list of configuration attributes is given in the same 
+syntax as the control file. The list of attributes is terminated by a "]" 
+character. The allowed attributes are:
+
+    attr= <image_attribute>
+    
+        The <image_attribute> is an attribute that is prefixed to the
+        start of the control file. These attributes are processed even
+        before the "-l" command line options so that they may be overridden.
+		
+	default_image= <addr_space_spec>
+	
+		Set the defaults for the "image=" file attribute.
+		
+	default_ram= <addr_space_spec>
+	
+		Set the defaults for the "ram=" file attribute.
+        
+    filter= <image_filter_spec>
+	
+        After the image has been created, run <image_filter_spec>.
+		The following formatting codes are recognized:
+			%I - the name of an intermediate image file
+			%i - the name of the output image file.
+			%s - the offset of the startup header in the image file,
+				in hex with a leading "0x".
+			%a - any arguments from the "physical=" or "virtual=" attribute.
+        
+    len= <boot_length>
+    
+        The <boot_length> gives the amount of space to leave at the
+        front of the image file (before actual image file system) for
+        system header information or IPL code. This is the minimum amount
+        of space to reserve. If the IPL code following the bootfile
+        attributes is larger than the number given here, the size of the
+        IPL code is used instead. The default is zero.
+        
+    notloaded= <length>
+    
+        In some systems (e.g. IBM Openbios), the system header information
+        is not loaded into memory and does not contribute to the memory
+        offsets where things are placed (the base address of the image
+        being set by the "image=" attribute in the control file). This
+        attribute gives the size of the information which is not going
+        to be loaded into memory. The default is zero.
+		
+	paddr_bias= <number>
+	
+		On some CPU's (MIPS), the hardware reserves a range of virtual
+		addresses which map one-to-one with physical address. This attribute
+		lets mkifs know how to translate a virtual address to it's
+		physical location in memory via the formula:
+					phys_addr = virt_addr + <number>.
+		The default is zero.			
+        
+    pagesize= <size>
+    
+        Set the size of a page in the image file system. mkifs aligns 
+        various structures to a multiple of this. The default is 4K.
+        
+    vboot= <addr>
+    
+        When building a virtual system, the paging hardware is sometimes
+        turned on by the startup code (X86) as opposed to ProcNto (MIPS).
+        In the first case, this option tells mkifs what base virtual address
+        should be used for the bootstrap executables. This option has
+        no effect when building a physical system. The default is none.
+   
+Following the closing "]" character of bootfile attributes, mkifs searches
+for the string "boot". If it's found, mkifs considers all data immediately
+following and to the end of the file to be IPL code. It is placed at the
+start of the image file. If the "len=" attribute was specified and is
+larger than the size of the IPL code, the image file is padded out to
+the size given. 
+
+
+The linker specification
+========================
+
+The linker specification allows the user to control how the linker
+command line is built when mkifs needs to turn a relocatable object
+into an executable running at a particular address. It operates much
+as a printf format string, with characters being copied from the format
+to the command line until a "%" character is found. The following
+formatting codes are supported.
+
+    %h
+        The address the executable header should be placed at, in
+        hexadecimal.
+        
+    %t
+        The address the text segment should be placed at, in hexadecimal.
+        This will be %h plus the amount of space for the executable
+        header structures.
+        
+    %d
+        The address the data segment should be placed at, in hexadecimal.
+        This value may be zero, in which case the data should be placed
+        immediately following the text segment.
+        
+    %o
+        The name of the output executable file, as a string.
+        
+    %i
+        The name of the input relocatable file, as a string.
+        
+    %(
+        Open a conditional section. Following the "(" character will
+        be a single character indicating the variable that the section
+        is conditional on. Following that will be one of the usual
+        conditional operators from the C language. Following that will
+        be a constant then an comma. The contents of the variable
+        will be compared against the constant and if the result is
+        true, the text following the comma will be included in the
+        command string being built. If the comparison is false, the
+        contents of the string following will be omitted. The conditional
+        is terminated by a "%)" formatting code. Conditionals can nest.
+        
+        The variables that can be tested are:
+            e   - 0 => little endian, 1 => big endian
+            d   - the data segment address
+            f	- 0 => startup file, 1 => bootstrap file, 2 => normal file
+            h   - the executable header address
+            m   - the machine number from the ELF header
+			v	- 0 => file linked physically, 1 => file linked virtually
+			V	- 0 => physical system, 1 => virtual system
+    
+    %)
+        Terminate a conditional section.
+        
+Here is mkifs's default linker command specification:
+
+static const char default_linker[] = {
+    "(;1;)gcc --no-keep-memory -nostdlib -nostartfiles -nodefaultlibs"
+    " -bnto%(m==3,x86%)%(m==6,x86%)%(m==8,mips%)%(m==20,ppc%)"
+    "%(e==0, -EL%)%(e==1, -EB%)"
+    "%(h!=0, -Ttext 0x%t%)%(d!=0, -Tdata 0x%d%)"
+    " -o%o %i"
+};

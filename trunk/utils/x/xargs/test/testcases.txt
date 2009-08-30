@@ -1,0 +1,27 @@
+xargs Testcases
+by Sunil Puri (spuri)
+
+Basic Test Cases
+----------------
+1) The -t option is {on, off}
+2) Use {0, 1, <n, n, >n} args
+3) Use s={0, 1, LINE_MAX+{-1, 0, 1}} x
+   initial command line is {<, =, >} s in length
+4) Test initial command line + any individual args > s.
+5) Test with empty command line
+6) Test -x option on with  {<, =} n args that together are > s.
+7) Test -P option with 0, -1, 1, >1 options
+8) Test -i option with {1, 2, 3} "{}" in command line
+9) Test -i option with "{}", "/{}", "{}/", "/{}/" in command line
+
+Return Value Tests
+------------------
+1) Commands are {executable, not executable, non-existant}
+2) Commands all return 0, at least one doesn't return 0
+3) Any process returns 255
+3) Any process doesn't terminate normally
+
+Test Cases To Do List
+---------------------
+
+

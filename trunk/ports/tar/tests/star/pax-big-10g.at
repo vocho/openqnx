@@ -1,0 +1,43 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([pax-big-10g])
+AT_KEYWORDS([star pax-big-10g])
+
+unset TAR_OPTIONS
+
+AT_CHECK([
+AT_GZIP_PREREQ([bzip2])
+AT_STAR_PREREQ([pax-big-10g.tar.bz2],[ca15c23acc8d8bb1f27e60113a5f8bff])
+
+tar --utc -tvjf $STAR_TESTSCRIPTS/pax-big-10g.tar.bz2
+],
+[0],
+[-rw------- jes/glone 10737418240 2002-06-15 21:18 10g
+-rw-r--r-- jes/glone           0 2002-06-15 14:53 file
+],
+[stderr])
+
+RE_CHECK([stderr],[tar: Record size = .*
+])
+
+AT_CLEANUP
+
+

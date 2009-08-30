@@ -1,0 +1,11 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="nto/*/*/libz.a" pinfo="$"/>
+			<QPG:Add file="nto/*/*/libz.so" pinfo="$"/>
+			<QPG:Add file="nto/*/*/libzS.a" pinfo="$"/>
+			<QPG:Add type="tree" file="public/" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

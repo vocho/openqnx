@@ -1,0 +1,1523 @@
+<html><head>
+<title>Elvis-2.2_0 Visual Command Mode</title>
+</head><body>
+
+<h1>2. VISUAL COMMAND MODE</h1>
+Most visual mode commands are one keystroke long.
+The following tables list the operation performed by each keystroke,
+and also denotes any options or arguments that it accepts.
+
+<p> In addition to the keys listed here, your keyboard's "arrow" keys
+will be interpreted as the appropriate cursor movement commands.
+The same goes for (PgUp) and (PgDn), if your keyboard has them.
+The (Insert) key will toggle between insert mode and replace mode.
+There is a colon mode command (":map", to be described later)
+which will allow you to define other keys, such as function keys.
+
+<p> A tip: visual command mode looks a lot like text input mode.
+If you forget which mode you're in, just hit the (Esc) key.
+If Elvis beeps, then you're in visual command mode.
+If Elvis does not beep, then you were in input mode,
+but by hitting (Esc) you will have switched to visual command mode.
+So, one way or another, after (Esc) Elvis will be ready for a command.
+
+<h2>2.1 Notation</h2>
+The following notation is used in the tables that follow...
+<dl>
+<dt>count<dd>
+Many commands may be preceded by a count.
+This is a sequence of digits representing a decimal number.
+For most commands that use a count,
+the command is repeated <var>count</var> times,
+but a few commands use the count value for some completely different purpose.
+The count is always optional, and usually defaults to 1.
+<dt>key<dd>
+Some commands require two keystrokes.  The first key always determines
+which command is to be executed.  The second key is used as a parameter
+to the command.
+<dt>mv<dd>
+Some commands
+(<a href="#bang">!</a> <a href="#lt">&lt;</a> <a href="#gt">&gt;</a>
+<a href="#=">=</a> <a href="#c">c</a> <a href="#d">d</a> <a href="#y">y</a>
+<a href="#g=">g=</a> <a href="#g~">g~</a> <a href="#gu">gu</a>
+<a href="#gU">gU</a>)
+operate on text between the cursor and some other position.
+Usually, the other position is specified by typing a movement command
+after the operator command, but there are other options.
+See the section on <a href="#operators">operators</a> for more information.
+These commands can also be used with <a href="#textobject">text objects</a>.
+<dt>inp<dd>
+Many commands allow the user to interactively enter text.
+See the discussion of "input mode" in the following chapter.
+</dl>
+
+<h3><a name="textobject"></a>2.1.1 Text objects</h3>
+Traditionally, the <a href="#operators">operator</a> commands could
+only act on text between the cursor position, and the location that a motion
+command would move the cursor to.
+Earlier versions of Elvis added visual marking as another alternative.
+More recently, the <a href="elvistip.html#clones">vim</a> editor added
+text objects as yet another alternative.
+Elvis now supports text objects too.
+
+<p>Each type of text object has a two-character name.
+The first character is 'a' for the whole object including surrounding text,
+or 'i' for just the "inner" part of the object without any surrounding text.
+The second character describes how the object's endpoints are to be found.
+
+<pre graphic>
+.----------.-----------------------------------------------------.
+| 2nd char | Extent of the text object                           |
+|----------|-----------------------------------------------------|
+|  w       | word or punctuation string, like <a href="#b">b</a> <a href="#e">e</a> <a href="#w">w</a> commands     |
+|  W       | whitespace-delimited word, like <a href="#B">B</a> <a href="#E">E</a> <a href="#W">W</a> commands      |
+|  s       | sentence, like <a href="#open">(</a> <a href="#close">)</a> commands                         |
+|  p       | paragraph, like <a href="#ocur">{</a> <a href="#ccur">}</a> commands                        |
+|  S       | section, like <a href="#obra">[[</a> <a href="#cbra">]]</a> commands                        |
+|  { [ ( &lt; | block delimited by the previous {[(&lt; and its match  |
+|  } ] ) &gt; | block delimited by the following }])&gt; and its match |
+|  %       | block delimited by any of {[( and its match         |
+|  b       | block delimited by parentheses, like a( or i(       |
+|  B       | block delimited by braces, like a{ or i{            |
+|  L       | group of lines with same or greater indentation     |
+|  l       | individual lines (i.e. fields delimited by newlines)|
+|  x       | XML/SGML &lt;tag&gt;...&lt;/tag&gt; pair, case sensitive        |
+|  X       | HTML &lt;tag&gt;...&lt;/tag&gt; pair, case insensitive          |
+|  t       | field, delimited by tabs                            |
+|  other   | field, delimited at both ends by the character or \n|
+^----------^-----------------------------------------------------^</pre>
+
+<p>The use of uppercase <code>S</code> for sections,
+<code>%</code> for any brace-delimited block,
+<code>L</code> for an indentation-delimited block,
+<code>l</code> for lines,
+<code>x</code> and <code>X</code> for tag pairs,
+<code>t</code> for tab fields,
+and other punctuation for field delimiters
+are all extensions beyond vim's text objects.
+
+<p>For block text objects, the 'a' version includes the
+delimiting characters, while the 'i' version excludes them.
+The "aL" object includes surrounding blank lines, while "iL" excludes those
+lines plus the leading whitespace of the first line the trailing newline
+of the last line.
+For XML objects, the 'a' version includes the tags and the 'i' version
+excludes them.
+For field text objects, the 'a' version includes the trailing delimiter but
+not the leading one, while the 'i' version omits both delimiters and any
+leading whitespace.
+For the other text objects, the 'a' version includes trailing whitespace
+(or leading whitespace if there is no trailing whitespace), and the 'i'
+version is just the object itself without the surrounding whitespace.
+
+<p>Text objects accept counts.
+For blocks and XML tag pairs, the count is the number of levels of nested brackets/tag pairs to skip.
+For fields, the count is the number of delimiters to skip <em>in both directions</em>, so a count of <var>n</var> selects <var>2n-1</var> objects centered around the cursor.
+For other text objects, the count is the number of consecutive objects
+to use, starting with the current one.
+For example, "<code>3daw</code>" deletes three words,
+while "<code>3dab</code>" moves outward three levels of parentheses
+and then deletes that single large block.
+"<code>3dal</code>" deletes five lines centered around the cursor.
+
+<p>The <a href="elvisopt.html#matchchar">matchchar</a> option can accept
+object names in addition to character pairs.
+For example, if you "<code>:set matchchar=(){}[]ax</code>" then the
+<a href="elvisvi.html#pct">%</a> command will bounce between the endpoints
+of an XML tag pair.
+If you also set the <a href="elvisopt.html#showmatch">showmatch</a> option,
+then when you type the "<kbd>&gt;</kbd>" of the closing tag,
+Elvis will highlight the entire opening tag.
+
+<p>Also, the <a href="elvisopt.html#hllayers">hllayers</a> and
+<a href="elvisopt.html#hlobject">hlobject</a> options can be used together
+to highlight objects around the cursor.
+For example, "<code>:set hllayers=1 hlobject=al</code>" will cause the
+current line to be highlighted.
+
+<h2><a name="group"></a><a name="GROUP"></a>2.2 Visual Commands, Grouped by Function</h2>
+<menu>
+<li><a href="#2.2.1">	2.2.1 Edit commands</a>
+<li><a href="#2.2.2">	2.2.2 Edit commands which are operators</a>
+<li><a href="#2.2.3">	2.2.3 Edit commands which are shortcuts for operators</a>
+<li><a href="#2.2.4">	2.2.4 Movement commands which move by a line or column</a>
+<li><a href="#2.2.5">	2.2.5 Movement commands which are window-relative</a>
+<li><a href="#2.2.6">	2.2.6 Movement commands which search for strings</a>
+<li><a href="#2.2.7">	2.2.7 Movement commands which search for characters</a>
+<li><a href="#2.2.8">	2.2.8 Movement commands which move by words</a>
+<li><a href="#2.2.9">	2.2.9 Movement commands which move by sentences or sections</a>
+<li><a href="#2.2.10">	2.2.10 Movement/mark commands</a>
+<li><a href="#2.2.11">	2.2.11 Scrolling commands</a>
+<li><a href="#2.2.12">	2.2.12 Window commands</a>
+<li><a href="#2.2.13">	2.2.13 Other commands</a>
+</menu>
+<h3><a name="2.2.1"></a>2.2.1 Edit commands</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#P">P</a>      | Paste text before the cursor                         |
+|       <a href="#p">p</a>      | Paste text after the cursor                          |
+| count <a href="#J">J</a>      | Join lines, to form one big line                     |
+| count <a href="#gJ">gJ</a>     | Join lines without adding whitespace                 |
+| count <a href="#X">X</a>      | Delete the character(s) to the left of the cursor    |
+| count <a href="#x">x</a>      | Delete the character that the cursor's on            |
+| count <a href="#~">~</a>      | Switch a character between uppercase &amp; lowercase     |
+| count <a href="#r">r</a> key  | Replace "count" chars by a given character           |
+|       <a href="#R">R</a> inp  | Overtype                                             |
+| count <a href="#a">a</a> inp  | Insert text after the cursor                         |
+| count <a href="#A">A</a> inp  | Append at end of the line                            |
+| count <a href="#i">i</a> inp  | Insert text at the cursor                            |
+| count <a href="#I">I</a> inp  | Insert at the front of the line (after indents)      |
+| count <a href="#gI">gI</a> inp | Input at start of line (before indents)              |
+| count <a href="#o">o</a> inp  | Open a new line below the current line               |
+| count <a href="#O">O</a> inp  | Open up a new line above the current line            |
+| count <a href="#stop">.</a>      | Repeat the previous "edit" command                   |
+| count <a href="#u">u</a>      | Undo the previous edit command                       |
+| count <a href="#^R">^R</a>     | Redo commands which were undone by the u command     |
+|       <a href="#U">U</a>      | Undo all recent changes to the current line          |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>P
+<br>p
+<dd><a name="P"></a><a name="p"></a>
+The <kbd>P</kbd> and <kbd>p</kbd> commands paste text from a cut buffer.
+The difference between them is that <kbd>p</kbd> pastes after the cursor,
+and <kbd>P</kbd> pastes before it.
+See the section on <a href="elviscut.html">cut buffers</a> for more information.
+
+<dt><var>count</var> J
+<br><var>count</var> gJ
+<dd><a name="J"></a><a name="gJ"></a>
+The <kbd>J</kbd> and <kbd>gJ</kbd> commands join the current line with the
+following line.
+If you supply a count argument, then they will join that many lines together,
+starting at the current line.
+The difference between these commands is that <kbd>J</kbd> will add whitespace
+between the lines, while <kbd>gJ</kbd> will not.
+These commands resemble the <a href="elvisex.html#join">:join</a> command
+without and with a "!" suffix, respectively.
+
+<dt><var>count</var> X
+<br><var>count</var> x
+<dd><a name="X"></a><a name="x"></a>
+The <kbd>X</kbd> and <kbd>x</kbd> commands delete characters.
+The difference between them is that <kbd>x</kbd> deletes the character at
+the cursor, and <kbd>X</kbd> deletes the character before the cursor.
+If you supply a count, then it will delete that many characters.
+The deleted characters are copied into a cut buffer.
+The <kbd>X</kbd> and <kbd>x</kbd> commands never delete newline characters.
+
+<dt><var>count</var> ~
+<dd><a name="~"></a>
+The <kbd>~</kbd> command changes uppercase letters to lowercase, or
+vice versa, and moves the cursor forward.
+Non-letters are unaffected, but the cursor will still be moved forward.
+
+<dt><var>count</var> r <var>key</var>
+<dd><a name="r"></a>
+The <kbd>r</kbd> command replaces a single character in the edit buffer with
+a single character read from the keyboard.
+If you supply a count, then it will replace that many characters in the
+edit buffer with multiple copies of a single character from the keyboard.
+
+<dt>R <var>inp</var>
+<dd><a name="R"></a>
+The <kbd>R</kbd> command switches the window to "replace mode" which is a
+variation of <a href="elvisinp.html">input mode</a>.
+
+<dt><var>count</var> a <var>inp</var>
+<dd><a name="a"></a>
+The <kbd>a</kbd> command switches to <a href="elvisinp.html">input mode</a>
+with the cursor starting immediately after its previous position.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> A <var>inp</var>
+<dd><a name="A"></a>
+The <kbd>A</kbd> command switches to <a href="elvisinp.html">input mode</a>
+with the cursor starting at the end of the current line.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> i <var>inp</var>
+<dd><a name="i"></a>
+The <kbd>i</kbd> command switches to <a href="elvisinp.html">input mode</a>
+with the cursor starting at its current position.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> I <var>inp</var>
+<dd><a name="I"></a>
+The <kbd>I</kbd> command switches to <a href="elvisinp.html">input mode</a>
+with the cursor starting at the beginning of the current line.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> gI <var>inp</var>
+<dd><a name="gI"></a>
+The <kbd>gI</kbd> command resembles the <a href="#I">I</a> command,
+except that <kbd>gI</kbd> always inserts at the start of the line,
+<em>before</em> any indentation, while <kbd>I</kbd> inserts <em>after</em>
+indentation.
+<dt><var>count</var> o <var>inp</var>
+<dd><a name="o"></a>
+The <kbd>o</kbd> command switches to <a href="elvisinp.html">input mode.</a>
+A new, blank line is created after the current line, and the cursor
+starts at the beginning of that new line.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> O <var>inp</var>
+<dd><a name="O"></a>
+The <kbd>O</kbd> command switches to <a href="elvisinp.html">input mode.</a>
+A new, blank line is created before the current line, and the cursor
+starts at the beginning of that new line.
+If a count is supplied, then after you manually insert the first copy of
+the new text, Elvis will automatically insert <var>count-1</var>
+additional copies.
+
+<dt><var>count</var> .
+<dd><a name="stop"></a>
+The <kbd>.</kbd> command repeats the previous command which changed text.
+If a count is supplied, it overrides count of the original command.
+
+<dt><var>count</var> u
+<dd><a name="u"></a>
+The <kbd>u</kbd> command undoes the previous edit command.
+If a count is supplied, then it will undo that many changes, within
+the limit defined by the <a href="elvisopt.html#undolevels">undolevels</a>
+option.
+
+<dt><var>count</var> ^R
+<dd><a name="^R"></a>
+The <kbd>^R</kbd> command redoes commands which were undone by the <kbd>u</kbd>
+command.
+Essentially it undoes the "undo".
+
+<dt>U
+<dd><a name="U"></a>
+The <kbd>U</kbd> command undoes all changes which were made to the current
+line since the cursor was moved onto it.
+
+</dl>
+
+<h3><a name="2.2.2"></a><a name="operators"></a>
+2.2.2 Edit commands which  are operators</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|    <a href="#lt">&lt;</a> mv      | Shift text left                                      |
+|    <a href="#gt">&gt;</a> mv      | Shift text right                                     |
+|    <a href="#bang">!</a> mv text | Run selected lines thru an external filter program   |
+|    <a href="#=">=</a> mv      | Reformat                                             |
+|    <a href="#c">c</a> mv inp  | Change text                                          |
+|    <a href="#d">d</a> mv      | Delete text                                          |
+|    <a href="#y">y</a> mv      | Yank text (copy it into a cut buffer)                |
+|    <a href="#g=">g=</a> key mv | Convert text to an equal number of <var>key</var> characters    |
+|    <a href="#gU">gU</a> mv     | Convert text to uppercase                            |
+|    <a href="#gu">gu</a> mv     | Convert text to lowercase                            |
+|    <a href="#g~">g~</a> mv     | Toggle text between uppercase &amp; lowercase            |
+^--------------^------------------------------------------------------^
+</pre>
+
+These commands all affect text between the cursor's current position and
+some other position.
+There are four ways that you can specify that other position:
+<ul>
+<li>Follow the command keystroke with a movement command.
+For example, <kbd>dw</kbd> deletes a single word.
+<kbd>d3w</kbd> and <kbd>3dw</kbd> both delete three words.
+<li>
+Type the command keystroke twice.
+This causes whole lines to be acted upon.
+For example, <kbd>&gt;&gt;</kbd> indents the current line.
+<kbd>3&gt;&gt;</kbd> indents the current line and the following two lines.
+<li>
+Follow the command keystroke with a <a href="#textobject">text object</a> name.
+The command will affect the entire object, even if the cursor isn't located
+at either endpoint.
+For example, <kbd>dap</kbd> deletes a whole paragraph.
+<li>
+Move the cursor to one end of the text,
+type <a href="#v">v</a>, <a href="#V">V</a>, or <a href="#^V">^V</a> to start marking,
+move the cursor to the other end,
+and then type the desired operator command key.
+</ul>
+
+<p>
+The "g" operators (<a href="#g=">g=</a>, <a href="#gU">gU</a>,
+<a href="#gu">gu</a>, and <a href="#g~">g~</a>) are only available if
+Elvis has been compiled with FEATURE_G enabled.
+In <a href="elvisexp.html">arithmetic expressions</a> you can use the
+<a href="elvisexp.html#feature">feature("g")</a> function to test for this.
+<dl>
+
+<dt>&lt; <var>mv</var>
+<br>&gt; <var>mv</var>
+<dd><a name="lt"></a><a name="gt"></a>
+These commands adjust the indentation of lines.
+The <kbd>&lt;</kbd> command reduces indentation by <a href="elvisopt.html#shiftwidth">shiftwidth</a>
+columns, and the <kbd>&gt;</kbd> command increases indentation by the same amount.
+The type of whitespace used for the new indentation is determined by the
+<a href="elvisopt.html#autotab">autotab</a> option.
+The doubled-up <kbd>&lt;&lt;</kbd> and <kbd>&gt;&gt;</kbd> commands reduce or
+increase the indentation for the current line, respectively.
+
+<dt>! <var> mv text</var>
+<dd><a name="bang"></a>
+This command prompts you to enter a shell command line at the bottom of the
+window.
+When you've entered the command line, that command is executed and the selected
+text is piped through it.
+The resulting text replaces the original selected text.
+For example, <kbd>10!!sort</kbd> will send 10 lines through the sort program.
+
+<dt>= <var>mv</var>
+<dd><a name="="></a>
+When applied to lines, this command resembles the <kbd>!</kbd> command,
+except that instead of prompting for a command line, the <kbd>=</kbd> command
+will always execute the program specified via the
+<a href="elvisopt.html#equalprg">equalprg</a> option.
+If you expect to be running the same filter program over and over again,
+then <kbd>=</kbd> is more convenient.
+
+<p>When applied to characters selected via the <a href="#v">v</a> command,
+the <kbd>=</kbd> command uses Elvis' built-in
+calculator to evaluate the characters, and then replaces the original text
+with the result of that evaluation.
+For example, if you move the cursor to the start of a parenthesized 
+arithmetic expression and hit <kbd>v%=</kbd>
+then the expression will be simplified.
+
+<dt>c <var>mv inp</var>
+<dd><a name="c"></a>
+This command puts you in <a href="elvisinp.html">input mode</a> so you
+can replace the selected text with new, manually-entered text.
+The doubled-up <kbd>cc</kbd> command changes the current line.
+
+<dt>d <var>mv</var>
+<br>y <var>mv</var>
+<dd><a name="d"></a><a name="y"></a>
+These commands copy the selected text into a cut buffer.
+The <kbd>d</kbd> command then deletes the text from the edit buffer,
+but <kbd>y</kbd> leaves the original text intact.
+The doubled-up <kbd>dd</kbd> and <kbd>yy</kbd> commands delete or yank the
+current line, respectively.
+
+<dt>g= <var>key mv</var>
+<dd><a name="g="></a>
+The <kbd>g=</kbd> operator replaces every character (except newlines) with
+the <var>key</var> character.
+
+<dt>gU <var>mv</var>
+<br>gu <var>mv</var>
+<br>g~ <var>mv</var>
+<dd><a name="gU"></a><a name="gu"></a><a name="g~"></a>
+These commands convert text between uppercase and lowercase.
+The <kbd>gU</kbd> operator converts lowercase to uppercase,
+while <kbd>gu</kbd> does the reverse.
+The <kbd>g~</kbd> toggles each letter between uppercase and lowercase.
+<p>
+The difference between <kbd>g~</kbd> and <a href="#~">~</a> is that
+<kbd>g~</kbd> is an operator, while <kbd>~</kbd> simply changes the
+characters immediately without waiting for a motion or text object.
+</dl>
+
+<h3><a name="2.2.3"></a>2.2.3 Edit commands which are shortcuts for operators</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#C">C</a> inp  | Change text from the cursor to the end of the line   |
+|       <a href="#D">D</a>      | Delete text from the cursor to the end of the line   |
+| count <a href="#S">S</a> inp  | Change lines, like "count" cc                        |
+| count <a href="#s">s</a> inp  | Replace characters, like "count" cl                  |
+| count <a href="#Y">Y</a>      | Yank text line(s) (copy them into a cut buffer)      |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>C <var>inp</var>
+<br>D
+<br><var>count</var> S <var>inp</var>
+<br><var>count</var> s <var>int</var>
+<br><var>count</var> Y
+<dd><a name="C"></a><a name="D"></a><a name="S"></a><a name="s"></a><a name="Y"></a>
+All of these commands are shortcuts for particular operator/movement
+command combinations.
+<kbd>C</kbd> is short for <kbd>c$</kbd>,
+<kbd>D</kbd> is short for <kbd>d$</kbd>,
+uppercase <kbd>S</kbd> is short for <kbd>cc</kbd>,
+lowercase <kbd>s</kbd> is short for <kbd>cl</kbd>, and
+<kbd>Y</kbd> is short for <kbd>yy</kbd>.
+
+</dl>
+
+<h3><a name="2.2.4"></a>2.2.4 Movement commands which move by a line or column</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#0">0</a>      | If not part of count, move to 1st char of this line  |
+|       <a href="#^">^</a>      | Move to the front of the current line (after indent) |
+|       <a href="#dollar">$</a>      | Move to the rear of the current line                 |
+| count <a href="#bar">|</a>      | Move to column "count" (defaulting to column 1)      |
+| count <a href="#^X">^X</a>     | Move to column "count" (defaulting to the right edge)|
+| count <a href="#^M">^M</a>     | Move to the front of the next line                   |
+| count <a href="#+">+</a>      | Move to the front of the next line                   |
+| count <a href="#-">-</a>      | Move to the front of the preceding line              |
+| count <a href="#G">G</a>      | Move to line #"count" (default is the bottom line)   |
+| count <a href="#h">h</a>      | Move left                                            |
+| count <a href="#^H">^H</a>     | Move left                                            |
+| count <a href="#l">l</a>      | Move right                                           |
+| count <a href="#l">Space</a>  | Move right                                           |
+| count <a href="#j">j</a>      | Move down                                            |
+| count <a href="#^J">^J</a>     | Move down                                            |
+| count <a href="#^N">^N</a>     | Move down                                            |
+| count <a href="#k">k</a>      | Move up                                              |
+| count <a href="#^P">^P</a>     | Move up                                              |
+| count <a href="#_">_</a>      | Move to the current line                             |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>0
+<dd><a name="0"></a>
+The <kbd>0</kbd> command moves the cursor to the first character in the
+current line.
+
+<dt>^
+<dd><a name="^"></a>
+The <kbd>^</kbd> command moves the cursor to the first non-whitespace
+character in the current line.
+If the current line doesn't contain any non-whitespace characters, then the
+cursor is moved to the end of the line.
+
+<dt>$
+<dd><a name="dollar"></a>
+The <kbd>$</kbd> command moves the cursor to the last character in the line.
+
+<dt><var>count</var> |
+<br><var>count</var> ^X
+<dd><a name="bar"></a><a name="^X"></a>
+These commands move the cursor to a given column.
+The leftmost column is designated "column 1."
+If the cursor can't be moved to the exact column number requested
+(e.g., because the line isn't that long, or
+the requested column falls in the middle of a tab character),
+then Elvis will move the cursor as close as possible.
+If no count is given, then the <kbd>|</kbd> command moves the cursor to
+column 1 and the <kbd>^X</kbd> move the cursor to the rightmost visible
+column (taking side scrolling into account).
+
+<dt><var>count</var> ^M
+<br><var>count</var> +
+<dd><a name="^M"></a><a name="+"></a>
+The <kbd>^M</kbd> and <kbd>+</kbd> commands move the cursor down
+<var>count</var> lines (or 1 line if no count is given), and then
+to the first non-whitespace character in that destination line.
+It is equivalent to a <kbd>j</kbd> command followed by a <kbd>^</kbd> command.
+
+<dt><var>count</var> -
+<dd><a name="-"></a>
+The <kbd>-</kbd> command moves the cursor up <var>count</var> lines
+(or 1 line if no count is given), and then to the first non-whitespace
+character in that destination line.
+It is equivalent to a <kbd>k</kbd> command followed by a <kbd>^</kbd> command.
+
+<dt><var>count</var> G
+<dd><a name="G"></a>
+The <kbd>G</kbd> command moves the cursor directly to the start of a given
+line, or to the last line if no count is given.
+
+<p>For the purposes of this command,
+the "line number" of the cursor position is defined to be one plus the number
+of newline characters which precede it in the buffer.
+This definition is used regardless of what
+<a href="elvisdm.html">display mode</a> you happen to be using.
+The <a href="elvisopt.html#number">number</a> and
+<a href="elvisopt.html#ruler">ruler</a> options use the same definition.
+
+<dt><var>count</var> h
+<br><var>count</var> ^H
+<dd><a name="h"></a><a name="^H"></a>
+The <kbd>h</kbd> and <kbd>^H</kbd> commands move the cursor <var>count</var>
+characters to the left, or 1 character leftward if no count is given.
+They won't move the cursor past the beginning of the line.
+
+<dt><var>count</var> l
+<br><var>count</var> Space
+<dd><a name="l"></a>
+The <kbd>h</kbd> and <kbd>Space</kbd> commands move the cursor <var>count</var>
+characters to the right, or 1 character rightward if no count is given.
+They won't move the cursor past the end of the line.
+
+
+<dt><var>count</var> j
+<br><var>count</var> ^J
+<br><var>count</var> ^N
+<dd><a name="j"></a><a name="^J"></a><a name="^N"></a>
+These commands all move the cursor down <var>count</var> lines
+(or 1 line if no count is given), without changing the column
+of the cursor if possible.
+
+<dt><var>count</var> k
+<br><var>count</var> ^P
+<dd><a name="k"></a><a name="^P"></a>
+These commands all move the cursor up <var>count</var> lines
+(or 1 line if no count is given), without changing the column
+of the cursor if possible.
+
+
+<dt><var>count</var> _
+<dd><a name="_"></a>
+The <kbd>_</kbd> command moves the cursor down <var>count-1</var> lines.
+This command is used internally to implement the double-operators; for
+example, <a href="#lt">&lt;&lt;</a> is interpreted as <kbd>&lt;_</kbd>.
+By itself the <kbd>_</kbd> command is pretty useless.
+
+</dl>
+
+<h3><a name="2.2.5"></a>2.2.5 Movement commands which are window-relative</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+| count <a href="#H">H</a>      | Move to home row (the line at the top of the screen) |
+|       <a href="#M">M</a>      | Move to middle row                                   |
+| count <a href="#L">L</a>      | Move to last row (i.e., line at bottom of window)    |
+|       <a href="#gdollar">g$</a>     | Move to end of current row                           |
+|       <a href="#g0">g0</a>     | Move to start of current row, before indent          |
+|       <a href="#g^">g^</a>     | Move to start of current row, after indent           |
+| count <a href="#gh">gh</a>     | Move left, skipping invisible characters             |
+| count <a href="#gj">gj</a>     | Move down 1 row (useful when lines wrap)             |
+| count <a href="#gk">gk</a>     | Move up 1 row (useful when lines wrap)               |
+| count <a href="#gl">gl</a>     | Move right, skipping invisible characters            |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt><var>count</var> H
+<dd><a name="H"></a>
+The <kbd>H</kbd> command moves the cursor to the front of the first line
+that is currently visible in the window.
+If a count is given, then it will move down <var>count-1</var> lines from
+the top of the window.
+
+<dt>M
+<dd><a name="M"></a>
+The <kbd>M</kbd> command moves the cursor to the front of the line in
+the middle of the window.
+
+<dt><var>count</var> L
+<dd><a name="L"></a>
+The <kbd>L</kbd> command moves the cursor to the front of the line line
+that is currently visible in the window.
+If a count is given, then it will move up <var>count-1</var> lines from
+the bottom of the window.
+
+<dt>g0
+<br>g^
+<br>g$
+<br><var>count</var> gj
+<br><var>count</var> gk
+<dd><a name="g0"></a><a name="g^"></a><a name="gdollar"></a><a name="gj"></a><a name="gk"></a>
+These resemble the <a href="#0">0</a>, <a href="#^">^</a>, <a href="#$">$</a>,
+<a href="#j">j</a>, and <a href="#k">k</a> commands,
+except that these versions are sensitive to line wrapping or sideways scrolling.
+For example, with the <a href="elvisopt.html#wrap">wrap</a> option
+turned off, <kbd>g0</kbd> moves the cursor to the left edge of the screen
+even if the screen has scrolled sideways to display a long line.
+With <a href="elvisopt.html#wrap">wrap</a> turned on, if the cursor is on
+a long line which wraps onto multiple rows of the display, <kbd>g0</kbd>
+will move the cursor to the start of the current row, even if that row
+isn't the line's first row.
+
+<dt><var>count</var> gh
+<br><var>count</var> gl
+<dd><a name="gh"></a><a name="gl"></a>
+These resemble the <a href="#h">h</a> and <a href="#l">l</a> commands,
+except that these versions are smart enough to skip over hidden characters.
+This is useful if you're moving through text in the
+<a href="elvisdm.html#html">html</a>, <a href="elvisdm.html#man">man</a>, or
+<a href="elvisdm.html#tex">tex</a> display modes.
+
+</dl>
+
+<h3><a name="2.2.6"></a>2.2.6 Movement commands which search for strings</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#slash">/</a> text | Search forward for a given regular expression        |
+|       <a href="#quest">?</a> text | Search backward for a given regular expression       |
+|       <a href="#^A">^A</a>     | Search for next occurrence of word at cursor         |
+|       <a href="#gD">gD</a>     | Go to global definition of word at cursor            |
+|       <a href="#gd">gd</a>     | Go to local definition of word at cursor             |
+|       <a href="#n">n</a>      | Repeat the previous search                           |
+|       <a href="#N">N</a>      | Repeat previous search, but in the opposite direction|
+^--------------^------------------------------------------------------^
+</pre>
+
+All of these search commands are affected by the
+<a href="elvisopt.html#magic">magic,</a>
+<a href="elvisopt.html#ignorecase">ignorecase,</a>
+<a href="elvisopt.html#wrapscan">wrapscan,</a> and
+<a href="elvisopt.html#autoselect">autoselect</a> options.
+
+<dl>
+
+<dt>/ <var>text</var>
+<br>? <var>text</var>
+<dd><a name="slash"></a><a name="quest"></a>
+These commands prompt you to enter a <a href="elvisre.html">regular expression</a>
+at the bottom of the window.
+When you have entered it, Elvis will search forward (for <kbd>/</kbd>) or
+backward (for <kbd>?</kbd>) for text which matches the regular expression.
+Normally the cursor is positioned at the start of the matching text.
+If you want to include a <kbd>/</kbd> or <kbd>?</kbd> character
+in the regular expression, you must precede it with a backslash;
+otherwise it will be interpreted as a closing delimiter.
+
+<p>When entering the regular expression, you can append a closing delimiter
+(<kbd>/</kbd> or <kbd>?</kbd>, as appropriate) followed by a line delta
+(<kbd>+</kbd> or <kbd>-</kbd> followed by a line number) to move the cursor
+to the start of a line after or before the matching text.
+This also has the side-effect of making the search be line-oriented instead
+of character oriented; this affects the behavior of
+<a href="#operators">operators</a>.
+Line deltas don't work when the <a href="elvisopt.html#incsearch">incsearch</a>
+option is set.
+
+<p>You can also append the following single-letter flags after the closing
+delimiter:
+<pre graphic>
+	.------.-------------------------------------.
+	| FLAG | MEANING                             |
+	|------|-------------------------------------|
+	|  v   | :set <a href="elvisopt.html#autoselect">autoselect</a>                     |
+	|  n   | :set <a href="elvisopt.html#autoselect">noautoselect</a>                   |
+	|  c   | :set <a href="elvisopt.html#ignorecase">noignorecase</a>                   |
+	|  i   | :set <a href="elvisopt.html#ignorecase">ignorecase</a> <a href="elvisopt.html#smartcase">nosmartcase</a>         |
+	|  s   | :set <a href="elvisopt.html#ignorecase">ignorecase</a> <a href="elvisopt.html#smartcase">smartcase</a>           |
+	|  w   | match whole words only (add \&lt; \&gt;)  |
+	|  x   | match whole lines only (add ^ $)    |
+	^------^-------------------------------------^</pre>
+<dt>^A
+<dd><a name="^A"></a>
+This command searches forward for the next instance of the word under the
+cursor.
+It is a shortcut for the <kbd>/\&lt;\@\&gt; Enter</kbd> command.
+
+<dt>gD
+<br>gd
+<dd><a name="gD"></a><a name="gd"></a>
+These commands search for the first appearance of the word that the cursor's
+on.
+<kbd>gD</kbd> starts searching from the top of the file, and is intended to
+be used for finding the definition of global symbols.
+<kbd>gd</kbd> starts searching from the top of the current function
+(as found via the <a href="#obra">[[</a> command), and is intended to be used
+for finding the definition of local symbols.
+
+<dt>n
+<br>N
+<dd><a name="n"></a><a name="N"></a>
+These commands repeat the previous search command,
+which can be any of the commands described above.
+The <kbd>n</kbd> command repeats it in the same direction as the original
+search, and <kbd>N</kbd> repeats it in the opposite direction.
+
+</dl>
+
+<h3><a name="2.2.7"></a>2.2.7 Movement commands which search for characters</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+| count <a href="#pct">%</a>      | Move to matching (){}[] or to a given % of file      |
+| count <a href="#F">F</a> key  | Move leftward to a given character                   |
+| count <a href="#f">f</a> key  | Move rightward to a given character                  |
+| count <a href="#T">T</a> key  | Move leftward *almost* to a given character          |
+| count <a href="#t">t</a> key  | Move rightward *almost* to a given character         |
+| count <a href="#comma">,</a>      | Repeat the previous [fFtT] but in the other direction|
+| count <a href="#semi">;</a>      | Repeat the previous [fFtT] cmd                       |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt><var>count</var> %
+<dd><a name="pct"></a>
+This command actually performs one of two totally separate movements,
+depending on whether a <var>count</var> was supplied.
+With no <var>count</var>, if the cursor is on a parenthesis
+character from the <a href="elvisopt.html#matchchar">matchchar</a> list, then
+it moves the cursor to the opposite parenthesis.
+If the cursor isn't on a parenthesis to begin with,
+then Elvis will scan forward on the current line until it finds one,
+and then move to its opposite.
+It can also show matching preprocessor directives, if the window is in the
+<a href="elvisdm.html#syntax">syntax display mode</a> for a language which
+has a <a href="elvisdm.html#preprocessor">preprocessor</a>.
+
+<p>However, if a count is supplied, then it is used as a percentage from 1 to
+100, and the cursor is moved to that percentage of the way into the buffer.
+For example, typing <kbd>50%</kbd> will move the cursor to the middle of the buffer.
+
+<dt><var>count</var> F <var>key</var>
+<br><var>count</var> f <var>key</var>
+<dd><a name="f"></a><a name="F"></a>
+These commands search for the character <var>key</var> in the current line,
+starting from the cursor position.
+For example, <kbd>fk</kbd> searches forward for the next "k".
+<kbd>F4</kbd> searches backward for the previous "4".
+If the end of line is reached without finding the character,
+then the command fails.
+
+<dt><var>count</var> T <var>key</var>
+<br><var>count</var> t <var>key</var>
+<dd><a name="t"></a><a name="T"></a>
+These commands move almost, but not quite, to the next instance of
+<var>key.</var>
+The <kbd>t</kbd> and <kbd>T</kbd> commands stop one character short of
+where <kbd>f</kbd> and <kbd>F</kbd> would stop, respectively.
+
+<dt><var>count</var> ,
+<br><var>count</var> ;
+<dd><a name="comma"></a><a name="semi"></a>
+The <kbd>;</kbd> command repeats the previous <kbd>f</kbd>, <kbd>F</kbd>,
+<kbd>t</kbd>, or <kbd>T</kbd> command.
+You don't need to type a <var>key</var> because Elvis automatically
+uses whatever <var>key</var> you looked for last time.
+The <kbd>,</kbd> command also repeats the previous <kbd>f</kbd>, <kbd>F</kbd>,
+<kbd>t</kbd>, or <kbd>T</kbd> command, but in the reverse direction.
+
+</dl>
+
+<h3><a name="2.2.8"></a>2.2.8 Movement commands which move by words</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+| count <a href="#w">w</a>      | Move forward "count" words                           |
+| count <a href="#e">e</a>      | Move forward to the end of the current word          |
+| count <a href="#b">b</a>      | Move back "count" words                              |
+| count <a href="#W">W</a>      | Move forward "count" Words                           |
+| count <a href="#E">E</a>      | Move end of Word                                     |
+| count <a href="#B">B</a>      | Move back Word                                       |
+^--------------^------------------------------------------------------^
+</pre>
+
+The uppercase and lowercase versions of these commands differ only in
+their definition of a "word."
+The uppercase commands consider a word to be any sequence of non-whitespace
+characters, bound by whitespace characters or the ends of the buffer.
+
+<p>The lowercase commands define a word as either a sequence of alphanumeric
+characters, or a sequence of punctuation characters, but not a mixture of
+the two; these words can be bound by whitespace, the ends of the buffer,
+or by characters from the other class of lowercase word.
+(I.e, an alphanumeric word can be bound by punctuation characters,
+and a punctuation word can be bound by alphanumeric characters.)
+The underscore character is considered to be alphanumeric.
+
+<dl>
+
+<dt><var>count</var> w
+<br><var>count</var> W
+<dd><a name="w"></a><a name="W"></a>
+The <kbd>w</kbd> and <kbd>W</kbd> commands move the cursor forward to the
+start of the next word.
+If a count is given, the cursor will move forward <var>count</var> words.
+
+<dt><var>count</var> e
+<br><var>count</var> E
+<dd><a name="e"></a><a name="E"></a>
+The <kbd>e</kbd> and <kbd>E</kbd> commands move the cursor forward to the
+end of the current word, or if it is already at the end of the word then
+it'll move to the end of the following word.
+If a count is given, the cursor will move forward <var>count</var> word ends.
+
+<p>NOTE: These commands are often used as the targets of the <a href="#operators">operator</a>
+commands, as in <kbd>dw</kbd> or <kbd>de.</kbd>
+When used this way, the difference between them is that <kbd>dw</kbd> includes
+any whitespace after the word, but <kbd>de</kbd> does not.
+
+<dt><var>count</var> b
+<br><var>count</var> B
+<dd><a name="b"></a><a name="B"></a>
+The <kbd>b</kbd> and <kbd>B</kbd> commands move the cursor backward to the
+start of the current word, or if it is already at the start of the word then
+it'll move to the start of the preceding word.
+If a count is given, the cursor will move backward <var>count</var> word starts.
+
+</dl>
+
+<h3><a name="2.2.9"></a>2.2.9 Movement commands which move by sentences or sections</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+| count <a href="#open">(</a>      | Move backward "count" sentences                      |
+| count <a href="#close">)</a>      | Move forward "count" sentences                       |
+| count <a href="#ocur">{</a>      | Move back "count" paragraphs                         |
+| count <a href="#ccur">}</a>      | Move forward "count" paragraphs                      |
+|       <a href="#obra">[ [</a>    | Move back 1 section                                  |
+|       <a href="#cbra">] ]</a>    | Move forward 1 section                               |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt><var>count</var> (
+<br><var>count</var> )
+<dd><a name="open"></a><a name="close"></a>
+These commands move backward or forward to the start of a sentence.
+The start of a sentence is defined to be the first non-whitespace
+character in the file, or the first non-whitespace character after
+the end of a sentence.
+
+<p>The exact definition of the end of a sentence depends on the values of
+the <a href="elvisopt.html#sentenceend">sentenceend,</a>
+<a href="elvisopt.html#sentencegap">sentencegap,</a>
+and <a href="elvisopt.html#sentencequote">sentencequote</a> options.
+The default values of those options define a sentence end to be a
+period, question mark, or exclamation mark, followed by either a newline
+character, or two or more space characters.
+Any number of double-quote characters or closing parentheses may
+appear between the punctuation and the whitespace.
+
+<dt><var>count</var> {
+<br><var>count</var> }
+<dd><a name="ocur"></a><a name="ccur"></a>
+These commands move backward or forward to the start of a paragraph.
+The start of a paragraph is defined to be the first blank line encountered
+after a non-blank line; or a line which contains a troff paragraph command
+listed in the <a href="elvisopt.html#paragraphs">paragraphs</a> option's value;
+or the start of a section as described below.
+
+<dt>[[
+<br>]]
+<dd><a name="obra"></a><a name="cbra"></a>
+These commands move backward or forward to the start of a section.
+The start of a section is defined to be '{' character in column 1 of a line;
+or a troff section command listed in the value of the
+<a href="elvisopt.html#sections">sections</a> option.
+
+<p>Note: There are also <a href="#recbegin">[key</a> and
+<a href="#recend">]key</a>
+commands for recording keystrokes.
+Those commands are not related to the <kbd>[[</kbd> and <kbd>]]</kbd>
+movement commands.
+
+</dl>
+
+<h3><a name="2.2.10"></a>2.2.10 Movement/mark commands</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#m">m</a> key  | Mark a line or character                             |
+|       <a href="#apost">'</a> key  | Move to a marked line                                |
+|       <a href="#grave">`</a> key  | Move to a marked character                           |
+|       <a href="#V">V</a>      | Start marking lines for c d y &lt; &gt; or !               |
+|       <a href="#v">v</a>      | Start marking characters for c d y &lt; &gt; or !          |
+|       <a href="#^V">^V</a>     | Start marking a rectangle for c d y &lt; &gt; or !         |
+|       <a href="#g%">g%</a>     | If any text is selected, go to opposite end          |
+|       <a href="#g^V">g^V</a>    | If a rectangle is selected, go to opposite edge      |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>m <var>key</var>
+<dd><a name="m"></a>
+The <kbd>m</kbd><var>key</var> command stores the current cursor position in
+mark named <var>key,</var> where <var>key</var> is any letter.
+The mark is not visible.
+
+<dt>' <var>key</var>
+<br>` <var>key</var>
+<dd><a name="apost"></a><a name="grave"></a>
+These commands move the cursor back to a position which was stored via
+the <kbd>m</kbd><var>key</var> command.
+The <kbd>`</kbd><var>key</var> (grave) command is a character-movement command
+which positions the cursor exactly on the marked character.
+The <kbd>'</kbd><var>key</var> (apostrophe) command is a line-movement command
+which positions the cursor at the front of the line containing the mark.
+
+<p>The distinction between character-movement and line-movement becomes
+more significant when you're using the movement command as the target of
+an <a href="#operators">operator</a> command.
+For example, after an <kbd>ma</kbd> command and some cursor movement,
+the command <kbd>d'a</kbd> would delete whole lines, but the command
+<kbd>d`a</kbd> would delete only the text between the cursor and the "a" mark.
+
+<dt>v
+<br>V
+<br>^V
+<dd><a name="v"></a><a name="V"></a><a name="^V"></a>
+These commands start visually selecting text for use by an
+<a href="#operators">operator</a> command.
+The lowercase <kbd>v</kbd> command starts selecting characters,
+uppercase <kbd>V</kbd> starts selecting lines, and
+<kbd>^V</kbd> starts selecting a rectangular area.
+
+<p>The <a href="elvistip.html#clones">vim</a> clone of vi changes the meanings
+of some commands while text is selected.
+I didn't bother to do this with Elvis because the
+<a href="elvisex.html#map">:map</a> command can be used
+to achieve the same effect.
+Vim users may want to try the following maps:
+<pre>
+	:map select r	g=
+	:map select x	d
+	:map select U	gU
+	:map select u	gu
+	:map select ~	g~
+	:map select J	:j^V^M
+	:map select ^]	y:ta ^V^P^V^M
+	:map select R	S
+	:map select o	g%
+	:map select O	g^V^V</pre>
+
+<dt>g%
+<dd><a name="g%"></a>
+If you've started marking text via the
+<a href="#v">v</a>, <a href="V">V</a>, or <a href="^V">^V</a> commands,
+then the <kbd>g%</kbd> command will move the cursor from one end of the
+selected text to the other.
+You can then adjust the other end, before applying an
+<a href="#operators">operator</a> to the text.
+
+<dt>g^V
+<dd><a name="g^V"></a>
+If you've started marking a rectangular selection via the <a href="^V">^V</a>
+command, then you can use <kbd>g^V</kbd> to jump to the opposite edge of
+the selection, in the same line.
+You can then adjust the opposite edge before applying an
+<a href="#operators">operator</a> to the text.
+
+</dl>
+
+<h3><a name="2.2.11"></a>2.2.11 Scrolling commands</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#^F">^F</a>     | Move toward the bottom of the file by 1 screen full  |
+|       <a href="#^B">^B</a>     | Move toward the top of the file by 1 screen full     |
+|       <a href="#z">z</a> key  | Scroll current line to window's +top -bottom .middle |
+| count <a href="#^D">^D</a>     | Scroll forward "count" lines (default 1/2 screen)    |
+| count <a href="#^E">^E</a>     | Scroll forward "count" lines (default 1 line)        |
+| count <a href="#^U">^U</a>     | Scroll backward "count" lines (default 1/2 screen)   |
+| count <a href="#^Y">^Y</a>     | Scroll backward "count" lines (default 1 line)       |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>^F
+<dd><a name="^F"></a>
+This command moves forward one screen.
+Specifically, it locates the line at the bottom of the window and moves
+it to the top of the window.
+This means that for a 24-row window, ^F will generally move forward 22 lines.
+The cursor is moved if necessary to keep it on the screen.
+
+<dt>^B
+<dd><a name="^B"></a>
+This command moves backward one screen, by moving the line at the top of the
+window to the bottom.
+It is the opposite of the ^F command.
+
+<dt>z <var>key</var>
+<dd><a name="z"></a>
+This command scrolls to bring the current line to either the
+top (for <kbd>z+</kbd>)
+middle (for <kbd>z.</kbd>)
+or bottom (for <kbd>z-</kbd>) of the window.
+You can also precede this command with a line number, in which case the
+cursor is moved to that line before the scrolling takes place; e.g., 
+<code>98z+</code> will move the cursor to line 98 and then scroll as necessary
+to bring 98 to the top of the window.
+
+<p>Elvis also supports <kbd>zH</kbd>, <kbd>zM</kbd>, and <kbd>zL</kbd>
+as synonyms for those commands.
+These may be easier to remember, because they are somewhat analogous to
+the <a href="#H">H</a>, <a href="#M">M</a>, and <a href="#L">L</a> commands.
+In addition, <kbd>zz</kbd> is an easy-to-type synonym for scrolling a
+line to middle of the window.
+
+<dt><var>count</var> ^D
+<br><var>count</var> ^E
+<dd><a name="^D"></a><a name="^E"></a>
+These commands scroll the window forward by <var>count</var> lines.
+If no <var>count</var> is given, then <kbd>^E</kbd> defaults to 1 line,
+and <kbd>^D</kbd> defaults to the value of the <a href="#scroll">scroll</a> option.
+Supplying a <var>count</var> to the <kbd>^D</kbd> option has the side-effect of setting
+the scroll option to <var>count.</var>
+
+<dt><var>count</var> ^U
+<br><var>count</var> ^Y
+<dd><a name="^U"></a><a name="^Y"></a>
+These commands scroll the window backward by <var>count</var> lines.
+If no <var>count</var> is given, then <kbd>^Y</kbd> defaults to 1 line,
+and <kbd>^U</kbd> defaults
+to the value of the <a href="#scroll">scroll</a> option.
+Supplying a <var>count</var> to the <kbd>^U</kbd> option has the side-effect of setting
+the scroll option to <var>count.</var>
+
+</dl>
+
+<h3><a name="2.2.12"></a><a name="^W"></a>2.2.12 Window commands</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#^Ws">^W s</a>   | Split current window                                 |
+|       <a href="#^W]">^W ]</a>   | Split window, then look up tag at cursor             |
+|       <a href="#^Wn">^W n</a>   | Split window, and create a new buffer                |
+|       <a href="#^Wq">^W q</a>   | Save buffer &amp; close window, like ZZ                  |
+|       <a href="#^Wc">^W c</a>   | Hide buffer &amp; close window                           |
+|       <a href="#^Wo">^W o</a>   | Close all windows except this one &amp; hide their bufs  |
+|       <a href="#^Wd">^W d</a>   | Toggle the display mode                              |
+|       <a href="#^WS">^W S</a>   | Toggle the sidescroll option                         |
+|       <a href="#^Wj">^W j</a>   | Move down to next window                             |
+|       <a href="#^Wk">^W k</a>   | Move up to previous window                           |
+| count <a href="#^W^W">^W ^W</a>  | Toggle between the two most recently used windows    |
+| count <a href="#^Ww">^W w</a>   | Move to next window, or to the "count" window        |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>^W s
+<dd><a name="^Ws"></a>
+This creates a new window, showing the same buffer as the current window.
+It is equivalent to the ex <a href="elvisex.html#split">:split</a> command
+with no arguments.
+
+<dt>^W ]
+<dd><a name="^W]"></a>
+This performs tag lookup on the word at the cursor, and then creates a new
+window to show the tag definition.  It is similar to the ex
+<a href="elvisex.html#stag">:stag</a> command.
+
+<dt>^W n
+<dd><a name="^Wn"></a>
+This creates a new buffer, and then creates a new window to show that buffer.
+It is similar to the ex <a href="elvisex.html#snew">:snew</a> command.
+
+<dt>^W q
+<dd><a name="^Wq"></a>
+This saves the buffer if it has changed, and then closes the window.
+It is identical to the visual <a href="elvisvi.html#Z">ZZ</a> command,
+and similar to the ex <a href="elvisex.html#xit">:xit</a> command.
+
+<dt>^W c
+<dd><a name="^Wc"></a>
+This closes the window, but it neither saves nor discards the current buffer.
+The buffer continues to exist.
+This command is like the ex <a href="elvisex.html#close">:close</a> command.
+
+<dt>^W o
+<dd><a name="^Wo"></a>
+This makes the current window be the only one, by closing all of the other
+windows.
+The edit buffers in those other windows are hidden.
+This is like running <a href="elvisex.html#close">:close</a> in all the
+other windows.
+<dt>^W d
+<dd><a name="^Wd"></a>
+This toggles the windows display mode between two different modes.
+If the buffer's <a href="elvisopt.html#bufdisplay">bufdisplay</a> option
+is set to "html", "man", or "tex", then it will toggle between that mode
+and the syntax coloring mode.
+If <code>bufdisplay</code> is set to a syntax-coloring mode or "hex" then
+it toggles between that mode and "normal".
+If <code>bufdisplay</code> is "normal", then this command toggles between
+that mode and the "hex" mode.
+
+<dt>^W S
+<dd><a name="^WS"></a>
+This toggles the <a href="elvisopt.html#wrap">wrap</a> option off or on,
+causing sideways scrolling to be alternately disabled and enabled.
+
+<dt>^W j
+<br>^W k
+<br>^W ^W
+<br><var>count</var> ^W w
+<dd><a name="^Wj"></a><a name="^Wk"></a><a name="^W^W"></a><a name="^Ww"></a>
+These commands make other windows be current.
+This is the only possible way to switch windows for some user interfaces
+such as the termcap interface.
+
+</dl>
+
+<p>NOTE: In addition to the commands shown here, some user interfaces may
+support extensions to these commands.
+For example, the termcap interface uses
+<kbd>^W+</kbd> to increase the size of the current window,
+<kbd>^W-</kbd> to reduce the size of the current window, and
+<kbd>^W\</kbd> to make the current window as large as possible.
+See the <a href="elvisgui.html">User Interfaces chapter</a>.
+
+<h3><a name="2.2.13"></a>2.2.13 Other commands</h3>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       <a href="#quote">&quot;</a> key  | Select which cut buffer to use next                  |
+|       <a href="#at">@</a> key  | Execute the contents of a cut-buffer as VI commands  |
+|       <a href="#recbegin">[</a> key  | Start recording keystrokes into a cut-buffer         |
+|       <a href="#recend">]</a> key  | Stop recording keystrokes into a cut-buffer          |
+|       <a href="#colon">:</a> text | Run single EX cmd                                    |
+|       <a href="#Q">Q</a>      | Quit to EX mode                                      |
+|       <a href="#K">K</a>      | Run keywordprg on the word at the cursor             |
+|       <a href="#Z">Z Z</a>    | Save the file &amp; exit                                 |
+|       <a href="#^Z">^Z</a>     | Either suspend Elvis, or fork a shell                |
+|       <a href="#^G">^G</a>     | Show file status, and the current line #             |
+|       <a href="#^L">^L</a>     | Redraw the screen                                    |
+|       <a href="#*">*</a>      | Go to the next error in the errlist                  |
+|       <a href="#^I">^I</a>     | (Tab) Go to next HTML link, or toggle folding        |
+|       <a href="#g^I">g^I</a>    | (g-Tab) Go to previous HTML link                     |
+|       <a href="#^T">^T</a>     | Return to source of previous :tag or ^] command.     |
+|       <a href="#^cbra">^]</a>     | If the cursor is on a tag name, go to that tag       |
+|       <a href="#^^">^^</a>     | Switch to the previous file, like ":e #"             |
+| count <a href="#hash">#</a> key  | Increment a number                                   |
+| count <a href="#amp">&amp;</a>      | Repeat the previous ":s//" command here              |
+| count <a href="#gs">gs</a>     | Find next misspelled word, maybe after fixing current|
+|       <a href="#gS">gS</a>     | Move to end of spelling word                         |
+^--------------^------------------------------------------------------^
+</pre>
+
+<dl>
+
+<dt>&quot; <var>key</var>
+<dd><a name="quote"></a>
+This command determines which cut buffer the next command will use.
+If the next command doesn't involve a cut buffer, then this command has
+no effect.
+If you don't use this command, then the following command will use the
+anonymous cut buffer.
+
+<dt>@ <var>key</var>
+<dd><a name="at"></a>
+The <kbd>@</kbd> command executes the contents of a cut buffer as a
+series of vi command keystrokes.
+The key after the <kbd>@</kbd> is the name of the cut buffer
+to be executed.
+
+<dt>[ <var>key</var>
+<br>] <var>key</var>
+<dd><a name="recbegin"></a><a name="recend"></a>
+These commands are used for recording keystrokes into a cut-buffer.
+The <var>key</var> is the name of the cut buffer; it must be a letter.
+Later, you can replay the keystrokes via the <kbd>@</kbd><var>key</var>
+command.
+
+<p>Note: There are also <a href="#obra">[[</a> and <a href="#cbra">]]</a>
+commands for moving the cursor to the start of a section.
+Those movement commands are unrelated to these <kbd>[</kbd><var>key</var>
+and <kbd>]</kbd><var>key</var> keystroke recording commands.
+<dt>:
+<br>Q
+<dd><a name="colon"></a><a name="Q"></a>
+This <kbd>:</kbd> command allows you to enter a single ex command,
+and then immediately return to visual command.
+The <kbd>Q</kbd> command is similar,
+except that it causes you to remain in ex mode
+until you give the ex <a href="elvisex.html#visual">:vi</a> command.
+
+<dt>K
+<dd><a name="K"></a>
+This command executes the program named in the
+<a href="elvisopt.html#keywordprg">keywordprg</a> option,
+passing it the word at the cursor.
+This is intended to provide an easy way to run on-line manuals and the like.
+
+<dt>ZZ
+<dd><a name="Z"></a>
+The <kbd>ZZ</kbd> command writes the current file if it has changed,
+and then exits.
+It is equivalent to the ex <a href="elvisex.html#xit">:xit</a> command.
+
+<dt>^Z
+<dd><a name="^Z"></a>
+This command will either suspend Elvis, or fork a shell program.
+Either way, you'll get a shell prompt.
+<kbd>^Z</kbd> is equivalent to the <a href="elvisex.html#stop">:stop</a>
+ex command.
+
+<dt>^G
+<dd><a name="^G"></a>
+The <kbd>^G</kbd> command displays the status of the current file.
+It is equivalent to the ex <a href="elvisex.html#file">:file</a> command
+with no arguments.
+
+<dt>^L
+<dd><a name="^L"></a>
+The <kbd>^L</kbd> command causes the current window to be redrawn from scratch.
+This is handy when another program or line noise changes the screen in a
+way that Elvis can't detect &amp; correct automatically.
+
+<dt>*
+<dd><a name="*"></a>
+The <kbd>*</kbd> command moves the cursor to the next error reported by
+the compiler.
+It is equivalent to the ex <a href="#errlist">:errlist</a> command.
+
+<dt>^I
+<dd><a name="^I"></a>
+The <kbd>^I</kbd> command (the <kbd>Tab</kbd> key) moves the cursor forward
+to the next hypertext link, if you're in the "html" display mode.
+In the "normal" and "syntax" display modes, it will
+unfold or refold text, like the <a href="elvisex.html#unfold">:unfold</a> and
+<a href="elvisex.html#fold">:fold</a> commands.
+
+<dt>g^I
+<dd><a name="g^I"></a>
+The <kbd>g^I</kbd> command (a <kbd>g</kbd> key followed by a <kbd>Tab</kbd> key)
+moves the cursor backward to the previous hypertext link, if you're in the
+"html" display mode.
+
+<p><strong>Note:</strong> Most user interfaces try to map
+<kbd>&lt;Shift-Tab&gt;</kbd> to this command.
+This is difficult for the <a href="elvisgui.html#termcap">termcap</a> interface
+because not all terminals support it.
+Even if the terminal supports it, the termcap/terminfo database might not
+describe it correctly.
+
+<dt>^]
+<br>^T
+<dd><a name="^T"></a><a name="^cbra"></a>
+The <kbd>^]</kbd> command performs tag lookup on the word
+at the cursor position, and
+moves the cursor to the file/line where the tag is defined.
+It resembles the ex <a href="elvisex.html#tag">:tag</a> command.
+The <kbd>^T</kbd> command returns the cursor to the previous position,
+like <a href="elvisex.html#pop">:pop</a>.
+
+<dt>^^
+<dd><a name="^^"></a>
+After you've switched edit buffers in a window, the <kbd>^^</kbd>
+(Control-Caret) command
+switches back to the previous buffer, and moves the cursor to its previous
+position within that buffer.
+It is like the ex <a href="elvisex.html#edit">:e#</a> command.
+
+<dt><var>count</var> # <var>key</var>
+<dd><a name="hash"></a>
+This command allows you add or subtract <var>count</var> to the number at
+the cursor.
+If the cursor isn't on a word that looks like a number, then the command fails.
+If no <var>count</var> is given, then 1 is assumed.
+If the <var>key</var> is "-" then <var>count</var> is subtracted from the
+number.
+If the <var>key</var> is "+" or "#" then <var>count</var> is added to the
+number.
+If the <var>key</var> is "=" then the word is changed to <var>count</var>.
+Any other <var>key</var> causes the command to fail.
+
+<dt><var>count</var> &amp;
+<dd><a name="amp"></a>
+Repeat the previous <a href="elvisex.html#substitute">:s/re/new/</a> command on the
+current line.
+If <var>count</var> is given, then also apply it to each of the
+<var>count-1</var> following lines as well.
+
+<dt><var>count</var> gs
+<dd><a name="gs"></a>
+Search forward for the next misspelled word.
+
+<p>If given a count, then <em>before moving</em>,
+try to replace the current misspelled
+word with the <var>count</var>'th suggested spelling.
+This only works if the <a href="elvisopt.html#show">show</a> option
+contains a "spell" keyword, and
+the cursor is on a misspelled word with good suggestions.
+For more information about the spell checker,
+see the spelling section in the
+"<a href="elvistip.html#SPELL">Tips</a>" chapter.
+
+<dt>gS
+<dd><a name="gS"></a>
+Move to the end of the current misspelled word.
+This is handy because you can use
+<a href="#c">c</a><kbd>gS</kbd><var>text</var><kbd>&lt;Esc&gt;</kbd>
+to correct a misspelled word.
+The difference between <kbd>gS</kbd> and <a href="#e">e</a> is that
+<kbd>gS</kbd> uses the spell checker's definition of a "word", which
+allows apostrophes between letters.
+
+</dl>
+
+<h2><a name="index"></a><a name="INDEX"></a>2.3 Visual Commands, sorted by their ASCII code</h2>
+<pre graphic>.--------------.------------------------------------------------------.
+|    COMMAND   | DESCRIPTION                                          |
+|--------------|------------------------------------------------------|
+|       NUL    | (undefined)                                          |
+|       <a href="#^A">^A</a>     | Search for next occurrence of word at cursor         |
+|       <a href="#^B">^B</a>     | Move toward the top of the file by 1 screen full     |
+|       ^C     | (undefined; may abort a time-consuming command)      |
+| count <a href="#^D">^D</a>     | Scroll forward "count" lines (default 1/2 screen)    |
+| count <a href="#^E">^E</a>     | Scroll forward "count" lines (default 1 line)        |
+|       <a href="#^F">^F</a>     | Move toward the bottom of the file by 1 screen full  |
+|       <a href="#^G">^G</a>     | Show file status, and the current line #             |
+| count <a href="#^H">^H</a>     | Move left                                            |
+|       <a href="#^I">^I</a>     | (Tab) Go to next HTML link, or toggle folding        |
+| count <a href="#^J">^J</a>     | Move down                                            |
+|       ^K     | (undefined)                                          |
+|       <a href="#^L">^L</a>     | Redraw the screen                                    |
+| count <a href="#^M">^M</a>     | Move to the front of the next line                   |
+| count <a href="#^N">^N</a>     | Move down                                            |
+|       ^O     | ignored, to simplify implementation of "visual" map  |
+| count <a href="#^P">^P</a>     | Move up                                              |
+|       ^Q     | (undefined; may resume stopped output)               |
+| count <a href="#^R">^R</a>     | Redo commands which were undone by the u command     |
+|       ^S     | (undefined; may stop output)                         |
+|       <a href="#^T">^T</a>     | Return to source of previous :tag or ^] command.     |
+| count <a href="#^U">^U</a>     | Scroll backward "count" lines (default 1/2 screen)   |
+|       <a href="#^V">^V</a>     | Start marking a rectangle for c d y &lt; &gt; or !         |
+| count <a href="#^W^W">^W ^W</a>  | Move to next window, or to the "count" window        |
+|       <a href="#^WS">^W S</a>   | Toggle the sidescroll option                         |
+|       <a href="#^W]">^W ]</a>   | Split window, then look up tag at cursor             |
+|       <a href="#^Wc">^W c</a>   | Hide buffer &amp; close window                           |
+|       <a href="#^Wd">^W d</a>   | Toggle the display mode                              |
+|       <a href="#^Wj">^W j</a>   | Move down to next window                             |
+|       <a href="#^Wk">^W k</a>   | Move up to previous window                           |
+|       <a href="#^Wn">^W n</a>   | Split window, and create a new buffer                |
+|       <a href="#^Wq">^W q</a>   | Save buffer &amp; close window, like ZZ                  |
+|       <a href="#^Ws">^W s</a>   | Split current window                                 |
+| count <a href="#^X">^X</a>     | Move to column "count" (defaulting to the right edge)|
+| count <a href="#^Y">^Y</a>     | Scroll backward "count" lines (default 1 line)       |
+|       <a href="#^Z">^Z</a>     | Either suspend Elvis, or fork a shell                |
+|       ^[     | (Escape) Cancels a partially-entered command         |
+|       ^\     | (undefined; may cause core dump)                     |
+|       <a href="#^cbra">^]</a>     | If the cursor is on a tag name, go to that tag       |
+|       <a href="#^^">^^</a>     | Switch to the previous file, like ":e #"             |
+|       ^_     | (undefined)                                          |
+| count <a href="#l">Space</a>  | Move right                                           |
+|       <a href="#bang">!</a> mv   | Run selected lines thru an external filter program   |
+|       <a href="#quote">&quot;</a> key  | Select which cut buffer to use next                  |
+| count <a href="#hash">#</a> key  | Increment a number                                   |
+|       <a href="#dollar">$</a>      | Move to the rear of the current line                 |
+| count <a href="#pct">%</a>      | Move to matching (){}[] or to a given % of file      |
+| count <a href="#amp">&amp;</a>      | Repeat the previous ":s//" command here              |
+|       <a href="#apost">'</a> key  | Move to a marked line                                |
+| count <a href="#open">(</a>      | Move backward "count" sentences                      |
+| count <a href="#close">)</a>      | Move forward "count" sentences                       |
+|       <a href="#*">*</a>      | Go to the next error in the errlist                  |
+| count <a href="#+">+</a>      | Move to the front of the next line                   |
+| count <a href="#comma">,</a>      | Repeat the previous [fFtT] but in the other direction|
+| count <a href="#-">-</a>      | Move to the front of the preceding line              |
+| count <a href="#stop">.</a>      | Repeat the previous "edit" command                   |
+|       <a href="#slash">/</a> text | Search forward for a given regular expression        |
+|       <a href="#0">0</a>      | If not part of count, move to 1st char of this line  |
+|       1      | Part of a count argument                             |
+|       2      | Part of a count argument                             |
+|       3      | Part of a count argument                             |
+|       4      | Part of a count argument                             |
+|       5      | Part of a count argument                             |
+|       6      | Part of a count argument                             |
+|       7      | Part of a count argument                             |
+|       8      | Part of a count argument                             |
+|       9      | Part of a count argument                             |
+|       <a href="#colon">:</a> text | Run single EX cmd                                    |
+| count <a href="#semi">;</a>      | Repeat the previous [fFtT] cmd                       |
+|       <a href="#lt">&lt;</a> mv   | Shift text left                                      |
+|       <a href="#=">=</a> mv   | Reformat                                             |
+|       <a href="#gt">&gt;</a> mv   | Shift text right                                     |
+|       <a href="#quest">?</a> text | Search backward for a given regular expression       |
+|       <a href="#at">@</a> key  | Execute the contents of a cut-buffer as VI commands  |
+| count <a href="#A">A</a> inp  | Append at end of the line                            |
+| count <a href="#B">B</a>      | Move back Word                                       |
+|       <a href="#C">C</a> inp  | Change text from the cursor to the end of the line   |
+|       <a href="#D">D</a>      | Delete text from the cursor to the end of the line   |
+| count <a href="#E">E</a>      | Move end of Word                                     |
+| count <a href="#F">F</a> key  | Move leftward to a given character                   |
+| count <a href="#G">G</a>      | Move to line #"count" (default is the bottom line)   |
+| count <a href="#H">H</a>      | Move to home row (the line at the top of the screen) |
+| count <a href="#I">I</a> inp  | Insert at the front of the line (after indents)      |
+| count <a href="#J">J</a>      | Join lines, to form one big line                     |
+|       <a href="#K">K</a>      | Run keywordprg on the word at the cursor             |
+| count <a href="#L">L</a>      | Move to last row (i.e., line at bottom of window)    |
+|       <a href="#M">M</a>      | Move to middle row                                   |
+|       <a href="#N">N</a>      | Repeat previous search, but in the opposite direction|
+| count <a href="#O">O</a> inp  | Open up a new line above the current line            |
+|       <a href="#P">P</a>      | Paste text before the cursor                         |
+|       <a href="#Q">Q</a>      | Quit to EX mode                                      |
+|       <a href="#R">R</a> inp  | Overtype                                             |
+| count <a href="#S">S</a> inp  | Change lines, like "count" cc                        |
+| count <a href="#T">T</a> key  | Move leftward *almost* to a given character          |
+|       <a href="#U">U</a>      | Undo all recent changes to the current line          |
+|       <a href="#V">V</a>      | Start marking lines for c d y &lt; &gt; or !               |
+| count <a href="#W">W</a>      | Move forward "count" Words                           |
+| count <a href="#X">X</a>      | Delete the character(s) to the left of the cursor    |
+| count <a href="#Y">Y</a>      | Yank text line(s) (copy them into a cut buffer)      |
+|       <a href="#Z">Z Z</a>    | Save the file &amp; exit                                 |
+|       <a href="#obra">[ [</a>    | Move back 1 section                                  |
+|       <a href="#recbegin">[</a> key  | Start recording keystrokes into a cut-buffer         |
+|       \      | (undefined)                                          |
+|       <a href="#cbra">] ]</a>    | Move forward 1 section                               |
+|       <a href="#recend">]</a> key  | Stop recording keystrokes into a cut-buffer          |
+|       <a href="#^">^</a>      | Move to the front of the current line (after indent) |
+| count <a href="#_">_</a>      | (the underscore character) Move to the current line  |
+|       <a href="#grave">`</a> key  | Move to a marked character                           |
+| count <a href="#a">a</a> inp  | Insert text after the cursor                         |
+| count <a href="#b">b</a>      | Move back "count" words                              |
+|       <a href="#c">c</a> mv   | Change text                                          |
+|       <a href="#d">d</a> mv   | Delete text                                          |
+| count <a href="#e">e</a>      | Move forward to the end of the current word          |
+| count <a href="#f">f</a> key  | Move rightward to a given character                  |
+|       g      | (undefined)                                          |
+|       <a href="#g^I">g^I</a>    | (g-Tab) Go to previous HTML link                     |
+|      <a name="g"></a> <a href="#g^V">g^V</a>    | If a rectangle is selected, go to opposite edge      |
+|       <a href="#gdollar">g$</a>     | Move to end of current row                           |
+|       <a href="#g%">g%</a>     | If any text is selected, go to opposite end          |
+|       <a href="#g0">g0</a>     | Move to start of current row, before indent          |
+|    <a href="#g=">g=</a> key mv | Convert text to an equal number of <var>key</var> characters    |
+|       <a href="#gD">gD</a>     | Go to global definition of word at cursor            |
+| count <a href="#gI">gI</a> inp | Input at start of line, before indent                |
+| count <a href="#gJ">gJ</a>     | Join lines without adding whitespace                 |
+|       <a href="#gS">gS</a>     | Move to end of spelling word                         |
+|       <a href="#gU">gU</a> mv  | Convert text to uppercase                            |
+|       <a href="#g^">g^</a>     | Move to start of current row, after indent           |
+|       <a href="#gd">gd</a>     | Go to local definition of word at cursor             |
+| count <a href="#gh">gh</a>     | Move left, skipping invisible characters             |
+| count <a href="#gj">gj</a>     | Move down 1 row (useful when lines wrap)             |
+| count <a href="#gk">gk</a>     | Move up 1 row (useful when lines wrap)               |
+| count <a href="#gl">gl</a>     | Move right, skipping invisible characters            |
+| count <a href="#gs">gs</a>     | Find next misspelled word, maybe after fixing current|
+|       <a href="#gu">gu</a> mv  | Convert text to lowercase                            |
+|       <a href="#g~">g~</a> mv  | Toggle text between uppercase &amp; lowercase            |
+| count <a href="#h">h</a>      | Move left                                            |
+| count <a href="#i">i</a> inp  | Insert text at the cursor                            |
+| count <a href="#j">j</a>      | Move down                                            |
+| count <a href="#k">k</a>      | Move up                                              |
+| count <a href="#l">l</a>      | Move right                                           |
+|       <a href="#m">m</a> key  | Mark a line or character                             |
+|       <a href="#n">n</a>      | Repeat the previous search                           |
+| count <a href="#o">o</a> inp  | Open a new line below the current line               |
+|       <a href="#p">p</a>      | Paste text after the cursor                          |
+|       q      | (undefined)                                          |
+| count <a href="#r">r</a> key  | Replace "count" chars by a given character           |
+| count <a href="#s">s</a> inp  | Replace characters, like "count" cl                  |
+| count <a href="#t">t</a> key  | Move rightward *almost* to a given character         |
+| count <a href="#u">u</a>      | Undo the previous edit command                       |
+|       <a href="#v">v</a>      | Start marking characters for c d y &lt; &gt; or !          |
+| count <a href="#w">w</a>      | Move forward "count" words                           |
+| count <a href="#x">x</a>      | Delete the character that the cursor's on            |
+|       <a href="#y">y</a> mv   | Yank text (copy it into a cut buffer)                |
+|       <a href="#z">z</a> key  | Scroll current line to window's +top -bottom .middle |
+| count <a href="#ocur">{</a>      | Move back "count" paragraphs                         |
+| count <a href="#bar">|</a>      | Move to column "count" (defaulting to column 1)      |
+| count <a href="#ccur">}</a>      | Move forward "count" paragraphs                      |
+| count <a href="#~">~</a>      | Switch a character between uppercase &amp; lowercase     |
+|       DEL    | (undefined)                                          |
+^--------------^------------------------------------------------------^
+</pre>
+
+</body></html>

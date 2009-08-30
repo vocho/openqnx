@@ -1,0 +1,71 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Problem: GNU multivolume archives are not able to continue on members
+# with filenames longer than 100 characters. Versions of tar <= 1.14
+# were not checking filename lengths and produced malformed multivolume
+# headers.
+# References: <20040809214854.GB32706@suse.de>
+# http://lists.gnu.org/archive/html/bug-tar/2004-08/msg00012.html
+# <200604270859.47241.Juergen.Vollmer@informatik-vollmer.de>
+# 
+
+AT_SETUP([MV archive & long filenames])
+AT_KEYWORDS([multivolume multiv multiv03])
+
+AT_TAR_CHECK([
+AFILE=`awk 'BEGIN { for (i = 0; i < 100; i++) printf "a"; exit; }'`
+BFILE=`awk 'BEGIN { for (i = 0; i < 101; i++) printf "b"; exit; }'`
+
+cat > ../experr <<EOF
+tar: $BFILE: file name too long to be stored in a GNU multivolume header, truncated
+tar: \`$BFILE' is possibly continued on this volume: header contains truncated name
+EOF
+
+cat > ../expout <<EOF
+$AFILE
+separator-1
+separator-2
+EOF
+
+genfile --length 15360 --file $AFILE
+
+exec <&-
+
+tar -M -L 10 -c -f arch.1 -f arch.2 $AFILE || exit 1
+tar -tM -f arch.1 -f arch.2 || exit 1
+
+echo separator-1
+
+genfile --length 15360 --file $BFILE
+tar -M -L 10 -c -f arch.1 -f arch.2 $BFILE || exit 1
+
+echo separator-2
+mv $BFILE bfile
+tar -M -x -f arch.1 -f arch.2 || exit 1
+cmp $BFILE bfile
+],
+[0],
+[expout],
+[experr],
+[],[],[gnu, oldgnu])
+
+AT_CLEANUP
+

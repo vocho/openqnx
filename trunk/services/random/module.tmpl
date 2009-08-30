@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<module name="random">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="random" generated="true">
+			<location basedir="{cpu}/{o|endian}" runtime="true">
+				random
+			</location>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="true" location="lib/z"/>
+		<part build="false" location="services/system"/>
+		<part build="false" location="services/syslogd"/>
+		<part build="false" location="services/slogger"/>
+	</requires>
+
+</module>

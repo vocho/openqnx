@@ -1,0 +1,132 @@
+@c This is part of the paxutils manual.
+@c Copyright (C) 2006 Free Software Foundation, Inc.
+@c Written by Sergey Poznyakoff
+@c This file is distributed under GFDL 1.1 or any later version
+@c published by the Free Software Foundation.
+
+  Incremental archives keep information about contents of each
+dumped directory in special data blocks called @dfn{dumpdirs}.
+
+  Dumpdir is a sequence of entries of the following form:
+
+@smallexample
+@var{C} @var{filename} \0
+@end smallexample
+
+@noindent
+where @var{C} is one of the @dfn{control codes} described below,
+@var{filename} is the name of the file @var{C} operates upon, and
+@samp{\0} represents a nul character (ASCII 0).  The white space 
+characters were added for readability, real dumpdirs do not contain
+them.
+
+  Each dumpdir ends with a single nul character.
+
+  The following table describes control codes and their meanings:
+
+@table @samp
+@item Y
+@var{filename} is contained in the archive.
+
+@item N
+@var{filename} was present in the directory at the time the archive
+was made, yet it was not dumped to the archive, because it had not
+changed since the last backup.
+
+@item D
+@var{filename} is a directory.
+
+@item R
+This code requests renaming of the @var{filename} to the name
+specified with the following @samp{T} command.
+
+@item T
+Specify target file name for @samp{R} command (see below).
+
+@item X
+Specify @dfn{temporary directory} name for a rename operation (see below).
+@end table
+
+  Codes @samp{Y}, @samp{N} and @samp{D} require @var{filename} argument
+to be a relative file name to the directory this dumpdir describes,
+whereas codes @samp{R}, @samp{T} and @samp{X} require their argument
+to be an absolute file name.
+
+ The three codes @samp{R}, @samp{T} and @samp{X} specify a
+@dfn{renaming operation}.  In the simplest case it is:
+
+@smallexample
+R@file{source}\0T@file{dest}\0
+@end smallexample
+
+@noindent
+which means ``rename file @file{source} to file @file{dest}''.
+
+  However, there are cases that require using a @dfn{temporary
+directory}.  For example, consider the following scenario:
+
+@enumerate 1
+@item
+Previous run dumped a directory @file{foo} which contained the
+following three directories: 
+
+@smallexample
+a
+b
+c
+@end smallexample
+
+@item
+They were renamed @emph{cyclically}, so that:
+
+@example
+@file{a} became @file{b}
+@file{b} became @file{c}
+@file{c} became @file{a}
+@end example
+
+@item
+New incremental dump was made.
+@end enumerate
+
+  This case cannot be handled by three successive renames, since
+renaming @file{a} to @file{b} will destroy existing directory.
+To handle such case a temporary directory is required. @GNUTAR{}
+will create the following dumpdir (newlines have been added for
+readability): 
+
+@smallexample
+@group
+Xfoo\0
+Rfoo/a\0T\0
+Rfoo/b\0Tfoo/c\0
+Rfoo/c\0Tfoo/a\0
+R\0Tfoo/a\0
+@end group
+@end smallexample
+
+  The first command, @samp{Xfoo\0}, instructs the extractor to create a
+temporary directory in the directory @file{foo}.  Second command,
+@samp{Rfoo/aT\0}, says ``rename file @file{foo/a} to the temporary
+directory that has just been created'' (empty file name after a
+command means use temporary directory).  Third and fourth commands
+work as usual, and, finally, the last command, @samp{R\0Tfoo/a\0}
+tells tar to rename the temporary directory to @file{foo/a}.
+
+  The exact placement of a dumpdir in the archive depends on the
+archive format (@pxref{Formats}): 
+
+@itemize
+@item PAX archives
+
+In PAX archives, dumpdir is stored in the extended header of the
+corresponding directory, in variable @code{GNU.dumpdir}.
+
+@item GNU and old GNU archives
+
+These formats implement special header type @samp{D}, which is similar
+to ustar header @samp{5} (directory), except that it precedes a data
+block containing the dumpdir.
+@end itemize
+
+@c End of dumpdir.texi

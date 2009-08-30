@@ -1,0 +1,148 @@
+Interfacing with other folks
+============================
+
++ Talk to Grant about branching strategies.
+
++ Talk to Grant about better versioning (multiple build machines?)
+
+- Talk to QA/Grant about partial branching.
+
+- Talk to QA about pre-assigning PR's.
+
++ Talk to Grant about 2.1 beta/release schedule.
+	- July/Aug release
+
+
+Ongoing
+=======
+
+- Generic bug fixing.
+
+- Optimizations.
+
+- Search out and reduce any long latencies.
+ 
+- Code reviews.
+
+- Write interface documentation
+	- between pieces of the kernel/proc
+	- between servers
+	
+- Internal/public technotes on things like board bringup.
+	
+- Weekly kernel group meetings.
+	- one hour on Mondays
+	- talk about open PR's, priorities.
+
+
+pre 2.1 timeframe
+=================
+
+- Obtain a kernel group internal build machine.
+	- Continuously building, regression runs.
+	
+- Better documentation for kernel shutdown message.
+
+- Resource database in proc.
+
+- Cache prefetch optimizations for X86 PIII.
+
+- Long spawn message handling fix.
+
+- Sweep through PR's & fix/close any that we can.
+
+- Eliminate regression run failures.
+
+- Implement clean shutdown of thread pools.
+
+- Turn off interrupts while shutdown message is coming out.
+
+- map_xfer interface change (Seb wants to wait on this until post 2.1).
+  
+- Trace logging support.
+
+- Float the priority of the termer thread pulse (and other proc pulses
+  as well?)
+
+
+post 2.1 timeframe
+==================
+
+- Enable Hao's SMP message pass optimizations.
+
+- ARM, SH4 releases.
+
+- MIPS32 port
+
+- Design meeting for HA/config/power management.
+	- Likely result of this will be to say that someone other than the
+	  kernel group should be implementing it.
+
+- System state querying API's.
+
+- Design meeting about io-char to decide what/when should be done.
+
+- Add mechanism (callout?) indicating kernel initialization progress
+  to assist board bringup.
+  
+- Add versioning information support.
+
+- Fix session support to be more like standard unix systems and to 
+  fully comply with the posix tests. PR 1653
+  
+One year out
+============
+
+- Kernel instrumentation, Deja-view support.
+	- ability to log kernel return codes
+	
+- OS awareness for development tools.
+
+- Spawn/exec/fork/termination code cleanup.
+
+- Finish implementing stuff required by standards that we want to support.
+	- Full session support
+	- Async io
+	- ???
+	
+- Fast local mqueue's and named semaphores.
+
+- Clean up thread & process termination in the kernel.
+
+- Move interrupt handler generation to CPU independent code.
+
+- hash bang spawn support
+
+- network spawn
+
+Long term
+=========
+
+- Mini-debugger for startup.
+
+- Neutrino simulator (OS level? CPU level?)
+
+- Synchronization cleanups
+	- Consistant inheritance behaviour across all sync objects
+	- Unified pool for sync objects in kernel
+	- "Delta" behaviour for all priority taking calls
+
+- Scheduler clean-ups
+	- Finish sporadic scheduler implementation
+	- Multiple scheduling queues per CPU
+
+Memory manager redesign
+=======================
+
+- Design/feature set meeting early next week.
+	- Wed. 2:00pm Burgandy room
+
+- "Broad front" implementation on multiple architectures at the same time.
+
+
+NEW STUFF
+=========
+
+- eoi callouts need to be able to indicate new interrupts.
+
+- What to do about stupid memory controller that Jason has.

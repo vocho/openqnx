@@ -1,0 +1,21 @@
+Usage: tic [-h] [-v[n]] [-e names] [-CILNRTcfrsw1] source-file
+
+Options:
+  -1         format translation output one capability per line
+  -C         translate entries to termcap source form
+  -I         translate entries to terminfo source form
+  -L         translate entries to full terminfo source form
+  -N         disable smart defaults for source translation
+  -R         restrict translation to given terminfo/termcap version
+  -T         remove size-restrictions on compiled description
+  -c         check only, validate input without compiling or translating
+  -f         format complex strings for readability
+  -e<names>  translate/compile only entries named by comma-separated list
+  -o<dir>    set output directory for compiled entry writes
+  -r         force resolution of all use entries in source translation
+  -s         print summary statistics
+  -v[n]      set verbosity level
+  -w[n]      set format width for translation output
+
+Parameters:
+  <file>     file to translate or compile

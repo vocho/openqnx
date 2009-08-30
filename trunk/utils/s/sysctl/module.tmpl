@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<module name="sysctl">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>net</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="sysctl" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				sysctl
+			</location>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="true" location="lib/misc"/>
+	</requires>
+
+</module>

@@ -1,0 +1,19 @@
+Usage: ./diff3 [OPTION]... MYFILE OLDFILE YOURFILE
+
+  -e  --ed  Output unmerged changes from OLDFILE to YOURFILE into MYFILE.
+  -E  --show-overlap  Output unmerged changes, bracketing conflicts.
+  -A  --show-all  Output all changes, bracketing conflicts.
+  -x  --overlap-only  Output overlapping changes.
+  -X  Output overlapping changes, bracketing them.
+  -3  --easy-only  Output unmerged nonoverlapping changes.
+
+  -m  --merge  Output merged file instead of ed script (default -A).
+  -L LABEL  --label=LABEL  Use LABEL instead of file name.
+  -i  Append `w' and `q' commands to ed scripts.
+  -a  --text  Treat all files as text.
+  -T  --initial-tab  Make tabs line up by prepending a tab.
+
+  -v  --version  Output version info.
+  --help  Output this help.
+
+If a FILE is `-', read standard input.

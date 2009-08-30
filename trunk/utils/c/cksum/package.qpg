@@ -1,0 +1,9 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/cksum" pinfo="cksum.pinfo"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="win32/*/*/cksum.exe" pinfo="cksum.exe.pinfo"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

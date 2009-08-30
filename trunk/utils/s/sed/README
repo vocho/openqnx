@@ -1,0 +1,20 @@
+This is version 3.02 of the GNU implementation of the POSIX
+stream editor `sed'.  (3.01 had a small but important bug
+in character-class parsing.  3.00 was a short-lived rx-based
+release that was yanked due to various problems.  2.05 is the
+most visible predecessor to 3.01.)  It fixes several bugs, has
+minor performance improvements, features a major re-organization
+of the code, and has many portability enhancements.
+
+See the file INSTALL for generic compilation and installation
+instructions.
+
+The file README.boot gives instructions for making a "bootstrap"
+version of sed on systems which lack any pre-existing and working
+version of sed.
+
+The file djgpp/README contains instructions for building sed
+on DOS based systems using the djgpp compiler and its associated
+tools.
+
+See the file BUGS for instructions about reporting bugs.

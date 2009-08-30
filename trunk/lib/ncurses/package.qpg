@@ -1,0 +1,26 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="ncurses/nto/*/a*/libncurses.a" pinfo="$"/>
+			<QPG:Add file="ncurses/nto/*/*/libncursesS.a" pinfo="$"/>
+			<QPG:Add file="form/nto/*/a*/libform.a" pinfo="$"/>
+			<QPG:Add file="form/nto/*/*/libformS.a" pinfo="$"/>
+			<QPG:Add file="panel/nto/*/a*/libpanel.a" pinfo="$"/>
+			<QPG:Add file="panel/nto/*/*/libpanelS.a" pinfo="$"/>
+			<QPG:Add file="menu/nto/*/a*/libmenu.a" pinfo="$"/>
+			<QPG:Add file="menu/nto/*/*/libmenuS.a" pinfo="$"/>
+			<QPG:Add file="progs/clear/nto/*/*/clear" pinfo="$"/>
+			<QPG:Add file="progs/infocmp/nto/*/*/infocmp" pinfo="$"/>
+			<QPG:Add file="progs/tic/nto/*/*/tic" pinfo="$"/>
+			<QPG:Add file="include/form.h" install="usr/include/" />
+			<QPG:Add file="include/eti.h" install="usr/include/" />
+			<QPG:Add file="include/menu.h" install="usr/include/" />
+			<QPG:Add file="include/curses*.h" install="usr/include/" />
+			<QPG:Add file="include/term.h" install="usr/include/" />
+			<QPG:Add file="include/unctrl.h" install="usr/include/" />
+			<QPG:Add file="include/panel.h" install="usr/include/" />
+			<QPG:Add filetype="symlink" file="ncurses.h" install="/usr/include/" linkto="curses.h"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

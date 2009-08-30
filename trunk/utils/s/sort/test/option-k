@@ -1,0 +1,364 @@
+root:x:0:120:Super User:///:/bin/sh
+daemon:*:1:1::/usr:
+bin:*:2:2::/bin:
+sys:*:3:3::/usr/adm:
+adm:*:4:4::/usr/adm:
+pcts::7:77:POSIX Test-Suite:/home/pcts:/bin/sh
+vsx0::7:77:POSIX Test-Suite:/src/nto1.1/regress/xopen/tet3/vsx0:/usr/local/bin/bash
+vsx1::8:78:POSIX Test-Suite:/src/nto1.1/regress/xopen/tet3/vsx1:/usr/local/bin/bash
+vsx2::9:79:POSIX Test-Suite:/src/nto1.1/regress/xopen/tet3/vsx2:/usr/local/bin/bash
+mail:*:40:40:Mail:/usr/spool/mail:
+ml:*:40:40:ML:/usr/spool/ml:
+news:*:50:50:News:/usr/spool/news:
+maps:*:50:50:Maps:/usr/spool/maps:
+newsadm:*:50:50:News Administrator:/usr/lib/news:
+uucp::60:60:UUCP:/usr/spool/uucppublic:/usr/lib/uucp/uucico
+uucpadm:*:60:60:UUCP Administrator:/usr/lib/uucp:
+lp::70:2::/usr/spool/lp:
+ftp::80:80:Anonymous:/usr/ftp:/bin/sh
+robinb:x:119:120:**GONE**:/ref/home/robinb:/bin/true
+trs::163:120:Tom Stiemerling,x170:/home/trs:/bin/sh
+gone:x:124:126:**GONE**:/tmp:/bin/true
+waflowers:x:103:120:**GONE**:/home/waflowers:/bin/true
+ptrunley:x:136:120:**GONE**:/ref/home/ptrunley:/bin/true
+doug:x:242:120:**GONE**:/ref/home/doug:/bin/true
+aboyd:x:110:120:**GONE**:/tmp:/bin/true
+usrfree:x:100:120:Free Software Admin:/usr/free:/bin/sh
+nobody:x:6666:6666:Nobody:/tmp:/bin/date
+www:x:99:120:World Wide Web:/usr/local/etc/httpd:
+davidh:x:101:128:David Hopper,x283:/home/davidh:/bin/sh
+gbbell::102:120:Gordon Bell,x201:/home/gbbell:/bin/ksh
+dtdodge::104:120:Dan Dodge,x202:/home/dtdodge:/bin/ksh
+danh::105:120:Dan Hildebrand,x204:/home/danh:/bin/ksh
+grant:x:108:126:Grant Courville,x242:/home/grant:/bin/sh
+eric:x:109:120:Eric Johnson,x261:/home/eric:/bin/sh
+eajohnson:x:668:120:Eric Johnson,x261://61/home/eric:/bin/sh
+debbie::112:121:Debbie Kane,x268:/home/debbie:/bin/sh
+steve::113:120:Steve McPolin,x211:/home/steve:/bin/ksh
+peterv::115:120:Peter van der Veen,x206:/home/peterv:/bin/sh
+peterv2:x:115:120:Peter van der Veen,x206:/home/peterv:/bin/xip/ksh
+nt:x:117:465:NT NFS Account (Please do not Modify --Don)://222/home/NT:/bin/ksh
+shelley::120:122:Shelley Rouble,x243://111/home/shelley:/bin/sh
+jenh::121:123:Jennifer Hornby,x292:/home/jenh:/bin/sh
+jenc::122:125:Jennifer Camelon,x223:/home/jenc:/bin/sh
+jimm:x:123:128:Jim McKay,x278:/home/jimm:/bin/sh
+macola::125:125:Macola Test Account:/home/macola:/bin/sh
+timl::126:128:Tim Ludgate,x153:/home/timl:/bin/sh
+patty::127:128:Patty Griffin,x*279:/home/patty:/bin/sh
+loisann::129:125:Lois Ann Graham,x280:/home/loisann:/bin/sh
+krista::132:125:Krista Lentz,x250:/home/krista:/bin/sh
+stomkins:x:144:120:Steve Tomkins,x249:/home/stomkins:/bin/sh
+jason::145:121:Jason Kennedy,x149:/home/jason:/bin/sh
+darrin:x:147:120:Darrin Fry,x142:/home/darrin:/bin/sh
+gail::148:121:Gail Carter,x217:/home/gail:/bin/sh
+paull::157:124:Paul Leroux,x271:/home/paull:/bin/sh
+glen:x:162:120:glen mccready,x324:/home/glen:/bin/ksh
+gkm:x:162:120:glen mccready,x324:/home/glen:/usr/local/bin/bash
+randy:x:168:120:Randy Martin,x287:/home/randy:/bin/sh
+randy2::168:120:Randy Martin2,x287:/home/randy2:/bin/sh
+shawn:x:169:123:Shawn Cruise,x233:/home/shawn:/bin/sh
+patrick::178:120:Patrick Hayden,xxxx:/home/patrick:/bin/sh
+martin:x:179:120:Martin Walter,x208:/home/martin:/bin/sh
+stephanie::187:125:Stephanie Didsbury,x221:/home/stephanie:/bin/sh
+dagibbs::188:120:David Gibbs,x194:/home/dagibbs:/bin/sh
+kchiles:x:193:120:Kevin Chiles,x144:/home/kchiles:/bin/sh
+dinglis::194:120:David Inglis,x357:/home/dinglis:/bin/ksh
+lyndam::198:123:Lynda Milliner,x0:/home/lyndam:/bin/sh
+jennifer::213:121:Jennifer Coombes,x213:/home/jennifer:/bin/sh
+carolyn::221:125:Carolyn Hall,x219:/home/carolyn:/bin/sh
+donna::222:125:Donna Artelle,x254:/home/donna:/bin/sh
+cindy::223:125:Cindy Zuger,x240:/home/cindy:/bin/sh
+carol::227:125:Carol Magee,x248:/home/carol:/bin/sh
+sylvia::228:125:Sylvia Lane,x220:/home/sylvia:/bin/sh
+julie::229:125:Julie Brown:/home/julie:/bin/sh
+andrea::230:122:Andrea Youdale,x230:/home/andrea:/bin/sh
+nancy::231:122:Nancy Campbell,x267:/home/nancy:/bin/sh
+lynn::232:125:Lynn Carruthers,x145:/home/lynn:/bin/sh
+vicky::233:125:Vicky Anderson,x174:/home/vicky:/bin/sh
+pierre::235:122:Pierre Charron,x224:/home/pierre:/bin/sh
+dawn::238:123:Dawn Gordon,x234:/home/dawn:/bin/sh
+mike::243:122:Mike Hornby,x276:/home/mike:/bin/sh
+marcel::244:122:Marcel Lavoie,x232:/tmp:/bin/sh
+linda:x:245:122:Linda Campbell,x146:/home/linda:/bin/sh
+stuart::246:122:Stuart Pegg,x251:/home/stuart:/bin/sh
+scotte:x:251:123:Scott Eckstein,x231:/home/scotte:/bin/sh
+susanu:x:254:125:Susan Unsworth,x222:/home/susanu:/bin/sh
+barry::257:123:Barry Olsen,x263:/home/barry:/bin/sh
+karen:x:258:122:Karen Hill,x238:/home/karen:/bin/sh
+tom::259:122:Tom Keyserlingk,x227:/home/tom:/bin/sh
+liz:x:267:122:Elizabeth Warren,x235:/home/liz:/bin/sh
+drbell::275:125:David Bell:/home/drbell:/bin/sh
+chris::289:121:Chris Smith,x312:/home/chris:/bin/sh
+johno:x:290:120:John Ostrander,x277:/home/johno:/bin/sh
+mld::666:40:ML Server:/home/mld:
+mldaemon::666:40:ML Server:/home/mld:
+qa::1000:120:QA:/home/qa:/bin/sh
+garry:x:1101:120:Garry Turcotte,x143:/home/garry:/bin/sh
+pk::1102:127:Paul Kilgour,x256:/home/pk:/bin/sh
+jwall:x:1106:120:John Wall,x229:/home/jwall:/bin/sh
+miket:x:1107:120:Mike Taillon,x140:/home/miket:/bin/sh
+furr:x:1108:120:Steve Furr,x207:/home/furr:/bin/ksh
+furr_b::1108:120:Steve Furr,x207:/home/furr/alt:/bin/ksh
+joe::1114:120:Joe Bishop,x285:/home/joe:/bin/sh
+jeanette::1137:125:Jeanette Filleter,x253:/home/jeanette:/bin/sh
+barbara::1158:125:Barbara Bullock,x298:/home/barbara:/bin/sh
+bugs::9999:10002:Bug Reader:/usr/lib/quics/bugs:/bin/sh
+quics:x:10001:10001:QUICS:/home/quics:/bin/ksh
+watcom::10213:120:Watcom,(519) 884-2700:/home/watcom:/bin/sh
+donnar::131:121:Donna Ronayne,x148://111/home/donnar:/bin/sh
+guest:x:143:120:Guest:/home/guest:/bin/sh
+login::149:120:test-login-program:/home/login:/src/util/Login/login/login
+quics_new::150:120:quics-new-program:/home/login:/src/quics/new/quics_new
+davidgibbs:x:141:127:David Gibbs (old ml):/home/davidgibbs:/bin/sh
+support::153:127:QNX Technical Support:/home/support:/bin/sh
+rons:x:1196:127:Ron Stam,x237:/home/rons:/bin/sh
+wnn:x:155:120:I18N account:/home/wnn:/bin/sh
+frank:x:156:120:Frank Friesacher,x146:/home/frank:/bin/sh
+123wnn::159:120::/home/123wnn:/bin/sh
+dagtest::160:127:David Gibbs:/home/dagtest:/bin/sh
+qatest:x:161:120:QA Test:/home/qatest:/bin/sh
+paulb:x:165:128:Paul Boston,x281:/home/paulb:/bin/sh
+chrish:x:166:120:Chris Herborth,x360:/home/chrish:/bin/sh
+dabrown:x:164:120:Dave Brown,x236:/home/dabrown:/bin/sh
+kirk:x:171:120:Kirk Russell,x262:/home/kirk:/home/kirk/bin/ksh
+larry:x:172:123:Larry Parks,x273:/home/larry:/bin/sh
+pete:x:173:120:Pete Patterson,x159:/home/pete:/bin/sh
+don:x:176:255:Donald Berrigan,x173:/home/don:/bin/sh
+xfer:x:177:120:Transfer Guy:/home/xfer:/bin/sh
+wojtek:x:181:120:Wojtek Lerch,x157:/home/wojtek:/bin/sh
+nyoung::154:124:Nancy Young,x260:/home/nancyy:/bin/sh
+mphunter:x:183:120:**GONE**:/home/mphunter:/bin/true
+mph::183:120:Michael Hunter:/home/mphunter:/bin/sh
+tanya::185:122:Tanya Angus,x302:/home/tanya:/bin/sh
+bobbyc::189:120:Bobby Chawla,x310:/home/bobbyc:/bin/sh
+gmsmith:x:118:121:gary smith:/home/gmsmith:/bin/sh
+rgallen::190:120:Rennie Allen,x308:/home/rgallen:/bin/sh
+henry::192:120:Henry Van Dyke,x315:/home/henry:/bin/sh
+marketing::195:121:Marketing Leads:/home/marketing:/bin/sh
+stever::197:120:Steve Reid:/home/stever:/bin/sh
+seanb:x:207:120:Sean Boudreau,x172:/home/seanb:/bin/sh
+rk:x:203:255:Rob Krten,x*367:/home/rk:/bin/sh
+cheryl::199:123:Cheryl Taylor,x266:/home/cheryl:/bin/sh
+briane:x:1149:120:Brian Edmond,x239:/home/briane:/bin/sh
+rajackson::205:120:Richard Jackson,x144:/home/rajackson:/bin/sh
+raj::205:120:Richard Jackson,x144:/home/rajackson:/bin/sh
+phtest:x:204:120:PHoton Test Id:/home/phtest:/bin/sh
+kamal::206:123:Kamal Krish,x304:/home/kamal:/bin/sh
+pmphunter::208:120:Michael Hunter:/home/pmphunter:/usr/ucb/pppd -d -d -d
+is::201:120:IS Support Person,,x274:/home/is:/bin/sh
+aggie:x:209:120:Aggie Johnson,x158:/home/aggie:/bin/sh
+hr::211:125:Human Resources:/home/hr:/bin/sh
+doc::212:120:Docs Suggestion Box:/home/doc:/bin/sh
+sam::219:128:Sandra Fyfe,x228:/home/sam:/bin/sh
+bonnie:x:220:121:Bonnie Sangster,x313:/home/bonnie:/bin/sh
+lesley:x:226:122:Lesley Caldicott,x*257:/home/lesley:/bin/sh
+jgarvey::234:120:John Garvey,591-0931 x370 (Hm 592-2081):/home/jgarvey:/bin/ksh
+rachel:x:236:121:Rachel DeCuypere,x*305:/home/rachel:/bin/sh
+tracy::237:123:Tracy Nicholson,x*246:/home/tracy:/bin/sh
+trevor::239:123:Trevor Rothwell,x*303:/home/trevor:/bin/sh
+kim::241:121:Kim Fraser:/home/kim:/bin/sh
+mcocking::247:120:Martin Cocking:/home/mcocking:/bin/sh
+dleach:x:1004:120:Derek Leach:/home/dleach:/bin/sh
+naoko::248:120:Naoko Kataoka:/home/naoko:/bin/sh
+stevend::253:120:Steven Dufresne:/home/stevend:/bin/sh
+service::252:123:QNX Customer Service:/home/service:/bin/sh
+jun:x:255:120:Jun Xie:/home/jun:/bin/sh
+qinfo::256:121:QNX Info (info@qnx.com)://222/home/qinfo:/bin/sh
+apkleywegt:x:1006:120:Allan Kleywegt:/home/apkleywegt:/bin/ksh86
+allan::1006:120:Allan Kleywegt:/home/apkleywegt:/bin/ksh86
+lisa::260:123:Lisa Caverly://222/home/lisa:/bin/sh
+smb::1032:120:SMB public user-testing:/home/guest:/bin/sh
+tsi::262:120:TSI Contract Person??? (See Frank):/home/tsi:/bin/sh
+install::266:120:Mr. Install:/home/install:/bin/sh
+dkinsman::268:120:Donna Kinsman://60/home/dkinsman:/bin/sh
+pcguest::269:120:test account for samba:/home/pcguest:/bin/sh
+thomas::271:126:Thomas Emberson:/home/thomas:/bin/sh
+alias:*:7790:2108::/usr/lib/qmail/alias:/bin/true
+qmaild:*:7791:2108::/usr/lib/qmail:/bin/true
+qmaill:*:7792:2108::/usr/lib/qmail:/bin/true
+qmailp:*:7793:2108::/usr/lib/qmail:/bin/true
+qmailq:*:7794:2107::/usr/lib/qmail:/bin/true
+qmailr:*:7795:2107::/usr/lib/qmail:/bin/true
+qmails:*:7796:2107::/usr/lib/qmail:/bin/true
+apang:x:273:126:Arthur Pang:/home/apang:/bin/sh
+gbergsma:x:276:122:Greg Bergsma://222/home/gbergsma:/bin/sh
+rhughes:x:277:122:Randall Hughes:/home/rhughes:/bin/sh
+bturner::270:127:Brad Turner://107/home/bturner:/bin/sh
+gcarr:x:278:120:Greg Carr:/home/gcarr:/bin/sh
+gcarrp:x:278:120:Greg Carr:/home/gcarr:/bin/sh
+web:x:166:120:Web Staging Area:/home/web:/bin/sh
+gragazzini:x:279:120:Gianluca Ragazzini:/home/gragazzini:/bin/ksh
+bstecher:x:280:120:Brian Stecher:/home/bstecher:/bin/sh
+freesoft::281:120:Node 1 Free Software:/home/freesoft:/bin/sh
+ajedgar::111:120:**GONE**:/tmp:/bin/true
+miket2::139:120::/home/miket2:/bin/sh
+nblack::196:127:Norbert Black:/home/nblack:/bin/sh
+cburgess:x:218:120:Colin Burgess,x354:/home/cburgess:/bin/sh
+cbmail:x:240:10001:Colin's Mail Testing Account:/home/cbmail:/bin/sh
+amy:x:107:121:Amy O'Reilly://222/home/amy:/bin/sh
+glogaras:x:224:121:George Logaras://222/home/glogaras:/bin/sh
+dgreen::264:120:David Green:/home/dgreen:/bin/sh
+pford::283:120:Pat Ford,x388:/home/pford:/bin/sh
+drempel:x:284:120:David Rempel:/home/drempel:/bin/sh
+gp::137:120:Graeme Peterson:/home/gp:/bin/sh
+dnickerson::285:120:David Nickerson://61/home/dnickerson:/bin/sh
+ben::286:120:Brian Northgrave:/home/ben:/bin/sh
+dhitchcock::287:120:David Hitchcock,x252:/home/dhitchcock:/bin/sh
+sweebaker:x:216:121:Sherry WeeBaker://222/home/sweebaker:/bin/sh
+cwichmann:x:293:120:Cliff Wichmann://222/home/cwichmann:/bin/sh
+rvanderveen:x:294:120:Ria Van Der Veen:/home/rvanderveen:/bin/sh
+webmaster::298:121:webmaster@qnx.com:/home/webmaster:/bin/sh
+dleblanc::299:120:David LeBlanc:/home/dleblanc:/bin/ksh
+sbryen:x:300:130:Shelley Bryen://222/home/sbryen:/bin/sh
+jcapiral:x:302:121:Jen Capiral://222/home/jcapiral:/bin/sh
+xtang:x:303:120:Xiaodan Tang,x310:/home/xtang:/bin/sh
+neutrino:x:304:120:Neutrino:/home/neutrino:/bin/sh
+jamesm::305:127:James MacMillan://107/home/jamesm:/bin/sh
+msuarez:x:306:122:Manuela Suarez:/home/msuarez:/bin/sh
+ctravis:x:307:120:Chris Travis://61/home/ctravis:/bin/sh
+christian:x:308:120:Christian Dechamplain:/home/christian:/bin/sh
+sjt::309:120:Steve Tomkins:/home/sjt:/bin/sh
+jzhang:x:310:120:Junhan Zhang:/home/jzhang:/bin/sh
+mrl::312:120:Micheal Lester:/home/mrl:/bin/sh
+cafe::313:123:Cafe - Short Order://222/home/cafe:/bin/sh
+vmarques::315:120:Victor Marques:/home/vmarques:/bin/sh
+ahmed:x:316:120:Ahmed Abed:/home/ahmed:/bin/sh
+gold::317:127:Gold Support:/home/gold:/bin/sh
+hsbrown::170:120:Hugh Brown:/home/hsbrown:/bin/sh
+ssauve:x:291:120:Shaun Sauve:/home/ssauve:/bin/sh
+demodisk::318:120:Demodisk:/home/demodisk:/bin/sh
+greig::319:120:Jay Greig:/home/greig:/bin/sh
+jamie::321:127:Jamie Villeneuve://107/home/jamie:/bin/sh
+andre::322:127:Andre Piquette://107/home/andre:/bin/sh
+rich::323:127:Richard Potter://107/home/rich:/bin/sh
+amardare:x:215:120:Adrian Mardare:/home/amardare:/bin/sh
+hzhou:x:324:120:Hao Zhou:/home/hzhou:/bin/sh
+vanmarle:x:320:120:Tom Van Marle:/home/vanmarle:/bin/sh
+reception::325:123:QNX Reception Desk:/home/reception:/bin/sh
+sfaludi:x:326:120:Steven Faludi:/home/sfaludi:/bin/sh
+keith::327:120:Keith Russell:/home/keith:/bin/sh
+dgerbis:x:328:122:Debbie Gerbis://222/home/dgerbis:/bin/sh
+peggy:x:329:120:Peggy Hildebrand:/home/peggy:/bin/sh
+inhandd::330:120:inhand debug:/home/inhandd:/bin/sh
+arempel:x:331:120:Andrew Rempel:/home/arempel:/bin/sh
+michalym:x:106:120:Mike Michalyshyn:/home/michalym:/bin/sh
+thaque:x:114:120:Tashbeeb Haque:/home/thaque:/usr/local/bin/bash
+mystery::116:125:**GONE**:/tmp:/bin/true
+rpc::128:120:RPC:/home/rpc:/bin/sh
+alain::340:120:Alain Magloire:/home/alain:/bin/sh
+sascha::341:120:Sascha Morgenstern:/home/sascha:/bin/sh
+omsingla:x:342:120:Olivier Singla:/home/omsingla:/bin/sh
+latitude::130:120:David H:/home/latitude:/bin/sh
+mohamed:x:343:120:Mohamed Ben Othmane:/home/mohamed:/bin/sh
+mrobinson::344:122:Mark Robinson:/home/mrobinson:/bin/sh
+djarrett::345:125:Dave Jarrett://222/home/djarrett:/bin/sh
+pphelan::346:120:Patrick Phelan:/home/pphelan:/bin/sh
+patp::346:120:Patrick Phelan:/home/pphelan:/bin/sh
+ddonohoe::347:120:David Donohoe:/home/ddonohoe:/bin/sh
+tina::348:125:Tina Sainsbury://222/home/tina:/bin/sh
+dackerman::349:121:Daniel Ackerman:/home/dackerman:/bin/sh
+bretts::350:121:Brett Serjeantson://222/home/bretts:/bin/sh
+donaldl::351:127:Donald Lalonde://107/home/donaldl:/bin/sh
+stevet::352:120:Steve Tremblett://107/home/stevet:/bin/sh
+heather::353:127:Heather Johnstone://107/home/heather:/bin/sh
+jclarke:x:354:120:Jason Clarke://107/home/jclarke:/bin/sh
+peterm::355:120:Peter Martin://107/home/peterm:/bin/ksh86
+adrianh::356:120:Adrian Huestis:/home/adrianh:/bin/sh
+sebastien:x:357:120:Sebastien Marineau:/home/sebastien:/bin/sh
+adrianj::358:120:Adrian Johnston:/home/adrianj:/bin/sh
+kellyd::359:123:Kelly Daize://222/home/kellyd:/bin/sh
+thomasf:x:360:120:Thomas Fletcher:/home/thomasf:/bin/sh
+mal::361:121:Mal Raddalogoda://222/home/mal:/bin/sh
+leszek::362:120:Leszek Kowlski:/home/leszek:/bin/sh
+xducasse::363:121:Xavier Ducasse:/home/xducasse:/bin/sh
+qnx98::364:120:QNX 98 Demo Account:/home/qnx98:/bin/sh
+donb::365:121:Don Blacklock:/home/donb:/bin/sh
+USsales::366:120:US Sales://1/home/USsales:/bin/sh
+heat:x:367:127:QNX Automated Support:/home/heat:/bin/sh
+garth:x:368:121:Garth Flint:/home/garth:/bin/sh
+qnx-uk:x:370:100:QNX UK Office:/home/qnx-uk:/bin/sh
+rcapoor::371:125:Raj Capoor://222/home/rcapoor:/bin/sh
+bbull::369:120:Bill Bull:/home/bbull:/bin/sh
+laveau::373:131:Laveau Saint-Clair://222/home/laveau:/bin/sh
+sbourre:x:374:131:Sylvain Bourre://222/home/sbourre:/bin/sh
+jpmedina::375:131:Jean-Paul Medina://222/home/jpmedina:/bin/sh
+tess::376:125:Tess Herron://222/home/tess:/bin/sh
+ksayer::377:125:Krista Sayer://222/home/ksayer:/bin/sh
+tmurray::378:125:Tracy Murray://222/home/tmurray/:/bin/sh
+ddickey::379:120:Dave Dickey://1/home/ddickey:/bin/sh
+jpschaffer::380:120:Jeff Schaffer://1/home/jpschaffer:/bin/sh
+shawnm::381:128:Shawn McKendrick://222/home/shawnm:/bin/sh
+mfreer:x:382:121:Michael Freer://222/home/mfreer:/bin/sh
+probin:x:383:121:Philippe Robin://222/home/probin:/bin/sh
+cvs:x:384:120:CVS admin account:/home/cvs:/bin/sh
+builder::385:120:Build Master:/home/builder:/bin/sh
+turnip-eater::386:100::/home/turnip-eater:/bin/sh
+cisco1:x:387:120:Art Stine:/home/cisco1:/bin/ksh
+nstruck::388:131:Norbert Struck://243/home/nstruck:/bin/sh
+aadam::389:131:Andrea Adam://243/home/aadam:/bin/sh
+sbehnsen::390:131:Sven Behnsen://243/home/sbehnsen:/bin/sh
+tackermann::391:131:Torsten Ackermann://243/home/tackermann:/bin/sh
+pschwanebeck::392:131:Patrick Schwanebeck://243/home/pschwanebeck:/bin/sh
+okoch::393:131:Oliver Koch://243/home/okoch:/bin/sh
+lbock::394:131:Lucia Bock://243/home/lbock:/bin/sh
+snielsen::395:131:Soenke Nielsen://243/home/snielsen:/bin/sh
+tgraff::396:131:Thorsten Graff://243/home/tgraff:/bin/sh
+scott::397:131:Scott Farbiak://243/home/scott:/bin/sh
+ibruse::398:131:Ingo Bruse://243/home/ibruse:/bin/sh
+dcadel::399:131:Dominique Cadel://243/home/dcadel:/bin/sh
+masud::401:131:Masud Hamidi://243/home/masud:/bin/sh
+cjaehnisch::402:131:Carla Jaehnisch://243/home/cjaehnisch:/bin/sh
+dsalato::403:131:Diana Salato://243/home/dsalato:/bin/sh
+dlearmonth:x:404:120:Darrin Learmonth:/home/dlearmonth:/bin/sh
+temp::400:100:hello:/home/temp:/bin/sh
+roland:x:405:120:Roland Lassaline:/home/roland:/bin/sh
+y2k::407:127:Year 2000 Email:/home/y2k:/bin/sh
+samesbury::406:131:Steve Amesbury://243/home/samesbury:/bin/sh
+ccharlebois::408:125:Chris Charlebois://222/home/ccharlebois:/bin/sh
+netnote::409:131:NetNote://222/home/netnote:/bin/sh
+pwaechtler::372:131:Peter Waechtler://243/home/pwaechtler:/bin/sh
+jpbishop::410:120:Joe Tester://222/home/jpbishop:/bin/sh
+standard::411:127:support@qnx.com://1/home/standard:/bin/sh
+premium::412:127:premium@qnx.com://1/home/premium:/bin/sh
+ibm1:x:413:120:IBM temporary account:/home/ibm1:/bin/sh
+ibm2:x:415:120:IBM 2 temp account:/home/ibm2:/bin/sh
+gnats-admin::414:120:Gnats Administrator:/home/gnats:/bin/sh
+sschroeder::416:131:Stefan Schroeder://243/home/sschroeder:/bin/sh
+mradimersky::417:131:Manfred Radimersky://243/home/mradimersky:/bin/sh
+kkrueger::418:130:Kimm Krueger://222/home/kkrueger:/bin/sh
+skoch::419:121:Susan Koch://222/home/skoch:/bin/sh
+brdaniel::420:121:Brent Daniel://222/home/brdaniel:/bin/sh
+rider::421:131:Rider:/home/rider:/bin/sh
+brigitte::422:131:Brigitte Portugais:/home/brigitte:/bin/sh
+liliana::423:125:Liliana Colledanchise-Morris://222/home/liliana:/bin/sh
+mstumpf::424:131:Matthias Stumpf://222/home/mstumpf:/bin/sh
+youssef:x:425:120:Youssef Latrous:/home/youssef:/bin/sh
+cindym::426:125:Cindy McGillivray://222/home/cindym:/bin/sh
+skittur:x:427:120:Sunil Kittur:/home/skittur:/bin/sh
+stephane::428:131:Stephane Nicon://222/home/stephane:/bin/sh
+online::429:127:Online Service Support://1/home/online:/bin/sh
+dmcintyre::430:125:Douglas McIntyre://222/home/dmcintyre:/bin/sh
+mi::431:121:Marketing Intelligence://222/home/mi:/bin/sh
+spuri::432:120:Sunil Puri:/home/spuri:/bin/sh
+dlow::433:120:Daryl Low:/home/dlow:/bin/sh
+emuis::434:127:Erick Muis://107/home/emuis:/bin/sh
+amurphy::435:127:Angela Murphy://107/home/amurphy:/bin/sh
+pgraves:x:436:120:Peter Graves:/home/pgraves:/bin/sh
+mshane::437:120:Michael Shane:/home/mshane:/bin/sh
+stoman::438:125:Shawn Toman://222/home/stoman:/bin/sh
+gord+dan:x:439:120:Gord+Dan:/home/gord+dan:/bin/sh
+davilla::440:131:David Avilla://222/home/davilla:/bin/sh
+dweintraub::441:131:David Weintraub://222/home/dweintraub:/bin/sh
+newquics::1010:120:New Quics:/home/newquics:/bin/sh
+smoore::442:125:Sharon Moore://222/home/smoore:/bin/sh
+lwaite::443:131:Larua Waite://1/home/lwaite:/bin/sh
+jmoss::444:125:Julie Moss://222/home/jmoss:/bin/sh
+dsm::445:125:Data Synchroniztion://222/home/dsm:/bin/sh
+osm::446:125:Outlook Synchronization://222/home/osm:/bin/sh
+rpcg::447:120:RPCG Guest Account:/home/rpcg:/bin/sh
+jalguire::448:127:Joshua Alguire:/home/jalguire:/bin/sh
+amiga::98:98:An Amiga User:/home/amiga:/bin/sh
+frankf::449:120:Frank Friesacher://222/home/frankf:/bin/sh
+spurinto::450:120:Sunil Puri:/hd/home2/spuri:/bin/ksh
+mvr:x:451:120:Michael Van Reenen:/home/mvr:/bin/sh
+jboucher::452:120:Jim Boucher:/home/jboucher:/bin/sh

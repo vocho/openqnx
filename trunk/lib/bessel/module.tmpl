@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<module name="bessel">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="SharedObj" generated="true">
+			<kind type="library"/>
+			<location basedir="{cpu}/so{.:endian}" runtime="true">
+				libbessel.so
+			</location>
+		</component>
+
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="{cpu}/a{.:endian}" runtime="false">
+				libbessel.a
+			</location>
+		</component>
+
+	</contents>
+
+</module>

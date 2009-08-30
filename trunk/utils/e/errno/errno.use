@@ -1,0 +1,7 @@
+errno - explain error numbers
+
+errno error_number
+
+Where:
+ error_number       The numeric error number to get the text equivalent of.
+

@@ -1,0 +1,49 @@
+.TH ZLESS 1
+.SH NAME
+zless \- file perusal filter for crt viewing of compressed text
+.SH SYNOPSIS
+.B zless
+[ name ...  ]
+.SH DESCRIPTION
+.I  Zless
+is a filter which allows examination of compressed or plain text files
+one screenful at a time on a soft-copy terminal.  It is the equivalent of
+setting the environment variable LESSOPEN to '|gzip -cdfq -- %s',
+and the environment variable LESSMETACHARS to
+'<space><tab><newline>;*?"()<>[|&^`#\$%=~',
+and then running
+.IR less .
+However, enough people seem to think that having the
+command
+.I zless
+available is important to be worth providing it.
+.SH "SEE ALSO"
+zmore(1), less(1)
+.SH "BUGS"
+.I Zless
+does not work with compressed data that is piped to it via standard
+input; it requires that input files be specified as arguments.
+.SH "COPYRIGHT NOTICE"
+Copyright \(co 2006 Free Software Foundation, Inc.
+.br
+Copyright \(co 1992, 1993 Jean-loup Gailly
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.ig
+Permission is granted to process this file through troff and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+..
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.

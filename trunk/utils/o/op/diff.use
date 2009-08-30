@@ -1,0 +1,4 @@
+%C - execute commands as another user (must have suid bit set) (QNX)
+
+%C	<command>
+

@@ -1,0 +1,17 @@
+============================================================================
+TODO list for UCL -- a real-time data compression library
+============================================================================
+
+
+Planned for version 1.00:
+-------------------------
+
+- add some documentation
+
+- integrate the assembler decompressors into Autoconf
+
+- integrate the assembler decompressors into the build scripts
+
+- add an include file <ucl/ucl_asm.h> that has prototypes for all
+  assembler functions
+

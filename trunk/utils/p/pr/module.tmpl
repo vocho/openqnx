@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="pr">
+	<type>Element</type>
+	<classification>Runtime</classification>
+
+	<!-- Available for what platforms? -->
+	<supports>
+		<availability ref="guitargets"/>
+	</supports>
+
+	<!-- Source for source modules and builds -->
+	<source available="false">
+		<location type="" subdirs="true" relative="true">.</location>
+	</source>
+
+	<!-- Binary packaging info -->
+	<GroupOwner>gui</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<component id="pr" generated="true">
+			<location runtime="true" basedir="{os}/{cpu}/o{.:endian}">pr</location>
+		</component>
+	</contents>
+
+	<!-- Dependencies, Commented out ones are for future use with system builder, 
+	     since they are dependencies that should already be installed on the system -->
+	<requires>
+		<!-- <part build="true"  location="lib/c"/> -->
+	</requires>
+</module>

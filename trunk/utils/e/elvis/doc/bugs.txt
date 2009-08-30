@@ -1,0 +1,3174 @@
+REPORT BUGS TO kirkenda@cs.pdx.edu (STEVE KIRKENDALL)
+
+NOTE: Each bug in this file is marked with either "*", "/", or "?".
+The "*" means the bug is still pending.  The "/" means that I believe it has
+been solved.  A "?" means that I've done some work on it, and *hope* it is
+solved because it seems to work better but I never really understood what
+was wrong in the first place.  A "?" will become a "/" if I don't receive
+more reports of that bug.  More than 80% of this file lists *fixed* bugs.
+
+NOTE: Not all of these are truly bugs.  This file also serves as my "to do"
+list, so some items are just unimplemented features that sounded like a good
+idea at one time or another.
+
+
+* In Windows, elvis.exe can accept filenames with spaces in them,
+  but vi.exe can't.
+
+	This sounds like a bug in the _spawnvp() system call.  Should
+	32-bit programs even be calling _spawnvp()?
+
+	This won't be fixed in time for 2.2.  If that's a problem for you,
+	then copy elvis.exe to vi.exe.
+
+* When you give a command like ":dis s c++", elvis stores exactly that as
+  the value of the display option.  This can confuse x11's toolbar buttons.
+  The [Syntax] button will not be drawn pushed it, because it expects "syntax".
+
+* For "inputtab=identifier", the normal tag search doesn't look for tags
+  in elvispath, so it doesn't find library functions.  Is that a good thing
+  or a bad thing?
+
+* The data/elvis.clr script should be able to use ":color!" (with a !) but
+  can't because some of the compiled-in defaults are executed after that script
+  is sourced, so the compiled-in defaults override ":color!".
+
+* MAYBE support "or color" for backgrounds.  Try to minimize the contrast with
+  the normal background, instead of maximizing it, so the foreground colors
+  still look good.  The "or color" backgrounds don't need to support images.
+
+* In "man" mode, when markups are displayed the ^J is shown with a black ^
+  and a highlighted (as "markup") J.
+
+* Implement vim's "startofline" option.
+
+* The showmatch option currently doesn't use matchchars.  Should it?
+
+	Actually, it does use it to determine whether XML tag pairs should
+	be highlighted by showmatch, but that's all.
+
+* See Luigi Mastrangelo's mail for some WinElvis bugs.
+
+  * If :make encounters a large number of errors, then WinElvis can get stuck
+    in an infinite loop.  This didn't happen in 2.1_4.
+
+  * "WinElvis test*" will, if there is no file with the prefix "test", display
+    an alias on the last line.
+
+	I tried to reproduce this one.  For me, it's working correctly.
+	I've cleaned up the wildcard matching code a lot since 2.2i (which
+	he's using), so maybe that explains it.  I hope so.
+
+* The tag stack doesn't seem to work right for user-defined protocols.
+  Directories (the "readDIR" alias) fail completely when you hit ^T, and
+  others such as readDICT move the cursor to the wrong place.
+
+* Name completion for aliases isn't perfect.  If an alias has the same name
+  as a built-in command, then Elvis counts both versions as being different
+  possible completions.
+
+* Move source into a src/ subdirectory.  This includes just about everything
+  except data/, doc/, README.html, COPYING, INSTALL, HISTORY, and parts of
+  configure and Makefile.in.
+
+  * The "e2" script would also need to be changed.
+
+* In URLs passed on the command line, anchors aren't handled correctly.
+  Try "elvis 'README.html#2.2i'".  The same is also true of URLs passed to
+  an ex command that expects a file name, such as ":e README.html#2.2i".
+
+	There's a difference between URLs and filenames.  When elvis knows
+	it is processing a URL it can be very smart about it.  But when given
+	a local file name which happens to contain "#" how can elvis know if
+	the "#" is part of the name, or an anchor?  And if it is an anchor,
+	how can the generalized file loading code remember that it is supposed
+	to search for that anchor?
+
+	When following a link from another HTML file, URLs are handled like
+	tags.  This won't work for URLs given on the command line, though,
+	because there's no source document for the URL to be relative to,
+	and also because the tags aren't going to be processed in "html"
+	mode.
+
+* Elvis' CHAR data type may clash with some standard ones.
+
+* Add a help: protocol (readHELP alias) which looks up terms via :help.
+  This way, the README.html file can have links into the manual.
+
+	Tricky!  Too tricky for 2.2 at this late date.
+
+* In syntax coloring mode, how about adding a text object for comments?
+
+* Write a wrapper around GDB to allow it to run in a separate xterm window.
+  The wrapper will send commands to Elvis which force Elvis' windows to
+  stay in sync with the debugger.  See "Annotations" in the GDB info pages.
+
+* For some users, the smartargs option is extremely slow and doesn't find
+  the function's arguments anyway.  This has to be due to some quirk in
+  the user's configuration, but what?
+
+	An unsorted "tags" file?  This could be in the current directory,
+	or any file or directory named in the "tags" or "elvispath" options.
+
+	Or maybe it is sorted differently.  The "tags" file should always
+	be sorted by the characters' ordinal values, regardless of the locale.
+	Some versions of Exuberant Ctags use locale-specific sorting.
+
+	See messages from Merijn Brand
+
+	Would it be worth implementing the search code in elvis itself,
+	instead of invoking ref, just for the sake of removing ref & bash
+	from the scenario?
+
+* Need a way to remove folds.  This is different from merely unfolding, which
+  remembers the attributes of the fold.
+
+* Add a "rulerformat" option to control the appearance of the ruler.
+
+	Vim has a "rulerformat" option with a very weird syntax.  I would
+	prefer to use "simpler syntax" expressions.
+
+	$1	current line number
+	$2	current column number
+	$3	offset from the beginning of the file
+	$4	offset from the beginning of the line
+	$5	the record/modify flag
+	$6	the decimal code for the character under the cursor
+	$7	the "list" version of the character under the cursor
+
+	So the default format is equivalent to "$1($5?$5:",")$2".
+
+? simoN reports that he gets intermittant "file's timestamp has changed"
+  messages for no apparent reason.
+
+? Sometimes "x11" doesn't refresh windows in response to an Expose event.
+
+* If a visual selection is in effect and you use : to enter an ex command,
+  then non-visual maps don't work while entering the ex command.  That's
+  wrong.  This turned up as consequence of ":map! ^H ^OX" which should make
+  the backspace key erase text immediately.  That mapping also has other
+  problems -- it can't delete the first character in a line, for example.
+
+* The :gui commands should be saved by :mkexrc.  Also, :gui! should make
+  changes which aren't saved; the standard initialization scripts should
+  use that.
+
+* MAYBE add vim's glob(), globpath(), and expand() functions.  fnamemodify()
+  too?
+
+* Make the default array delimiter be '\n' if the string contains at least
+  one '\n', or whitespace otherwise.  This will affect the :for command as
+  well as arrays.  This will be handy when glob() is implemented.
+
+	How does this relate to the idea of using {} to delimit nested
+	arrays?  I guess I'd need to do the {} test before the \n test.
+	One complication on the {} idea: The ex parser doesn't store the
+	{ itself in the command, or the closing } either.  It does store
+	the newline after the { though.  Maybe the parser could treat a
+	newline as an opening quote for a string that extends to the end
+	of the expression.
+
+	Also, \n in strings isn't converted into a newline.  Changing the
+	expression parser to support that might break some Windows scripts.
+	The danger is pretty low, though.  Adding \n support makes sense.
+	Maybe other character escapes too.
+
+* In elvis.syn, the "config.sys" entry reveals a problem: If a language
+  has "ignorecase", and its keywords aren't given in lowercase, then
+  elvis can dump core.
+
+	I worked around this by changing those keywords to lowercase,
+	but I'm not satisfied with that.  Elvis should never dump core.
+
+* For the sake of vim compatibility, the X11 PRIMARY selection should be
+  named "* instead of "^.  Also, it would be nice if "+ could be used to
+  access the X11 CLIPBOARD selection.
+
+* Allow the @ command to accept a count.  E.g., 42@x should run the
+  contents of cut buffer x, 42 times.
+
+* Find a better way for :map to distinguish predefined maps from those that
+  should be saved by :mkexrc.  Currently, it omits any maps for keys that
+  have a label, which isn't quite right.
+
+* In Windows, the text-mode elvis doesn't switch screens anymore.
+
+	This may only be in WindowsNT/2K.  There are some differences between
+	consoles in WinNT/2K and Win95/98/ME/XP.
+
+* Allow the search commands to accept a count.  E.g., 5/foo^M should
+  search forward for the fifth foo.
+
+* There are some quirks in incremental searching.  For example, the
+  word completion macros don't work with incrementalsearch set.
+
+* Add an "UnknownCommand" autocmd event.  It should be automatically
+  invoked if an unrecognized ex command name is given.  After the autocmd
+  completes, elvis should check again to see if a new alias has been
+  defined with that name, and if so then no error is reported.  This
+  will allow elvis to automatically load aliases as they're needed.
+
+* Implement vim's "scrolloff" option.  It would be handy in the ("Eel) buffer.
+  In vim this is a global option, but I'd like to make it a window option
+  instead.  Also implement "sidescrolloff".
+
+* Just a thought: If there was a "hidden" text attribute, then it could be
+  used in man pages for text between .de and .., so macro definitions wouldn't
+  be displayed.  Also, <script>...</script> and <style>...</style> could
+  be hidden.
+
+* If no normal background has been specified, or the background is set to
+  "transparent", then changing the "background" option should cause a
+  BgChanged event.  It should also re-evaluate all colors to possibly
+  choose a different foreground.
+
+* For smartargs, would it be possible to make the ',' character be overtyped
+  only by another ','?  And maybe make any typed ',' delete text up to the
+  next ',' in the doomed text.  That would be nice, because then as users
+  type arguments, one typed argument will replace one smartargs hint.
+
+	Modify syntax descriptions to store multiple function characters.
+	For example, the line "function (,)" would tell elvis that '(' starts
+	a function's args, ',' separates args, and ')' ends args.  If only
+	two characters are given, assume the arg delimiter is space.  If
+	only one is given, then don't treat any characters specially.
+
+* Modelines set a buffer's options okay, but can't set the window's options
+  as part of a :sp command because that window hasn't been created yet.
+
+* It would be nice if ex/xbuf.ex could leave the other toolbar buttons
+  unchanged.  Maybe allow multiple toolbars?
+
+	I also want to support menu bars, and maybe a right-click menu.
+	Maybe elvis should support generic widgets which can have an
+	associated ex command (optionally with a form), and/or a list
+	of other widgets to be displayed as menu items or toolbar buttons.
+	The only difference between a menubar and toolbar would be their
+	appearance -- the menu bar doesn't show icons.
+
+	Widgets wouldn't necessarily be displayed anywhere.  You could
+	define a large number of widgets that people *might* want to use,
+	and then choose which ones serve as menu bars or tool bars, and
+	which ones appear as menu items or toolbar buttons in those.
+	New options would list the top-level menues, toolbars, and a
+	right-click menu; some of those options could be buffer-dependent.
+
+	Each widget should have the following attributes:
+	* Label - the string used to identify it in elvis' config files.
+	* Short - a text description of the item used in menus or button
+		labels.  This defaults to the same as the label, with
+		"_" changed to " ".
+	* Long - a text description, displayed on the status line and in
+		the dialog (if there is a dialog).  The default is the
+		same as Short.
+	* Sensitive - an expression which is TRUE if the widget can be
+		clicked.  The default is TRUE.
+	* Chosen - an expression which is TRUE if the widget should be
+		shown as being chosen (i.e., a pushed-in button, or a
+		checked menu item).  The default is FALSE.
+	* Command - an ex command line to execute when clicked.
+	* Dialog - A description of the dialog window to be created when
+		the widget is clicked.  If the widget also has a Command
+		then the Command is only executed when the Dialog's
+		[Okay] or [Apply] button is clicked.
+	* Menu - a list of widget labels, specifying the contents of a
+		window to pop-up when the widget is clicked.  If there
+		is also a Dialog and/or Command for this widget, then
+		Dialog/Command is used for short clicks, and the Menu is
+		used for longer clicks (or right-clicks).
+	* Icon - a small image to use in toolbar buttons.  There is no
+		default; the widget's short name is displayed instead.
+
+* Implement the "redraw" option?
+
+* If a URL contains percent signs or hash marks, it is hard to enter because
+  elvis wants to replace those characters with the name of the current and
+  alternate files, respectively.  At least, this is true with user-defined
+  protocols.
+
+* Make the ex/info.ex script use the "dir" page.
+
+	See ex/info2.ex
+
+* Traditionally, "-" has been a synonym for the "-s" flag, for running scripts.
+  This is still part of POSIX, though is marked as being "obsolete" there.
+  To make "-" be treated as a file name, you must give "--" before it, as in
+  "elvis -- -".  Can I make elvis smarter about that?
+
+	Maybe I could make "-" act like "-s" when stdin is a file, and read
+	text from stdin otherwise?  Users could still use an explicit
+	"-- -" to force the read-text behavior, or "-s" to force the script
+	behavior.
+
+	Sadly, there is no 100% portable way to detect whether stdin is a
+	file or not.  The test would have to be done in an OS-dependent way.
+	The isatty() function tests for character devices, not files.  The
+	fstat() function uses funky names in Windows, and might not always
+	work on non-files.
+
+* Implement support for vim's CursorHold event.  (This occurs when the
+  user doesn't cause any input events for a configurable amount of time,
+  under control of the "updatetime" option, expressed in milliseconds.)
+
+* htmltagatcursor() is still too slow in some contexts.
+
+* For the sake of speed, dmmuadjust should probably not do any adjusting
+  until the buffer is displayed.  That way, if there are *MANY* changes,
+  we only need to adjust the display list once.
+
+	Idea: Only regenerate when needed -- which mostly means while drawing
+	a window.  For each window, keep track of the last offset that has
+	been generated.  If a buffer is modified before that point, then
+	reduce the window's offset to the changed point, and discard any
+	saved formatting information after that.  When regenerating a window,
+	start at the last saved point before-or-at the top of the screen,
+	and work forward until the window is filled, saving points as they're
+	generated.
+
+	This should be at least as fast as the current method -- probably
+	much faster.  More reliable too.
+
+	The save points could either be the start of every line (which would
+	make the points be dependent on the width of the window) or some
+	specific tags which mostly force a new line to start (which would
+	*NOT* depend on a window's attributes).  The "every line" method
+	sounds simpler, but I'll need to remember to clobber all of the
+	saved info if the display mode changes, or the width changes.
+
+	Important comment:
+		/* Start on the line BEFORE the one where changes begin.
+		 * This is because if we insert a small word at the front of
+		 * a line, it might fit at the end of the preceding line.
+		 */
+
+* The "syntax sh" display mode doesn't highlight instman.sh very well.  I
+  think this is because dmsyntax.c:setup() allows strings to start at the
+  end of a line.  If a string punctuation occurs at the end of a line, it is
+  much more likely to be the *end* of a string.
+
+* Make "x11" support a real bold+italic font.
+
+* In X11, maybe use XTranslateCoordinates() to choose position of dialog window.
+
+* Add a urlencode() function.  And maybe urldecode() too.
+
+* Need a way to check options of other buffers.  For example, it would be
+  nice if the toolbar in ex/xbuf.ex could test each buffer's "modified"
+  option.
+
+	Maybe use the -> operator.  The lhs would be a string identifying
+	the buffer, and the rhs would be the label of an option to fetch.
+	It would work by *TEMPORARILY* changing the bufoption value.
+
+	This is mostly needed only in expressions, not the lhs of a :let
+	command, because there you can use (bufname) to get a similar effect.
+
+	local b
+	let b = newbuffer()
+	(=b) let bufdisplay = "syntax sh"
+	calc b->bufdisplay
+
+* It might be nice if the :man alias could search for the man source text,
+  instead of recreating it from the nroff output.  Ideally, this would use
+  a "manpath" global option (or just use $MANPATH, I guess) and a buffer-
+  specific "mansection" option to store a list of sections and extensions.
+  The mansection option is intended to address the problem of looking up
+  write() in a C program -- it tends to find either the write(1) program,
+  or the Python equivalent of the system call.
+
+* Add an event when marks are set/reset.  This way users could...
+
+	:au MarkSet * '[,']region marked '(aufile)
+	:au MarkUnset * '[,']unregion marked
+
+  ... to highlight the marked line.  Or maybe a generic "Normal" event
+  which is triggered whenever a vi command is executed?  See vi.c:1089,
+  and add a TWEAK flag to indicate which commands trigger events.
+
+	:auevent MarkSet
+	:au Normal m* '[,'] doau Markset
+
+  I guess this would also require the :doau command to be extended to
+  accept an address range.  That sounds useful all by itself!
+
+* It would be nice if there was a way to stuff data into a cut buffer.  One
+  example: Use it to copy the current file name into the display's selection.
+
+  	Vim uses @x for this... and even uses the :let command!
+
+  	:let "^ = current("file")
+
+* Add stubs files for X extensions, OpenGL, etc.
+
+* Maybe reimplement :g to work in two passes, like the real ex/vi.
+
+* Add a buffer option for controlling the default face.  In addition to
+  "normal" and "idle", some candidates would be "readonly" and "web".
+
+* The '' command (go back to previous location) doesn't seem to work as well
+  as it used to, especially after :s/// commands.
+
+* Apparently "elvis -Gx11" doesn't always exit when X does -- it can get
+  stuck in a loop where it uses all available CPU.
+
+	Xlib normally kills the application when the connection to the server
+	goes down unexpectedly.  Elvis will sometimes disable that behavior
+	during initialization -- perhaps it doesn't enable it afterward?
+
+* Can the new "prefix" keyword thing be extended to denote comments?
+  And the %rX...X regular expressions in ruby?  Maybe recognize the start
+  of a comment/regex as a prefix token, and associate a terminator string
+  and font with it.  Maybe it could even handle preprocessor directives!
+
+* Windows problems:
+  * In Options->Font, the "Font style" is ignored -- can we remove it?
+  ? WinElvis died one time while resizing, when it tried to refresh the screen.
+    I haven't been able to reproduce this.
+
+? Is there a bug in Windows reading the initialization scripts?  In particular
+  maps that use the ^M character?
+
+	I can't reproduce this.  It works correctly for me.
+
+* Potential for some minor problems with parsing regular expressions, when
+  magicchar is set to something weird.  Specifically, some parts of regbuild()
+  and gettoken() assume that '[', '^', and '$' are always in magicchar.  If
+  they aren't, then odd (though non-fatal) things will happen.
+
+* Add support for vim's \= in replacement text.  It treats the rest of the
+  replacement text as an expression, evaluates it, and uses the result as
+  literal replacement text.  E.g., :$s/^/\=current("line")/ inserts a line
+  number at the start of every line.  Maybe use $1 - $9 for \1 - \9, but
+  how to handle & ?
+
+* Some of the special characters in "man" should be graphic, but aren't.
+
+	This is somewhat improved in 2.2h, but still needs work.
+
+* Add a "regexp" (or "magicsyntax" ?) option which has no built-in purpose
+  but can be used with ":autocmd OptChanged regexp ..." to automatically
+  adjust the syntax.
+
+	auevent RegexpChanged
+	au OptChanged regexp eval doau RegexpChanged (regexp)
+	au RegexpChanged perl set magicchar=^$.[*+?(){\| magicname magicperl
+	au RegexpChanged vi set magicchar=^$.[* nomagicname nomagicperl
+
+	Actually, it might make more sense to allow users to create their
+	own options.  "regexp" could be an instance of that.
+
+* In regular expressions, maybe allow all of the \letter combinations
+  have configurable meanings.
+
+	One way to do this would be via 52 magic<letter> options, with the
+	value of the option being substituted for any \<letter> sequence
+	used in a regular expression.
+
+	This could interfere with the use of \Q, \V, and \E.  I should
+	leave those hardcoded, with \E selecting the enhanced mode that
+	is sensitive the the magic<letter> options.
+
+	If I'm going to do all this, then the regular expression options
+	should probably all be collected into a "regexp" group.  There will
+	be a lot of them!
+
+* In regular expressions, allow [[:startword:]] and [[:inword:]] to be used
+  for accessing the syntax-coloring concept of "word".
+
+* Maybe add a way to prevent :w from saving some types of regions.  This would
+  be handy for a visual diff -- you could show both the old and new versions
+  of lines mixed in the same buffer, and then save only the new text.
+
+	This could be done via a macro, but I'm worried that it'd be too easy
+	to accidentally bypass the macro, causing the mixture of both versions
+	to be written to the file.
+
+	Also, it might be nice if the "no save" lines could be hidden by
+	setting an option.
+
+	I wonder... would it be adequate if I simply made elvis sensitive
+	to the special face name "nosave"?
+
+* When editing the source-code for man pages, there is a bug in the handling
+  of { and } paragraph commands, which affects the "ap" and "ip" text objects:
+  If the cursor is on the '.' of a .PP or .SH command, then the paragraph seems
+  to include the PRECEDING text instead of the CURRENT AND FOLLOWING text.
+
+* Compatibility issue: The `m command should move the cursor back to the
+  same column, not the same character.  I.e., it shouldn't care whether any
+  text has been inserted or deleted on that line before the mark.  To test,
+  go onto a long line and type 40|mm20|10x`m  -- this should leave the cursor
+  in column 40, but elvis moves to column 30.
+
+* :10,20s/foo/bar/3 should change lines 20 through 22 -- i.e., 3 lines starting
+  at the last line in the range.  Elvis ignores the count when given a range,
+  which is wrong.
+
+* :g/^/j should join pairs of lines (it does in the real vi and in vim), but
+  instead it joins all lines together into a single line.
+
+* The S command looses the last indentation character when autoindent is set.
+  Also, c_ (which is what S does) works the first time, but . doesn't, if the
+  new text was empty.  If the new text was not empty, then . looses indent.
+
+* When pasting rectangles at the ends of lines, elvis doesn't try to pad
+  the lines so the rectangle keeps its shape.  Vim does.
+
+* <img src=...> tags don't work except in HTTP: URLs?
+
+* If multiple <img src=...> tags occur in a line, *not* as a menu, then
+  elvis should load the image when ^] is pressed on one of them.  Instead,
+  it always seems to load the first image in the line.  (Though I'm not 100%
+  sure I understand what's really happening.)
+
+* Change the meanings of some commands when a visual selection is pending:
+	* s	Like c (rect repeats the change for each line)
+	* C	Change whole lines (except rect changes from left edge)
+	* S	Change whole lines
+	* D	Delete whole lines (except rect deletes from left edge)
+	* X	Delete whole lines [:map select X :d^M -- but cut buffers?]
+	* Y	Yank whole lines [:map select Y :y^M -- but cut buffers?]
+	* I	Insert at left edge (for rect, do it to each line)
+	* A	Append at right edge (for rect, do it to each line)
+
+* Some useful 'g' commands that elvis doesn't support yet:
+	* gv	reselect previously highlighted text
+	* ge	go backward to end of previous word.
+	* gE	go backward to end of previous WORD
+
+* Some useful 'z' commands that elvis doesn't support yet:
+	* zh	sidescroll leftward.  If cursor forced off right edge, move it.
+	* zl	sidescroll rightward.  If cursor forced off left edge, move it.
+	* zs	sidescroll to move cursor's column to left edge
+	* ze	sidescroll to move cursor's column to right edge
+
+* The :fold command seems to confuse the :g command, perhaps because :fold
+  changes the meaning of "line".  The :unfold command is okay, though.  In
+  particular, this means you can't do this...
+
+	:g/^{/,/^}/fold (current("tag"))
+
+  ... but this works...
+
+	:g/^{/,/^}/unfold (current("tag"))
+	:%fold!
+
+? The spell option should probably look for tags in more places.  Currently
+  it doesn't seem to check any tags file except the current directory.
+
+	Actually, it was apparently checking only the directories listed in
+	the "tags" option.  Perhaps it should also check "elvispath"?
+
+	If there is no "tags" file in the current directory, then it doesn't
+	look in other tags either.  I remember this was a design decision,
+	to speed things up in non-source directories.  I might want to make
+	this an option, or make it sensitive to knownsyntax(), or something.
+
+	NEWSFLASH: I think this issue is moot, since the new taglibrary
+	option was created.
+
+* Extend the "ref" program to limit itself to looking at tags that are
+  callable from a specific source file, by checking the extensions against
+  the "extensions" or "foreign" set, just like tagkind/taglibrary.
+
+* Make elvis give a higher priority to tags that are callable by the current
+  source file, using the same filename sensitivity.
+
+	This would be a little tricky, since the list of extensions is
+	currently stored in a static variable in descr.c.
+
+* Make "tagkind" option store a separate tag/keyword dictionary for each
+  buffer.  This will handle static tags, and also allow the keywords to be
+  reloaded when the "tags" file changes.  (As currently implemented, tagkind
+  adds tags to the language's shared keyword dictionary.)
+
+	One big challenge: Currently, the list of filename extensions which
+	are callable by the language is stored in a static variable in descr.c
+	This works when the search only takes place as a language is loaded,
+	but if we need to reload later, then we'll need to store that list
+	somewhere -- probably attached to the language description in descr.c
+
+* When lpcolumns!=columns, printing will often use the wrong font attributes
+  when printing text in a markup display mode.  Apparently the array of
+  line attributes is tripping it up.  NEWSFLASH: It can cause core dumps too.
+  Try setting lpcolumns=300, for example.  This is especially true when using
+  antialiased fonts in "x11".
+
+	This should go away with the new markup code (when written).
+	Until then, just be sure to ":let lpcolumns=columns" before printing.
+
+* Maybe implement a multi-level progress bar.  Search/replace commands would
+  use it, as would network I/O.   Aliases could also use it via a ":progress
+  name=percent" command.  The progress is reset (goes away) whenever elvis
+  is idle, or when the progress hits 100%.  While reset, the first named
+  progress grabs it, and holds it until reset again.
+
+	This should probably wait until window-at-a-time idle is supported.
+
+* hlsearch doesn't mark all matches within a markup display mode.  Its
+  behavior is very consistent, in that it fails to highlight the same
+  instances each time.
+
+	This would be hard to fix -- probably not worth the effort at this
+	time.  The ideal solution would involve modifying regexec() to search
+	across line boundaries.  The problem is caused by the fact that
+	markup display modes have a different definition of "end of line"
+	than the regexp matcher, so any text between a newline character
+	and the end of the "markup" line is unchecked.
+
+* Giving too many "Hit <Enter> to continue" prompts.
+
+* "spellsuffix" doesn't always work.  It seems to skip looking for base words
+  defined via :words -- it only checks the "spelldict" dictionary.  Example:
+  "GUI" is added via :words, and spellsuffix contains "'s", but "GUI's"
+  is still flagged as an error.
+
+	I believe there are two things happening here.  First, it doesn't
+	look for the root word in the tags dictionary; this allows lowercase
+	"digraphs" to be flagged as an error even though "digraph" is accepted
+	because it is a tag.  This is not a bug.
+
+	The second thing is that it looks up the root word in a case-
+	insensitive way (converting it to lowercase) so it doesn't find
+	the uppercase "GUI" when trying to check "GUI's".  This is a bug...
+	how to fix?
+
+? From Stephane Billiart:
+  There is a bug in the "configure" script -- it doesn't know that the
+  internet files are required even if the network protocols are not
+  used, with the "x11" interface.  Here's a patch that fixes it for Solaris...
+
+	529,531c529
+	<       why "   to ensure that 'const' is ignored.  Also, if X11 is to be supported then"
+	<       why "   we also need -lsocket -lnsl.  A -R flag may also be added so the X11"
+	<       why "   shared libraries can be found at run time."
+	---
+	>       why "   to ensure that 'const' is ignored."
+	535a534,535
+	>               why "For Solaris2, X11 requires -lsocket -lnsl.  A -R flag may also"
+	>               why "   be added so the X11 shared libraries can be found at run time."
+	538a539,542
+	>       elif [ X"$inet" != X ]
+	>       then
+	>               why "For Solaris2, any network access needs -lsocket -lnsl"
+	>               TLIBS="$TLIBS -lsocket -lnsl"
+
+  Okay, here's my question: How could the network files be present but not
+  used?  The "configure" script always uses HTTP and FTP if the network files
+  are present, so that should always cause those files to be included under
+  Solaris, right?  Or does Solaris sometimes have the libraries but not the
+  header files?
+
+------------------------------------------------------------------------------
+FIXED BETWEEN 2.2j and the official 2.2.0 release
+
+/ Use x11's colors as the defaults for WinElvis too.
+
+	Actually there are no defaults for XElvis either.  I should probably
+	add a data/elvis.clr script which sets up default colors for both
+	graphical elvis and text-mode elvis.  The ~/.elvisrc file can be a
+	good starting point.
+
+/ The data/stubs/unixstub.c file seems to be very incomplete.
+
+/ "make install" should be forgiving about the /etc/elvis directory.
+  If a user runs "configure --prefix=$HOME" and installs elvis as themselves
+  (not "root"), then "make install" shouldn't fail because it can't write to
+  the /etc directory.
+
+/ The readDIR alias loads the new buffer into the old window.  This causes
+  problems with the stack, or with :sp commands.
+
+	This is similar to the problem I had earlier with the rcssince
+	alias, which was run via an autocmd event.  I solved that by adding
+	a rule that autocmd events can never switch buffers.  The same
+	solution would probably work pretty well for protocol aliases.
+
+/ In Windows, the standard COMMAND.COM shell does not expand wildcards,
+  but Cygwin's bash.exe does.  Elvis shouldn't expand wildcards if they've
+  already been expanded.
+
+	Obviously elvis will need some way to tell the difference --
+	perhaps by checking for a SHELL environment variable.  See the
+	following.
+
+/ Wildcard expansion is closely tied to handling of parentheses.  It would
+  be nice if, during wildcard expansion of command-line arguments from the
+  shell, we could skip that stage.  Maybe create a new option?  Set it during
+  processing of the command-line args, and then turn it off before processing
+  the configuration scripts.  This would also prevent parentheses from being
+  eaten in file names such as "file (2).txt".
+
+	A more general option might be nice -- one that lets you control
+	the aspects of filename handling in detail.  Its value could be a
+	subset of "tilde,dollar,paren,wildcard,special,space".  "special"
+	allows interpretation of %, #, and (if supported) <word>, as well
+	as the :x modifiers that can follow those symbols.  "space" indicates
+	that commands which accept multiple names should divide the name at
+	any unquoted space; without that, you could only separate the names
+	with <tab> characters.  Call the option "filenamerules".
+
+	So, for Unix/Linux, the command line args would be interpreted using
+	filenamerules="".  For Windows arguments (without $SHELL)
+	filenamerules="tilde,dollar,wildcard".  After that, the default is
+	always filenamerules="tilde,dollar,paren,wildcard,special,space" --
+	the full set -- but you can change it in ~/.elvisrc.  Windows users
+	might want to take out "space".
+
+	Name completion should insert a tab after a complete name instead of
+	a space, if the "space" flag isn't given.
+
+/ If the user tries to get help for an alias defined with a '!' then look
+  in the elvistip.html file.  Otherwise just say it is an alias.
+
+/ When told to read a directory, elvis should pretend it was told to read
+  using the "dir:" protocol.  Users can define a readDIR alias to allow
+  directory browsing.
+
+/ In X11, :mkexrc can save italicfont="".  It shouldn't.
+
+/ Elvis' BOOLEAN and data type may clash with a standard one.  Change its
+  name, and the names of the True and False values.
+
+/ Elvis' ctype macros clash with the standard ones.  This is a problem in
+  some GUIs because they use headers which #include <ctype.h>.  Change the
+  names of elvis' ctype macros.
+
+/ In "x11", <Shift-Insert> adds ^Sff63.  Is this a general problem?
+
+	<Ctrl-V><Shift-Arrow> starts marking in addition to sending ^Sff51.
+	(It is normal for <Shift-Arrow> to start marking text.)  Probably
+	<Shift-Arrow> shouldn't send anything.  Even weirder: It starts
+	marking in the main buffer even if you type <Ctrl-V><Shift-Arrow>
+	in an ex command line.
+
+/ Use <key> notation for maps in elvis.ini, and :mkexrc.  Not only is this
+  more readable, but it also avoids fileeol() confusion when reading maps
+  that end with ^M.
+
+/ I think the region bug may not be completely fixed.  The "since.ex"
+  script eventually causes problems, sometimes, when it tries to add a
+  region for the current line when the line is changed.
+
+	I think this is related to "undo", which can move marks.
+	It could leave regions unsorted.
+
+	To reproduce it: Make the second paragraph if this file be a
+	region.  Delete the its last line.  Hit <Undo>.  Hit <Shift-O>
+	to insert a line above the last line.  Wham!
+
+/ With "matchchar=ax showmatch", an empty tag pair does not get highlighted
+  because the ix object would have zero length.
+
+	A general solution for this might not be possible.  If matchchar=ab
+	then typing {} won't cause the { to be highlighted either, for the
+	same reason.  Is it worth implementing a special case just for ax?
+
+/ Draw the screen-filling '~' lines in the "nontext" face.
+
+/ In doc/elvistip.html, the old "spelltags" option is mentioned.  Update
+  description there to say what elvis really uses now ("spell").
+
+/ The :autocmd system's DisplayEnter and DisplayLeave events are quirky.
+  If you use DisplayEnter to adjust the "list" option for various display
+  modes, then sometimes the screen is refreshed before the option is
+  changed, so the screen is wrong until you hit a key.
+
+	The audisplay() function detects this type of change.  As
+	currently implemented, the DisplayEnter/DisplayLeave events
+	are oriented toward adjusting maps in a display-dependent way,
+	so audisplay() is called before processing keystrokes, and
+	detects global changes to the display mode, not changes to a
+	specific window.  This is useful, but doesn't work well for
+	adjusting options that affect the way text is displayed.
+
+	/ Rename the current DisplayEnter and DisplayLeave to DispMapEnter
+	  and DispMapLeave.  Also rename the audisplay() function that is
+	  used to trigger it.
+
+	/ Create new DisplayEnter and DisplayLeave events that are triggered
+	  when a window's display mode changes.  The DisplayEnter event
+	  should also be triggered when the window is first created.  Basically
+	  this should be triggered when win.display is changed.
+
+	/ Extend the listchars option to support a "markup" flag which allows
+	  "list" to display markups.  The presense of "markup" indicates that
+	  markups should be listed; its absence indicates that markups should
+	  be hidden by "list".
+
+/ Making :s always succeed in a :g turns out to have been a bad idea.
+  Some scripts and aliases, such as :makehtml, depend on errors from
+  :s when there is no match.  I should implement vim's "e" flag.
+
+/ Need a good way to display sets.  Write a :wrapset alias to do that.
+
+/ Modify name subscripts to support sets.  L.name and L["name"] should
+  return "True" if L contains name without a value; else it should return
+  the value.  For missing names it should return "", which is a false value.
+
+	When assigning to L.name, always store name:value, never just name.
+	If the option contains the name without a value, then the name should
+	be deleted from the value.
+
+/ Add set operators that act on comma-delimited lists of names.
+
+	L & R	Return the names that appear in both sets.  If values are
+		preset, then keep the value from R.
+	L | R	For each name in b, add it to a if it isn't already in a.
+		If values are present, then keep the value from R.
+		When adding values, try to insert them to keep the a sorted.
+	L ^ R	Remove items from a if they appear in R.  (Can't use L&~R
+		because there is no way to implement ~R.  Can't use L-R
+		because we need ""-R as a way to handle negation.)
+
+/ How about adding support for ":let <option> <operator>= <expr>" be
+  interpreted as ":let <option> = <option> <operator> (<expr>)" ?
+
+/ In :autocmd, the file pattern field can't be a comma-delimited list of
+  patterns anymore.  I think I broke this when I modified it to use the
+  more versatile OS-specific wildcard functions.
+
+/ Allow dirperm() to return DIR_DIRECTORY for directories.  This should go
+  between DIR_NOTFILE and DIR_NEW.
+
+/ With ":set list listchars=trail:_", the trailing space thing looks
+  really distracting while you're entering text.  If the cursor is
+  located in the trailing space or at the end of the line, then the
+  spaces before the cursor should not be highlighted.
+
+/ Now that "html" hides comments better, it can't handle <!DOCTYPE>.
+  It mistakes the <! for the start of a comment, which extends to the
+  end of the file if there is no ->.
+
+/ In WinElvis, f[/,2...] doesn't strip off the leading \ character as it
+  should.  As a simpler case, ":calc /" returns "/" in Linux, but "" in
+  Windows.  I think this is a bug in dirpath().
+  
+/ There's another bug in WinElvis which is triggered by ":e theme:".
+  Something is converting the forward slashes into backslashes, which is
+  a VERY BAD IDEA for URLs.
+
+	The backslash conversion is being done by dirnormalize() and
+	dirpath().  Unfortunately, external commands MUST use backslashes
+	and protocols MUST use forward slashes.  Elvis' built-in file
+	operations can use either style.
+
+	If I try to make dirnormalize() and dirpath() be smart about when
+	to use slashes or backslashes, I'm going to run into problems.
+	In scripts, if nowhere else.  The readTHEME alias, for example,
+	modifies the resource name, which doesn't look like a URL so it
+	could easily be converted to use backslashes, accidentally.
+
+	Probably URLs should accept either normal slashes or backslashes,
+	by converting backslashes to slashes at a very low level.  The
+	dirXXX() functions should recognize either type of slash, and output
+	backslashes.
+
+/ The readTHEME alias doesn't work because dirperm() and related functions
+  don't recognize a leading ~.
+
+	I modified the alias to explicitly convert a leading ~ into the
+	value of the home option.
+
+/ Add an option to make <backspace> get rid of backspaced-over text.
+
+	I did.  It is named "cleantext", and allows a large degree of control
+	over when elvis erases old text.
+
+/ Is it time to add a substitution (or general ex command) function?
+
+	For a PERL-like syntax, using "=~" instead of just "=" with a :let
+	command should perform the ex command.  So we could replace a leading
+	~ with the user's home directory like this:
+
+		local magicname
+		let a = elvispath[:,1]
+		let a =~ s/^~/${home}/
+
+	Note that applying an ex command to a value is a separate step,
+	not part of the normal expression.  I'm not sure I like that, but
+	it doesn't seem to have held Perl back.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2j-beta:
+
+/ In "x11", if you have two windows, with one iconified, and you close the
+  non-iconified one, then elvis dies with an X11 error: BadDrawable for an
+  XCopyArea call while trying to change the cursor in the iconified window.
+
+/ In the "Tips" chapter, the URL for vile is out of date.
+
+/ Clean up data/elvis.rc -- in particular the "maroon" thing.
+
+/ ftp.false.com is no longer mirroring ftp.cs.pdx.edu.  The README.html
+  file shouldn't mention it.
+
+/ Implement text objects for XML: ax/ix.
+
+/ Make "showmatch" match up XML tags.
+
+/ Weirdness: If you edit a file with [a-z] at the end of the name, then one
+  character is often highlighted until you make the first change to the file.
+  Starting a visible selection also makes it go a way; canceling the selection
+  makes it come back.  This doesn't seem to happen when you give the whole name
+  without [a-z], or use [a-z] elsewhere in the name.
+
+	This seems to happen only when showmatch is enabled.  I think elvis
+	is computing offset of the [ that matches the ], and storing its
+	highlight offset for the window.
+
+/ ":themes" with no argument can't list themes in Windows.
+
+	It's probably because shell("echo *.ex") doesn't expand filenames
+	in Windows.  The quickest solution would be to make "for i in *.ex"
+	smart enough to treat each match as a separate value, instead of
+	evaluating an expression.
+
+/ If a filename pattern ends with [a-z] then there is no NUL character to
+  mark the end of it, so garbage is appended to the end of the name.  This
+  happens under both Windows and Linux.
+
+	This turned out to be a bug in the expression evaluator, not the
+	wildcard matcher.  In calc.c, the simpler syntax version of ']'
+	wasn't being handled correctly.
+
+/ Support Vim's <key> notation in maps. (But not in the :normal command?)
+
+	This is now mostly implemented.  the GUI-specific key name translation
+	need more work.
+
+/ Increase the whitespace around printouts when lptype=ps.
+
+/ Extend matchchars to support text objects.  For example, if matchchars
+  contains "ax" then % should bounce between the endpoints of an XML tag pair.
+
+	First, handle the #if/#else/#endif case.  This doesn't use matchchars.
+
+	Then, prescan the matchchars value, looking for any text objects.
+	If any are found, find their endpoints by calling vitextobj().
+	Remember the one that has an end point with the lowest offset.
+	Collect the non-textobject pairs in a different string.
+
+	Then scan forward for a matchchar, as usual.  The only difference
+	is that if our scan reaches the end of the text object without
+	finding a matchchar, then we'll use the object instead.
+
+	When using an object, the cursor should move to start point,
+	unless it was already at the start point in which case it should
+	move to the character before the endpoint.
+
+/ Replace lppaper with a more general lpoptions option.  Its value is a
+  comma-delimited list of name:value pairs.  For lptype=ps and lptype=ps2
+  (the only lptypes that use lppaper), the values are used to insert some
+  definitions into the PostScript output.  Perhaps other drivers can benefit
+  from it too.
+
+	lpoptions=paper:letter,frame:false,bar:true,clip:true
+
+/ Add a generic option to both "buf" and "win".  Describe how to use
+  subscripts and field names, as a cheap way to store extra buffer-specific
+  and window-specific options.  Maybe use "b" and "w"?  Or "B" and "W"?
+  Or "bb" and "ww"?
+
+/ Mark the "initialstate" option as having no default, so it won't be saved
+  by :mkexrc.
+
+/ The "html" display mode should do a better job of parsing comments.  HTML
+  comments are often used to temporarily hide text which may include other
+  HTML tags.
+
+	This is now improved in "html" mode, but not "syntax html" mode.
+
+/ Sometimes the :sp command loads the new file into both the new window
+  and the old one.  The old window's previous buffer is hidden but not
+  destroyed; you can use the :buffer command to switch that window back
+  to the original buffer.
+
+	This is known to happen when the "rcssince" alias is run automatically
+	via ":au BufReadPost * rcssince".  Maybe not always, though.  I can't
+	see anything in the rcssince alias that would change buffers.  Maybe
+	it is some other autocmd command?
+
+	Specifically, if you split to a file that has an RCS "*,v" file,
+	but hasn't been modified since its last checkin, then the rcssince
+	alias will execute an empty list of :region commands.  An empty
+	list is treated like a :goto command to the current buffer and line.
+	But the current buffer is the new buffer, in the old window, and
+	that's where the problems happen.
+
+	New rule: autocmd commands can never switch buffers.
+
+/ Regions can cause core dumps.  Either a region struct with bogus data is
+  added somehow, or a good region struct is overwritten with garbage.
+
+	I have also seen instances where regions near the end of the file
+	are freed or truncated when they shouldn't be.  Maybe the bogus
+	region struct is really one whose struct has been freed but not
+	removed from the struct list?
+
+	Fixed!  There were some problems in :chregion, but I think the
+	biggie was in an argumentless :region command which could overrun
+	an output buffer, clobbering the "r" variable that it used for
+	scanning.
+
+/ Sometimes elvis fails to find tags, even though the tags clearly are in
+  the "tags" file.  Try searching for colorfind() from within region.c.
+
+	This turned out to be a bug in the dmsyntax.c:tagatcursor() function.
+
+/ Allow hllayers to be set to higher values.  Note that it already is smart
+  enough to recycle the "hllayers<n>" fonts.
+
+/ Improve wildcard matching in :au commands.  Move the wildcard matcher into
+  os*/osprg.c, so it can be OS-specific.  Note that the unix version already
+  contains a wildcard matcher.
+
+  / The [] wildcard matcher is slightly improved.  It now supports negation
+    and ranges.  For example, [^0-9] matches anything but a digit.
+  / This also allows Windows to support the [] wildcard.
+
+/ Make name completion work for aliases.
+
+/ Add buf.bb and win.ww options.  These should be generic string options
+  with no hardcoded meaning.  Users can pack multiple values into them
+  using named subscripts.
+
+/ Modify the named subscript notation to use a comma-delimited list of
+  name:value pairs instead of a space-delimited list of of name=value pairs.
+  This will make elvis' named subscript notation work well with vim-style
+  multivalued options such as listchars.
+
+/ When assigning a value via a named subscript, if the value doesn't exist
+  then append it using a comma separator.
+
+/ Add vim's listchars option.  This affects the appearance of both the "list"
+  and "wrap" options.
+
+/ The exists(filename) function assumes that any filename with a protocol
+  already exists.  This confuses the rcssince alias.
+
+/ The "inputtab=identifier" feature (for tag name completion while editing
+  source code) doesn't seem to work.
+
+	This appears to have something to do with storing the names of
+	library functions and tags as pseudo keywords, for the sake of
+	highlighting.  Anyway, the dictionary seems to contain a lot of
+	words that it shouldn't, and that's a problem.
+
+	I fixed something extremely similar between revisions 2.91 and 2.92
+	of dmsyntax.c.  This is what made me add the ISKEYWORD flag.  This
+	fix affected smartargs, not inputtab=identifier.
+
+/ Patch "configure" for NetBSD.  See message from Peter Bex.
+
+/ Remove the :safer command.  It can be emulated via ":safely source".
+  Add an alias to do that, to maintain backward compatibility.
+
+/ Replace "safer" and "safest" with a single "security" option which
+  can be set to multiple levels: normal, safer, restricted.
+
+/ Split the "lib" directory into two separate directories: "doc" for
+  documentation including the help files, and "data" for other runtime
+  support files.
+
+  / Move the files and delete "lib".
+  / Edit "configure" to support --docdir=DIR, and to make the default
+    elvispath include both the datadir and the docdir, and also /etc/elvis.
+  / Edit "Makefile.in" to look for doc and data files in the appropriate
+    directories, and to install them into the right directories.  Also,
+    "make install" should create /etc/elvis if it doesn't exist already.
+  / Edit elvis.spec.in as necessary.  In the RPM worldview, online help
+    files are like data files, so "doc" is merely a subdirectory of "data",
+    which limits the changes.  Also add /etc/elvis to the list of files
+    owned by elvis.
+  / Modify the "e2" script to set ELVISPATH=data:doc instead of just lib.
+  / Update the manual
+
+	This is basically done, except that the RPM package should ideally
+	install the contents of the doc/ directory into RPM's standard
+	location for documentation, and the default ELVISPATH should be
+	adjusted accordingly.  How can I do that?
+
+/ Rename data/ex to data/scripts.  I considered renaming the :load alias to
+  :runtime, but decided against it since it really isn't like vim's :runtime.
+
+/ Clean up the icons.
+  / Move the XPM icons from guix11/ to data/icons.
+  / Remove the "insticon.sh" script.
+  / Make Xelvis search for icons in data/icons.
+  / Create an "iconimage" option for specifying the option image, instead of
+    ":gui icon filename".  This is because options are stored by :mkexrc
+    but :gui commands aren't.
+  / Make WinElvis support XPM icons too, via the "iconimage" option.
+  / For the Windows and OS/2 binary distributions, convert the XPM icons
+    to ICO format.
+  / Convert the "Gray Presley" Windows icon to an XPM file.  Don't compile it
+    into WinElvis anymore.  Remove instructions for switching between icons.
+
+/ Using "-c'1d|wq'" doesn't exit until you hit a keystroke.
+
+	Most of the user interfaces are pretty dumb about "quit" commands
+	during initialization.  They should be smarter.  The problem is
+	that "quit" commands don't really quit the editor -- they merely
+	close the window.  This shouldn't be an insurmountable problem,
+	though, since the "-c" commands are executed after the window has
+	been created.
+
+/ The "lpcontrast" option doesn't affect ptype=html or ptype=ansi output.
+  This is a good thing since elvis doesn't know what the background color
+  will be, but the manual should explain this.
+
+/ The > operator and :> command should not affect preprocessor lines.
+
+/ In syntax display mode, strings should have a configurable quote character.
+  It isn't always backslash!   Some don't have one at all.
+
+/ Make syntax description lookups be less case-sensitive.  They should first
+  look for a case-sensitive match, and if that fails then try converting the
+  filename to lowercase and repeating the search.  This way, "extension .sys"
+  would work for the CONFIG.SYS file.
+
+	This turned out to be trickier than I expected, because elvis stores
+	previously used descriptions in a cache.  (The cache allows you to
+	bounce between two C source files without reloading the C syntax
+	each time.)  If this was case insensitive then the c syntax would
+	be reused for ".C" files, which are really c++ source code.
+
+	Also, reading the file twice would have been difficult, so I
+	simply read it once, and arranged for the c++ entry to appear
+	before the c entry, so ".C" will always use the C++ syntax.
+
+	All extensions in the elvis.syn file should now be lowercase,
+	unless an uppercase version is intended to be different from the
+	lowercase version (as with .c for c source and .C for c++ source);
+	in that situation, the extension should be given in uppercase form
+	and its language should be described before any language with a
+	lowercase version of the same extension.
+
+/ If the spell option is off but the show option contains "spell", then
+  the statusline just shows "?" for any tagged word in source files.
+  The manual should warn people about this.
+
+/ Implement a "scrollbgimage" option, which allows the background image to
+  scroll in XElvis and WinElvis.
+
+/ Move the "BUGS" file into doc/bugs.txt.  Check for any reference to "BUGS"
+  in the manual or README.html.
+
+/ Change the user-specific config directory from "~/.elvislib/" to "~/.elvis/".
+
+  / Edit the "configure" script.
+  / Edit the Win32, MSDOS, and OS/2 osconfig.h files to use "dotelvis" instead
+    of "elvislib".
+  / Edit the aliases in data/elvis.ali and data/ex/* to use the new directory.
+  / Update the manual.
+
+/ Modify the :mktheme alias to store the scrollbgimage option.
+
+/ When recognizing HTML documents, elvis should allow whitespace before the
+  "<".  This is easy for spaces and tabs, but could be a problem for newlines.
+
+/ The :display command should strip trailing whitespace.  The way it is now,
+  elvis -c 'dis s email | se bd="syntax email"' doesn't work because of the
+  space before the '|'.
+
+/ Add a "safest" option.  Just plain "safer" is good for protecting against
+  malicious writing by a Trojan horse, but not against malicious reading by a
+  hacker.  On the command line, -SS should set both options.  If both "safer"
+  and "safest" are set, then...
+  / The :read, :source, :safer, commands should fail
+  / The :errlist and :wordfile commands should refuse a filename argument.
+  / Filename completion should be disabled
+  / Any :calc functions that examine files should be disabled.  This includes
+    dirperm(), exists(), fileeol(), and time(filename).  In addition, the
+    shell() function might as well be disabled so we can get a better error
+    message.
+  / User-specific set up files should be skipped.  In particular, elvispath
+    should remove any element that starts with "~", and the elvis.ini script
+    should skip $EXINIT and all the .exrc files.
+
+/ The "safer" option should disable more...
+  / The wordfile option should be locked.
+  / Suspending via ^Z should be disabled.
+  / The :snext, :split, :visual, :open, :push, :wquit, :xit commands should
+    refuse any filename argument.
+  / The :ex, :edit, and :file commands were disabled by safer, but should now
+    only refuse an filename argument.  ":f" and ":e!" should work.
+	No, ":e filename" should work too.  It's too useful!  Disable it
+	in the paranoid version though.
+  / The elvis.ini script should be run with "safer" turned off temporarily,
+    even if "-S" is given on the command line.
+/ HTML display mode should handle &euro;
+
+/ The "timeout" option isn't documented.
+
+/ "configure" still isn't setting elvispath correctly.  It has $(PREFIX)
+  in the literal string.
+
+/ Modify Makefile.in to incorporate $VERSION into the documentation files.
+
+/ In "html" display mode, comments should allow ">" in the comment, and
+  only end the comment at "-->".  Also, if the comment is too long to fit
+  in the tag buffer then the comment contents should be clipped but the
+  whole comment should still be skipped.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2i-beta:
+
+/ Bug in syntax highlighting: In Pascal code, if { comment } is a line
+  two lines above the top of the screen, then the whole screen is formatted
+  as a comment.
+
+/ Add a typical ~/.elvisrc file to the distribution.
+
+	Added it, as lib/elvis.rc
+
+/ For WinElvis, offer an alternative title format -- the current hard-coded
+  format is "WinElvis - [filename.ext]", which doesn't look so great in
+  the task bar.
+
+	I added a "titleformat" option.  I still need to test this,
+	and if it works then I should document it too.
+
+/ The MS "nmake" program allows forward slashes in filenames, which is nice,
+  but if there's an error then the compiler will output the character as /\
+  instead of just / or \, and that can confuse elvis.
+
+/ In guitcap.c, allow colors to be used if :up=\E[A: *or* :AF=\E[3%dm:
+  This is necessary for the "screen" program to get colors.
+
+/ The -= operator doesn't work right in :color commands.
+
+/ Make the "warpto" option move the pointer when a window is created.  This,
+  together with "warpback", should avoid the focusing bug.
+
+/ Elvis/x11 shouldn't always raise the window when changing focus.
+  In particular, when [un]mapping windows.  This is important because some
+  window managers (such as IceWM) iconify all windows when switching to
+  a different workspace and then deiconify all of them when switching back.
+
+	It seems like this should be related to the xw->warp flag --
+	If a window shouldn't be raised, then the cursor shouldn't
+	be warped to it either.
+
+/ In the "termcap" interface, when scrolling forward the showmode box is
+  highlighted; when scrolling backward it is not highlighted.
+
+	I fixed this by adding a new "showmode" face, and using it to draw
+	the showmode value.  You can now use ":color showmode green boxed" 
+	to change its attributes.
+
+	While I was at it, I also added a new "ruler" face for changing the
+	color of the ruler.
+
+/ In input mode, make ^X^X lock hex input mode until the next non-hex.  If
+  the non-hex is ^X then it should be ignored; any other character should
+  be interpreted normally.  Or maybe Backspace should remain in hex mode?
+
+/ Rename the :w alias to :ww, so people who don't use RCS aren't baffled
+  by unexpected error messages.
+
+/ The smartcase option can break some aliases.  To get around it: add
+  "local noignorecase" to the alias.
+
+/ Blended fonts aren't always right.  In particular, a :region's font
+  isn't combined with non-default fonts correctly.
+
+/ Make WinElvis support background images.
+
+/ WinElvis has some resource leaks.  This shows when you resize the window
+  or do a lot of scrolling.
+
+/ The "ref" program doesn't like it when text files have CR-LF newlines on
+  a Unix system.
+
+/ The "x11" interface could do a better job of compressing expose events in
+  the text window.  This matters more for "html" display mode than for
+  "normal".  Try opening multiple help windows, and then dragging some other
+  window over them.
+
+/ The BufDelete event can cause core dumps while exiting.  Try the ex/xbuf.ex
+  script, for example.
+
+/ If tagprg is unset, and an alias uses "local tagprg=foo", then when tagprg
+  is restored at the end of the alias, it is restored to "" instead of NULL.
+  This breaks tag expansion via the <Tab> key.  Doubtless other things are
+  broken for other options, too.
+
+/ When wrapscan occurs, the "wrapped" message doesn't show.
+
+	Apparently the behavior of MSG_STATUS messages has changed.  Those
+	messages go away after the screen updates.  I changed the "wrapped"
+	message to use MSG_INFO instead.
+
+	One problem: Attempting to XSetInputFocus() to an iconified window
+	causes a BadMatch X protocol error.
+
+/ Somehow the hllayers option has become "locked".
+
+/ If ~/.netrc contains a "default" entry, then anonymous logins don't work.
+
+/ Add a dummy "lisp" option.  Also, make sure elvisopt.html mentions the
+  use of autocmd for making these dummy options do useful things.
+
+/ In x11, ":se notoolbar" causes an X error in XCreateWindow.
+
+/ It would be nice if 'b' or 'i' could be appended to a font name such as
+  "courier*18" to select the bold/italic version of that font.  Italic
+  versions are tough because they may be designated by -o- or -i- in the
+  long font name.
+
+/ It would also be nice if there was an option to specify a list of
+  registry-encodings to try.  The default list should be iso8859-15,
+  iso8859-1, *-*.  The list should probably be comma-delimited, like tabs.
+
+	How are encodings handled in Xft?  There's a XFT_ENCODING parameter,
+	but no XFT_REGISTRY.  My best guess after searching the web for
+	example source code: The value combines both the registry and the
+	encoding, with a hyphen between them -- which happens to be exactly
+	like I intend to use for Xlib calls!
+
+/ In a :g/re1/s/re2/text/ command, if the s/re2/text/ fails then the :g/re1/
+  should still continue to look for other strings.  It appears that it is
+  currently stopping on the first failed substitution.
+
+/ The default value of the "background" option is often wrong.  That should
+  be fixed, and even then it would be nice if $ELVISBG could override it.
+
+/ Support an ELVISGUI environment variable, for specifying the default
+  user interface.
+
+/ Now that the "x11" GUI can read XPM files, maybe it's time to add support
+  for color icons.
+
+/ In some "x11" themes, the note in the [Save as] dialog is hard to read.
+  It should be drawn in the toolbar fg color, not the tool fg color.
+  
+/ The 'c' flag for substitutions highlights the first match incorrectly.
+  Also, after the last match it doesn't tell you how many changes occurred,
+  which makes it hard for the user to recognize that they're back in normal
+  command mode.
+
+	Actually, it did report the number of changes if it exceeded the
+	"report" option.  But since this is a slow interactive process
+	anyway, and the user needs feedback more than usual, I think it
+	should override "report" in this case.
+
+/ The "syntax" display mode allows spaces between a function name and '(',
+  which is good.  But it also allows tabs, which is bad because it makes
+  some many macro definitions look odd.
+
+/ Text selected in Elvis can't be pasted into Netscape's email composer.
+
+/ Allow the "x11" user inferface to use color icons, if FEATURE_IMAGE is
+  defined.  Maybe use ":gui icon filename.xpm" to load the icon.
+
+/ ":safer ()" goes into an endless loop.
+
+	Actually, I think it is reading from stdin, but that's still a
+	bug.  The code has been treating missing or zero-length file names
+	as synonyms for stdin, and that's wrong.
+
+/ The BUGS file should specifically mention the names of the removed options,
+  so that users can grep for the names when their .elvisrc scripts stop working.
+
+	Relative to version 2.1_4, the following are replaced by the "show"
+	option: showname, showtag, showcmd
+
+	Relative to 2.1_4, the following are deleted: showstack, normalfont,
+	otherfont, prepfont, keywordfont, functionfont, commentfont,
+	normalstyle, boldstyle, italicstyle, fixedstyle, emphasizedstyle,
+	underlinedstyle
+
+/ Add .ZN to the "man" display mode.  It switches between fixed & normal
+  fonts, in exactly the same way that .BR switches between bold & normal.
+
+/ The .IP command should support an indentation parameter.  This is important
+  when used for bullet lists.
+
+/ Sometimes tag searches fail when they should succeed.  In at least some
+  of these cases, the problem goes away if switch from "syntax" to "normal"
+  display mode.
+
+	This was failing for "smartargs" argument hints.  That bug is now
+	fixed.  Were there others?
+
+/ elvtags sometimes makes tags for reserved words such as for().  And what's
+  worse is, elvis' smartargs is too stupid to realize that "for" is a keyword
+  even though I specifically remember coding that test.
+
+/ There appears to be a bug in the way subscripts are parsed by the built-in
+  calculator.  ":calc a[1] a[2]" returns only a[1], but ":calc (a[1]) a[2]"
+  works correctly.  I think the version without parentheses is using the value
+  of a[2] as an index into a[1].
+
+/ The :error command sometimes adds garbage to the end of the message.
+  The following alias demonstrates this, when invoked without args.
+
+	alias grep {
+	    local b="this is a test"
+	    if "!*" == ""
+	    then error usage: grep text files...
+	}
+
+	Fixed!  It bug was in the handling of the "." operator, in simpler
+	syntax (used for messages), outside of parentheses at the end of text.
+
+/ The :local command can't restore buffer options if you switch buffers.
+  This makes ":local ccprg=..." useless.
+
+/ "make uninstall" chokes on the "themes" subdirectory.
+
+/ Make ^W^W toggle between two windows, instead of cycling through all of them.
+  Make ^Ww cycle through them all instead, and allow users who prefer the old
+  behavior to :map ^W^W ^Ww
+
+	Add a win.winsequence option, locked, which is set to an internal
+	event counter whenever a window is created or receives a keyboard
+	or mouse click event.  Make ^W^W go to the window with the highest
+	value, other than the current window.
+
+/ Don't spellcheck the library words (e.g., :check -lib libt libf libd libv)
+
+/ Can't do tag searches on #include "file.h".  It works fine on <file.h> though.
+
+/ Maybe make the rand() function take a space-delimited list, instead of a
+  comma-delimited list?  That would be more consistent with the way arrays
+  are handled.  Alternatively, maybe make "?" in a subscript refer to a
+  random item in the array.
+
+	I decided to support "?" as a subscript.  That seemed like the
+	more versatile way to go.  It was also easier to implement.
+
+/ "HOME=foo ELVISPATH=foo elvis -Gx11 -mono" starts with black-on-black text.
+  In general, there are some weird things happening when -mono is used.
+
+/ Cut/paste between elvis and KDE3 applications is broken.
+
+	KDE3 no longer checks for the standard XA_STRING target format.
+	Instead, it used COMPOUND_TEXT.  I fixed this by modifying elvis
+	to support COMPOUND_TEXT.
+
+/ In the "x11" interface, if no background color is specified for the cursor
+  then the cursor should probably always show the foreground color.  (The
+  cursor is normally displayed in the background color if elvis owns the
+  current X selection, and the foreground otherwise.)
+
+/ The prefersyntax option is interfering with protocol aliases' ability to
+  choose a markup display mode.
+
+	Probably elvis.arf should be skipped for user-defined protocols.
+	If they want to run elvis.arf, then can run it themselves via an
+	explicit "source (elvispath("elvis.arf"))" command.
+
+	Fixed: I added a "userprotocol" buffer option, and made elvis.arf
+	test it before doing anything that would interfere with a readPROTO
+	alias.
+
+/ The :info alias (ex/info.ex) replaces the current buffer with the info page
+  buffer, if the current buffer has no name.  The window title is not updated.
+
+	This was a bug in the :g function, now fixed.  (exedit.c, line 100)
+
+/ Make the "configure" script support the --prefix flag.  It changes the
+  default BINDIR and LIBDIR values to $prefix/bin and $prefix/lib/elvis,
+  but they can still be overridden by --bindir and --datadir.  (Note that
+  man pages are usually installed relative to the BINDIR, so the prefix will
+  affect them too.)
+
+/ Bug in "configure" script: For Solaris, "configure --without-x" will omit
+  the TCP/IP libraries ("-lsocket -lnsl") but they're still needed for the
+  HTTP and FTP protocols.
+
+/ In elvis.syn, is "anchor ^" broken?  Ex scripts look bad, because all
+  doublequote characters are interpreted as the start of a comment.
+
+/ When parsing argv[], elvis should support the use "--" to mark the end of
+  flags.
+
+/ Add support for reading from stdin, when "-" is given as a file name.
+  / Make the termcap interface smart enough to read from keyboard even if
+    stdin is a file.  Verify that other interfaces don't care about stdin.
+  / Make elvis smart about what it sends to stdout.  Again, this is mostly
+    a change to the termcap interface.
+
+/ Added a "ex/info.ex" script, which lets users view info pages in elvis.
+
+/ For the "x11" interface, make <Shift-Insert> paste from the X selection.
+
+/ Add stubs for the new Xft library.
+
+/ Maybe make the "x11" interface support antialiased text, via the Xft
+  library in XFree86.
+
+/ ctags doesn't generate an entry for the last name in an enum list.
+
+	Actually, it is scanning the comments, and generating tags for the
+	last word in the last comment.  Other comment words get tags too,
+	if they happen to be followed by a comma or semicolon.
+
+/ ctags/elvtags doesn't handle "extern struct structname varname" correctly
+  -- it treats varname as a typedef, not an extern variable.
+
+/ The recent change to ctags regarding duplicate typedef tags is buggy.
+  It can cause core dumps.
+
+/ There's a bug in the "syntax" display mode, with column-sensitive keywords.
+  They can be *EXREMELY* slow.
+
+/ The :local command should not be allowed to use locked options such as
+  bufchars.  Restoring such an option could cause a core dump.
+
+/ When a buffer is modified for the first time, the equivalent of
+  ":doau OptSet modified" should be run.  Also, the fact that internal
+  changes like this don't always cause OptSet or OptChanged events
+  should be documented.
+
+/ Use the "Clarified" Artistic License.
+
+/ The :lpr page header for "normal" and "syntax" display modes will be
+  malformed, if the file name is too long to fit across the top of the page.
+
+/ What font is used for the .IP tags?
+
+	It was using font code 0 -- either "normal" or "idle".  I have
+	changed it to use "formatted" instead.
+
+/ In the "man" display mode, special characters such as \(bu aren't handled
+  properly in argument of a .IP command.
+
+	This is only fixed for \(bu, because the others just didn't seem
+	worth the trouble.  Bullets are likely to be used as paragraph
+	tags fairly often, but how often will anybody want to use a copyright
+	symbol there?
+
+/ In "man" .IP arguments, \sSIZE strings aren't being igored correctly.
+  Part of the size is still displayed.
+
+/ In man pages, unformatted text should be displayed in the "fixed" font.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2h-beta:
+
+/ Windows problems:
+  / The "idle" color isn't used for the last elvis window when focus shifts
+    to some other application.  My guess is that it handles WM_SETFOCUS but
+    not WM_KILLFOCUS.
+  / Whenever a new window is created the GUI should call eventfocus() for it,
+    because Windows does give it input focus but doesn't send WM_SETFOCUS.
+
+/ Until the first window is opened, any error messages should probably be
+  written to stderr.  (I think it already does this for status & fatal
+  messages, but not plain old errors.)
+
+	Okay, they're written out but the script name/line number aren't.
+
+/ Trouble in second "Normal" line, in samples/sample.tex
+
+	Fixed.  This one could have caused problems for the start of any
+	line in any of the markup display modes.
+
+/ The "man" display mode can't parse/ignore relative sizes such as \s'-2'.
+
+	It can handle size changes without quotes.  I just need to make it
+	smart enough to handle quoted sizes too.
+
+/ In man pages, \c should act sort of like a comment -- ignore everything
+  up to the next newline -- but \c eats the newline while \" does not, in .nf
+  mode.
+
+/ Make sure the syntax description handles special chars such as \(bu and
+  similar... and maybe show it correctly in "man" format.
+
+/ Rename the "hlspell" color & option to "spell".  The similarity between
+  "hlspell" and "hlsearch" makes both of those words hard to type in, even
+  with the help of word completion.
+
+/ After :lpr, the "# pages" message goes away too fast.  This only happens
+  when printing to a pipe, not a file.
+
+/ ":au OptChanged lines,columns" should work -- it'll allow users to define
+  events that are sensitive to changes in window size.
+
+	Hey!  I could delete the hard-coded message that shows the size of
+	the window, and instead use...
+
+		:au OptChanged lines,columns message (columns)x(lines)
+
+/ After a search, the "/" remains on the bottom line, but the statusbar's
+  text is hidden until the next keystroke.  The "/" doesn't go away until
+  some other text comes along to replace it.
+
+	It's worse than that.  If there's a statusbar then it clears the
+	status text too.  So you can't see the results of the "show" option
+	(e.g., the name of the function where the search succeeded).
+
+/ Make syntax coloring keywords be more flexible.  For example, \fB should
+  be a keyword in troff source, even if it is immediately followed by another
+  alphanumeric character.
+
+	Not all keywords should allow trailing alphanumerics, of course.
+	Probably a new "prefix" syntax line should be used for marking the
+	keywords that do allow trailing alphanumerics.
+
+	The biggest challenge here will be rewriting the word classifier
+	to do its work incrementally.  (Until now, it has worked by collecting
+	the characters of the word and then looking it up.)
+
+	/ Almost done!  Now if I can just get it to handle .\" comments...
+
+	/ Remove FIRSTPUNCT and SECONDPUNCT.  They aren't needed anymore.
+
+	/ Previously, punctuation keywords were always treated like prefix
+	  keywords, I think.  This was handled when drawing the line image,
+	  but now it should be handled by setting the ISPREFIX bit during
+	  initialization.
+
+	/ There's a bug in tab expansion after a keyword.  Apparently the
+	  keyword's width isn't included in the column count.
+
+	/ Document it!  Also, relocate the "set" description.
+
+/ Modify the Makefile to allow MSDOS & Windows executables to have uppercase
+  names, somehow.  Otherwise there's too strong of a chance of omitting the
+  "*.EXE" files, when we go looking for "*.exe".
+
+/ Don't spell-check :man pages.  They often contain valid words that become
+  hyphenated at the end of a line, and elvis' spell-checker doesn't understand
+  that.
+
+	Done!  And I also made the bold/underline conversion be more
+	forgiving, so it'll now handle Perl's quadruple-emboldened text.
+
+/ Some fatal error messages don't shut down the user interface.  When using
+  the "termcap" interface, this means the terminal is left in raw mode.
+
+/ "elvis -r" can hang if there are no old session files waiting to be recovered.
+
+/ Allow <Alt+Mouse1> to be used for selecting rectangles, at least under
+  Windows.  Many other Windows editors use this convention.
+
+/ After ":help :sbrowse", clicking on ":browse" follows the wrong link.  This
+  is a bug in the htmltagatcursor() function.
+
+/ The :for command kills elvis if given a loop expression which can't be
+  evaluated.
+
+/ Support at least two types of string quotes.  See Wim Delvaux's email.
+
+	I started with Wim's patch, and tweaked it to treat the quotes
+	as being distinct so a string can't start with " and end with '.
+
+	This still isn't perfect -- sometimes it has a hard time figuring
+	out whether the top line of the screen is a continuation of a string
+	or not, which causes most of the screen to flash.  But for the
+	particular case of sh syntax, it works good enough.
+
+/ When a :local option reverts to its earlier value, this should trigger an
+  OptChanged autocmd event.  Does it?
+
+/ If <X11/xpm.h> can't be found, then FEATURE_IMAGE should be #undef'ed.
+  (On a computer without the full development system installed, it's possible
+  to have the library but not the header.)
+
+/ The "config" alias is renamed to "features".
+
+/ elvtags doesn't understand `extern "C"'.  Ideally, the contents of the
+  block should be parsed normally.
+
+/ elvtags should be smarter about typedef tags.  If a tag is known to be of
+  kind:t then probably any duplicate tag is the result of a parsing error,
+  and hence should not be stored.  (Unless in a different source file?)
+
+	This works two ways: When adding a tag of kind:t, it should delete
+	any existing tags.  And when adding a tag of any other kind, it
+	should skip it if there's already one of kind:t.  (It helps that
+	in the latter case, the kind:t tag will be the *only* tag with that
+	name.)  This logic should be implemented in ctags.c, not the
+	lower-level source files since we don't want to make elvis do this.
+
+/ Running "configure --without-x" omits the word "undef" from FEATURE_IMAGE,
+  so the file contains "#          FEATURE_IMAGE".
+
+/ In elvis.syn, "anchor ^ keyword..." doesn't work anymore.  Comments in ex
+  scripts aren't highlighted as such.
+
+/ Proofread the "howto" chapter.  It has some old information.
+
+/ Modify :theme to run the scripts via :safer instead of :source.
+
+/ Modify dmsyntax to use a spelling dictionary for storing keywords.
+
+/ The :bb command lists buffer names, which are now full pathnames.  It
+  should list filenames, which are what the user actually entered, because
+  the full pathnames are often too long.
+
+/ Sometimes :mkexrc saves the bufdisplay option?  That should never happen!
+
+/ When printing HTML, the page header shows the full pathname of the file/URL,
+  I.e. the bufname.  It should probably show the filename instead, if there
+  is one.
+
+/ Aliases quit after running :lpr.  Apparently :lpr always returns an error
+  code, even if it runs successfully.
+
+/ Add support for a "make elvis.rpm" target.
+
+/ Would it be possible to parse the tags file in a way that allows typedefs
+  and functions to be highlighted as such, without modifying the syntax file?
+  Maybe by checking the "kind:" attribute.
+
+	I've added "taglibrary" and "tagkind" options.  If set, then when
+	elvis loads a syntax description (first time only, thanks to syntax
+	caching), it scans all tags files in elvispath for any tag which is
+	defined in a file whose extension matches that language.  For each
+	tag of kind "XXX", elvis adds the tag name as a keyword in font
+	"kindXXX" or "libXXX".
+
+	It is important to remember that C++ can call C functions, and that
+	*.h files can be either C or C++.  Languages should be able to specify
+	which extensions are callable as foreign functions; e.g., C++ can
+	call "*.c" functions.  This will require adding a new line to the
+	elvis.syn file.
+
+/ When running "make install", hide the error message from "cp lib/* ...." so
+  the user doesn't freak out when they see the message about lib/themes/.
+
+/ In NT, the console doesn't get restored when elvis exits.  Also, while
+  running elvis the ex history is displayed incorrectly.
+
+	NT's console sucks.  Probably I should modify the tinytcap.c
+	entry for the Windows console to make it move the cursor to the
+	bottom of the screen and then clear that line, before trying to
+	switch back to the original screen.  This would reduce the impact
+	of Microsoft's bug.
+
+	Actually it might be better to hard-code this into the Win32 version
+	of tcaphelp.c, since finding the last line requires some math.
+
+/ I've been told that Cygwin has changed the way it stores mount points.
+  I should modify elvis to mimic the new behavior.  (I don't want to use
+  Cygwin's libraries, because I want users to be able to run elvis without
+  Cygwin.)
+
+	The new method still stores SOME of the mounts in the registry, but
+	some others appears to be hardcoded.  The only reliable way to get
+	them will probably be to parse the output of Cygwin's "mount" command.
+
+/ Using ex history to re-execute the command  :("a  generates an error
+  message, apparently because it eats the newline after it.
+
+/ Problem: The :au command doesn't work well with {...} notation, since the
+  { doesn't appear at the start of the RHS.  Perhaps it should be modified
+  to allow leading text.
+
+	:au Edit * {
+		if !modified && readonly
+		then doau FileChangedRO
+	}
+
+	NOTE: When the :autocmd command lists autocmds, it should detect the
+	presence of a newline in the command text, and add {...} around it.
+	Perhaps it could borrow code from :alias?
+
+/ elvtags can generate tags for numbers.  It shouldn't!
+
+/ "make install" seems to mess up permissions on the "themes" directory.
+  That directory must have execute permission!
+
+/ elvtags doesn't find enum values that are set to explicit expressions,
+  such as GDK_MOD1_MASK in lib/gdkstub.h
+
+/ Something's wrong with ^] on #include files.  Try using ^] on "elvis.h"
+  in an elvis source file.
+
+/ In the stub files (lib/*.c), any typedefs are being marked as static, which
+  prevents them from being found when they should be.
+
+	Fixed by adding a "-g" flag to disable the "file:" hint.  This flag
+	is now used during "make install".
+
+/ "make install" uses ctags instead of elvtags, because of root's PATH.
+  It should use elvtags, because ref and elvis work best with it.
+
+/ When you mark a rectangle via ^V, and then run an ex command on the
+  highlighted text, elvis should IDEALLY limit the changes to the highlighted
+  columns.  This would be very difficult though, and it isn't at all clear
+  what some ex commands should do -- the ex command set is very line oriented.
+
+	How about this: Copy the rectangle into a temporary buffer, apply
+	the ex command to that buffer (all lines of it), and then go back
+	and replace the original rectangle with whatever the buffer has
+	become.  (If the buffer is unchanged, the last step can be skipped.)
+
+	This still wouldn't be quite perfect -- cut text would be marked
+	as being "line" instead of "rectangle".  But :s would work perfectly
+	and that's probably what matters most.
+
+	This wouldn't even be particularly hard.  The temporary buffer could
+	be a cut buffer.  The ex parser (or the : command) would cut the
+	rectangle into that buffer, make it be the default buffer for the
+	ex command, and then paste it afterward.
+
+/ Elvis can dump core if you insert a hypertext reference into an HTML document
+  while in the "html" display mode.  The partially-complete <a href=...> tag
+  causes the problems.
+
+/ Attempting to write an untitled buffer will give the error message "No file
+  name for NULL".  It should simply say "No file name".  Or say the buffer
+  name.
+
+/ In X11, use "normalfont" as an alias for "font", for now.  This will allow
+  users to update their configurations simply by starting elvis with their
+  old normalfont setting, and then running :mkexrc to save the old setting
+  under the new name.
+
+/ For ANSI colors, add "default" which uses color 9 ("\E[39m" selects the
+  default foreground color).
+
+/ Increase the range of legal values for scrollwheelspeed.  It would be nice
+  if users could do things like ":let sws=scroll".
+
+/ When editing HTML *in syntax mode*, the spacebar and enter keys should not
+  be mapped.  The mapmode option can't handle this.  Maybe add DisplayEnter
+  and DisplayLeave autocmd events, and use those to enable the maps when
+  entering/leaving "html" mode.
+
+	/ Add the events to autocmd.h and autocmd.c.
+	/ Write a new audisplay() function to test for changes.  It should
+	  examine the state of the current window.  It should be sensitive
+	  to the window's "display" option, and to the input state stack.
+	/ Call that function at the top of mapdo() so any changed maps take
+	  effect before the keys are processed.  Also call it again at the
+	  top of each statekey() call, to react to maps that change the mode.
+	/ Replace the current mapmode maps with autocmd maps, in elvis.ini.
+
+/ Some bugs in Perl's POD lines (in syntax mode):
+	/ POD lines are followed by empty lines; i.e., the formatting lines
+	  are displayed with two newlines at the end instead of one.
+	/ Sometimes POD lines cause elvis to dump core.
+
+/ 'elvtags -x *.c' dumps core at the end of the list.
+
+/ Need a way to prevent temporary maps from being saved by :mkexrc.  E.g.,
+  HTML's <space> and <enter> maps should not be copied into ~/.elvisrc.
+
+/ When generating "elvtags.man" from "ctags.man", protect the phrase
+  "'exuberant' ctags".
+
+/ The :augroup command doesn't accept the '!' suffix.
+
+/ The ^Wd command doesn't work on samples/perl.pl
+
+	This is probably because bufdisplay="syntax perl" instead of merely
+	"syntax".
+
+/ More vim autocmd events: BufAdd (synonym for BufCreate), BufNew, BufReadCmd,
+  BufWinEnter, BufWinLeave, BufWipeout, BufWriteCmd, CmdWinEnter, CmdWinLeave,
+  EncodingChanged, FileAppendCmd, FileChangedRO, FileReadCmd, FileWriteCmd,
+  FuncUndefined, RemoteReply, TermResponse
+
+	Most of these aren't worth implementing.  Just BufAdd, and maybe
+	FileChangedRO.  Some of the others should probably be recognized,
+	just so users can use :doau on them.  Maybe I should add a command
+	for adding user-defined events?
+
+-------------------------------------------------------------------------------
+Fixed in 2.2g-beta:
+
+/ The spell-checker didn't like words that start with '_', even though
+  tag names often do.
+
+/ Maybe allow lpheader font to be controlled via ":color header" ?  Still
+  make it default to "fixed underlined", but some users might prefer boxed.
+
+	Actually, it was already doing that for non-markup modes.  I tweaked
+	the markup modes to do the same, and documented it.
+
+/ Gnome patches from Klaus Elsbernd, needed for compiling the gnome interface
+  with a non-GCC compiler, and run in SunOS
+
+/ ctags *needs* support for "enum".  And probably "class" wouldn't be too hard.
+
+/ ctags needs to reset the class hint when switching from one file to another.
+
+/ The show=link option is slow if there are no <a ...> tags shortly before
+  the cursor position.  It should probably stop looking if it sees a tag
+  which is a paragraph/section marker.
+
+	I thought I had this one fixed, but apparently the fix wasn't good
+	enough.
+
+/ ":map" doesn't list cursor key maps, and even some user maps such as "gw".
+  Actually, I kind of like the fact that it omits cursor keys since the user
+  probably already knows what they're mapped to, and it's nice to avoid clutter.
+  But there should be *SOME* way to see them.
+
+  	Fixed.  Also made ":map" list non-cursor keys, while ":map all" lists
+  	all maps including cursor keys.
+
+/ Use mapmode to make <Enter> follow a link in HTML.  Maybe also use <space>
+  to page forward.
+
+/ "map mode=html ^V  ^F" isn't saved correctly.
+
+/ Don't set hlspell for the help files.  Why embarrass myself?
+
+/ Elvis dumps core in a C++ file (or C header file) that starts with a comment
+  if the "showlink" option is set.
+
+/ "show=link" shouldn't affect any display modes other than "html".
+
+/ The :r command displays the number of lines read, even if report=0
+
+/ In "hex" mode, the line before the column headings is in a funny font.
+  This only shows up when you do a ":sp file.bin" on a binary file; as soon
+  as any event causes the screen to be redrawn, it looks okay.
+
+/ The "modified, not saved" message uses filename, should show bufname.
+
+/ There's a bug which causes a core dump when "theme:parchment" is loaded.
+
+	Apparently this is in the "1;/^BEGIN /,$d" command, which deletes
+	everything but the initial comment.  I suspect that it is failing
+	because the last block is deleted, in a buffer which requires
+	multiple blklist blocks.  (The "parchment" theme is the biggest
+	one.)
+
+	If I run that command manually it doesn't dump core...  until the
+	third time!  This suggests that buffer cloning may be involved.
+
+	SOLVED!  It took six hours, but I finally found bug in lowbuf.c's
+	delblock() function, when a buffer is big enough to require a chain
+	of BLKLIST blocks.  To delete a CHARS block in the n'th BLKLIST block,
+	it was copying the first item from the n+1'th BLKLIST block and then
+	recursively calling delblock() to shift the n+1'th block (and any later
+	ones, the same way).  But delblock() frees the deleted CHARS block,
+	so I have INCREMENT THE ALLOCATION COUNT FOR THAT BLOCK BEFORE THE
+	RECURSIVE CALL!
+
+/ For the termcap interface, the "italic" attribute can interfere with
+  colors.  It is implemented as "half brightness", which Linux's console,
+  for one, can't do in color.
+
+	Added a "ttyitalic" option, similar to "ttyunderline".
+
+/ Changing the 'background' option should cause colors to be reevaluated,
+  if the actual background color is unknown.  This would mostly benefit
+  the "termcap" interface, since the GUI interfaces always know exactly
+  which background color they're using.
+
+	Basically, this action could be done by calling recolor() for any
+	font which has no "like" clause.  (The "like" fonts will automatically
+	be reevaluated when the font that they're like is reevaluated.)
+	Triggering this action will require writing a custom option-setting
+	function.
+
+/ The MS-DOS version has a hard time using bright colors for "normal" plus
+  other things: color normal yellow|color comment bright green.
+
+/ Modelines don't work?
+
+	This was because the first "1,5s/ex:\(.*\):/\1/x" was failing, which
+	prevented the elvis.arf script from continuing with the second
+	"$-4,$s/ex:\(.*\):/\1/x" command.
+
+/ "safer" mode is too strict.  Disallowing :alias and :autocmd causes problems
+  in the initialization scripts.
+
+  / Make elvis.ini check "safer" before running elvis.ali
+  / Make :augroup be unsafe, so the script generated by :mkexrc will work
+    whether safer is on or not.
+
+/ Weird problem with PERL doc lines.  See Merijn's example.
+
+	This was caused by a scanalloc() call without a matching scanfree(),
+	in dmsyntax.c.  Each screen update left one more scan context lying
+	around, and that caused elvis' buffer functions to get confused --
+	there should never be any scan contexts active when the buffer is
+	changed.  There are assert() statements to verify this, but those
+	are normally disabled, so that's why this looked subtle.
+
+/ Shouldn't draw guide lines on ex scrolled rows at bottom of window.
+
+	Fixed, in an interesting way.  I added a new text face, "bottom",
+	and made it immune to guide lines.  All ex commands and their output
+	are drawn in this font, so they don't get guide lines.
+
+/ Make "smartargs" be a buffer option?  Sometimes there will never be tags
+  for functions; e.g., in HTML source where "functions" are really tag
+  parameters.  Searching for a nonexistent tag can take a while!
+
+	Done.  Also modified "elvis.arf" to turn off smartargs for html.
+
+/ If you delete the last character from "boxed" text, the right edge of the
+  box is not redrawn in its new location.  The box appears to be open-ended.
+
+/ Add a BgChanged event for :autocmd.
+
+/ add a "showface" option, which shows the name of the current font.  Maybe
+  also add a current("face") function which returns the name of the face at
+  the current cursor position.  If the face is a combination, then return "".
+
+	Added...
+		current("face")
+		current("background")
+		color("name")
+		color("name","fg")
+		color("name","bg")
+		color("name","like")
+
+	Replaced many showXXX options with a single versatile "show" option.
+	file, tag, cmd, face, link, spell, region
+
+/ The 'x' flag of the :s command should move the cursor to the current line
+  before evaluating the command.  This affects the readTHEME alias.
+
+	This is very quirky.  The bug mostly resides in parsewindowid(), but
+	really it is just a manifestation of the fact that my ex parser doesn't
+	allow ex commands to specify a cursor position -- it tries to use the
+	window's cursor, or the top of bufdefault.  I think in readTHEME, it
+	is using the latter.
+
+	Fixed!  I just made sure that x's quirks matched parsewindowid()'s.
+
+/ Some easy ideas for background images in X11:
+  / Allow background color names to contain either a simple color name, or
+    the name of an image file, or both.  When both are given, use the simple
+    color to "tint" the image.  Return a pseudo-colorcode.  Also return the
+    average RGB value of the image, so contrasting foregrounds can be chosen.
+  / When an unscrollable image is being used, GUI->scroll() should always fail.
+
+/ problems with partially specifying the "normal" color, and probably
+  any of the special colors -- When you run :mkexrc it only remembers the
+  most recent partial color specification.
+
+/ The "or color" clause can be chosen before the background is set. E.g.,
+  ":color normal black or white on black" chooses the new foreground based
+  on the old background.
+
+	Note that this is related to the "partial specify" problem -- the
+	only reason for specifying "or" colors with the background is so
+	that you'll be prepared when the next foregroundless :color command.
+
+	Possible combined solution: Write a parser which returns the foreground
+	and background colors AS STRINGS.  When doing this, treat the "or"
+	word as plain text, so it is included in the foreground string for
+	later processing.  Other attributes are returned as flags.  When
+	doing a partial specification, parse both the old & new attribute
+	strings; if the new one omitted a foreground or background, then
+	use the foreground or background from the old string.  Process the
+	background first, so the proper "or" color can be chosen.  Regenerate
+	the combined text by using the foreground & background strings,
+	with flags generated from the attribute bits.
+
+/ In "x11", a bold 'm' leaves bits to the left it its character cell --
+  maybe clip the cell?  It would make scrolling look better.  However,
+  italic characters often slop to the right, which apparently produces far
+  fewer problems, so the clipping should only be on the left.
+
+/ Make WinElvis read its color names from a file, preferably in the same
+  format as /usr/X11R6/lib/X11/rgb.txt
+
+/ ":help ex" fails.  It tries to load "elvisex.html" in the current directory.
+
+/ Describe the meaning of ";" in ex addresses.
+
+/ The postscript print driver uses the video colors, not the carefully chosen
+  lp colors.
+
+/ It is so tempting to give only one foreground color, I really should add an
+  "lpcontrast" option.
+
+/ For the sake of uniformity, x11's "normalfont" option should be renamed to
+  just plain "font", like in Windows.
+
+/ ":help set ttyunderline" doesn't go to the ttyunderline message, unless
+  you're using the "termcap" interface.  I wouldn't expect name completion
+  to work, but you should at least be able to give the full name and find it.
+
+/ "nottyunderline" shouldn't completely disable the use of underline --
+  still try to use it if no background color has been set.  This will allow
+  the window separator to be red.
+
+	Actually, this is more of a personal preference.  But users who
+	prefer to have no redness in their window borders could just say
+	"color normal on black" so no harm is done.
+
+/ Can't use "bold" attribute to distinguish between normal/idle.  Elvis
+  appears to only be sensitive to the colors, not other attributes.
+
+/ Windows problems:
+  / The Options->Gui dialog can't change colors, and doesn't display the
+    colors of that have been set elsewhere.
+  / Text type names aren't sorted, and the label should probably be "face"
+    instead of "text type" anyway.
+  / Combo boxes should show more items.
+  / The Options->Syntax menu item crashes elvis.  It is obsolete anyway,
+    and should be deleted.
+/ The :let command never triggers an OptChanged or OptSet autocmd event.
+
+/ Add "kvt" to the list of terminals recognized by -Gx11.  Also, the termcap
+  interface should assume "kvt" has a light background.
+
+/ "make install" should create the /usr/local/lib/elvis/tags file.
+
+/ The smartargs option doesn't allow a space before '('.
+
+/ Make the toolbar's colors be configurable via resources (instead of the
+  scrollbar), and then make the default settings of the scrollbar and
+  statusbar be "like toolbar".
+
+/ In the Windows, OS/2, and MS-DOS binary distributions, make the contents
+  of the "lib" directory be read-only.  This is important for making
+  ":set prefersyntax=writable" work right.
+
+/ Writing an anonymous file should never change the name of an INTERNAL buffer.
+  Currently, :mkexrc seems to do that.
+
+/ The "elvis untitled #n" buffer names should correspond to bufid numbers.
+  It's less confusing that way.
+
+/ In "termcap" interface, sometimes the hlsearch highlighting doesn't show
+  everything that it should.  This seems to depend on color settings.  See
+  samples/hlsearch.cpp for an example.
+
+	Not a bug.  This is due to the interaction of "bold white" text and
+	"bright red" highlighting.  In the termcap interface, bold+bright
+	always results in bright white, regardless of whatever color you're
+	trying to use.
+
+/ For HP, the default level of optimization doesn't work in elvis.  Need to
+  make "configure" drop it to +O2.
+
+	I tried changing the "configure" script to handle this, but I can't
+	test it myself.
+
+	Merijn Brand reports that it does indeed work.
+
+/ Sometimes the cursor gets stuck at the bottom of the screen (not the status
+  line where ex commands are entered, but the last one normally used in visual
+  mode).  Hitting zz fixes this condition.
+
+	This may be related to the "calling delimage() endlessly" bug, which
+	is now fixed.  The "stuck at bottom" bug hasn't occurred since that
+	fix.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2f-beta:
+
+/ Changing the "normal" background should cause all colors to be reevaluated,
+  so that "or color" can be chosen properly.  Merely switching a window from
+  "idle" to "normal" shouldn't do this -- only a ":color normal" command should.
+
+/ Hey!  ":color normal gray" changes the background to black, in -Gx11?
+  It should leave the color unchanged.
+
+/ Need a way to make maps that only apply in certain display modes, or
+  possibly some other factor.  Maybe add a "map=XXXX" flag, and a "map"
+  buffer option?  Or a generic "option=value" flag?  Maybe add a :mapgroup
+  command, like autocmd, and allow groups to be selectively enabled/disabled.
+
+	I implemented this as a "mode=XXXX" flag, and a "mapmode" option.
+
+/ After running an external command, the termcap interface restores colors
+  BEFORE switching back to the edit screen, so the original screen colors
+  are clobbered.
+
+/ Make :alias list the user aliases, and :alias! list the system aliases.
+
+/ Make :alias indent aliases to reflect the control flow.
+
+/ Need a way for aliases to access the tail of a command.  The csh way to
+  do this would be to put a * after the digit, as in !:2* to access everything
+  except the first word.
+
+/ Can the Edit autocmd event be partially dependent on bufdo()?  Should it be?
+  This is desirable because it would reduce the number of events, but what if
+  somebody "moves" the cursor while in input mode?
+
+	Actually, moving while in input mode should probably call bufdo()
+	anyway, so that individual changes can be undone.
+
+	A more complex problem: global changes, via either :g or :%s.  There
+	should probably be flag added to each buffer, to indicate that Edit
+	events should occur more often than "undo" saves.
+
+/ Make the window title show the filename if there is one; else the buffer name.
+
+/ Add a way to mark regions.
+
+/ With "optimize" turned off, the : command causes hlobject text to be
+  highlighted weirdly.  I think this happens only when there are multiple
+  windows.  It tries to recolor the current window, using the temporary
+  fonts from the other window.
+
+  Exposure events can be similarly weird, regardless of optimization.
+
+	This might be solvable by comparing the color number against the
+	npermanent.  If >= then allocate a new temporary color with the
+	required attributes... BUT WHY SHOULD THAT BE NECESSARY?
+
+/ Make :mkexrc generate a script that uses :try instead of :if.  This is
+  important if FEATURE_CALC is turned off.
+
+/ Allow more features to be disabled via FEATURE_XXXX -- tags, regexp, etc.
+
+/ Modify the [[ and ]] commands to recognize functions that start with '{'
+  at the end of the function header line, instead of in column 1 of the
+  following line.  Assume function header lines are either unindented.
+  This notation is standard in GNU source code, Perl, and (oddly enough)
+  in elvis' own alias notation.  This should also affect the gd command.
+
+	Done.  Also added "tweaksection" option to control it.
+
+/ The "locked" and "readonly" option should never be saved in ~/.elvisrc
+  Maybe other options too.
+
+/ Adding "tag=" to the status line had the unintended side-effect of adding
+  it to the result of current("tag") too.  And it looks uglier than I expected
+  anyway.  Since the real source of confusion is when both "showtag" and
+  "showspell" are set, it would probably be better to add numbers before
+  the showspell words.  This makes them distinctive, and also makes the gs
+  command easier to use.
+
+/ Add link anchors to example aliases in lib/elvistip.html.  Refer to them
+  in other parts of the manual.
+
+/ Bug in suffixes -- it searches random memory past the end of the suffix
+  list.
+
+/ Something is wrong with subscripts.  Try :calc "foo"[,2...];"ps".
+
+	There were two bugs: The precedence of [] was too low, and non-numeric
+	arguments were being interpreted as an infinite list of 0's.
+
+/ The "x11" user interface dumps core.  Try "e2 exmake.c", ":sp ex.c", resize
+  the ex.c window to be 4 lines high, run ":window" or ":set".  This does not
+  dump core in the "termcap" interface.  It may be related to spell checking.
+
+	I suspect this has something to do with static variables being set
+	with the expectation that one window will be used next, and then the
+	other one is winds up being used instead.  I say this because in at
+	least one occasion, the status line (below the text window) showed
+	the same tag name for both windows even though they were for different
+	buffers.
+
+	Unfortunately, one side-effect of this is typically that the stack
+	is clobbered, so it is difficult to tell what's going wrong.
+
+	FIXED!  It turns out that some important variables were being left
+	unset by drawopenedit().  The variables are normally set by the
+	drawupdate() function which calls updateimage().  But drawopenedit()
+	also calls updateimage(), so it had to set those variables too.
+
+/ It would be nice if ":make" didn't switch buffers if there's already a
+  buffer showing the erroneous file.
+
+/ There should be a way to disable spelling for each buffer.  This is partially
+  dependent upon whether the window is readonly or not, but it should be more
+  versatile than that.  Maybe replace the spelltags option.
+
+	I simply made "hlspell" be a buffer option instead of a global one.
+	I also deleted the "spelltags" option since I no longer consider it
+	to be useful... or not useful enough to justify making users read
+	about it and understand it.
+
+/ Sometimes elvis gets stuck calling delimage() endlessly.  In the "termcap"
+  interface, if you start on an HTML file and then use :sp to load some other
+  file, then elvis gets stuck in an endless loop trying to update the HTML
+  window.
+
+	Fixed!  This was happening because eventfocus() was calling draw()
+	for the original window, which in turn tried to draw it using the
+	"html" functions -- even though the cursor was still in the ex history
+	buffer at the time.
+
+/ Make the absolute() function be smart about ".." in path names.
+
+/ Elvis should recognize different paths to the same file.  This is important
+  because some compilers mess up names (javac, for one).
+
+	The best solution here is probably related to the idea of giving each
+	window its own virtual current working directory.  But that's more
+	than I was planning to do for 2.2.  Instead, I can just make the bufname
+	option store the full pathname; then buffind() will find the existing
+	version of a buffer no matter how you express its filename.
+
+/ Add g<Tab> -- move backward to previous link.  Make GUIs map <Shift-Tab>
+  to g<Tab> if possible.
+
+/ Include /usr/dict/words in the windows binary distribution.
+
+/ Perl scripts aren't being recognized if they have no extension?
+
+	Merijn Brand tells me this is due to the fact that he sets the
+	magicchar and magicperl options to make elvis use Perl-like regexps,
+	but the default elvis.arf script file tries to recognize Perl scripts
+	by using traditional vi regexps.
+
+	There are two ways to solve this.  One is by resetting the magicchar
+	and magicperl options to their defaults at the start of each script
+	or alias -- either hardcode the equivalent of ":lo mac=^$.[* nomap"
+	or add a new OptLocal autocmd event to make it configurable.
+
+	The other way is to add a special metacharacter which forces the
+	remainder of the regexp to be parsed using traditional syntax, and
+	then add that metacharacter to the start of the regexps in elvis.arf.
+	I'm thinking \V would be nice.  Maybe also support \Q...\E quoting?
+
+/ When pasting chars into an empty buffer, add a newline first.  This is
+  particularly important when pasting via the GUI, but it may also be
+  important for pasting between buffers.
+
+/ When searching for tags: if there are both a macro and a function with the
+  same tag name, use the function first.  This should probably be both an
+  optional flag in ctags, and the sorting behavior or :tag and the ref program.
+
+	What if I just initialize the heuristic tables with a higher
+	preference for functions initially?  I'd need to do this in both
+	"ref" and "elvis".
+
+/ Add "color emphasized like bold" somewhere, for the benefit of syntax
+  coloring.
+
+	Fixed a different way: Since syntax coloring fonts should be given
+	names that reflect their intended purpose, I modified elvis.syn to
+	use other font names, and then added "color" lines to define the
+	default appearance of those fonts.
+
+/ Termcap "transparent" background doesn't work with Eterm.  If some text
+  uses a different background, then the display code doesn't switch back
+  to normal afterward.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2d-alpha:
+
+/ The "howto.html" file doesn't look good in Netscape.  This is due to the
+  ugliness of the non-elvis <dt><dd> list.
+
+/ The "showspell" option shouldn't suggest natural words where only tags are
+  allowed.  For example, when editing source code, it shouldn't suggest natural
+  words when the cursor is on a variable.
+
+/ The newbuffer() function and :file command can both create different buffers
+  with the same bufname.  So can writing an anonymous buffer out to a file.
+
+/ Change the "showname" and "showtag" options' display formats to prefix
+  their value with "file=" or "tag=" -- there are so many different things
+  that can be shown down there that it can get confusing.  Oh, and maybe
+  rename "showname" to "showfile".
+
+/ Make :mkexrc save aliases.
+
+? Occasionally, elvis will mess up the session file.  When this happens, the
+  screen looks normal but the cursor doesn't move correctly.  I think this is
+  a recent bug -- added after 2.2d.
+
+	Maybe this has something to do with the message queue?  Elvis doesn't
+	allow buffers to be modified while a scan operation is pending.  The
+	(Elvis message queue) buffer is used for queuing messages, so it is
+	modified each time a message is generated.
+
+  FIXED? There was a bug in the indentation code, used by the shift commands
+	and autoindent, among other things.  It was mixing scan operations
+	with changes.  Also, wordatcursor(), used by the spell checker among
+	other things, was sometimes neglecting to free a scan context when
+	it was done, which eventually caused large numbers of scan contexts
+	to accumulate.
+
+/ Need a way to fire off commands when certain events happen.  Maybe vim's
+  ":au" command, or something related to the :gui command which already runs
+  events for GUI events.  Combine them somehow?  The immediate goal is to
+  provide a way for a [buffer] menu to change when buffers are created or
+  deleted.
+
+/ In XFree86 4.0, the "x11" interface's toolbar hints have an extra character
+  on the end -- maybe not trimming newline?
+
+/ Maybe add "transparent" as a termcap background color -- it will just
+  reset the colors via \E[m and then not set a background.  This will allow
+  you to specify some background colors while still leaving others set to
+  the default.  It won't always look good, but it is another option.
+
+/ Under XFree86 4.0.3, the image under the cursor doesn't appear to be saved
+  before the cursor is drawn.  On the next blink, it get screwed up sometimes.
+  This also affects selections.
+
+/ If multiple tags are found with equal sorting values, then sort them by
+  the timestamp of the file where the tag is defined.  Do this in ref, in
+  addition to the built-in tags searcher.  Use dirtime() to find the
+  timestamp... but will that cause problems in ref?
+
+/ osunix/osblock.c shouldn't trust the access() function, because broken
+  links look like nonexistent files to it.  It should instead try calling
+  open(..., O_RDWR|O_EXCL).  Also, think about what happens when blkopen()
+  fails, because currently it leaves the tty in "raw" mode.
+
+/ Windows patch from Mauro Persano: Use GetModuleFileName() to get the full
+  pathname of the winelvis.exe file, if possible.  This should be more
+  reliable than explicitly searching the path (though it will still search
+  the path if GetModuleFileName() fails).
+
+/ Spelling bug: If a word is known to be bad or incomplete, then any words
+  that can be derived from it via suffixes will be considered good.  I.e.,
+  the suffix test only checks whether the base word is known, not whether it
+  is good.
+
+/ The showspell option doesn't update the status line correctly when running
+  in the termcap user interface.  It isn't updated as often as it should be.
+  Specifically, it is only changed from empty to suggestions.  (Scrolling
+  causes it to be empty, briefly.)
+
+	This is exactly the way other status messages work, but other status
+	messages aren't sensitive to the cursor position.  The genlastrow()
+	function will need to be extended to clear the last row before the
+	next update, if it is displaying alternative spellings.
+
+/ The "gs" command complains about words that start with digits.
+
+/ Spell checker bombs on words longer than 100 characters.  Any word that
+  long should be assumed to be misspelled, and not have any suggested
+  alternatives.
+
+/ With incsearch set, elvis could dump code on some partially-entered
+  regular expressions, such as "/[^[".
+
+/ In expressions, allow $_ to be used as a synonym for line().  Allow $ before
+  options, too.  This would make Perl users happy.
+
+/ Can't yank from a locked buffer?
+
+/ Change the description of makeprg and ccprg, to include a description of
+  how to add double-quotes around $2.
+
+/ Odd things happen when you edit a filename that looks like a file number.
+  E.g., ":e 1".  It can clobber an existing buffer.
+
+/ d/regexp/+0 retains the line containing regexp, but should delete it.
+
+/ Spelling gives false errors when sidescrolling is enabled -- partial words
+  along the left edge of the screen are flagged as being incorrect.
+
+/ Speller should skip over words that begin with a digit.
+
+/ Could incremental searches be smart enough to skip searching if more
+  keys are in the type-ahead buffer?  That might avoid some useless search
+  time.
+
+? How to dump core: 1) start editing an existing file, 2) run ":make",
+     3) run ":("Eel)sp", 4) run ":!ref ...".
+
+? The :configure alias doesn't work when there are spaces in the
+  directory names.
+
+/ Create a script that map's vim's commands to the corresponding elvis commands
+  including the following:
+	rX	changes each non-newline to X [:map select r g=]
+	x	Delete (like d) [:map select x d]
+	U	make uppercase [:map select U gU]
+	u	make lowercase [:map select u gu]
+	~	toggle case [:map select ~ g~]
+	J	Join whole lines (like :join) [:map select :j^M]
+	^]	Tag search, for highlighted text [:map select ^] y:ta ^P^M]
+	R	Change whole lines (same as S)
+	o	Go to other end
+	O	go to other edge of rectangle
+
+/ Allow v/V/^V to change the type of a pending selection.
+
+/ When a rectangular selection is pending, $ should cause it to extend all
+  the way to the end of each line.
+
+/ New motions for v/V/^V selections:
+	g%	go to other end of selection  (same as vim's o)
+	g^V	go to other vertical edge of rectangular selection (vim's O)
+
+/ :>> doesn't shift twice, but should.
+
+/ The :join command doesn't work correctly when multiple lines are visually
+  selected -- it still joins just the current line & following line.
+
+/ Wasn't there a window() function?  There should be!
+
+/ Describe why "-Gx11" is needed when adding elvis to an X start menu in Linux.
+
+/ ":help ^Wd" doesn't work.  Apparently multi-key vi commands aren't
+  recognized by the viname() function.
+
+/ Speller dumps core if a spell_t node has a max=255.  That's a valid Latin-1
+  letter, but it messes up some loops that use a CHAR as a counter, since
+  the counter can never be incremented past 255.
+
+/ Support keyboard timeouts (the usertime option) in the "x11" user interface.
+
+/ If the "find next misspelled word" command is used with a count, and the
+  cursor is on a misspelled word, then use the count'th corrected spelling.
+  For example, ^K moves to a misspelled word, and 1^K uses the first
+  suggested correction.
+
+/ Need to support 'g' commands, so we can standardize keystrokes for spelling.
+
+	/ g0	go to leftmost char in current row (for wrapped lines)
+	/ g^	go to first non-whitespace char in current row (for wrapped)
+	/ g$	go to rightmost char in current row (for wrapped lines)
+	/ gj	move down to same column of next row (next line, or next row
+		of a long wrapped line)
+	/ gk	move up to same column of previous row.
+	/ gd	go to local definition of word that the cursor's on (first
+		mention within the current function).
+	/ gD	go to global definition of word that the cursor's on (first
+		mention in the current file).
+	/ gI	like "0i"
+	/ gJ	join lines without space, like ":join!"
+	/ gU	operator, makes text uppercase
+	/ gu	operator, makes text lowercase
+	/ g~	operator, makes text lowercase
+	/ ga	show ascii code of current char in ascii, decimal, hex, octal
+  and...
+	/ gh    move left, skipping hidden characters (for markup modes)
+	/ gl	move right, skipping hidden characters (for markup modes)
+  	/ g=X	operator, replaces text characters with X
+  	/ gs	go to next misspelled word.  If given a count, then before
+  		moving, replace the current word with the count'th alternative
+  		spelling.
+	/ gS	go to end of current spelling word. (Useful for cgS, if none
+  		of the alternative spellings are correct.)
+
+  The first task is to create a means by which these commands can be parsed.
+  Probably this should be a second table, similar to the vikeys[] array in
+  vi.c.  An extra BOOLEAN flag in the vi input state will indicate whether
+  the main table should be used, or the g table.
+
+  Then I can start implementing the actual G commands.  Some will be easier
+  than others, but none should be terribly hard... except gv.
+
+  Tests:
+  / Make sure invalid g commands are rejected safely.
+  / Make sure valid ones are recognized.
+  / Make sure ":help gs" works.
+  / For operators, make sure "g~g~" and "g~~" both change the whole line.
+  / Verify that g=x works for motions, text objects, and selections.
+  / Verify that other operators work for motions, text objects, and selections.
+  / Make sure changes can be undone.
+  / Make sure . can repeat all of the commands that change text.
+
+/ Elvis hangs on :%s/\( ,\)\+//g
+
+	This turned out to be due to a recently introduced bug in non-greedy
+	closure operators: They weren't checking the minimum number of
+	repetitions.
+
+/ When incsearch is set, ":map! >^[?<^Mye" dumps core.
+
+	For backward incremental searches, the regexp's leavep field wasn't
+	being saved.
+
+/ Elvis hangs when hlsearch is set, for any regular expression which could
+  match a zero-length string.
+
+/ WinElvis doesn't update the screen correctly if it scrolls while part of
+  the window is off-screen.
+
+/ Allow :map to support more flags, in addition to "visual".  Some specific
+  words that would be handy are:
+
+    command	Map works in command mode
+    input	Map works in input mode on a normal buffer
+    history	Map works in ex and regexp history buffers
+    motion	Map works when a motion is expected after an operator
+    select	Map works when a visible selection is pending
+    noremap	Don't expand maps in in rhs
+
+  :map doesn't imply any of the "Map works..." modes, but if no modes are
+  specified then it'll default to "command history motion".  :map! implies
+  "input history".  Note that these are compatible with traditional vi,
+  and aliases can be used to make :map act like vim's mode-specific mapping
+  commands.
+
+  To keep the map table clean, there are two ways a new entry can affect
+  an existing entry:
+   1.If the LHS matches an existing entry and some of the contexts are the
+     same, then the existing entry should have those contexts removed.  If
+     this means the existing map doesn't have any contexts left, then it
+     should be deleted.
+   2.If the LHS matches an existing entry, and the RHS also matches, then
+     the existing entry's contexts should be merged into the new entry's
+     contexts, and the existing entry should be deleted.
+  The new entry is always added, regardless.
+
+  Also, make sure that if the rhs starts with the lhs, then that portion
+  is never subjected to remapping.
+
+  The keywords should be allowed before either the lhs or the rhs.  Elvis
+  has always supported "visual" before the rhs, but putting these before
+  the lhs is more convenient in an alias.  To support this, the :map command
+  can't depend on the ex parser to separate the lhs from the rhs, which seems
+  odd.
+
+  Abbreviations are similar to maps.  Although the flags used with maps
+  don't really apply to abbreviations, there is a chance that the map changes
+  could break the abbreviation table, so abbreviations should be tested too.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2c-alpha:
+
+/ The command ":map! X visual J" doesn't work.  ":map! X visual :normal J^M"
+  sort of works, but it looses the whitespace.
+
+	The first map should work now, but it'll work exactly like the
+	second one -- without any whitespace between them.  I figure
+	that's probably close enough.
+
+/ One user reported that ^V{motion}d deletes text okay, but then pastes it
+  all on one line.
+
+	This happens when you're near the end of the buffer.  The pasted rows
+	from a rectangle can only be pasted into existing lines.
+
+/ Either the "fold" color or "spell" color isn't being allocated correctly.
+  Elvis mixes them up.
+
+	The "fold" color was being allocated the first time a fold was
+	displayed -- which could be after some spelling errors have been
+	highlighted via a temporary color, hence the confusion.
+
+/ Should autowrite write files before :make, like vim does?  Yeah, I guess so.
+
+/ Allow text object to work with the V/v/^V commands.  This is important!
+  For example, "Va{d" deletes a block using whole-lines.  There is no other
+  way to do that; "da{" and "%d%" both do character deletions, not line
+  deletions.
+
+/ Modify the behavior of ":set! option=value" so it changes the default value.
+  I.e., store the new value as the default, and ONLY if the options wasn't
+  explicitly set before it should change the actual value.  This should never
+  set the option's OPT_SET flag, but may reset it if the new default is the
+  same as the current actual value.
+
+	This is about half-done now.  In its present state, there is a
+	bug in the way it decides which options to specify in .elvisrc.
+
+	Keep the desc->dflt pointer.  Leave it NULL for most options,
+	indicating that they've never been set.  When an option is set
+	via ":set" (no !) then store the old version as desc->dflt.  When
+	set via ":set!", then store the new version as desc->dflt.  There
+	is never any time when we take a snapshot of all options' values
+	and call those the default.
+
+/ In html mode, $ moves to the start of the following line, but looks like
+  the start of the current line.  BOTH ARE WRONG!  It should move to the
+  last character on the current line.
+
+/ In visual mode, typing :<enter> should do nothing.  Currently it prints
+  the line and advances.  (Patch supplied by Derek Peschel.)
+
+/ ":vi +line" ignores the line when there's no filename.
+
+/ Regexp changes:
+  / Add a new "magicchar" option which lists the chars that don't need to
+    be preceded by a backslash in order to be considered metacharacters.
+  / Modify the !\x notation (backslash in an alias parameter) to support
+    the new magicchar option.
+  / Make the regexp error messages use \ only where needed.
+  / Add support for alternation, the \| metacharacter.
+  / Add support for using closure on complex subexpressions.
+  / Add metacharacters for edge of a word: \B for not-an-edge, and either
+    \b or \h for edge.
+  / Add an option to choose the meaning of \b.  And eventually \uXXXX.
+  / Add an option that disables Perl-style $name substitution.
+  / Support $name substitution in replacement text of :s/re/text/ command.
+
+/ There should be a way to handle Perl POD text as formatted text.  Basically
+  this would require everything from =head1 through =cut to be treated as a
+  big comment in the "documentation" font.  It probably isn't worth the effort
+  to do anything special with markups within POD text, since elvis won't be
+  used as the formatter, just the editor.  There should be a line in the
+  elvis.syn file to indicate that the language uses POD, and what starts &
+  ends it -- "documentation =cut", where "=cut" ends it, and anything that
+  starts with "=" starts it.
+
+/ Modify PostScript to automatically detect size of paper.
+
+	Use "clippath pathbbox" to obtain the drawing boundaries.
+
+/ Link error when config.h contains "#undef FEATURE_TEXTOBJ"
+
+	This is because it also used "#define FEATURE_HLOBJECT", which
+	requires text objects.  I fixed it by making "elvis.h" define
+	FEATURE_TEXTOBJ whenever FEATURE_HLOBJECT is defined.
+
+/ Allow <Shift-Arrow> to select text, like in most Windows programs.
+  / For WinElvis
+  / For XElvis
+
+/ Need a way to distinguish between variable names and other unclassified
+  text, in a syntax-colored buffer.  Perhaps this is another use of the
+  "initialtoken" option.  Or a "mostly" option, which allows individual
+  languages to be configured to use something other than "variable" for
+  unclassified words.
+
+  This is more important now, because spell-checking of variables is normally
+  disabled, but in "syntax html" mode all words look like variable names.
+
+/ The "syntax" display mode allows single characters to be declared as
+  keywords (for example, to change their font), but if you do that and also
+  use the character in a "useregexp" list, then the *character* is marked as
+  preceding regexps, but the *keyword* is not.
+
+/ The "showlink" option has the weird side-effect of making the current word
+  be displayed on the status line, while in "man" display mode.  Harmless,
+  but very odd.
+
+/ The :browse and :sbrowse commands are broken -- the links don't work.
+  This also affects the :kwic alias.  Apparently, somehow elvis lost the
+  ability to handle file:...?command URLs.
+
+/ Can't use incsearch as the target of an operator.
+
+	Maybe disable "incsearch" when searching is used as the target of
+	an operator.  That should be easy to do, and would probably be
+	satisfactory to most users.
+
+/ Incsearch doesn't set "wantcol" -- after a successful search, hitting j or k
+  will cause the cursor to jump to its previous column, instead of staying in
+  the same column.
+
+/ In incsearch mode, the new $name variable interpolation doesn't work.
+
+	The fix for this will probably involve calling regbuild() function,
+	since that's where $name is implemented.  And if we're going to be
+	calling that, then we might as well support the search flags too.
+
+/ The visual command "/$" moves the cursor to the newline character, instead
+  of the last character in the line.
+
+/ Need a clean way to allow HTML files to be displayed initially in either
+  "syntax" or "html" mode (whichever the user prefers).  Currently, all the
+  user can do is modify elvis.arf to set bufdisplay differently.  This isn't
+  good enough because setting it to "syntax" inhibits the ^Wd command, and
+  may also affect some other commands.
+
+	Added an "initialsyntax" buffer option, and a global "prefersyntax"
+	option which is used to set "initialsyntax" automatically via the
+	elvis.arf script.
+
+/ Maybe add a "mkexrcfile" option.  String, defaults to "".  If set to some
+  other value, then that's where :mkexrc writes by default, and :mkexrc is
+  allowed to overwrite that file if it exists.  Whenever :mkexrc writes a
+  file anywhere, it first sets mkexrcfile to the file name, so that the same
+  file can be overwritten easily.
+
+  The :cd command makes this dangerous.
+
+/ In incsearch, ^V can't be used to escape control characters.
+
+/ "hlsearch" and "selection" fonts don't mix well.  The foreground color
+  is lost, at least with the "x11" interface.
+
+/ Change the way "Elvis custom initialization" (for :mkexrc) is updated.
+  Only consider updating it if the event counter has changed, so that complex
+  initialization scripts only update it once.  The :mkexrc command regenerates
+  the buffer before writing, just to be sure it is up to date.
+
+  Ideally, it should be updated from event.c, near the end of each event
+  handler function.  The ex.c file should simply set a flag indicating that
+  the update is needed.
+
+/ Need an easy way to store regexp text in variables.  Suggest Perl's $name
+  or ${name} notation.
+
+/ In expressions, make ":" operator concatenate path elements, using the
+  OS-specific path delimiter (either ":" or ";").  This shouldn't interfere
+  with its use in the "?:" ternary operator.
+
+/ The :normal command has a bug.  The second invocation causes a core dump,
+  at least when used inside an alias.  This prevents the :spell alias from
+  working.
+
+/ Modify the "x11" gui to support font names of the form "font*size", like
+  the "windows" gui already does.  Rename "normalfont" to "font".
+
+/ The cfmt alias is broken.  It seems to think all comments are C++ comments.
+  Perhaps the error status of :s/// has changed?  I know I fixed the :g//s///
+  behavior recently.
+
+/ Folding interferes with <PgUp>/<PgDn>.
+
+	This is probably because the dmnormal.move() function doesn't
+	handle folds when the absolute value of the linedelta is > 1.
+
+/ The :help command should allow = at the end of n option name.
+
+/ It would be nice if the "aL" text object ignored preprocessor lines, the
+  same way that it ignores blank lines.
+
+/ In arithmetic expressions, using a regular expression as a function argument
+  sometimes causes core dumps.
+
+/ In incsearch, /<Enter> and ?<Enter> don't repeat the previous search.
+
+/ The "autoselect" option was recently broken.
+
+/ hlobject updates are too optimized.  If multiple windows, it won't always
+  update the highlight range even after the cursor has moved outside of the
+  highlight region.  Setting nooptimize hides this bug.  It seems to go
+  away if there is only one window.  Maybe it is confused about the "current
+  window"?
+
+  Serious quirks in screen updates while editing, too.
+
+/ Add an error message when a script contains an unterminated {...} block.
+  Also, warn users to enclose the hlobject value in quotes so "a{" doesn't
+  cause the parser to become confused.
+
+/ Does hlobject sometimes cause foreground colors to be lost?
+
+	Merijn Brand:
+	If hlo/hll is on and the block (on the first level) is rather
+	large, the block is backgrounded with the appropriate color, but
+	the syntax highlighting of the bottom half of the screen
+	disappears. I realize this a weak  which is rather
+	hard to verify, but I've not come up yet with a 
+	example.
+
+	Here's one way to reproduce it: ":man pcre".
+
+	This is almost certainly an example of using up all of the colors,
+	so any attempt to merge two fonts returns just one -- the hlobject<N>
+	font.  Why are so many fonts being used, in such simple contexts?
+
+/ <Enter> doesn't advance the cursor.
+
+/ In incsearch, /\ will hang elvis.
+
+/ After an incsearch is cancelled, hide the status info.
+
+/ To support highlighting of whole lines, allow the hlobject value to use
+  a 'V' prefix, as in `:set hlobject="Va{"'
+
+/ Some objects cause core dumps, if the buffer is empty.  This is most critical
+  when you have "set hlobject=a{" in your .exrc file.
+
+/ Shouldn't draw guide lines on ~ rows after last line of file.
+
+-------------------------------------------------------------------------------
+Fixed in 2.2c-alpha:
+
+/ Still need to implement "boxed" text in "windows" printer.  Also, the screen
+  needs to support COLOR_LEFTBOX and COLOR_RIGHTBOX, plus the "guide" color.
+
+/ :g/re1/ s/re2/text/ stops at the first line which contains re1 but not re2.
+
+/ Syntax descriptions aren't being cached correctly.
+
+/ "/\@" only looks for the first letter (anywhere in the found word), even
+  though ^A still searches for the whole word.
+
+/ Add vim's :normal command.  When invoked without arguments, it can still
+  switch to "normal" mode for backward compatibility.
+
+/ The "syntax" display mode should allow tabs between the function name
+  and the ( character.
+
+/ Here's a weird bug: When running "elvis +make", sometimes the screen
+  is cleared to a funny color during compilation, and then when the cursor
+  has moved to the first error and is responding to keystrokes, it is
+  stuck on the second-to-last line (just above the status line).  This is
+  *not* open mode -- Hitting <z><z> fixes the scrolling.  One big clue: screen
+  updates are very slow, as though it was redrawing the whole buffer from the
+  top each time.
+
+/ ":color selection" can only set attributes, not colors.
+
+/ In the manual, the <title> sections all say "Elvis 2.1".
+
+/ Backspacing while in indentation with autoindent is very quirky.  Apparently
+  it moves the cursor back too far, when the shifting operation doesn't delete
+  as much as it might in some other context.  It only occurs when smarttab is
+  set.
+
+/ The showlink option is slow if there are no <a ...> tags shortly before
+  the cursor position.  It should probably stop looking if it sees a tag
+  which is a paragraph/section marker.
+
+/ Many web pages uses non-Latin1 characters for quote marks and such.  Perhaps
+  ":set nonascii=hack" should translate the illegal characters into legal
+  ones.  It might also be nice if nonascii characters could be flagged with
+  a distinctive font, too.
+	0x85	:
+	0x91	`
+	0x92	'
+	0x93	"
+	0x94	"
+	0x96	-
+	
+/ The command "/[[:space]]" (without the second ":") causes a core dump.
+
+/ The "termcap" interface's graphic chars don't work?  Since when?
+
+	Actually, it works but rxvt doesn't support graphic characters when
+	using the Sony "12x24" font, because that font doesn't have graphic
+	characters in the usual places.  xterm works around that, but rxvt
+	apparently does not.
+
+/ Regular expressions should support \x notation inside character lists
+  (the [] notation).
+
+/ Revise the way the "draw.c" module compares the old screen image to the
+  new one.  Instead of storing the old font code, it should store the old
+  font's attributes: foreground RGB, background RGB, and bits.  The new
+  screen image should continue to store the font code though; we need it
+  to find the color code for the RGB values.  This solves the following
+  problems:
+
+  o Temporary font codes are recycled after the screen image has been
+    updated, so we don't know what attributes it had.
+
+  o Some attributes (such as guides and box-ends) are synthesized inside
+    "draw.c", and are not stored in any font code (temporary or permanent).
+    Synthesizing them this way requires code to be scattered throughout
+    "draw.c" instead of collected in reasonable places, and it also limits
+    the efficiency of updates.
+
+  This requires replacing the di->curfont array or 1-byte codes with a
+  di->curattr array of 8-byte attribute bundles.  It also requires some
+  changes inside draw.c, because the way fonts are stored and compared
+  will be changed.
+
+  HOWEVER, THIS WILL NOT FIX ANOTHER TEMPORARY FONT PROBLEM: The markup
+  display modes store the font code of the start of each line.  That code
+  could be temporary.  A separate solution should be found for that.
+
+/ Another good idea: Add guide lines -- vertical lines superimposed at
+  certain column numbers, configurable for each window (or for each buffer?).
+  Multiple guide lines should be supported.
+
+  This should be implemented as a new "guide" option, whose value is a
+  comma-delimited list of widths.  Ideally, the "tabstop" and "shiftwidth"
+  options should be modified to use the same type of values.
+
+/ Modify the way "boxed" text is drawn.  In addition to the basic "boxed"
+  attribute, it should also pass bits indicating whether the top, bottom,
+  left, and right edges should be drawn.
+
+	This would be more complicated than it sounds.  Characters could
+	be forced to be redrawn even if they haven't changed.  Strings of
+	characters that are all in the same font could be forced to be
+	drawn in different gui->text() calls, because some use the top/bottom
+	edges and some don't.
+
+	A simpler alternative might be to pass in separate bits for the
+	left & right edges (of the entire chunk of text, not each character),
+	but always draw the top & bottom whenever boxed text is drawn.  This
+	would also give an easy, portable way to draw the guide lines.
+
+/ Extend the :color command to support an "or <colorname>" clause.  If the
+  <colorname> has a higher contrast against the background than the current
+  color, then then use it; else ignore it.  This would allow commands such
+  as ":color prep light green or dark green" -- if the background is light,
+  preprocessor directives would be dark green; if the background is dark,
+  they'll be light green.
+
+  This *might* not need to store the color that isn't used; the command
+  string would be enough.  The only time this would cause problems would
+  be if the foreground was inherited but the background was specified, and
+  the specified background happened to be close to the foreground.  Elvis
+  couldn't choose the alternate color then, because it would have forgotten
+  what it is.  Perhaps that's a good thing though -- easier to understand.
+
+  Storing only the chosen foreground and background would also allow more
+  than one alternate foreground to be specified.  For example, on a green
+  background, "light green or dark green or pink" would select pink.
+
+  This would work best if the background color was always parsed first, so
+  "white or black on white" would always resolve to black on white, even if
+  the inherited background would have been black.  THIS PROBABLY ISN'T
+  IMPORTANT since the "or <colorname>" clause is unnecessary if you're
+  forcing it to use a known background anyway.
+
+  The :lpr command would always choose colors with the assumption that the
+  background is white.  This is actually trickier than it sounds -- colors
+  are only selected when a :color command is given, not when some other
+  factor causes backgrounds to change.  So :color would need to compute
+  both the video foreground and the lpr background, and store them both.
+
+/ "ref write" hangs.
+
+/ The guimoveto() function calls (*gui->moveto)() even if it is NULL.
+
+/ The readeol option is recalculated by lib/elvis.brf even if the buffer
+  already exists.  That's wrong; it should leave the option unchanged.
+  Also, maybe make -b force binary I/O.  Suggested by Alexandros M Manoussakis
+  <amm2@andrew.cmu.edu>
+
+/ Some changes to :color
+
+    / Allow "+=" to merge new attributes into old attributes.
+
+    / Maybe allow "-=" to support removal of attributes.  This is a little
+      tricky for colors and fixed/proportional.
+    
+    / After "+=" or "-=", synthesize a new string which configures all of
+      the set attributes in a single statement.  This is required for :mkexrc
+      to work reliably, and for ":color" to list complete attributes.  Doing
+      this will require foreground & background color names to be stored.
+
+/ "3ofoo^[" will insert 3 foo's, but they'll all be on the same line.  They
+  should each be on a separate line.  (This also affects the . command.)
+
+	Actually, the standard "o" command doesn't accept a count.  But if
+	elvis' version does, its behavior should be more intuitive that it
+	currently is.
+
+/ When :a or :i has text on the command line (instead of following), it
+  leaves the cursor on the line below the inserted text, instead of on the
+  last line of the inserted text.
+
+/ Create a "showlink" option which displays (on the status line) the value
+  that tagatcursor() returns.  This would be nice in "html" mode but a pain
+  in normal mode, so perhaps it should be a display option.  Either that, or
+  make it sensitive to the same thing that changes the <Enter> key's behavior.
+
+	This option would be tested in the draw.c module, so making it a
+	display option would be awkward.  Make it global and check for the
+	<Enter> key thing (i.e., check whether display->tagnext is defined).
+
+-----------------------------------------------------------------------------
+Fixed in 2.2b-alpha:
+
+/ In "man" display mode, any blank lines before a .P or similar command will
+  confuse elvis, preventing you from moving the cursor upward over a paragraph
+  boundary.
+
+/ The :browse and :sbrowse commands need to be tweaked.  They contain a
+  work-around for a minor bug in the "html" display mode, but that bug has
+  now been fixed, so the workaround (an extra space after <pre graphic>)
+  should be removed.
+
+/ Modify lowline() and lowoffset() so that if looking for a line near the end
+  of a block, the newlines are counted from the end of the block instead of
+  the beginning.  That should be faster.
+
+/ Add an "%%Orientation: Landscape" comment to ps2 output after "%%CreationDate"
+
+/ UNC ("\\host\dir\file") names still don't work correctly under Windows.
+
+	This turned out to be due to a bug in the way elvis was checking
+	Cygwin's mount table.  The bug only affected Cygwin users who had
+	something mounted as "/".  For example, if "C:\" was mounted as "/"
+	then "\\host\dir\file" was being interpreted as "C:\host\dir\file."
+
+/ On terminals with "brain damaged newlines" (the :xn: termcap flag),
+  modifying the last column on a line would have unpredictable results.
+
+/ Add color support to the "html" lptype. <font color="#rrggbb">...</font>
+
+/ Can't print HTML documents via "-c" anymore?  It dumps core.
+
+/ lptype=html produces bad output.  ">" is output as "&gt" without a ";".
+  Also, since 2.2a-alpha, it has been changing the font for each character,
+  instead of only between fonts.
+
+/ Bug: Can't interrupt elvis with ^C or anything else, with any interface.
+
+/ New features for searches:
+  / 'i' flag for ignorecase, 'c' for noignorecase, 's' for smartcase.
+  / 'w' flag to imply \< \> around regexp.
+  / 'x' flag to imply ^ $ around regexp.
+  / Vim's smartcase.  Regexps that contain any uppercase letters force off
+    the "ignorecase" option temporarily.
+  / Support for \i and \I character classes. \I is any char that can start
+    an identifier, and \i is any character that can appear later in an
+    identifier.
+  / Vim's hlsearch option -- highlight *ALL* matches, without selecting them.
+
+/ From Merijn Brand:
+  Something is broke in syntax highlighting.  Try this on an excerpt from
+  the ColourChooser module [using ":display syntax perl"]: 
+
+    $colour[1] =~ s/\s+//g ;        # Colourname
+    $colour[2] = lc $colour ;       # colour name
+    $colour[3] = $colour[2] ;
+    $colour[3] =~ s/\b(\w)/\u$1/g ; # Colour Name
+    $colour[4] = $colour[3] ;
+    $colour[4] =~ s/\s+//g ;        # ColourName
+    for my $i ( 5..9 ) {
+        $colour[$i] =~ s/\d+$// ;   # Remove trailing digits
+        } 
+
+  and see what happens :-( to the first line.
+  now change the s/\s+//g to s/\d+//g. Ooooops! 
+
+/ ":color role1 like roll2 etc" includes all following text in the "roll2"
+  name.  The "roll2" name *SHOULD* be exactly one word long every time.
+
+/ On last line of a file, do "$v^=" to evaluate an expression.  The expression
+  is stored on the last line, but the final newline is missing.
+
+/ Add a :safely command.  It temporarily sets the safer flag (like :safer)
+  while executing the rest of the line as an ex command (like :try or :then).
+  This would be handy if the "ex" protocol was implemented via a :readex
+  alias -- the alias could be smart enough to make "ex" links safe.
+
+/ Add the :push command already!  Like :e, except that it saves previous
+  position on the tag stack.
+
+/ In "windows" GUI, after ":set number" you can't highlight whole lines via
+  the mouse.  (The strip along the left edge of the window goes away?)
+
+/ In "x11", the scrollwheel only works right in the text area.  Other windows
+  treat it like any other mouse click.  All wheel events should be treated
+  as though they occurred in the text area.
+
+	Fixed... but the statusbar never requests mouse events, so that area
+	is dead to scrollwheel events too.  That's okay.  I mostly wanted
+	to make sure scrollwheel events wouldn't do anything disastrous in
+	the toolbar.
+
+/ Add a new() function, which creates a buffer but not a window, and returns
+  the name of the buffer.  Optional argument is a desired buffer name, else
+  it uses "Elvis untitled %d".
+
+  This is the first time that functions will have side-effects.  If you want
+  to evaluate an expression without displaying the result, just to get the
+  side-effect, then you could use the :if command without a :then.
+
+/ "make clean" should remove the executables.
+
+-----------------------------------------------------------------------------
+Fixed in 2.2a-alpha:
+
+/ Font/color changes:
+  / Support the new :color syntax
+  / :color can add other attributes: bold, italic, underlined, boxed, fixed.
+  / This only specifies *CHANGES* to colors or attributes.  Unspecified
+    colors are retained from previous font.  Attributes are ORed.
+  / Limits: 128 font names (so we can have standout versions).
+  / Each font is stored as a struct containing a pointer to its name,
+    fgcolor index, bgcolor index, attribute bitmap.  The name-to-index
+    conversion can be slow -- it is only used when a display mode initializes
+    itself.
+  / When constructing a new screen image, for each character we store a font
+    index, optionally with a bit set to indicate a selection.  This is compact
+    and should be good enough when comparing images.
+  / After an image is generated, it is combined with the "normal" font to
+    inherit from it any colors/attributes which are not explicitly set.
+    elsewhere.  The can also be an "idle" font.
+  / Change all display modes to use new font convention.
+  / Change all GUIs to use new font convention.
+	(Except "vio", for now.)
+  / Change all printer drivers to use new font convention.
+	(Except "windows" is untested.)
+  / Update the manual.
+
+/ In input mode, make ^Z move rightward across any backspaced text, keeping
+  it instead of deleting it.
+
+/ Change the version number to 2.2a-alpha
+
+/ Add smartargs option for displaying a function's arguments.
+
+/ Modify "ref" to look through elvispath.  Put a file of ANSI C stubs into
+  elvis' lib directory and generate a "tags" file from it.  This will allow
+  "ref" to act as a reference for the standard library.

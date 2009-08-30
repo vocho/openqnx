@@ -1,0 +1,87 @@
+First information about the binary distribution of VMS Zip 2.3
+--------------------------------------------------------------
+This archive comes in different variations:
+
+ "zip22x-vms-<cpu-compiler>-{obj|exe}.zip",
+
+ where <cpu-compiler> is "axp", "vax-decc", or "vax-vaxc", depending on
+ the environment used for creating the binaries.
+
+ ...-obj.zip denotes object library distributions which require
+ a link step on the local machine.
+
+ ...-exe.zip denotes "ready-to-run" executable distributions, that do
+ not require additional work but do not run on VMS versions which are
+ older than the system used for building the executables.
+
+Contents of the "vms" executables archives for Zip 2.3:
+
+a) common files (documentation etc.):
+  00binary.vms         this file
+  00readme.txt         additional VMS info about compiling Zip
+  readme               what Zip is; general information
+  changes              list of changes against the previous official version
+  algorith.txt         description of the deflation algorithm
+  infozip.who          list of contributors to the "portable Zip" project
+  manual               Zip manual page, human-readable format
+  whatsnew             list of important changes and new features
+  where                pointer to Zip/UnZip support archives
+  zip.hlp              VMS help module, for Zip's default command interface
+  zip_cli.hlp          VMS help module, for Zip's VMSCLI command interface
+
+b) object library distributions:
+  link_zip.com         command procedure for the linking step
+  vms/                 auxiliary directory, required for link step
+
+  zip.<cpu_compiler>_olb       object library for Zip (both command interfaces)
+  zipcli.<cpu_compiler>_olb    additional object library (Zip CLI interface)
+  zipcloak.<cpu_compiler>_obj  main object file for ZipCloak
+  zipnote.<cpu_compiler>_obj   main object file for ZipNote
+  zipsplit.<cpu_compiler>_obj  main object file for ZipSplit
+  ziputils.<cpu_compiler>_olb  object library for the Zip Utilities
+
+c) executable distributions:
+  zip.exe              Zip executable, default (UNIX style) command interface
+  zipcloak.exe         Utility for encrypting and decrypting zip archives
+  zipnote.exe          Utility for editing entry names and comments
+  zipsplit.exe         Utility for splitting large zip archives
+  zip_cli.exe          Zip executable, VMSCLI command interface
+
+
+In case you decided to fetch the object library distribution, you
+have to link the executables on your local site. This requires
+installed runtime support for the C runtime library, which may not be
+present on older VAX systems (prior to VMS 6).
+To create the executables, just invoke the "link_zip.com" command procedure.
+This will generate all executables (both zip with UNIX style command syntax
+and zip_cli with VMSCLI command interface), but note that the executable's
+extension is ".<cpu_compiler>_exe"!
+In case your are on a VAX and your current working directory carries
+both the DECC and the VAXC object distributions, you have to specify
+either "VAXC" or "DECC" to tell link_zip.com which binaries you want
+to build.
+
+Additionally, link_zip.com defines foreign commands for the just created
+executables, so you can test them straight ahead.
+If you want to use the default (UNIX like) command interface, you can
+proceed straight ahead after unpacking the distribution.
+When you rather prefer to use the VMSCLI interface, you have to specify
+the option "VMSCLI" (or just "CLI") to the command starting link_zip.com.
+
+The executables (object libraries) in this archive have been compiled
+with the following options enabled:
+ * VMS_PK_EXTRA      (this is the default option)
+ * [decription support]
+
+The environment used for compilation was:
+
+a)  On Alpha AXP :   OpenVMS(AXP) 6.2;  DEC C V 5.6-003
+b1) On VAX       :   OpenVMS(VAX) 6.2;  DEC C V 4.0
+b2)                       alternatively VAX C V 3.2
+
+One final note:
+The binary files of the distribution have been archived with "saving all VMS
+attributes" enabled. Please do not repack the binary part of the archives on
+a non-VMS system, to prevent corruption of the files.
+
+02-Feb-1999, Christian Spieler

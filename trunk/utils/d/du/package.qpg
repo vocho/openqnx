@@ -1,0 +1,8 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/du" pinfo="du.pinfo"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

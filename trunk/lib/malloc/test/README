@@ -1,0 +1,17 @@
+To compile against debug library:
+
+   qcc -Vgcc_ntox86 -I/usr/nto/usr/include/malloc_g memtest.c 
+     -L/usr/nto/x86/lib -lmalloc_g
+
+To compile against regular library:
+
+   qcc -Vgcc_ntox86 -I/usr/nto/usr/include/malloc memtest.c \
+     -L/usr/nto/x86/lib -lmalloc
+
+To create trace data (in mtrace.log):
+
+   mtrace memtest <arguments>
+
+To create trace data to a particular file:
+
+   mtrace -o <filename> memtest <arguments>

@@ -1,0 +1,6 @@
+%C	- clock server (POSIX)
+
+%C &
+Options:
+ -v      Verbose
+ -d cdir Specify a different spool directory

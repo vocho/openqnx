@@ -1,0 +1,12 @@
+lprm - remove jobs from the line printer spooling queue
+
+lprm [-Pprinter] [-] [job # ...] [user ...]
+
+Options:
+-Pprinter       Specify the queue associated with a specific printer.
+user            Causes lprm to attempt to remove any jobs queued belonging to
+                that user (or users).  
+job #           A user may dequeue an individual job by specifying its job
+                number. 
+-               Dequeue all jobs the user owns. If done by superuser, the 
+                entire spool queue will be emptied.   

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<module name="mesg">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<component id="mesg" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				mesg
+			</location>
+		</component>
+
+	</contents>
+
+	<requires>
+<!--		<part build="false" location="lib/m"/> -->
+	</requires>
+
+</module>

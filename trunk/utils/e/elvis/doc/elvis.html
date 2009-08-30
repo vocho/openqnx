@@ -1,0 +1,316 @@
+<html><head>
+<title>Elvis-2.2_0 Documentation</title>
+</head><body>
+<h1><a name="CONTENTS"></a>TABLE OF CONTENTS FOR ELVIS-2.2_0</h1>
+<menu>
+   <li><a href="#WHATIS">		&nbsp;1. What is Elvis?</a>
+	(includes a summary of <a href="#SPECIAL">special features</a>)
+   <li><a href="elvisvi.html">		&nbsp;2. Visual command mode</a>
+	(by <a href="elvisvi.html#GROUP">function</a>
+	or <a href="elvisvi.html#INDEX">name</a>)
+   <li><a href="elvisinp.html">		&nbsp;3. Input mode</a>
+   <li><a href="elvisex.html">		&nbsp;4. EX command mode</a>
+	(by <a href="elvisex.html#GROUP">function</a>
+	or <a href="elvisex.html#INDEX">name</a>)
+   <li><a href="elvisre.html">		&nbsp;5. Regular expressions</a> (searches and substitutions)
+   <li><a href="elvisopt.html">		&nbsp;6. Options</a>
+	(by <a href="elvisopt.html#GROUP">function</a>
+	or <a href="elvisopt.html#INDEX">name</a>)
+   <li><a href="elvisdm.html">		&nbsp;7. Display modes</a>
+   <li><a href="elvisgui.html">		&nbsp;8. User interfaces</a>
+   <li><a href="elvisos.html">		&nbsp;9. Operating systems</a>
+   <li><a href="elvisses.html">		10. Sessions, initialization, and recovery</a>
+   <li><a href="elviscut.html">		11. Cut buffers</a>
+   <li><a href="elvismsg.html">		12. Messages</a>
+   <li><a href="elvisexp.html">		13. Arithmetic expressions</a> (arithmetic, tests, and functions)
+   <li><a href="elvistag.html">		14. Tags</a>
+   <li><a href="elvisnet.html">		15. The Internet</a>
+   <li><a href="elvistip.html">		16. Tips</a> (including useful <a href="elvistip.html#URLS">URLs</a>)
+   <li><a href="elvistrs.msg">		&nbsp;A. List of terse messages</a>
+   <li><a href="elvisqr.html">          &nbsp;B. Quick Reference</a>
+   <li><a href="howto.html">		&nbsp;C. How To...</a>
+   <li><a href="elvis.man">		elvis(1) Man-page for Elvis</a>
+   <li><a href="ctags.man">		ctags(1) Man-page for ctags (or elvtags)</a>
+   <li><a href="ref.man">		ref(1) Man-page for ref</a>
+   <li><a href="fmt.man">		fmt(1) Man-page for fmt</a>
+</menu>
+
+<p><strong>HINT:</strong> If you're reading this via Elvis' built-in
+<a href="elvisex.html#help">:help</a>
+command, then you should probably begin by reading about
+<a href="elvisex.html#help">:help</a>
+itself.  To do that, move the cursor onto the word
+"<a href="elvisex.html#help">:help</a>"
+and press the <kbd>Enter</kbd> key.
+
+<pre graphic>
+.--------------------------------------------------------------.
+| Copyright &copy; 2003 by Steve Kirkendall.  Permission is granted |
+| to use and distribute this software in either source code    |
+| form, or executable form, under the terms described in the   |
+| license.  The license is in the file "<a href="license.html">lib/license.html</a>".     |
+| This software is provided with no warranty of any kind.  The |
+| author is not liable for any consequences arising from the   |
+| use of this software.                                        |
+^--------------------------------------------------------------^
+</pre>
+
+<p>You can contact the author via e-mail at
+<a href="mailto:kirkenda@cs.pdx.edu">kirkenda@cs.pdx.edu</a>,
+or via postal mail at:
+<blockquote><em>
+Steve Kirkendall<br>
+1500 SW Park Avenue, #326<br>
+Portland OR 97201<br>
+USA
+</em> </blockquote>
+
+<p>If you require technical support, you may get a quicker response by
+posting a message to the <a href="news:comp.editors">comp.editors</a>
+newsgroup.
+
+<h1><a name="WHATIS"></a>1. WHAT IS ELVIS-2.2_0</h1>
+Elvis is a clone of vi/ex, the standard UNIX editor.
+Elvis supports nearly all of the vi/ex commands,
+in both visual mode and ex mode.
+Elvis adds support for multiple files, multiple windows, a variety of
+display modes, on-line help, and other miscellaneous extensions.
+
+<p>Like vi/ex, Elvis stores most of the text in a temporary file,
+instead of RAM.
+This allows it to edit files that are too large to fit
+in a single process' data space.
+Also, the edit buffer can survive a power failure or crash.
+
+<p>Elvis 2.2 runs under the following operating systems:
+<ul>
+<li><strong>UNIX</strong>.
+If you have X-windows, Elvis can use a graphical interface,
+in addition to the traditional text-based interface.
+<li><strong>MS-Windows/95 and Windows/NT</strong>.
+Both a console (text-based) and a graphical version are available.
+<li><strong>MS-DOS</strong>.
+It can also run in a DOS window under Windows 3.1.
+However, there is no graphic 16-bit version of Elvis.
+<li><strong>OS/2</strong>.
+The basic OS/2 port only supports a text-mode interface using VIO calls;
+it acts exactly like the termcap interface.
+There is also a real port of the termcap version which requires the
+EMX library, and a version which uses the graphical "x11" interface
+which requires XFree86.
+</ul>
+
+<p>Elvis is freely redistributable under the terms of the
+<em>Perl "Clarified Artistic" License</em>,
+in either source form or executable form.
+See the <a href="license.html">license.html</a> file for the details.
+
+<h2>1.1 About this manual</h2>
+This document is written in HTML.
+You should be able to view it with any Web browser, such as Mosaic or Netscape.
+These browsers also allow you to print the manual, if you prefer.
+
+<p>You can also use Elvis to view it or print it;
+Elvis has a built-in HTML display mode.
+To print this document using Elvis, you must first set some
+<a href="elvisopt.html#LPR">printer options.</a>
+After that, you can just load any of these files,
+maybe set the display mode to HTML via the command ":display html"
+(if Elvis doesn't set the display mode automatically),
+and then give the command ":lp".
+
+<p>Each chapter is stored in a separate file;
+you'll need to print each one separately.
+A shell script/batch file named <a href="printdoc.bat">printdoc.bat</a>
+is provided to help you do this.
+
+<h2>1.2 Overview of Elvis</h2>
+The user interface of Elvis/vi/ex is weird.
+There are two major command modes in Elvis, and a few text input modes as well.
+Each command mode has a command which allows you to switch to the other mode.
+
+<p> You will probably use the <a href="elvisvi.html">visual command mode</a>
+most of the time.
+This is the mode that Elvis normally starts up in.
+
+<p> In visual command mode, the entire screen is filled with lines of text
+from your file.
+Each keystroke is interpreted as part of a visual command.
+If you start typing text, it will <em>not</em> be inserted,
+it will be treated as part of a command.
+To insert text, you must first give an "insert text" command, such as
+<a href="elvisvi.html#i">i</a>.
+This will take some getting used to.
+(An alternative exists.
+Look up the <a href="elvisopt.html#initialstate">initialstate</a> option.)
+
+<p> The <a href="elvisex.html">ex mode</a> is quite different.
+Elvis displays a ":" character on the bottom line of the screen, as a prompt.
+You are then expected to type in a command line and hit the <b>Enter</b> key.
+The set of commands recognized in the ex mode is different from visual mode's.
+
+<h2><a name="SPECIAL">1.3 Special features of Elvis</a></h2>
+Compared to the traditional ex/vi, Elvis supports the following
+major new features:
+<dl>
+
+<dt>Multiple edit buffers
+<dd>You can edit several files at the same time.
+The <a href="elvisex.html#buffer">:buffer</a> ex command
+lists the current edit buffers.
+You can switch to a different buffer by typing
+<a href="elvisex.html#OPEN">:(<var>buffername</var></a> or
+<a href="elvisex.html#buffer">:buffer <var>buffername</var></a>.
+
+<dt>Multiple windows
+<dd>The <a href="elvisex.html#split">:split</a> ex command or
+<a href="elvisvi.html#^Ws">^Ws</a> visual command will create a new window
+showing the same edit buffer.
+You can use <a href="elvisex.html#split">:split <var>filename</var></a>
+to edit a different file in a new window.
+Related commands allow you to do things like search for a tag and
+display it in a new window,
+or move among windows.
+
+<dt>Multiple user interfaces
+<dd>In addition to the traditional <a href="elvisgui.html#termcap">termcap</a>
+user interface, Elvis also supports graphical interfaces for
+<a href="elvisgui.html#x11">X11</a> and
+<a href="elvisgui.html#windows">Windows95</a>, plus some other
+stripped-down interfaces.
+
+<dt>A variety of display modes
+<dd>The <a href="elvisex.html#display">:display</a> command lists the
+available display modes, and can set the display to a particular mode.
+The <a href="elvisvi.html#^Wd">^Wd</a> visual command toggles between
+display modes.
+
+<dt>Online help
+<dd>This uses Elvis' built-in "html" display mode to display the manual,
+which uses multiple fonts and hypertext links to improve readability.
+To access it, give the command <a href="elvisex.html#help">:help</a>.
+(But you already figured that out, didn't you?)
+
+<dt>Printing
+<dd>Elvis has a <a href="elvisex.html#lpr">:lpr</a> command, which prints
+text using any of the display modes.
+This means you can use it to pretty-print source code,
+print hex dumps of binary files, or
+format and print man-pages or HTML documents.
+It is easy to print a portion of a file instead of the whole thing.
+It supports a variety of printer types, plus a pseudo-printer type that
+generates HTML output.
+Before using this feature, you must set up the
+<a href="elvisopt.html#LPR">printer options.</a>
+<dt>Highly configurable
+<dd>Elvis has a set of configuration scripts, each of which is run at a
+specific time.  For example, <a href="elvisses.html#elvis.ini">elvis.ini</a>
+is run when Elvis starts up, and <a href="elvisses.html#elvis.arf">elvis.arf</a>
+is run after reading a file.  See the chapter on
+<a href="elvisses.html">sessions</a> for a discussion of these.
+
+<p>There is also an <a href="elvismsg.html#elvis.msg">elvis.msg</a> file which
+can be used to translate the built-in messages into another language.
+
+<p>The <a href="elvisgui.html#x11.toolbar">X11 interface</a> has a fully
+configurable toolbar.
+
+<p>The <a href="elvisdm.html#elvis.syn">elvis.syn</a> file contains descriptions
+of various languages, for use with the
+<a href="elvisdm.html#syntax">syntax-coloring</a> display mode.
+
+<dt>Enhanced tags
+<dd>The tags feature has been extended to support overloaded tags,
+which C++ tends to use a lot.  See the <a href="elvistag.html">tags</a>
+chapter.
+
+<dt>Macro debugger
+<dd>To help you develop keyboard macros (and also report incompatibilities
+between Elvis and vi), Elvis has a built-in macro debugger.  See the article
+in the <a href="elvistip.html#DEBUG">Tips</a> chapter.
+
+<dt>Network support
+<dd>Elvis can read via the <strong>http</strong> protocol, and read/write
+via the <strong>ftp</strong> protocol.
+See the <a href="elvisnet.html">Internet</a> chapter.
+
+<p>You can also make your own URL protocols, by defining aliases which
+implement the reading and writing operations.
+See the <a href="elvistip.html#PROTO">discussion in the Tips</a> chapter
+
+<dt>Aliases
+<dd>You can construct csh-style aliases for the ex commands, via the
+<a href="elvisex.html#alias">:alias</a> command.
+See the article in the <a href="elvistip.html#ALIAS">Tips</a> chapter.
+
+<dt>New options
+<dd>Elvis has roughly 200 different options.  See the
+<a href="elvisopt.html">Options</a> chapter for a list.
+Some of the highlights are:
+<ul>
+<li><a href="elvisopt.html#equalprg">equalprg</a> stores the program to run for the <a href="elvisvi.html#=">=</a> command.
+<li><a href="elvisopt.html#guidewidth">guidewidth</a> draws vertical lines at specific columns.
+<li><a href="elvisopt.html#hlobject">hlobject</a> and <a href="elvisopt.html#hllayers">hllayers</a> highlight text objects.
+<li><a href="elvisopt.html#hlsearch">hlsearch</a> highlights all text that matches a search.
+<li><a href="elvisopt.html#incsearch">incsearch</a> makes the <a href="elvisvi.html#slash">/</a> and <a href="elvisvi.html#quest">?</a> commands work incrementally.
+<li><a href="elvisopt.html#inputtab">inputtab</a> controls the effect of the <kbd>&lt;Tab&gt;</kbd> key.
+<li><a href="elvisopt.html#keytime">keytime</a> and <a href="elvisopt.html#usertime">usertime</a> control timeouts of maps.
+<li><a href="elvisopt.html#listchars">listchars</a> controls the appearance of <a href="elvisopt.html#list">list</a> mode.
+<li><a href="elvisopt.html#mapmode">mapmode</a> selects a set of maps to use for a file.
+<li><a href="elvisopt.html#magicchar">magicchar</a> lets you to tweak the <a href="elvisre.html">regular expression</a> syntax.
+<li><a href="elvisopt.html#prefersyntax">prefersyntax</a> affects the default display mode.
+<li><a href="elvisopt.html#ruler">ruler</a> continuously displays the line &amp; column of the cursor.
+<li><a href="elvisopt.html#show">show</a> displays a variety of items on the bottom row.
+<li><a href="elvisopt.html#smartargs">smartargs</a> displays a function's arguments as you're typing.
+<li><a href="elvisopt.html#wrap">wrap</a> selects side-scrolling or wrapping of long lines.
+<li><a href="elvisopt.html#writeeol">writeeol</a> controls the newline style when writing a file.
+</ul>
+
+<dt>Built-in calculator
+<dd>Elvis has a <a href="elvisex.html#calculate">:calc</a> command which
+evaluates C-like expressions.  These expressions are also used for some
+other commands, such as <a href="elvisex.html#if">:if</a> and
+<a href="elvisex.html#eval">:eval</a>, among other things.
+See the <a href="elvisexp.html">Arithmetic expressions</a> chapter.
+
+<dt>Text objects
+<dd>Elvis supports <a href="elvisvi.html#textobject">text objects</a>.
+This offers a slightly more intuitive way to use the standard vi
+<a href="elvisvi.html#operators">operator</a> commands.
+
+<dt>Folding
+<dd>Folding is a way to temporarily hide parts of your text without
+actually deleting it.
+You can define foldable regions, and then fold them or unfold them easily
+any time after that.
+For more information, see the <a href="elvisex.html#FOLD">:fold and :unfold</a>
+ex commands, and the <a href="elvisvi.html#^I">&lt;Tab&gt;</a> vi command.
+
+<dt>Spell checker
+<dd>Elvis can be compiled with a built-in
+<a href="elvistip.html#SPELL">spell checker</a>.
+When editing source code,
+function names and data types are checked against the "tags" file, but
+comments are checked against both a natural-language dictionary and "tags".
+This is highly configurable.
+
+<dt>Auto commands
+<dd>You can configure Elvis to execute commands automatically when
+certain events occur.
+See the <a href="elvisex.html#autocmd">:autocmd</a> command.
+
+<dt>Improved :map command
+<dd>The standard <a href="elvisex.html#map">:map</a> command has been extended
+to allow you to set up maps for different contexts, or change the behavior of
+individual maps.
+
+<dt>Regions
+<dd>You can alter the highlighting for any
+<a href="elvisex.html#REGION">regions</a> of text that you want,
+for any reason that you want.
+For example, you can cause changed lines to be displayed with a different
+background color.
+
+</dl>
+
+</body></html>

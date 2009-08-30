@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="libshutdown">
+	<type>Element</type>
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="" subdirs="true" relative="true">.</location>
+	</source>
+
+     <GroupOwner>os</GroupOwner>
+     <RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location runtime="false" basedir="{os}/{cpu}/a{.:endian}">libshutdown.a</location>
+		</component>
+
+		are to be shipped -->
+		<component id="headers" basedir="public">
+			<kind type="header"/>
+			<source available="true">
+			<location runtime="false" relative="true" subdirs="true">.</location>
+			</source>
+		</component>
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/c"/>
+	</requires>
+</module>

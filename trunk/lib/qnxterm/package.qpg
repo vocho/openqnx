@@ -1,0 +1,8 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add type="tree" file="public/" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

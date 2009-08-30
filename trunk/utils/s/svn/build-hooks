@@ -1,0 +1,110 @@
+# qnx_target_version default: 6.4.0
+# Can be overriden by VERSION_REL
+# If native compiled on neutrino, it will be determined
+# unless overriden by VERSION_REL environment variable.
+qnx_target_version=6.4.0
+
+if [ ! -z "${VERSION_REL}" ]; then
+	qnx_target_version=${VERSION_REL}
+else
+	if test "${SYSNAME}" = "${TARGET_SYSNAME}"; then
+		qnx_target_version=$(uname -r)
+	fi
+fi
+case $qnx_target_version in
+  6.4.*) qnx_target_version=6.4.0
+  ;;
+  6.3.*) qnx_target_version=6.3.0
+  ;;
+esac
+
+SIFS=${IFS}
+IFS=-
+set -- ${PWD##*/}
+IFS=${SIFS}
+cpu_string=$2
+if [ "$cpu_string" = "x86" ]; then
+cpu_string=i386-pc
+elif [ "$cpu_string" = "ppc" ]; then
+cpu_string=powerpc-unknown
+else
+cpu_string=$cpu_string-unknown
+fi
+target=${cpu_string}-nto-qnx${qnx_target_version}
+
+function hook_preconfigure {
+	configure_opts="${configure_opts} --prefix=/usr"
+#	configure_opts="${configure_opts} --with-expat=builtin"
+	configure_opts="${configure_opts} --disable-shared"
+	configure_opts="${configure_opts} --with-editor=vi"
+
+        case "$SYSNAME" in
+        nto)
+				# Set to the assumed default (i.e. installed baseline) target
+				# if the build is not native (i.e. building for 6.4.0 on 6.3.2)
+				if [ X$VERSION_REL != X -a X$VERSION_REL != X$(uname -r) ]
+				then
+					echo "Avoiding configuring against incompatible Neutrino version"
+					eval $(qconfig -e)
+				fi
+#		env
+		export CC=gcc
+#		export LD=ld
+		export make_CC=gcc
+		
+		configure_opts="${configure_opts} --disable-nls"
+		configure_opts="${configure_opts} --build=${target} --host=${target} --target=${target}"
+		configure_opts="${configure_opts} -C CC=${make_CC}"
+                ;;
+        win32)
+		configure_opts="${configure_opts} --disable-nls"
+                ;;
+        linux)
+			if [ "${TARGETS_SYSNAME}" = "linux" ]; then
+			  # gssapi uses Kerberos. On the build machine this means libcom_errs.so.3 us used but that is not
+			  # available on recent distros. This should prevent a reconfigure after (hopefully).
+			  configure_opts="${configure_opts} --without-gssapi"
+			fi
+			if [ "${TARGET_SYSNAME}" = "nto" ]; then
+				# Cross-compiling nto binary on linux build machine.
+				configure_opts="${configure_opts} --host=${target} --target=${target} -C"
+				export CONFIG_SITE="${PWD}/../nto-config.site"
+				configure_opts="${configure_opts} --site=${CONFIG_SITE} CONFIG_SITE=${CONFIG_SITE}"
+#export CC=${make_CC}
+			fi
+                ;;
+        esac
+}
+
+function hook_postconfigure {
+	case "$SYSNAME" in
+		nto)
+			for i in libsvn_client libsvn_delta libsvn_diff libsvn_fs libsvn_fs_base libsvn_fs_base/bdb libsvn_fs_base/util libsvn_fs_fs libsvn_ra libsvn_ra_dav libsvn_ra_local libsvn_ra_serf libsvn_ra_svn libsvn_repos libsvn_subr libsvn_wc po svn svnadmin svndumpfilter svnlook svnserve svnsync svnversion tests/libsvn_subr tests/libsvn_diff tests/libsvn_fs tests/libsvn_ra_local tests/libsvn_delta tests/libsvn_repos tests/libsvn_wc
+			do
+				[ -d subversion/$i ] || mkdir -p subversion/$i
+			done
+		;;
+	esac
+}
+
+function hook_premake {
+    if [ ${SYSNAME} = nto ] ; then
+	if [ X$VERSION_REL != X -a X$VERSION_REL != X$(uname -r) ]
+		then
+		echo "Avoiding configuring against incompatible Neutrino version"
+		eval $(qconfig -e)
+	fi
+	export make_CC=gcc
+    fi
+    if [ ${TARGET_SYSNAME} = nto ] ; then
+      if test "${SYSNAME}" != nto; then
+      # libtool in apr likes canonical name.
+	make_CC=${target}-gcc
+      fi
+    fi
+	strip_r_switch
+}
+
+function hook_pinfo {
+	gen_pinfo -e -n subversion/svn/svn svn usr/bin USE="%2>%C --help" DESCRIPTION="Subversion command line client"
+}

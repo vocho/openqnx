@@ -1,0 +1,102 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: Incremental archives should be able to handle directories
+# moved between directory hierarchies. 
+
+AT_SETUP([move between hierarchies])
+AT_KEYWORDS([incremental rename rename02])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+mkdir foo
+genfile --file foo/file1
+genfile --file foo/file2
+mkdir foo/bar
+genfile --file foo/bar/file.r
+mkdir foo/bar/baz
+genfile --file foo/bar/baz/file.z
+
+echo "Creating base archive"
+tar -g incr -cf arch.1 -v foo
+
+mv foo/bar/baz foo
+
+echo "Creating incremental archive"
+tar -g incr -cf arch.2 -v foo
+
+mv foo old
+
+tar xfg arch.1 /dev/null 2>tmperr
+sort tmperr >&2
+
+echo "Begin directory listing 1"
+find foo | sort 
+echo "End directory listing 1"
+
+tar xfgv arch.2 /dev/null
+echo Begin directory listing 2
+find foo | sort
+echo End directory listing 2
+],
+[0],
+[Creating base archive
+foo/
+foo/bar/
+foo/bar/baz/
+foo/file1
+foo/file2
+foo/bar/file.r
+foo/bar/baz/file.z
+Creating incremental archive
+foo/
+foo/bar/
+foo/baz/
+Begin directory listing 1
+foo
+foo/bar
+foo/bar/baz
+foo/bar/baz/file.z
+foo/bar/file.r
+foo/file1
+foo/file2
+End directory listing 1
+foo/
+foo/bar/
+foo/baz/
+Begin directory listing 2
+foo
+foo/bar
+foo/bar/file.r
+foo/baz
+foo/baz/file.z
+foo/file1
+foo/file2
+End directory listing 2
+],
+[tar: foo/bar: Directory is new
+tar: foo/bar/baz: Directory is new
+tar: foo/baz: Directory has been renamed from `foo/bar/baz'
+],
+[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of rename02.at

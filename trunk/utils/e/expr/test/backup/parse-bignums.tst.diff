@@ -1,0 +1,34 @@
+10,18c10,18
+< 222
+< 2222
+< 22222
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+22,27c22,27
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+---
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error

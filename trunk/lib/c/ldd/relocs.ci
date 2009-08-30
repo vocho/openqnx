@@ -1,0 +1,131 @@
+/*
+Copyright 2001, QNX Software Systems Ltd. All Rights Reserved
+ 
+This source code has been published by QNX Software Systems Ltd. (QSSL).
+However, any use, reproduction, modification, distribution or transfer of
+this software, or any software which includes or is based upon any of this
+code, is only permitted under the terms of the QNX Realtime Plaform End User
+License Agreement (see licensing.qnx.com for details) or as otherwise
+expressly authorized by a written license agreement from QSSL. For more
+information, please email licensing@qnx.com.
+*/
+/* 
+ * This is a template file for CPU specific processing of shared
+ * objects. It fakes out the real file into doing nothing.
+ */
+
+// @@@ These things are all stubs for now.
+
+extern struct syspage_entry *_syspage_ptr;
+extern struct cpupage_entry *_cpupage_ptr;
+extern void *__SysCpupageGet(int index);
+extern void *__SysCpupageSet(int index, int value);
+
+/* 
+ * This is the _start_ function, the entry point into the program
+ * when linked with the shared lib.
+ */
+
+void _start_(void);
+	__asm__ (".globl \t _start_\n"
+			"\t.type \t _start_,@function\n"
+			"\t.size \t _start_,.-_start_\n"
+		);
+				
+
+/* This is the bind function used for lazy binding */
+
+void bind_func(void){ } //Placeholder for now
+
+
+/* 
+ * This is the function used to resolve the relocations.
+ * 
+ */
+
+/* Relocate all local GOT entries */
+
+static void relocate_local_got(struct object *obj) {
+
+	return;
+}
+
+/*
+ * This relocates all global GOT entries on the MIPS. This makes
+ * up the bulk of MIPS relocations.
+ */
+static int relocate_global_got(struct objlist *ol, int mode) {
+
+	return 0;
+}
+
+/*
+ * And this processes the relocation table.
+ */
+static int resolve_rels(const Elf32_Rel *rel, int nrel, struct objlist *ol, int mode) {
+		struct object				*obj = ol->object;
+		const list_head_t			*this = ol->root;
+		struct objlist				o;
+		int							ret = 0;
+	
+        /*
+         * if this is a DT_SYMBOLIC object, then make sure it gets searched
+         * first, by temporarily placing it at the head of the objlist
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                o.object = obj;
+                list_append(this, &o);
+        }
+
+
+        /*
+         * if the object was previously placed at the list head, remove it
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                list_delete(&o);
+        }
+        return ret;
+}
+
+
+static int resolve(const list_head_t *this, int mode) {
+	unsigned long		vec[50];
+	struct objlist		*o;
+	int					ret = 0;
+
+	list_backward(this, o) {
+		struct object		*obj = o->object;
+
+		vector_decode(vec, sizeof vec / sizeof *vec, obj->dynamic, 0);
+		if (!(obj->flags & OBJFLAG_RESOLVED)) {
+			if(relocate_global_got(o, mode)) {
+				ret = -1;
+			}
+			if (vec[DT_REL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_REL]),
+						vec[DT_RELSZ] / sizeof(Elf32_Rel), o, RTLD_NOW)) {
+					ret = -1;
+				}
+			}
+			if (vec[DT_JMPREL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_JMPREL]),
+					vec[DT_PLTRELSZ] / sizeof(Elf32_Rel), o, mode)) {
+					ret = -1;
+				}
+			}
+		}
+		/* The internal relative relocs are done, don't do them again. */
+		obj->flags |= (OBJFLAG_RELSDONE | OBJFLAG_RESOLVED);
+	}
+
+	/*
+	 * Should now be safe to call CpuSyspageGet to setup syspage...
+	 * This is needed because the rest of ldd may call fn. which need these.
+	 */
+	_cpupage_ptr = __SysCpupageGet(CPUPAGE_ADDR);
+	_syspage_ptr = __SysCpupageGet(CPUPAGE_SYSPAGE);
+
+	return ret;
+}

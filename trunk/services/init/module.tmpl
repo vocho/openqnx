@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<module name="init">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="init" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				init
+			</location>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/syslogd"/>
+	</requires>
+
+</module>

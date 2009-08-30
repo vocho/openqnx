@@ -1,0 +1,44 @@
+
+%C - split a file into pieces
+
+%C [-a suffix_length] [-b byte_count[k|m]] [-l line_count]
+   [-p pattern] [file [name]]
+
+The split utility reads the given file and breaks it up into files of
+1000 lines each.  If file is a single dash (`-') or absent, split reads
+from the standard input.
+
+The options are as follows:
+
+-a      Use suffix_length letters to form the suffix of the file name.
+
+-b      Create smaller files byte_count bytes in length.  If ``k'' is
+        appended to the number, the file is split into byte_count kilo-
+        byte pieces.  If ``m'' is appended to the number, the file is
+        split into byte_count megabyte pieces.
+
+-l      Create smaller files n lines in length.
+
+-p pattern
+        The file is split whenever an input line matches pattern, which
+        is interpreted as an extended regular expression.	The matching
+        line will be the first line of the next output file.  This option
+        is incompatible with the -b and -l options.
+
+If additional arguments are specified, the first is used as the name of
+the input file which is to be split.  If a second additional argument is
+specified, it is used as a prefix for the names of the files into which
+the file is split.  In this case, each file into which the file is split
+is named by the prefix followed by a lexically ordered suffix using
+suffix_length characters in the range ``a-z''.  If -a is not specified,
+two letters are used as the suffix.
+
+If the name argument is not specified, the file is split into lexically
+ordered files named with prefixes in the range of ``x-z'' and with suf-
+fixes as above.
+
+For historical reasons, if you specify name, split can only create 676
+separate files.  The default naming convention allows 2028 separate
+files.  The -a option can be used to work around this limitation.
+
+The maximum line length for matching patterns is 65536.

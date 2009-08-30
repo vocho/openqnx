@@ -1,0 +1,66 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Problem: Tar was not able to match directory name if the directory
+# member was split between two volumes
+# References: Jörg Schilling pretends to have reported this two
+# years ago (<42551FF2.nail98011FRAT@burner>).
+
+# Test idea:
+# 1. Create a listed-incremental archive of a directory containing
+# a cetrain number of zero-length files.
+# 2. Using the same snapshot file, create a *multivolume* listed-incremental
+# archive. Number of files created in the directory and volume size should
+# be selected so that the first volume ends in the midst of the directory
+# member. The files are zero-length so that their member records are
+# sufficiently small, in order for the entire archive to fit in two volumes.
+# 3. Test the created multi-volume archive.
+
+AT_SETUP([split directory members in a MV archive])
+AT_KEYWORDS([multivolume multiv incremental multiv04])
+
+AT_TAR_CHECK([
+
+mkdir directory
+awk 'BEGIN { for (i = 0; i < 1024; i++) printf("directory/%014x\n", i); }' </dev/null | genfile --files-from -
+
+exec <&-
+
+sleep 2
+
+tar --listed-incremental=list -c -f archive.a directory
+
+sleep 2
+
+tar --listed-incremental=list -c --record-size 1024 -L 16 -f arc.1 -f arc.2 -v directory
+
+echo separator
+
+tar -MRt -f arc.1 -f arc.2],
+[0],
+[directory/
+separator
+block 0: directory/
+block 35: ** Block of NULs **
+],
+[],
+[],[],[gnu, oldgnu])
+
+AT_CLEANUP

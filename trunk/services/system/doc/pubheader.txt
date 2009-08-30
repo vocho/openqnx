@@ -1,0 +1,135 @@
+
+/* Rules for public header files */
+
+* All function names must be in lowercase (except kernel calls 
+or functions that cover kernel calls)
+
+* All public header files must have
+
+#ifndef _DIR_HEADERFILE_H_INCLUDED
+#define _DIR_HEADERFILE_H_INCLUDED
+
+... stuff in file ...
+
+#endif
+
+where
+
+DIR = directory relative to /usr/include where the file will exist
+HEADERFILE = name of the file
+
+The special case of files in /usr/include/sys will have DIR = "" 
+resulting in names such as __HEADERFILE
+
+* Any other header files included by this one must be as
+
+#ifndef _DIR_HEADERFILE_H_INCLUDED
+#include <DIR/HEADERFILE.h>
+#endif
+
+again for the special case of header files in /usr/include/sys
+
+#ifndef __HEADERFILE_H_INCLUDED
+#include <sys/HEADERFILE.h>
+#endif
+
+* New header files should as often as possible avoid installing to 
+/usr/include to avoid pollution of the /usr/include directory with
+a lot of random stuff. Preferably, if the header files belong to a
+a specific module, then the header could install to 
+/usr/include/modulename (as a directory, with the actual headers 
+under it).
+
+* All comments in public header files must be done using the 
+/* ... */ construct instead of the // construct.
+
+---- BEGIN EXAMPLE -----
+
+Example:
+Given a module called "moduletest" and a header file in it "abc.h"
+
+it will install to /usr/include/moduletest
+
+Contents of file abc.h:
+
+#ifndef _MODULETEST_ABC_H_INCLUDE
+#define _MODULETEST_ABC_H_INCLUDE
+
+#ifndef __PLATFORM_H_INCLUDED
+#include <sys/platform.h>       /* including from /usr/include/sys */
+#endif
+
+#ifndef _STDIO_H_INCLUDED
+#include <stdio.h>
+#endif
+
+/* other stuff in header file */
+
+#endif  
+
+---- END EXAMPLE -----
+
+* in function prototypes all parameter names should be declared so that 
+they are prefixed by __ . This is just a safeguard against unexpected 
+macro expansions for common names in parameters.
+
+* parameters of type "const" should be declared using "__const". This
+is the best for maximum portability.
+
+* when defining constants to be used in flags, make sure the constants 
+clearly indicate how large the target flag variable is. i.e.
+if the target flag storage is 32 bits, add appropriately enough 
+leading zeroes to the constant.
+
+----- BEGIN EXAMPLE -----
+
+Example:
+
+unsigned flags;
+
+#define FLAGVAL1 0x00000001
+#define FLAGVAL2 0x00000002
+#define FLAGVAL3 0x00000004
+
+instead of just
+
+#define FLAGVAL1 0x1
+#define FLAGVAL2 0x2
+#define FLAGVAL3 0x4
+
+--- END EXAMPLE ---
+
+* For all type references in public header files other than those 
+that are fundamental types, the file must include the appropriate 
+definitions for those types. (If these definitions are in some
+other header files, those files must be included enclosed by the
+appropriate #ifndef ... #endif blocks.)
+
+* Function names that correspond to a specific module, and if 
+prefixed by the module name (or something that refers to it)
+separate the module name from the function by an underscore ("_").
+
+* Surround any typedef's or function prototype definitions in the
+header file using
+
+__BEGIN_DECLS
+
+/* typedefs and function prototypes go here */
+
+__END_DECLS
+
+* When you are putting in an API which does not yet have a backing
+  source, but one which we plan on implementing (ie POSIX API and
+  C library functionality), put the headers and prototypes in place
+  but comment out the functions with a __NYI
+
+----- BEGIN EXAMPLE -----
+
+#if defined(__NYI)
+
+extern int some_hard_posix_function(void);
+
+#endif
+
+----- END EXAMPLE -----
+

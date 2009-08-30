@@ -1,0 +1,549 @@
+.!
+.!  File:       ZIP.RNH
+.!
+.!  Author:     Hunter Goatley
+.!
+.!  Date:       October 22, 1991
+.!
+.!  Description:
+.!
+.!      RUNOFF source file for portable ZIP on-line help for VMS.
+.!      Adapted from MANUAL, distributed with ZIP.
+.!
+.!      To build:       $ RUNOFF ZIP.RNH
+.!                      $ LIBR/HELP/INSERT libr ZIP
+.!
+.!  Modification history:
+.!
+.!      Hunter Goatley          22-OCT-1991 20:45
+.!              Genesis.
+.!      Jean-loup Gailly        25 March 92
+.!              Adaptation to zip 1.6.
+.!      Igor Mandrichenko       9-JUN-1992
+.!              Added explanation of -V option.
+.!      Jean-loup Gailly        14 June 92
+.!              Adaptation to zip 1.8.
+.!      Jean-loup Gailly        20 Aug 92
+.!              Adaptation to zip 1.9.
+.!      Jean-loup Gailly        31 Aug 93
+.!              Adaptation to zip 2.0.
+.!      Christian Spieler       20 Sep 93
+.!              Adaptation to zip 2.0 and OpenVMS completed.
+.!      Christian Spieler       05 Dec 95
+.!              Adaptation to zip 2.1, new options.
+.!      Christian Spieler       20 Jan 96
+.!              Changed -L and -v descriptions.
+.!      Christian Spieler       11 Feb 96
+.!              Added -X option.
+.!      Onno van der Linden,
+.!      Christian Spieler       13 Mar 96
+.!              Removed -ee option.
+.!      Christian Spieler       09 Feb 96
+.!              Updated copyright notice, Zip version.
+.!      Christian Spieler       21 Jul 97
+.!              Added -P, -R, -i@, -x@ and -tt options, modified for Zip 2.2.
+.!      Christian Spieler       14 Oct 97
+.!              unified spelling of "Info-ZIP", final cleanups for 2.2.
+.!
+.noflags
+.lm4 .rm72
+.indent -4
+1 ZIP
+.br
+Zip is a compression and file packaging utility for Unix, MSDOS, OS/2, and
+VMS.  It is analogous to a combination of tar and compress and is
+compatible with PKZIP (Phil Katz ZIP) for MSDOS systems.
+.sk
+There is a companion to Zip called UnZip (of course).  Zip and UnZip can
+work with files produced by PKZIP under MSDOS, and PKZIP and PKUNZIP can
+work with files produced by Zip.
+.sk
+Zip 2.2 is compatible with PKZIP 2.04.
+Note that PKUNZIP 1.10 cannot extract files produced by PKZIP 2.04
+or zip 2.2. You must use PKZIP 2.04g or unzip 5.0p1 (or later versions)
+to extract them.
+.sk
+For a brief help on Zip and Unzip, run each without specifying any
+parameters on the command line.
+.sk
+The program is useful for packaging a set of files for  distribution;
+for archiving files; and for saving disk space by temporarily compressing
+unused files or directories.
+.sk
+Zip puts one or more compressed files into a single "zip file", along with
+information about the files (name, path, date and time of last modification,
+protection, and check information to verify file integrity).  Zip can pack
+an entire directory structure in a zip file with a single command.
+Compression ratios of 2:1 to 3:1 are common for text files.  Zip has
+one compression method (deflation) and can also store files without
+compression.  It automatically chooses the better of the two for each file
+to be compressed.
+.sk
+Format:
+.sk;.lm+1;.literal
+ZIP [-options] [-b path] [-n suffixes] [-t mmddyyyy] [-tt mmddyyyy]
+    zipfile file(s) [-x list] [-i list]
+.end literal;.lm-1
+.!------------------------------------------------------------------------------
+.indent -4
+2 Options
+.br
+The default action of Zip is to add or replace zipfile entries from list, which
+can include the special name -@ to read names from SYS$INPUT.  The following
+list of options was taken from the on-line help generated when Zip is run
+without any command-line parameters:
+.sk
+.literal
+  -A   adjust self-extracting exe
+  -b   use "path" for temp files
+  -c   add one-line comments
+  -d   delete entries in zipfile
+  -D   do not add directory entries
+  -e   encrypt
+  -f   freshen: only changed files
+  -F   fix zipfile (-FF try harder)
+  -g   allow growing existing zipfile (unless updating or deleting)
+  -h   show the zip help screen
+  -i   include only names matching the following patterns
+  -i@  include only names matching the patterns in "file"
+  -j   junk (don't record) directory names
+  -J   junk (remove) zipfile preamble (unzipsfx)
+  -k   simulate PKZIP made zipfile
+  -l   translate end-of-lines (LF -> CRLF)
+  -ll  translate end-of-lines (CRLF -> LF)
+  -L   show software license
+  -m   move into zipfile (delete files)
+  -n   don't compress theses suffixes
+  -MM  input file spec must exist (wildcards must match existing files)
+  -o   make zipfile as old as latest entry
+  -P   encrypt with supplied "password" string
+  -q   quiet operation
+  -r   recurse into directories from specified path patterns
+  -R   recurse into subdirs from current dir, match filenames only
+  -t   only do files after "mmddyyyy"
+  -tt  only do files before "mmddyyyy"
+  -T   test zip file integrity (calls unzip)
+  -u   update: only changed or new files
+  -v   verbose messages/print version info
+  -V   save VMS file attributes (-VV also save allocated blocks past EOF)
+  -w   append the VMS version number to name stored in zip file
+  -x   exclude all names matching the following patterns
+  -x@  exclude all names matching the patterns in "file"
+  -X   suppress storing of any extra file attributes
+  -z   add zipfile comment
+  -0   store only
+  -1   compress faster
+  -9   compress better
+  -@   read list of input files from stdin (SYS$INPUT)
+.end literal
+.!------------------------------------------------------------------------------
+.indent -4
+2 How_To_Use_Zip
+.br
+The simplest use of Zip is as follows:
+.sk;.indent 10;$ zip stuff *
+.sk
+This will create the file "STUFF.ZIP" (assuming it does not exist) and put
+all the files in the current directory in STUFF.ZIP in a compressed form.
+The .ZIP suffix is added automatically, unless the zipfile name given
+contains a dot already.  This allows specifying suffixes other than ".ZIP".
+.sk
+To zip up an entire directory, the command:
+.sk;.indent 10
+$ zip -r foo *.*
+.sk
+will create the file "FOO.ZIP" containing all the files and directories in
+the in the current directory.  The "r" option means recurse through the
+directory structure. If you wish to recurse through the subdirectory [x.y]
+use the following syntax:
+.sk;.indent 10
+zip -r foo [x]y.dir
+.sk
+You may want to make a zip file that contains the files in [.FOO], but not
+record the directory name, FOO.  You can use the -j (junk path) option to
+leave off the path:
+.sk;.indent 10
+$ zip -j foo [.foo]*.*
+.sk
+You might be zipping to save disk space, in which case you could:
+.sk;.indent 10
+$ zip -rm foo *.txt
+.sk
+where the "m" option means "move".  This will delete all files matching
+*.txt after making FOO.ZIP.  No deletions will be done until the zip has
+completed with no errors.  This option is obviously more dangerous and
+should be used with care.
+.sk
+If the zip file already exists, these commands will replace existing or add
+new entries to the zip file.  For example, if you were really short on disk
+space, you might not have enough room simultaneously to hold the directory
+[.FOO] and the compressed FOO.ZIP.  In this case, you could do it in steps.
+If [.FOO] contained the subdirectories [.TOM], [.DICK], and [.HARRY], then
+you could:
+.sk;
+.indent 10;$ zip -rm foo [.foo.tom]
+.indent 10;$ zip -rm foo [.foo.dick]
+.indent 10;$ zip -rm foo [.foo.harry]
+.sk
+where the first command would create FOO.ZIP, and the next two would add to
+it.  At the completion of each zip command, the files in the directory just
+zipped would be deleted, making room in which the next Zip command could
+work.
+.!------------------------------------------------------------------------------
+.indent -4
+2 Modifying_Existing_Zip_Files
+.br
+When given the name of an existing zip file with the above commands, Zip
+will replace identically named entries in the Zip file or add entries for
+new names.  For example, if FOO.ZIP exists and contains foo/file1 and
+foo/file2, and the directory [.FOO] contains the files foo/file1 and
+foo/file3, then:
+.sk;.indent 10
+$ zip -r foo [.foo]
+.sk
+will replace foo/file1 in foo.zip and add foo/file3 to FOO.ZIP.  After
+this, FOO.ZIP contains foo/file1, foo/file2, and foo/file3, with foo/file2
+unchanged from before.
+.sk
+When changing an existing zip file, Zip will write a temporary file with
+the new contents, and only replace the old one when the zip has completed
+with no errors. You can use
+the -b option to specify a different path (usually a different dev- ice) to
+put the temporary files in.  For example:
+.sk;.indent 10
+$ zip -b scratch$:[tmp] stuff *
+.sk
+will put the temporary zip file and the temporary compression files in the
+directory "SCRATCH$:[TMP]", copying over STUFF.ZIP in the current directory
+when done.
+.sk
+If you are only adding entries to a zip file, not replacing, and the -g
+option is given, then Zip grows (appends to) the file instead of copying
+it.  The danger of this is that if the operation fails, the original zip
+file is corrupted and lost.
+.sk
+There are two other ways to change or add entries in a zip file that are
+restrictions of simple addition or replacement.  The first is -u (update)
+which will add new entries to the zip file as before but will replace
+existing entries only if the modified date of the file is more recent than
+the date recorded for that name in the zip file.  For example:
+.sk;.indent 10
+$ zip -u stuff *
+.sk
+will add any new files in the current directory, and update any changed
+files in the zip file STUFF.ZIP.  Note that Zip will not try to pack
+STUFF.ZIP into itself when you do this. Zip will always exclude the zip
+file from the files on which to be operated.
+.sk
+The second restriction is -f (freshen) which, like update, will only
+replace entries with newer files; unlike update, will not add files that
+are not already in the zip file. For this option, you may want to simply
+freshen all of the files that are in the specified zip file.  To do this
+you would simply:
+.sk;.indent 10
+$ zip -f foo
+.sk
+Note that the -f option with no arguments freshens all the entries in the
+zip file.  The same is true of -u, and hence "zip -u foo" and "zip -f foo"
+both do the same thing.
+.sk
+This command should be run from the same directory from which the original
+zip command was run, since paths stored in zip files are always relative.
+.sk
+Another restriction that can be used with adding, updating, or freshening
+is -t (time), which will not operate on files modified earlier than the
+specified date.  For example:
+.sk;.indent 10
+$ zip -rt 12071991 infamy [.FOO]*.*
+.sk
+will add all the files in [.FOO] and its subdirectories that were last
+modified on December 7, 1991, or later to the zip file INFAMY.ZIP.
+.sk
+Also, files can be explicitly excluded using the -x option:
+.sk;.indent 10
+$ zip -r foo [.FOO] -x *.obj
+.sk
+which will zip up the contents of [.FOO] into FOO.ZIP but exclude all the
+files that end in ".OBJ".
+.sk
+The last operation is -d (delete) which will remove entries from a zip
+file.  An example might be:
+.sk;.indent 10
+$ zip -d foo foo/harry/*.* *.obj
+.sk
+which will remove all of the files that start with "foo/harry/" and all of
+the files that end with ".OBJ" (in any path).
+.sk
+Under VMS, -d is case sensitive when it matches names in the zip file.
+This allows deleting names that were zipped on other systems, but requires
+that the names be entered in upper case if they were zipped on an MSDOS
+system (by PKZIP or in PKZIP compatibility mode), so that the names can be
+found in the zip file and deleted.
+.!------------------------------------------------------------------------------
+.indent -4
+2 More_Options
+.br
+As mentioned before, Zip will use the best of two methods: deflate or store.
+The option -0 will force Zip to use store on all files. For example:
+.sk;.indent 10
+zip -r0 foo foo.dir
+.sk
+will zip up the directory foo into foo.zip using only store.
+.sk
+The speed of deflation can also be controlled with options -1 (fastest
+method but less compression) to -9 (best compression but slower). The
+default value is -6. For example:
+.sk;.indent 10
+zip -r8 foo foo.dir
+.sk
+In nearly all cases, a file that is already compressed cannot be compressed
+further by Zip, or if it can, the effect is minimal.  The -n option
+prevents Zip from trying to compress files that have the
+given suffixes.  Such files are simply stored (0%
+compression) in the
+output zip file, so that Zip doesn't waste its time trying to compress
+them. The suffixes are separated by
+either colons or semicolons.  For example, in DCL:
+.sk
+.indent 10;$ zip -rn ".Z:.zip:.tiff:.gif:.snd" foo [.FOO]*.*
+.sk
+will put everything in [.FOO] into FOO.ZIP, but will store any files that end
+in .Z, .ZIP, .TIFF, .GIF, or .SND without trying to compress them.  (Image and
+sound files often have their own specialized compression methods.)
+The default suffix list is ".Z:.zip;.zoo:.arc:.lzh:.arj".
+The environment variable ZIPOPT can be used to change this default. For
+example:
+.sk
+.indent 10;$ ZIPOPT == "-n .Z:.zip:.tiff:.gif:.snd"
+.sk
+The variable ZIPOPT can be used for any option (except -i and -x)
+and can include several options.
+.sk
+For VMS Zip, the alternatively environment variable name ZIP_OPTS may
+be used, if a more "VMS-like" name is prefered. If both ZIPOPT and
+ZIP_OPTS are present (and do not equate to whitespace only),
+the content of ZIPOPT takes precedence and ZIP_OPTS is ignored.
+.sk
+Under Unix, Zip will store the full path (relative to the current path)
+and name of the file (or just the name if -j is specified) in the zip
+file along with the Unix attributes, and it will mark the entry as made
+under Unix.  If the zip file is intended for PKUNZIP under MSDOS, then
+the -k (Katz) option should be used to attempt to convert the names and
+paths to conform to MSDOS, store only the MSDOS attribute (just the
+user write attribute from Unix), and mark the entry as made under MSDOS
+(even though it wasn't).
+.sk
+The -o (older) option will set the "last modified" time of the zip file to
+the latest "last modified" time of the entries in the zip file.  This can
+be used without any other operations, if desired.  For example:
+.sk;.indent 10
+$ zip -o foo
+.sk
+will change the last modified time of FOO.ZIP to the latest time of the
+entries in FOO.ZIP.
+.sk
+The -e and -c options operate on all files updated or added to the zip
+file.  Encryption (-e) will prompt for a password on the terminal and will
+not echo the password as it is typed (if SYS$COMMAND is not a TTY, Zip will
+exit with an error). New zip entries will be encrypted using that password.
+For added peace of mind, Zip will prompt for the password a second time,
+checking that the two inputs are the same before using it.
+.sk
+One-line comments can be added for each file with the -c option.  The zip
+file operations (adding or updating) will be done first, and you will then
+be prompted for a one-line comment for each file.  You can then enter the
+comment followed by return, or just return for no comment.
+.sk
+The -z option will prompt you for a multi-line comment for the entire zip
+file.  This option can be used by itself, or in combination with other
+options.  The comment is ended by a line containing just a period, or an
+end of file condition (^D on Unix, ^Z on MSDOS, OS/2, and OpenVMS).
+.sk
+The -q (quiet) option eliminates the informational messages and comment
+prompts while Zip is operating.  This might be used in shell scripts, for
+example, or if the zip operation is being performed as a background task
+("$ spawn/nowait zip -q foo *.c").
+.sk
+Zip can take a list of file names to operate on from SYS$INPUT using the
+"-@"
+option.
+.!  In Unix, this option can be used with the find command to extend
+.!greatly the functionality of Zip. For example, to zip up all the C source
+.!files in the current directory and its subdirectories, you can:
+.!.sk
+.!find . -type f -name "*.[ch]" -print | zip source -@
+.!.sk
+.!Note that the pattern must be quoted to keep the shell from expanding it.
+.sk
+The -X option (remember to quote it!) suppresses saving of additional
+"extra file attributes" in the zipfile. Its effect is to disable the
+VMS only -V option (see below), and prevent storing of UNIX compatible
+GMT modification time stamps. These UNIX compatible GMT time stamps
+-- which are quite useful when transporting Zip archives world wide (but
+are only recognized by Info-ZIP's UnZip 5.20 or later) --
+are included in the zipfile unless -X or -V is specified (in case your
+version of Zip has the USE_EF_UT_TIME option compiled in).
+.sk
+Under VMS only, the -w option will append the version number of the files
+to the name and zip up multiple versions of files.  Without -w, Zip will
+only use the most recent version of the specified file(s).
+.sk
+One more option that valid only under VMS is -V option. This option saves
+all (hopefully) file attributes needed to make EXACT copy of the
+file after extraction from archive. To extract a file with saved attributes,
+use UnZip version 5.20 or later. Note that to specify this option you should
+quote it ("-V"). Be carefull: it's rather hard (if possible at all) to extract
+a file archived on VMS with this option specified on other systems. See
+documentation on UnZip for further information.
+.sk
+The -l option translates the Unix end-of-line character LF into the
+MSDOS convention CR LF. This option should not be used on binary files.
+This option can be used on Unix or VMS if the zip file is intended for
+PKUNZIP under MSDOS.
+.sk
+If Zip is run with the -h option, or with no arguments and standard output is
+a terminal, the license and the command-argument and option help is shown.
+.sk
+The -L option shows the Zip license.
+.sk
+The -v option, when given as the only command line argument, directs Zip to
+display diagnostic information that shows when and how the executable was
+built and set up. This includes info on used compiler and compiler version
+(if available) as well as any optional compile time feature flags.
+Additionally, the content of the environment variables
+(logical names) read by Zip for runtime configuration are shown. This
+information is especially valuable when reporting problems or bugs.
+.!------------------------------------------------------------------------------
+.indent -4
+2 Diagnostics
+.br
+       On VMS, Zip's UNIX style exit values are mapped into proper
+       VMS status codes:
+.literal
+   1                                  (success)  normal exit,
+   (0x7fff0000 + 16*Zip_error_level)  warnings
+   (0x7fff0002 + 16*Zip_error_level)  normal errors
+   (0x7fff0004 + 16*Zip_error_level)  fatal errors
+.end literal
+
+       The Zip error level (or exit code) approximates the exit
+       codes defined by PKWARE and takes on the following values:
+.literal
+
+  VMS        Zip      Type of error
+  severity   errcode
+    -          0      normal; no errors or warnings detected.
+    F          2      unexpected end of zip file.
+    E          3      a generic error in the  zipfile  format  was
+                      detected.   Processing  may  have  completed
+                      successfully anyway;  some  broken  zipfiles
+                      created by other archivers have simple work-
+                      arounds.
+    F          4      zip was unable to allocate memory for one or
+                      more  buffers during program initialization.
+    F          5      a severe error in  the  zipfile  format  was
+                      detected.   Processing probably failed imme-
+                      diately.
+    E          6      entry too large to be split with zipsplit
+    E          7      invalid comment format
+    F          8      zip -T failed or out of memory
+    E          9      the user aborted zip prematurely  with  con-
+                      trol-C (or similar)
+    F          10     zip  encountered an error while using a temp
+                      file
+    F          11     read or seek error
+    W          12     zip has nothing to do
+    E          13     missing or empty zip file
+    F          14     error writing to a file
+    F          15     zip was unable to create a file to write to
+    E          16     bad command line parameters
+    E          18     zip could not open a specified file to read
+.end literal
+.!------------------------------------------------------------------------------
+.indent -4
+2 Copyright
+.br
+     Copyright (C) 1990-1997 Mark Adler, Richard B. Wales, Jean-loup Gailly,
+     Onno van der Linden, Christian Spieler and Igor Mandrichenko.
+     Permission is granted to any individual or institution to use, copy, or
+     redistribute this software so long as all of the original files are
+     included, that it is not sold for profit, and that this copyright
+     notice is retained.
+.sk
+     LIKE ANYTHING ELSE THAT'S FREE, ZIP AND ITS ASSOCIATED UTILITIES
+     ARE PROVIDED AS IS AND COME WITH NO WARRANTY OF ANY KIND, EITHER
+     EXPRESSED OR IMPLIED. IN NO EVENT WILL THE COPYRIGHT HOLDERS BE
+     LIABLE FOR ANY DAMAGES RESULTING FROM THE USE OF THIS SOFTWARE.
+.sk
+     Please send bug reports or comments by email to:
+     Zip-Bugs@lists.wku.edu.  For bug reports, please include
+     the version of Zip (see zip -h), the make options you used to
+     compile it (see zip -v), the machine and operating system you are using,
+     and as much additional information as possible.
+     Thank you for your support.
+.!------------------------------------------------------------------------------
+.indent -4
+2 Acknowledgements
+.br
+     Thanks to R. P. Byrne  for  his  Shrink.Pas  program,  which
+     inspired  this  project, and from which the shrink algorithm
+     was stolen; to Phil Katz for placing in  the  public  domain
+     the  zip  file format, compression format, and .ZIP filename
+     extension, and for accepting minor changes to the file  for-
+     mat; to Steve Burg for clarifications on the deflate format;
+     to Keith Petersen, Rich Wales, Hunter Goatley and Mark Adler
+     for  providing  a mailing list and ftp site for the Info-ZIP
+     group to use; and most importantly, to  the  Info-ZIP  group
+     itself  (listed in the file infozip.who) without whose tire-
+     less testing and bug-fixing efforts a portable zip would not
+     have  been  possible.   Finally  we should thank (blame) the
+     first Info-ZIP moderator, David Kirschbaum, for  getting  us
+     into  this  mess  in  the  first place.
+.!------------------------------------------------------------------------------
+.indent -4
+2 Bugs
+.sk
+     Zip 2.2 is not compatible with PKUNZIP 1.10. Use Zip 1.1 instead
+     to produce zip archives which can be extracted by PKUNZIP 1.10.
+.sk
+     WARNING: zip files produced by this version of zip must not be
+     *updated* by zip 1.0 or PKZIP 1.10 or PKZIP 1.93a, if they contain
+     encrypted members, or if they have been produced in a pipe or on a non
+     seekable device. The old versions of zip or pkzip would destroy the
+     zip structure. The old versions can list the contents of the zip file
+     but cannot extract it anyway (because of the new compression algorithm).
+     If you do not use encryption and use regular disk files, you do
+     not have to care about this problem.
+.sk
+     Under VMS, not all of the odd file formats are treated properly.
+     Only zip files of format stream-LF and fixed length 512 byte are
+     expected to work with Zip.  Others can be converted using Rahul
+     Dhesi's BILF program.  This version of Zip handles some of the
+     conversion internally.  The use of the "-V" option to save the
+     VMS attributes should work without problem for at least all types
+     of sequential files.  Beginning with Zip 2.2, the "-V" option uses
+     a new format to store the VMS attributes that should now allow
+     proper restoration of all sorts of indexed files. It has been
+     approved that there are problems with VMS UnZip to restore some
+     indexed files which were saved with previous versions of Zip.
+.sk
+     When using Kermit to transfer zip files from VMS to MSDOS, type "set
+     file type block" on the VMS side.  When transfering from MSDOS to VMS,
+     type "set file type fixed" on the VMS machine.  In both cases, type
+     "set file type binary" on MSDOS.
+.sk
+     Under VMS, zip hangs for file specification that uses DECnet
+     syntax (foo::*.*).
+.sk
+     LIKE ANYTHING ELSE THAT'S FREE, ZIP AND ITS ASSOCIATED UTILITIES
+     ARE PROVIDED AS IS AND COME WITH NO WARRANTY OF ANY KIND, EITHER
+     EXPRESSED OR IMPLIED. IN NO EVENT WILL THE COPYRIGHT HOLDERS BE
+     LIABLE FOR ANY DAMAGES RESULTING FROM THE USE OF THIS SOFTWARE.
+.sk
+     That having been said, please send any problems or comments
+     via email to the Internet address Zip-Bugs@lists.wku.edu.  For
+     bug reports, please include the version of Zip, the make
+     options you used to compile it, the machine and operating
+     system you are using, and as much additional information as
+     possible.  Thank you for your support.
+.!------------------------------------------------------------------------------

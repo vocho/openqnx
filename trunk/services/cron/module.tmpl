@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<module name="cron">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="cron" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				cron
+			</location>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/syslogd"/>
+		<part build="true" location="lib/util"/>
+	</requires>
+
+</module>

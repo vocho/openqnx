@@ -1,0 +1,32 @@
+ksh
+
+Public domain Korn shell command interpreter (UNIX)
+
+Syntax:
+
+ksh [+-abCefhikmnprsuvxX] [+-o option]
+    [ [ -c command-string [command-name]
+      | -s | file ] [argument...] ]
+
+Options:
+
+You can specify the following options only on the command line:
+
+-c command-string     Execute the command(s) contained in command-string.
+-i                    Use interactive mode.
+-l                    Login shell; also implies interactive mode.
+-s                    The shell reads commands from standard input; all
+                      nonoption arguments are positional parameters.
+-r                    Use restricted mode.
+
+
+In addition to the above, you can use the options described
+for the set built-in command on the command line.
+
+Description:
+
+The ksh is a public-domain version of the Korn shell. It's a command
+interpreter that's intended for both interactive and shell
+script use.
+
+For more information please refer to a ksh or unix shell reference.

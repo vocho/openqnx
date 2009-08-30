@@ -1,0 +1,28 @@
+%-swapctl
+%C - Control swap device
+
+%C	[-s] [-m] [-c] [-S size] [-a name]
+
+Options:
+-s          display statistics on swap device
+-a filename add file or partition "name" as swap device 
+-c          create file if it does not exist
+-F size     minimum size which must be left on filesystem after file is created
+-S size     specify size of file to create (default is 64M)
+-m          add magic signature to an existing file or partition
+-f          Don't check for overriding executable file (force)
+
+If no options are specified, swap statistics are displayed
+
+%-swapon
+%C - Add file or device as swap device
+
+%C	[-m] [-c] [-S size] filename
+
+filename: name of file or partition to add as swap device
+
+Options:
+-c        create file if it does not exist
+-F size   minimum size which must be left on filesystem after file is created
+-S size   specify size of file to create (default is 64M)
+-m        add magic signature to an existing file or partition

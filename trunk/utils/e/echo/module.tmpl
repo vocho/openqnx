@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<module name="echo">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+		<availability supported="true" >
+			<os name="win32" ><cpu isa="x86" /></os>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="echo" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				echo
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="echo_target" generated="true">
+			<location os="nto" isa="{cpu}" byteorder="{endian}" basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				echo
+			</location>
+		</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/util"/>
+	</requires>
+
+</module>

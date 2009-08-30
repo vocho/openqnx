@@ -1,0 +1,49 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Previous versions of tar were not able to skip a member straddling
+# the multivolume archive boundary. Reported by Mads Martin Joergensen
+# <mmj@suse.de>
+# 
+# References: <20040402144254.GC4409@suse.de> 
+# http://lists.gnu.org/archive/html/bug-tar/2004-04/msg00002.html
+
+AT_SETUP([skipping a straddling member])
+AT_KEYWORDS([multivolume multiv multiv02])
+
+AT_TAR_CHECK([
+genfile --length 10240 --file en
+genfile --length 20000 --file to
+genfile --length 20000 --file tre
+genfile --length 10240 --file fire
+
+exec <&-
+
+tar -c -f A.tar -f B.tar -f C.tar -M -L 30 en to tre fire || exit 1
+echo separator
+tar -v -x -f A.tar -f B.tar -f C.tar -M en || exit 1
+],
+[0],
+[separator
+en
+],
+[],[],[],[gnu, oldgnu, pax])
+
+AT_CLEANUP

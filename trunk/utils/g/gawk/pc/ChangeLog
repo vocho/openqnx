@@ -1,0 +1,118 @@
+Mon Aug  7 15:23:00 2000  Arnold D. Robbins  <arnold@skeeve.com>
+
+	* Release 3.0.6: Release tar file made.
+
+Sun Jun 25 15:08:19 2000  Arnold D. Robbins  <arnold@skeeve.com>
+
+	* Release 3.0.5: Release tar file made.
+
+Wed Jun 21 16:44:54 2000  Scott Deifik       <scottd@amgen.com>
+
+	* Makefile, Makefile.tst: synchronized with main dist, again.
+
+Thu May 18 14:07:52 2000  Scott Deifik       <scottd@amgen.com>
+
+	* Makefile, Makefile.tst: synchronized with main dist.
+	* config.h: Define HAVE_LIMITS_H as 1.
+
+Wed Jun 30 16:14:36 1999  Arnold D. Robbins  <arnold@gnu.org>
+
+	* Release 3.0.4: Release tar file made.  This time for sure.
+
+Sun Jun 27 12:27:00 1999   Darrel Hankerson   <hankedr@mail.auburn.edu>
+
+	* Makefile, Makefile.tst, ../README_d/README.pc: finalized.
+	* include/process.h: new file
+
+Fri May  21 00:00:00 1999  Darrel Hankerson   <hankedr@mail.auburn.edu>
+
+	* popen.c: MSC (on DOS/Win32) and MINGW32 now honor SHELL.
+	* io.c: MINGW32 reports errno==0 after failure in redirect();
+	  assume close_one() in this case.  
+	* io.c: Add HAVE_POPEN_H and let pc/config.h deal with the mess.
+	  (Can't move everything to config.h because of popen define.)
+
+Sun May  9 09:12:33 1999  Darrel Hankerson   <hankedr@mail.auburn.edu>
+
+	* Add 1999-04-30 changes from Eli Zaretskii <eliz@is.elta.co.il>
+	  1. Makefile (TAGS, tags): New targets.
+	  2. Makefile.tst (regtes): Pass the value of $CMP to the 
+	     regtest script.
+
+Thu Nov 18 03:48:32 1998  Scott Deifik       <scottd@amgen.com>
+
+	* Readme.pc: More LFN-based comments.
+
+Thu Nov 12 21:01:24 1998  Darrel Hankerson   <hankedr@mail.auburn.edu>
+
+	* mingw32 target added with corresponding minor changes to getid.c,
+	  io.c, and config.h.
+	
+	* vcWin32 needed popen defines in config.h which were inadvertently
+	  omitted from 3.0.3.
+
+	* README.pc updated to clarify the procedure for building
+ 	  non-LFN versions on LFN systems, and to note that Win32 gawk
+ 	  may require Win32 utilities.
+
+	* emxbnd target modified to accomodate older versions of emx.
+
+Thu Nov 08 09:11:44 1998  Scott Deifik       <scottd@amgen.com>
+
+	* pc/Makefile: Stack reduced again for 16bit MSC versions.
+	  
+	* pc/Makefile.tst: Updated to keep in sync with new
+	  test/Makefile.in.  In addition, made to work in Windows 9x
+	  with non-LFN tools.
+
+Wed Nov  4 11:32:24 1998  Arnold D. Robbins  <arnold@gnu.org>
+
+	* BETA Release 3.0.41: Release tar file made.
+
+Thu Oct  8 19:36:57 1998  Arnold D. Robbins  <arnold@gnu.org>
+
+	* BETA Release 3.0.40: Release tar file made.
+
+Thu May 15 12:49:08 1997  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.3: Release tar file made.
+
+Tues May 13 20:06:09 1997  Darrel Hankerson  <hankedr@mail.auburn.edu>
+
+	* vcWin32 target added.  Some new tests for WIN32 in gawkmisc.c
+	  io.c, and regex.c.  Makefile changes for nmake, which can't 
+	  expand $($x).
+
+	* config.h updated for BITOPS and NONDECDATA (also in Makefile).
+
+Fri Apr 18 07:55:47 1997  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* BETA Release 3.0.34: Release tar file made.
+
+Fri Jan 17 19:20:45 1997  Darrel Hankerson  <hankedr@mail.auburn.edu>
+
+	* Makefile: add KUR's emxnt target for emx+RSXNT.  Create awk.exe
+	  "link" to gawk.exe for djgpp target.  (Suggested by Eli Zaretskii.
+	  Should be done as part of a smarter install, since awk.exe only
+	  works with djgpp gawk.exe.)  Separate djgpp-v1 into djgppv1 
+	  target.  Install awk.exe if present.
+
+	* install.awk: install awk.exe if present (only for djgpp)
+
+	* config.h: additional include for emx+RSXNT.
+
+Wed Dec 25 11:25:22 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.2: Release tar file made.
+
+Tue Dec 10 23:09:26 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* Release 3.0.1: Release tar file made.
+
+Thu Aug  1 19:46:00 1996  Scott Deifik       <scottd@amgen.com>
+
+	* Makefile: Changes for MSC 8.
+
+Wed Jan 10 22:58:55 1996  Arnold D. Robbins  <arnold@skeeve.atl.ga.us>
+
+	* ChangeLog created.

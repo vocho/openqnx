@@ -1,0 +1,5 @@
+%C    [-l] group
+where
+ -l     (deprecated, just '-') simulate a login
+ -s     Set groupid of parent, do not exec login shell.
+ group  Group to switch to

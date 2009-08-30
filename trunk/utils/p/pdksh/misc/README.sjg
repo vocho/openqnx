@@ -1,0 +1,118 @@
+		Public Domain Korn Shell
+		      Version 4.9
+
+PD KSH:
+
+This is the latest version of the PD ksh (pdksh).  It is not intended
+to be the ultimate shell but rather a usable ksh work alike.  For
+those of us who have to work on multiple systems it is nice to have
+the same user interface on all.  I resisted moving to the ksh on a
+System V machine where I worked, for nearly a year due to the lack of
+a ksh on my Sun systems.  When I first picked up the 3.2 PD KSH a
+couple of years ago, it took only a few minutes to convert a C-shell
+fan to a ksh fan :-) Pdksh is not 100% compatible with the ksh.
+Having said that, I use it daily beside a real ksh88 and find them
+virtually indistinguishable.  With one exception - arrays!  If some
+one feels like adding arrays, I for one would appreciate it :-)
+
+I only run this shell on sun's and BSD systems and only for
+interactive use.  I use it on sun4c, sun3, sun386 and 386bsd systems.
+The shell itself has been compiled on the sun's both with and without
+the POSIX/ANSI compatability libraries in ./std. I do not use ./std
+for 386bsd and friends.  See the file MACHINES for details of systems
+that the shell has been built on.
+
+I released version 4.0 of the shell (with the kind permission of
+the previous maintainers and major contributors) to ensure that
+it is available from usenet archive sites.  Of course it remains
+in the Public Domain.  Equally obviously neither myself nor any
+other contributors make any claims of suitability etc.  Ie. NO
+WARRANTY!!!  If you make any changes and distribute them, please
+leave your own finger prints in the source.  Its bad enough
+being flamed for my own bugs let alone anyone elses :-)
+
+
+HISTORY:
+
+This shell was written by Eric Gisin.  It is based on Charles
+Forsyth's public domain V7 shell, which he later contributed to
+Minix.  John R MacMillan picked up Eric Gisin's version after
+Eric moved on to other projects (see ReadMe.jrm).
+
+Since then there have been many contributors to this shell.
+Most have left their fingerprints within the source and various
+ReadMe.xxx and Changes.xxx files reflect their input.
+
+This version is basically that known as Eric Gisin's version 3.3
+alpha which I obtained indirectly from John R MacMillan who is
+the most recent maintainer.  This version has much improved
+emacs-mode command line editing (my main contribution) plus
+enough extra emacs-mode features to make it difficult to
+distinguish from ksh88.  Bug fixes from various contributors are
+the only other changes from John MacMillan's version.
+
+I have upped the version number for this release to distinguish
+it from the original 3.3 version.  This version is much improved
+despite the small number of new features.
+
+INSTALLATION:
+
+The file INSTALL contains intructions for building and
+installing the shell.  
+
+The original instructions indicated that a POSIX compliant
+environment and possibly an ANSI compiler are required.  I have
+used both gcc and native Sun and the GreenHills ANSI compiler
+without problems.
+
+The POSIX/STDC compatability stuff in ./std seems to cause lots
+of problems for some systems.  This was at least in part because
+I distributed it with half the librraies disabled :-), in any
+case the shell itself in ./sh can now be compiled without any of
+the ./std stuff which makes things much simpler on systems that
+have a real POSIX environment.
+
+Porting to new environemnts can be a real pain.  I don't really
+plan to make a huge effort in this area since I expect that this
+shell will be mainly required on exotic or obscure systems (the
+ones that the vendor does not provide a ksh for).  Thus the
+small "market" does not warrant a C-news or X11 style
+portability effort.  Of course if people send patches for
+various systems I'm happy to try and integrate them.
+
+ENVIRONMENT:
+
+My main interest in this shell is for Sun workstations.  Every
+other UNIX system I use comes with a real ksh.  Being a strictly
+C-shell environment, some improved profile files are in order on
+Sun's.
+
+The etc directory contains a set of useful environment files.
+These are the same files I use on several systems (many use a
+real ksh):
+./etc/profile
+./etc/sys_config.sh
+./etc/ksh.kshrc	
+
+The first one is obvious.  The second, sys_config.sh is sourced
+by /etc/profile and several other scripts.  It is used to
+determine the system type so that scripts like profile can be
+used on multiple platforms.
+The third one is also quite useful, add 
+. /etc/ksh.kshrc 
+to user's ~/.kshrc to simplify alias management.
+
+BUGS:
+
+Many folk have contributed to this shell.  
+I have attempted to credit (in sh/ChangeLog) the authors of bug
+fixes received since the previous release.
+There are surely still plenty of bugs to be found/fixed.
+
+There is a template bug report in bug-report [borrowed from the
+X11R5 mit tree], just fill in the blanks and mail to
+pdksh-bug@zen.void.oz.au.  
+
+I hope you find this shell as useful as I do...
+
+Simon J. Gerraty <sjg@zen.void.oz.au>

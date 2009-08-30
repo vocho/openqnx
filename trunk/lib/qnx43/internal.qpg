@@ -1,0 +1,9 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add component="dev" file="nto/*/a*/libqnx43.a" install="/usr/lib/" pinfo="$"/>
+			<QPG:Add component="dev" type="tree" file="public/" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

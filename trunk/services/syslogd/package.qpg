@@ -1,0 +1,10 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="nto/*/*/syslogd" pinfo="$.pinfo"/>
+			<QPG:Add component="dev" type="tree" file="public/" install="/usr/include/" />
+			<QPG:Add type="tree" file="config/" install="/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

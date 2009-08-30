@@ -1,0 +1,170 @@
+<html><head>
+<title>Elvis-2.2_0 Cut Buffers</title>
+</head><body>
+
+<h1>11. CUT BUFFERS</h1>
+When Elvis deletes text, it stores that text in a cut buffer.
+This happens in both visual mode and EX mode.
+There are 36 cut buffers:
+26 named buffers ("a through "z),
+9 anonymous buffers ("1 through "9),
+and 1 extra cut buffer (".).
+There is no practical limit to how much text a cut buffer can hold.
+
+<h2>11.1 Putting text into a Cut Buffer</h2>
+In visual mode, text is copied into a cut buffer when you use the
+<a href="elvisvi.html#d">d,</a>
+<a href="elvisvi.html#y">y,</a>
+<a href="elvisvi.html#c">c,</a>
+<a href="elvisvi.html#C">C,</a>
+<a href="elvisvi.html#s">s,</a> or
+<a href="elvisvi.html#x">x</a> commands.
+There are also a few others.
+
+<p>By default, the text goes into the "1 buffer.
+The text that used to be in "1 gets shifted into "2,
+"2 gets shifted into "3, and so on.
+The text that used to be in "9 is lost.
+This way, the last 9 things you deleted are still accessible.
+
+<p>You can also put the text into a named buffer -- "a through "z.
+To do this, you should type the buffer's name
+(two keystrokes: a double-quote and a lowercase letter)
+before the command that will cut the text.
+When you do this, "1 through "9 are not affected by the cut.
+
+<p>You can append text to one of the named buffers.
+To do this, type the buffer's name in uppercase
+(a double-quote and an uppercase letter)
+before the d/y/c/C/s/x command.
+
+<p>The ". buffer is special.
+It isn't affected by the d/y/c/C/s/x command.
+Instead, it stores the text that you typed in
+the last time you were in input mode.
+It is used to implement the <a href="elvisvi.html#stop">.</a> visual command,
+and ^A in input mode.
+
+<p>In EX mode,
+the <a href="elvisex.html#delete">:delete,</a>
+<a href="elvisex.html#change">:change,</a> and
+<a href="elvisex.html#yank">:yank</a> commands all copy text into a cut buffer.
+Like the visual commands, these EX commands normally use the "1 buffer,
+but you can use one of the named buffers by giving its name after the command.
+For example...
+<pre>
+:20,30y a
+</pre>
+... will copy lines 20 through 30 into cut buffer "a.
+
+<p>You can't directly put text into the ". buffer, or the "2 through "9 buffers.
+
+<h2>11.2 Pasting from a Cut Buffer</h2>
+There are two main styles of pasting:
+line-mode and character-mode.
+If a cut buffer contains whole lines (from a command like "dd")
+then line-mode pasting is used;
+if it contains partial lines (from a command like "dw")
+then character-mode pasting is used.
+The EX commands always cut whole lines.
+
+<p>Elvis also supports a limited form of rectangular cut and paste.
+This is handy, for example, when you want to swap two columns in a table.
+The only way to put a rectangular area into a cut buffer is to select it
+via the visual <a href="elvisvi.html#^V">^V</a> command, and then yank or delete
+it with a <a href="elvisvi.html#y">y</a> or <a href="elvisvi.html#d">d</a>
+command, respectively.
+When a cut buffer has been filled this way, it will be pasted using
+rectangle-mode pasting.
+
+<p>Character-mode pasting causes the text to be inserted into the line that
+the cursor is on.
+
+<p>Line-mode pasting inserts the text on a new line above or below the line
+that the cursor is on.
+It doesn't affect the cursor's line at all.
+
+<p>In visual mode, the
+<a href="elvisvi.html#p">p</a> and
+<a href="elvisvi.html#P">P</a>
+commands insert text from a cut buffer.
+Uppercase P will insert it before the cursor,
+and lowercase p will insert it after the cursor.
+Normally, these commands will paste from the "1 buffer, but you can
+specify any other buffer to paste from.
+Just type its name (a double-quote and another character)
+before you type the P or p.
+
+<p>In EX mode, the <a href="elvisex.html#put">:put</a> command pastes text
+after a given line.
+To paste from a buffer other that "1,
+enter its name after the command.
+
+<h2>11.3 Macros</h2>
+The contents of a named cut buffer can be executed as a series of
+ex/vi commands.
+
+<p>To put the instructions into the cut buffer, you must first insert
+them into the file, and then delete them into a named cut buffer.
+
+<p>To execute a cut buffer's contents as EX commands,
+you should give the EX command <a href="elvisex.html#AT">:@</a> and the name
+of the buffer.
+For example, <code>:@z</code> will execute "z as a series of EX commands.
+
+<p>To execute a cut buffer's contents as visual commands,
+you should give the visual command <a href="elvisvi.html#at">@</a>
+and the letter of the buffer's name.
+The visual <kbd>@</kbd> command is different from
+the EX <code>:@</code> command.
+They interpret the cut buffer's contents differently.
+
+<p>The visual <kbd>@</kbd> command can be rather finicky.
+Each character in the buffer is interpreted as a keystroke.
+If you load the instructions into the cut buffer via a </kbd>"zdd</kbd> command,
+then the newline character at the end of the line will be executed just
+like any other character, so the cursor would be moved down 1 line.
+If you don't want the cursor to move down 1 line at the end of each
+<kbd>@z</kbd> command, then you should load the cut buffer by saying
+<kbd>0"zD</kbd> instead.
+
+<p>One way to store keystrokes into a buffer for use with
+the visual <kbd>@</kbd> command is via the
+<a href="elvisvi.html#recbegin">[key</a> and
+<a href="elvisvi.html#recend">]key</a> commands.
+They record keystrokes into a cut buffer as you type them.
+
+<h2>11.4 The Effect of Switching Files</h2>
+Elvis 2.x retains the contents of all cut buffers when you switch files,
+e.g. via a <a href="elvisex.html#next">:next</a> or
+<a href="elvisex.html#edit">:edit</a> command.
+This differs from the traditional behavior of vi.
+
+<p>In the real vi and in Elvis 1.X, the anonymous buffers ("1 through "9)
+were clobbered and the named buffers ("a through "z) were left intact.
+This made sense then, but since Elvis 2.x allows you to edit several files
+at the same time, the rules changed.
+
+<h2>11.5 Cut &amp; Paste Between Applications</h2>
+There is a special cut buffer named "^ (doublequote-caret) which accesses
+the GUI's cut&amp;paste feature.  Each time you yank text into the "^
+cut buffer, it is copied to the GUI's clipboard.  Each time you paste
+text from the "^ cut buffer, Elvis reads from the GUI's clipboard.
+
+<p>Not all GUIs have clipboards.  For example, the plain old termcap
+interface doesn't have one.  The "^ cut buffer still exists, but it
+resides inside Elvis, just like any other cut buffer.
+(Exception: The Windows version of the termcap interface has been
+patched to access the Windows clipboard.)
+
+<p>Elvis' X11 interface does use X's clipboard.  Clicking the middle
+mouse button causes the clipboard's contents to be inserted at the cursor
+position.  When you select text via the mouse, the text is immediately
+copied to the clipboard.  Text that you select via keyboard commands
+is <em>not</em> automatically copied because Elvis has no way of knowing
+when you're through selecting it.
+
+<p>The Win32 version of Elvis has the usual Cut/Copy/Paste toolbar buttons
+and menu items.
+
+</body></html>

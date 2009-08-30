@@ -1,0 +1,23 @@
+%C	[-m] [-o output] [-bdfinru] [-t char] [-k keydef] file...
+%C	[-c] [-dfinru] [-t char] [-k keydef] file
+%C	[-mu] [-o output] [-bdfinr] [-t char] [+pos1 [-pos2]] file...
+%C	-c [-u] [-bdfinr] [-t char] [+pos1 [-pos2]] file
+Where:
+ -m           Merge only, assume input files are sorted.
+ -c           Check that input file is sorted, don't rearrange.
+ -o output    Specifies an output file.
+ -u           Reduce lines with duplicate keys.
+ -b           Ignore leading blanks when extracting key.
+ -d           Blanks and alphanumeric chars only.
+ -f           Ignore case differences in letters.
+ -i           Ignore all non-printable characters.
+ -n           Numeric fields, implies (-b).
+ -r           Reverse ordering.
+ -t char      Define the field separator (default is whitespace).
+ -k keydef    Define a key, field_start[type][,field_end][type].
+ -9           Use POSIX draft 9 interpretion of -k field start
+              field offset specifiers which was 0 based.  Default
+              is to use the POSIX standard which is 1 based.
+              Note this is a compat option and may be deprecated
+              in the future.
+ +pos1 -pos2  Define a key, +field_start-field_end.

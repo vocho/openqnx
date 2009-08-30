@@ -1,0 +1,46 @@
+The format of the /etc/fstab used with the mount utility 
+is as follows:
+
+  specialdevice mountpoint type mountoptions 
+
+for example:
+
+  /dev/hd0t77 /mnt/fs qnx4 rw
+
+which would be equivalent to calling:
+
+  % mount -t qnx4 /dev/hd0t77 /mnt/fs 
+
+The mountoptions are a comma separated list of values
+that must contain, at a minimum, one of "ro" or "rw"
+to indicate a read-only or a read-write mount.
+
+By default the mount is performed with the type as
+if the -t option had been specified (device and server
+doing the mount are the same) but to get the -T type
+behaviour you can specify "allservers" in the options.
+
+The following sample /etc/fstab indicates the mapping
+of the different configurations:
+
+#This is a sample file that shows the mapping of command line
+#arguments to the fstab entries and how they would be invoked
+#The "implied" argument is not generally required, but some
+#servers may differentiate between implied and specified entries
+
+# ./mount -b -vvv -t mytype /my/specialdev1 /my/mountpoint1
+# ./mount -vvv /my/mountpoint1
+/my/specialdev1 /my/mountpoint1 mytype rw
+
+# ./mount -b -vvv -t mytype /my/specialdev2
+# ./mount -vvv /my/specialdev2
+/my/specialdev2 / mytype rw,implied
+
+#./mount -b -vvv -T mytype /my/specialdev3 /my/mountpoint3
+# ./mount -vvv /my/mountpoint3
+/my/specialdev3 /my/mountpoint3 mytype allservers,rw
+
+#./mount -b -vvv -T mytype /my/specialdev4
+# ./mount -vvv /my/specialdev4
+/my/specialdev4 / mytype allservers,implied,rw
+

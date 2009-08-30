@@ -1,0 +1,251 @@
+#============================================================================
+# Makefile for VMS Zip, ZipCloak, ZipNote  and ZipSplit          Greg Roelofs
+# Version:  2.0 [for use with Todd Aven's MAKE/VMS 3.4]          25-JUN-1998
+#============================================================================
+
+# ChangeLog:  10-SEP-1993 08:53 by Hunter Goatley (add AXP support)
+#             15-OCT-1995 22:40 by Chr. Spieler (Zip 2.1)
+#             11-DEC-1995 12:09 by Chr. Spieler (AXP uses RELAXED_ANSI mode)
+#             08-JAN-1996 19:08 by Chr. Spieler (updated header dependencies)
+#             16-JAN-1996 19:08 by Chr. Spieler (crypt -> crypt & ttyio)
+#             25-JUL-1997 22:25 by Chr. Spieler (syncronized with descrip.mms)
+#             25-JUN-1998 23:53 by Chr. Spieler (removed bits.c source)
+
+
+########################### USER CUSTOMIZATION ############################
+# add any optional preprocessor flags (macros) to the following line
+# for a custom version (do not forget a trailing comma##):
+COMMON_DEFS =
+######################## END OF USER CUSTOMIZATION ########################
+
+#####################
+# MACRO DEFINITIONS #
+#####################
+
+CFLAGS = /NOLIST/INCL=(SYS$DISK:[])
+CC = cc
+LIB =
+# Define the macro __GNUC__ to use the GNU compiler (also add /undef=__STDC__
+# to CFLAGS, and possibly replace /obj=$@ [below] with copy/rename/delete
+# setup).  NOT TESTED.
+
+OPTFILE = sys$disk:[.vms]vaxcshr.opt
+
+%IFDEF __ALPHA
+CC = CC/STANDARD=RELAX/PREFIX=ALL/ANSI
+E = .AXP_EXE
+O = .AXP_OBJ
+OPTFILE_LIST =
+OPTIONS =
+%ELSE
+%IFDEF __DECC__
+CC = CC/DECC/STANDARD=VAXC/PREFIX=ALL
+E = .VAX_DECC_exe
+O = .VAX_DECC_obj
+OPTFILE_LIST =
+OPTIONS =
+%ELSE
+%IFDEF __GNUC__
+CC = gcc
+E = .VAX_GNUC_exe
+O = .VAX_GNUC_obj
+LIB = gnu_cc:[000000]gcclib.olb/lib,
+%ELSE
+E = .VAX_VAXC_exe
+O = .VAX_VAXC_obj
+%ENDIF
+OPTFILE_LIST = ,$(OPTFILE)
+OPTIONS = ,$(OPTFILE)/OPTIONS
+%ENDIF
+%ENDIF
+
+CFLAGS_ALL  = $(CFLAGS) /def=($(COMMON_DEFS) VMS)
+CFLAGS_CLI  = $(CFLAGS) /def=($(COMMON_DEFS) VMSCLI, VMS)
+CFLAGS_UTIL = $(CFLAGS) /def=($(COMMON_DEFS) UTIL, VMS)
+LD = LINK
+LDFLAGS = /NOTRACE
+
+# object file lists
+OBJM =	zip$O, zipcli$O
+OBJZ =	crc32$O, crctab$O, crypt$O, ttyio$O,-
+	zipfile$O, zipup$O, fileio$O, globals$O, util$O
+OBJV =	vmszip$O, vms$O, vmsmunch$O
+OBJI =	deflate$O, trees$O
+OBJU =	zipfile_$O, fileio_$O, globals$O,-
+	util_$O, vms_$O, vmsmunch$O
+OBJR =  crctab$O, crypt_$O, ttyio$O
+OBJC =	zipcloak$O, $(OBJR), $(OBJU)
+OBJN =	zipnote$O, $(OBJU)
+OBJS =	zipsplit$O, $(OBJU)
+
+ZIPX_UNX = zip
+ZIPX_CLI = zip_cli
+OBJSZIPLIB = $(OBJZ), $(OBJI), $(OBJV)
+OBJSZIP = zip$O, $(OBJSZIPLIB)
+OBJSCLI = zipcli$O, zip_cli$O, cmdline$O
+OBJSZIP_CLI = $(OBJSCLI), $(OBJSZIPLIB)
+ZIPHELP_UNX_RNH = [.vms]vms_zip.rnh
+ZIPHELP_CLI_RNH = [.vms]zip_cli.rnh
+
+ZIP_H =	zip.h ziperr.h tailor.h [.vms]osdep.h
+
+ZIPS = $(ZIPX_UNX)$E $(ZIPX_CLI)$E zipcloak$E zipnote$E zipsplit$E
+ZIPHELPS = $(ZIPX_UNX).hlp $(ZIPX_CLI).hlp
+
+###############################################
+# BASIC COMPILE INSTRUCTIONS AND DEPENDENCIES #
+###############################################
+
+default :	$(ZIPS) $(ZIPHELPS)
+
+
+# suffix rules
+*$O:	*.c				# `*.c' necessary?
+	$(CC)$(CFLAGS_ALL)/OBJECT=$@ $<
+
+*.hlp:	*.rnh
+	runoff /out=$@ $<
+
+
+# executables makerules (trailing `$' makes line a data line)
+$(ZIPX_UNX)$E :	$(OBJSZIP) $(OPTFILE_LIST)
+	$(LD) $(LDFLAGS)/EXEC=$(ZIPX_UNX)$E $(OBJSZIP) $(LIB) $(OPTIONS)
+
+$(ZIPX_CLI)$E :	$(OBJSZIP_CLI) $(OPTFILE_LIST)
+	$(LD) $(LDFLAGS)/EXEC=$(ZIPX_CLI)$E $(OBJSZIP_CLI) $(LIB) $(OPTIONS)
+
+zipcloak$E :	$(OBJC) $(OPTFILE_LIST)
+	$(LD) $(LDFLAGS)/EXEC=ZIPCLOAK$E $(OBJC) $(LIB) $(OPTIONS)
+
+zipnote$E :	$(OBJN) $(OPTFILE_LIST)
+	$(LD) $(LDFLAGS)/EXEC=ZIPNOTE$E $(OBJN) $(LIB) $(OPTIONS)
+
+zipsplit$E :	$(OBJS) $(OPTFILE_LIST)
+	$(LD) $(LDFLAGS)/EXEC=ZIPSPLIT$E $(OBJS) $(LIB) $(OPTIONS)
+
+$(OPTFILE) :
+	open/write tmp $(OPTFILE)
+	write tmp "SYS$SHARE:VAXCRTL.EXE/SHARE"
+	close tmp
+
+$(ZIPHELP_CLI_RNH)	: [.vms]zip_cli.help
+	set default [.vms]
+	edit/tpu/nosection/nodisplay/command=cvthelp.tpu zip_cli.help
+	set default [-]
+
+$(ZIPX_UNX).hlp : $(ZIPHELP_UNX_RNH)
+	runoff /out=$@ $<
+
+$(ZIPX_CLI).hlp : $(ZIPHELP_CLI_RNH)
+
+# dependencies for zip, zipnote, zipcloak, and zipsplit
+vmszip$O :	[.vms]vmszip.c [.vms]vmsmunch.h
+	$(CC)$(CFLAGS_ALL)/OBJECT=vmszip$O [.vms]vmszip.c
+vms$O :		[.vms]vms.c [.vms]vms_im.c [.vms]vms_pk.c \
+	[.vms]vms.h [.vms]vmsdefs.h
+	$(CC)$(CFLAGS_ALL)/OBJECT=vms$O [.vms]vms.c
+vmsmunch$O :	[.vms]vmsmunch.c [.vms]vmsmunch.h [.vms]vmsdefs.h
+	$(CC)$(CFLAGS_ALL)/OBJECT=vmsmunch$O [.vms]vmsmunch.c
+zipcli$O : zip.c [.vms]vmsmunch.h
+	$(CC) $(CFLAGS_CLI) /OBJ=$(MMS$TARGET) $<
+cmdline$O : [.vms]cmdline.c $(ZIP_H) crypt.h revision.h
+	$(CC) $(CFLAGS_CLI) /OBJ=$(MMS$TARGET) $<
+zip_cli$O : [.vms]zip_cli.cld
+
+crypt_$O :	crypt.c crypt.h ttyio.h
+	$(CC)$(CFLAGS_UTIL)/OBJECT=crypt_$O crypt.c
+zipfile_$O :	zipfile.c [.vms]vmsmunch.h [.vms]vmsdefs.h
+	$(CC)$(CFLAGS_UTIL)/OBJECT=zipfile_$O zipfile.c
+fileio_$O :	fileio.c
+	$(CC)$(CFLAGS_UTIL)/OBJECT=fileio_$O fileio.c
+util_$O :	util.c
+	$(CC)$(CFLAGS_UTIL)/OBJECT=util_$O util.c
+vms_$O :	[.vms]vms.c [.vms]vms_im.c [.vms]vms_pk.c \
+	[.vms]vms.h [.vms]vmsdefs.h
+	$(CC)$(CFLAGS_UTIL)/OBJECT=vms_$O [.vms]vms.c
+
+$(OBJM) zipcloak$O zipnote$O zipsplit$O zipup$O : revision.h
+$(OBJM) zipcloak$O zipup$O crypt$O ttyio$O : crypt.h
+$(OBJM) zipcloak$O crypt$O ttyio$O : ttyio.h
+zipup$O :	[.vms]zipup.h
+zipfile$O :	[.vms]vmsmunch.h [.vms]vmsdefs.h
+zip$O :		[.vms]vmsmunch.h
+$(OBJM) :	$(ZIP_H)
+$(OBJZ) :	$(ZIP_H)
+$(OBJI) :	$(ZIP_H)
+$(OBJN) :	$(ZIP_H)
+$(OBJS) :	$(ZIP_H)
+$(OBJC) :	$(ZIP_H)
+
+clean.com :
+	@ open/write tmp $@
+	@ write tmp "$!"
+	@ write tmp "$!	Clean.com --	procedure to delete files. It always returns success"
+	@ write tmp "$!			status despite any error or warnings. Also it extracts"
+	@ write tmp "$!			filename from MMS ""module=file"" format."
+	@ write tmp "$!"
+	@ write tmp "$ on control_y then goto ctly"
+	@ write tmp "$ if p1.eqs."""" then exit 1"
+	@ write tmp "$ i = -1"
+	@ write tmp "$scan_list:"
+	@ write tmp "$	i = i+1"
+	@ write tmp "$	item = f$elem(i,"","",p1)"
+	@ write tmp "$	if item.eqs."""" then goto scan_list"
+	@ write tmp "$	if item.eqs."","" then goto done		! End of list"
+	@ write tmp "$	item = f$edit(item,""trim"")		! Clean of blanks"
+	@ write tmp "$	wild = f$elem(1,""="",item)"
+	@ write tmp "$	show sym wild"
+	@ write tmp "$	if wild.eqs.""="" then wild = f$elem(0,""="",item)"
+	@ write tmp "$	vers = f$parse(wild,,,""version"",""syntax_only"")"
+	@ write tmp "$	if vers.eqs."";"" then wild = wild - "";"" + "";*"""
+	@ write tmp "$scan:"
+	@ write tmp "$		f = f$search(wild)"
+	@ write tmp "$		if f.eqs."""" then goto scan_list"
+	@ write tmp "$		on error then goto err"
+	@ write tmp "$		on warning then goto warn"
+	@ write tmp "$		delete/log 'f'"
+	@ write tmp "$warn:"
+	@ write tmp "$err:"
+	@ write tmp "$		goto scan"
+	@ write tmp "$done:"
+	@ write tmp "$ctly:"
+	@ write tmp "$	exit 1"
+	@ close tmp
+
+clean : clean.com
+	@clean "$(OBJM)"
+	@clean "$(OBJZ)"
+	@clean "$(OBJI)"
+	@clean "$(OBJV)"
+	@clean "$(OBJU)"
+	@clean "$(OBJR)"
+	@clean "$(OBJN)"
+	@clean "$(OBJS)"
+	@clean "$(OBJC)"
+	@clean "$(ZIPS)"
+	@clean "$(ZIPHELP_CLI_RNH)"
+	@clean "$(ZIPHELPS)"
+	- delete/noconfirm/nolog clean.com;*
+
+
+# the backslash '\' is the continuation character if it occurs as
+# the last non-white character on the line.
+# the hyphen '-' is the DCL continuation character, so if it occurs
+# as the last non-white character on the line, the next line will
+# not have the dollar sign '$' prepended.
+
+
+################################
+# INDIVIDUAL MACHINE MAKERULES #
+################################
+
+generic :	default		# first try if unknown
+generic2 :	default		# second try if unknown
+vax :		default
+vms :		default
+
+all :		$(ZIPS)
+zip :		zip$E
+zipcloak :	zipcloak$E
+zipnote :	zipnote$E
+zipsplit :	zipsplit$E

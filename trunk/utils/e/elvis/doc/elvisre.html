@@ -1,0 +1,418 @@
+<html><head>
+<title>Elvis-2.2_0 Regular Expressions</title>
+</head><body>
+
+<h1>5. REGULAR EXPRESSIONS</h1>
+
+Elvis uses regular expressions for searching and substitutions.
+A regular expression is a text string in which some characters have
+special meanings.
+This is much more powerful than simple text matching.
+
+<h2>5.1 Syntax</h2>
+Elvis' regexp package treats the following one- or two-character
+strings (called meta-characters) in special ways:
+
+<dl>
+
+<dt>\(<em>subexpression</em>\)<dd>
+The <code>\(</code> and <code>\)</code> metacharacters are used to delimit
+subexpressions.
+When the regular expression matches a particular chunk of text,
+Elvis will remember which portion of that chunk matched the <em>subexpression</em>.
+The <a href="elvisex.html#substitute">:s/regexp/newtext/</a> command makes use of this feature.
+
+<dt>^<dd>
+The <code>^</code> metacharacter matches the beginning of a line.
+If, for example, you wanted to find "foo" at the beginning of a line,
+you would use a regular expression such as <code>/^foo/.</code>
+Note that <code>^</code> is only a metacharacter if it occurs
+at the beginning of a regular expression;
+practically anyplace else, it is treated as a normal character.
+(Exception: It also has a special meaning inside a [<var>character-list</var>]
+metacharacter, as described below.)
+<dt>$<dd>
+The <code>$</code> metacharacter matches the end of a line.
+It is only a metacharacter when it occurs at the end of a regular expression;
+elsewhere, it is treated as a normal character.
+For example, the regular expression <code>/$$/</code> will search for a dollar sign at
+the end of a line.
+
+<dt>$<var>name</var>
+<br>${<var>name</var>}
+<dd>This inserts the value of the named option into the regular expression.
+If the value contains any metacharacters, they'll be interpreted as
+expected.
+For example, after...
+<pre>
+	<a href="elvisex.html#set">:set</a> <a href="elvisopt.html#w">w</a>="[[:alnum:]_:']"</pre>
+
+<p>...the command <code>/$w/</code> will search for the next
+letter, digit, underscore, colon, or apostrophe.
+
+<p>Note: This only works if the <a href="elvisopt.html#magicname">magicname</a>
+option is set.
+
+<dt>\&lt;<dd>
+The <code>\&lt;</code> metacharacter matches a zero-length string at the
+beginning of a word.
+A word is considered to be a string of 1 or more letters, digits, or
+underscores.
+A word can begin at the beginning of a line
+or after 1 or more non-alphanumeric characters.
+
+<dt>\&gt;<dd>
+The <code>\&gt;</code> metacharacter matches a zero-length string at the end
+of a word.
+A word can end at the end of the line
+or before 1 or more non-alphanumeric characters.
+For example, <code>/\&lt;end\&gt;/</code> would find any instance of the word "end",
+but would ignore any instances of e-n-d inside another word
+such as "calendar".
+
+<dt>\b, \B, \h, \H<dd>
+The <code>\h</code> metacharacter matches a zero-length string at either end
+of a word.
+The <code>\H</code> metacharacter matches a zero-length string which is
+<em>not</em> at either end of a word; it can be either in the middle of a
+word, or between words.
+
+<p>
+The <code>\b</code> and <code>\B</code> metacharacters are the same as
+<code>\h</code> and <code>\H</code>, but only if the
+<a href="elvisopt.html#magicperl">magicperl</a> option is set.
+Otherwise <code>\b</code> is treated as a backspace.
+
+<dt>\@<dd>
+When you're performing a search in visual mode, and the cursor is on a word
+before you start typing the search command, then <code>\@</code> matches the
+word at the cursor.
+
+<dt>\=<dd>
+Ordinarily, the visual mode search command leaves the cursor on the first
+character of the matching text that it finds.
+If your regular expression includes a <code>\=</code> metacharacter, then it
+will leave the cursor at the position that matched the <code>\=</code>.
+For example, if you place <code>\=</code> at the end of your regular expression,
+then the cursor will be left after the matching text instead of at the start
+of it.
+
+<dt>.<dd>
+The <code>.</code> metacharacter matches any single character.
+
+<p>NOTE: If the <a href="elvisopt.html#magic">magic</a> option is turned off,
+then <code>.</code> is treated as an ordinary, literal character.
+You should use <code>\.</code> to get the meta-character version in this case.
+
+<dt>[<em>character-list</em>]<dd>
+<a name="charlist"></a>
+This matches any single character from the <em>character-list</em>.
+Inside the <em>character-list</em>, you can denote a span of characters
+by writing only the first and last characters, with a hyphen between
+them.
+If the <em>character-list</em> is preceded by a <code>^</code> character,
+then the list is inverted -- it will match any character that <em>isn't</em>
+mentioned in the list.
+For example, <code>/[a-zA-Z]/</code> matches any ASCII letter, and
+<code>/[^ ]/</code> matches anything other than a blank.
+
+<p>NOTE: If the <a href="elvisopt.html#magic">magic</a> option is turned off,
+then the opening [ is treated as an ordinary, literal character.
+To get the meta-character behavior, you should use \[<em>character-list</em>]
+in this case.
+
+<p>There is no way to quote the ']' or '-' characters, which means that if
+you want to include those characters as members of the list, you must place
+them in positions where they couldn't be mistaken for the end of the list
+or a range.
+Specifically, ']' can appear only as the first character in the list
+(immediately after the "[" or "[^" that starts the list)
+or as the last character in a range.
+'-' can appear there too, or immediately after the last character of a range.
+For example, <code>[])}]</code> matches a closing bracket, parentheses, or
+curly brace.
+<code>[^-+]</code> matches any character except '+' or '-'.
+Probably the trickiest example, <code>[]-]-]</code> matches a closing
+bracket or a '-'.  (Note that the range "]-]" matches a single bracket;
+we wrote it this way so that the following "-" would be in a context where
+it couldn't be mistaken for a range and so must be a literal '-' character.)
+
+<p>There are also special cases for some common character lists.
+When one of the following special symbols appears in a character list,
+the list will include all appropriate characters for that symbol
+<em>including the non-ascii characters</em> as indicated by the
+<a href="elvisex.html#digraph">digraph table.</a>
+Note that the brackets around these symbols are <em>in addition to</em> the brackets
+around the whole class.
+For example, <code>/[[:alpha:]]/</code> matches any single letter, and
+<code>/[[:alpha:]_][[:alnum:]_]*/</code> matches any C identifier.
+<pre graphic>
+    .----------------.-------------------------------------------.
+    | SPECIAL SYMBOL | INCLUDED CHARACTERS                       |
+    |----------------|-------------------------------------------|
+    |   [:alnum:]    | all letters and digits                    |
+    |   [:alpha:]    | all letters                               |
+    |   [:ascii:]    | all ASCII characters                      |
+    |   [:blank:]    | the space and tab characters              |
+    |   [:cntrl:]    | ASCII control characters                  |
+    |   [:digit:]    | all digits                                |
+    |   [:graph:]    | all printable characters excluding space  |
+    |   [:lower:]    | all lowercase letters                     |
+    |   [:print:]    | all printable characters including space  |
+    |   [:punct:]    | all punctuation characters                |
+    |   [:space:]    | all whitespace characters except linefeed |
+    |   [:upper:]    | all uppercase characters                  |
+    |   [:xdigit:]   | all hexadecimal digits                    |
+    ^----------------^-------------------------------------------^</pre>
+
+<dt>\s, \S, \d, \D, \w, \W, \p, and \P
+<dd>These are all shortcuts for certain character lists.
+The lowercase <code>\s</code>, <code>\d</code>, <code>\w</code>, and
+<code>\p</code> symbols match (respectively) any whitespace character,
+digit, alphanumeric character, or any printable character.
+The uppercase versions are the opposites; they match any single character
+that the lowercase versions <em>don't</em> match.
+
+<dt>\I, \i
+<dd>These are shortcuts for character lists that are useful to describe
+character lists.
+Uppercase <code>\I</code> is any character which can appear appear at the
+front of an identifier, and <code>\i</code> is any character which can
+appear later in the identifier.
+As presently implemented, these character lists are hardcoded to use character
+lists that are useful for C/C++, however I expect to make them sensitive the
+<a href="elvisdm.html#startword">startword</a> and
+<a href="elvisdm.html#inword">inword</a> lines in the
+<a href="elvisdm.html#elvis.syn">elvis.syn</a> file eventually.
+
+<dt>\0, \a, \b, \f, \r, and \t
+<dd>These are control characters, just as they would be in C strings.
+Note that there is no <code>\n</code>.
+
+<dt>\{<em>n</em>\} or \{<em>n</em>}<dd>
+This is a closure operator, which means that it repeats the subexpression
+that precedes it for a controlled number of times.
+Closure operators have a high precedence, so normally it'll apply to an
+expression that matches a single character;
+if you want it to apply to more than that, you'll need to enclose the
+preceding expression in \(...\) parentheses.
+
+<p>The \{<em>n</em>\} or \{<em>n</em>} closure operator, in particular, means
+that the preceding expression should be repeated exactly <em>n</em> times.
+For example, <code>/^-\{80\}$/</code> matches a line of eighty hyphens, and
+<code>/\&lt;[[:alpha:]]\{4}\&gt;/</code> matches any four-letter word.
+
+<dt>\{<em>n</em>,<em>m</em>\} or \{<em>n</em>,<em>m</em>}<dd>
+This is a closure operator.
+It indicates that the preceding expression should be repeated between
+<em>n</em> and <em>m</em> times, inclusive.
+If the <em>m</em> is omitted (but the comma is present) then <em>m</em> is
+taken to be infinity.
+For example, <code>/"[^"]\{3,5\}"/</code> matches any pair of quotes which
+contains three, four, or five non-quote characters.
+<code>/.\{81,}/</code> matches any line which contains more than 80 characters.
+
+
+<dt>*<dd>
+The * metacharacter is a closure operator.
+It indicates that the preceding expression can be repeated zero or more times.
+It is equivalent to \{0,\}.
+For example, <code>/.*/</code> matches a whole line.
+
+<p>NOTE: If the <a href="elvisopt.html#magic">magic</a> option is turned off,
+then * is treated as an ordinary, literal character.
+You should use \* to get the meta-character version in this case.
+
+<dt>\+<dd>
+The \+ metacharacter is a closure operator.
+It indicates that the preceding expression can be repeated one or more times.
+It is equivalent to \{1,\}.
+For example, <code>/.\+/</code> matches a whole line,
+but only if the line contains at least one character.
+It doesn't match empty lines.
+
+<dt>\?<dd>
+The \? metacharacter is a closure operator.
+It indicates that the preceding expression is optional -- that is, that it
+can occur 0 or 1 times.
+It is equivalent to \{0,1\}.
+For example, <code>/no[ -]\?one/</code> matches "no one", "no-one", or "noone".
+
+<dt>\Q, \V, \E
+<dd>
+These change the way that any following metacharacters are parsed.
+After \Q, all metacharacters require a leading backslash;
+i.e., any text that doesn't involve backslashes is considered to be literal text.
+After \V, the traditional vi metacharacters are recognized when used without
+backslashes but all others do require backslashes.
+After \E, normal parsing rules are used, under the influence of the
+<a href="elvisopt.html#magicchar">magicchar</a>,
+<a href="elvisopt.html#magicperl">magicperl</a>, and
+<a href="elvisopt.html#magicname">magicname</a> options.
+If <a href="elvisopt.html#magic">nomagic</a> is set then these metacharacters
+have no effect.
+
+</dl>
+
+<p>Anything else is treated as a normal character which must exactly match
+a character from the scanned text.
+The special strings may all be preceded by a backslash to
+force them to be treated normally.
+
+<p>Normally, the closure operators
+(<code>\{</code><var>m</var><code>,</code><var>n</var><code>}</code>,
+<code>*</code>, <code>\+</code>, and <code>\?</code>) are "greedy",
+meaning they try to match as much text as possible.
+You can convert any of them into a "non-greedy" version (matching as few
+as possible) by placing an extra <code>\?</code> metacharacter after the
+closure operator.
+For example, in the text "one2three4five6seven8nine", the greedy regular
+expression <code>/\d.*\d/</code> matches "2three4five6seven8", while the
+non-greedy <code>/\d.*\?\d/</code> matches just "2three4".
+
+<a name="SUBST"></a>
+<h2>5.2 Substitutions</h2>
+The <a href="elvisex.html#ex">:s</a> command has at least two arguments:
+a regular expression, and a substitution string.
+The text that matched the regular expression is replaced by text
+which is derived from the substitution string.
+
+<p>You can use any punctuation character to delimit the regular expression
+and the replacement text.
+The first character after the command name is used as the delimiter.
+Most folks prefer to use a slash character most of the time, but if either
+the regular expression or the replacement text uses a lot of slashes, then
+some other punctuation character may be more convenient.
+
+<p>Most other characters in the substitution string are copied into the
+text literally but a few have special meaning:
+
+<pre graphic>
+.-------.----------------------------------------------------------.
+|SYMBOL | MEANING                                                  |
+|-------|----------------------------------------------------------|
+|  ^M   | Insert a newline (instead of a carriage-return)          |
+|   &amp;   | Insert a copy of the original text                       |
+|   ~   | Insert a copy of the previous replacement text           |
+|  \1   | Insert a copy of that portion of the original text which |
+|       |      matched the first set of \( \) parentheses          |
+| \2-\9 | Do the same for the second (etc.) pair of \( \)          |
+|  \U   | Convert following characters to uppercase                |
+|  \L   | Convert following characters to lowercase                |
+|  \E   | End the effect of \U or \L                               |
+|  \u   | Convert the next character to uppercase                  |
+|  \l   | Convert the next character to lowercase                  |
+|  \#   | Insert the line number, as a string of digits            |
+|  \0   | Insert a nul character                                   |
+|  \a   | Insert a bell character                                  |
+|  \b   | Insert a backspace character                             |
+|  \f   | Insert a form-feed character                             |
+|  \n   | Insert a line-feed character                             |
+|  \r   | Insert a carriage-return character                       |
+|  \t   | Insert a tab character                                   |
+| $<var>name</var> | Value of <var>name</var> option (only if <a href="elvisopt.html#magicname">magicname</a> is set)          |
+|${<var>name</var>}| Alternative form of $<var>name</var>                                |
+^-------^----------------------------------------------------------^
+</pre>
+These may be preceded by a backslash to force them to be treated normally.
+The delimiting character can also be preceded by a backslash to include
+it in either the regular expression or the substitution string.
+
+<p>Traditionally <code>\0</code> was a synonym for the <code>&amp;</code>
+symbol -- they both inserted a copy of the matching text.
+Elvis breaks from tradition here to make <code>\0</code> insert a NUL
+character because there would otherwise be no way to have a substitution
+insert a NUL character.
+
+<h2>5.3 Options</h2>
+Elvis has several options which affect the way regular expressions are used.
+These options may be examined or set via the <a href="elvisex.html#set">:set</a>
+command.
+
+<p>The first option is called "<a href="elvisopt.html#magic">[no]magic</a>".
+This is a boolean option, and it is "<code>magic</code>" (TRUE) by default.
+It selects between two different notations for metacharacters in a regular
+expression.
+While in <code>nomagic</code> mode, all of the metacharacters except
+<code>^</code> and <code>$</code> loose their special meaning unless they're
+prefixed with a backslash.
+In the normal <code>magic</code> mode, metacharacters listed in the
+<a href="elvisopt.html#magicchar">magicchar</a> option's value don't require
+a leading backslash but all others do.
+ 
+<p>The "<a href="elvisopt.html#magicchar">magicchar</a>" option is intended to
+allow you to alter Elvis' regular expression syntax to mimic that of other
+utilities.
+Vi is a very old editor, and its regular expression syntax is rather archaic.
+
+<p>The "<a href="elvisopt.html#magicperl">[no]magicperl</a>" option changes
+the meanings of some metacharacters to be more Perl-like.
+Specifically, it causes <code>\b</code> to mean "edge of a word" instead of
+"backspace".
+In later versions of Elvis, this is expected to change other metacharacters
+as well.
+
+<p>The "<a href="elvisopt.html#magicname">[no]magicname</a>" option enables or
+disables the use of <code>$</code><var>name</var> in regular expressions.
+Normally it is disabled, so you can search for dollar signs easily.
+Aliases will often use "<a href="elvisex.html#local">:local</a>
+<a href="elvisopt.html#magicname">magicname</a>" and then compute and use
+a regular expression.
+Here's a simple example showing how this might be used:
+
+<pre>
+	alias findup {
+	  " Search for uppercase version of current word
+	  local magicname n
+	  let n = toupper(current("word"))
+	  /$n/
+	}</pre>
+
+<p>The "<a href="elvisopt.html#ignorecase">[no]ignorecase</a>"
+and "<a href="elvisopt.html#smartcase">[no]smartcase</a>" options
+control whether searches and substitutions will distinguish between
+uppercase and lowercase letters.
+These are both Boolean options, and both are false by default which
+causes all searches to be case sensitive.
+Setting <code>ignorecase</code> (while leaving <code>smartcase</code> unset)
+causes all searches to be case insensitive, except in a
+<a href="#charlist">character list</a> metacharacter.
+Setting both <code>ignorecase</code> and <code>smartcase</code> will cause
+searches to be case insensitive unless the search expression contains some
+uppercase letters, in which case the search will be case sensitive.
+
+<p>Also, the "<a href="elvisopt.html#wrapscan">[no]wrapscan</a>" and
+"<a href="elvisopt.html#autoselect">[no]autoselect</a>"
+options affect searches.
+
+<h2>5.4 Examples</h2>
+This example changes every occurrence of "utilize" to "use":
+<pre>
+:%s/utilize/use/g
+</pre>
+This example deletes all whitespace that occurs at the end of a line anywhere
+in the file.
+<pre>
+:%s/\s\+$//
+</pre>
+This example converts the current line to uppercase:
+<pre>
+:s/.*/\U&amp;/
+</pre>
+This example underlines each letter in the current line,
+by changing it into an "underscore backspace letter" sequence.
+(The ^H is entered as "control-V backspace".):
+<pre>
+:s/[a-zA-Z]/_^H&amp;/g
+</pre>
+This example locates the last colon in a line,
+and swaps the text before the colon with the text after the colon.
+The first \( \) pair is used to delimit the stuff before the colon,
+and the second pair delimit the stuff after.
+In the substitution text, \1 and \2 are given in reverse order
+to perform the swap:
+<pre>
+:s/\(.*\):\(.*\)/\2:\1/
+</pre>
+
+</body></html>

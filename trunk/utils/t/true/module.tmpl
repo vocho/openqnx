@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<module name="true">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="guihosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="true" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				true
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="true_target" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				true
+			</location>
+		</component>
+		</package>
+
+	</contents>
+
+</module>

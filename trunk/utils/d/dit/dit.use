@@ -1,0 +1,18 @@
+#ifdef __USAGE
+%C -l [-v] [-s <symfile>] <pid>
+%C -a [-v] [-s <symfile>] <pid> <addr> [<addr> ...]
+%C -r [-v] [-s <symfile>] <pid> <addr> [<addr> ...]
+
+Options:
+ l  List the trace addresses (default)
+ a  Add the trace events at the specified addresses
+ r  Remove trace events at the specified addresses
+ s  Specifies symbol file to load for name->address resolution
+ v  Indicates an increased level of verbosity should be used
+
+pid
+ Specifies a process by id or name; name must be unique
+addr
+ Specifies an address to break at
+
+#endif

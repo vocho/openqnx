@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<module name="shutdown">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="shutdown" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">shutdown</location>
+		</component>
+	</contents>
+
+	<requires>
+		<!-- <part build="true" location="lib/c"/> -->
+		<part build="true" location="lib/shutdown"/>
+	</requires>
+
+</module>

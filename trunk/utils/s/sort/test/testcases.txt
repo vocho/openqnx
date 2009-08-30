@@ -1,0 +1,87 @@
+sort Testcases
+by Sunil Puri (spuri)
+
+Basic Testcases
+---------------
+1) Use {sorted, reverse sorted, random, all same lines} files x
+   {no, adjacent, non-adjacent} duplicate entries x
+   reverse sorting (option -r) was {on, off} x
+   unique sorting (option -u) was {on, off}  x
+   check sorting (option -c) was {on, off}
+   Note: files had blank lines, punctuation lines, integer lines, upper 
+   case alpha lines and lower case alpha lines
+2) Test with {0, 1} line file
+3) For option -d, test file with lines that are {blank, alnum, blank and alnum,
+   punct} lines x pairs of lines (l1, l2) where l1 contains punct and l1<l2 
+   but w/o punct l2<l1
+4) For option -f, test file with lines that are {upper, lower, upper and lower}
+   lines x pairs of lines (l1, l2) where l1 contains (blank, punct) and l1<l2 
+   but w/o (blank, punct) l2<l1
+5) For option -b, test file with non-blank lines with pairs of lines (l1, l2) 
+   where l1 contains {0, 1, 2} leading blanks and l1<l2 but w/o blanks l2<l1
+
+Test Case To Do List
+=====================
+
+Basic Tests
+-----------
+1) For option -i, test file with pairs of lines (l1, l2) where l1 contains 
+   non-printable chars and l1<l2 but w/o non-printable chars l2<l1
+
+Option -n Tests
+---------------
+1) For option -n, use leading sort keys that are {positive, negative, positive
+   without sign} x {0, 1, 2} leading blanks x {0, 1, 2} trailing blanks x
+   {0, 1, 2} leading zeroes x {with, without} thousands seperators
+2) Test with "1000", "1,000" thousands seperators
+3) Test with "" (empty field), which should evaluate to zero
+4) Test with invalid use of thousands seperators (not placed on a multiple of 3
+   char boundary)
+5) Test with each radix character, and invalid radix characters
+6) Test with alpha, punct chars
+7) Test with fields that are only "+", "-" 
+
+Global and Local Option Tests
+-----------------------------
+1) Option -u is {on, off} x
+   Option -c is {on, off} x
+   Options {-d, -f, -i, -n -r} are x
+   {on, off} globally x
+   {on, off} locally
+   
+Option -o Testcases
+-------------------
+1) Test with invalid filename, valid name, no name, name of input file, 
+   stdio
+
+Option -m Testcases
+-------------------
+1) Run with Global and Local Option Test 1) x
+   {1, 2, 3} files
+
+Option -t Testcases
+-------------------
+1) Test default delimiter with {0, 1, 2} sequences of {0, 1, 2} blanks.
+2) Test with blanks as explicit delimiter with {0, 1, 2} sequences of
+   {0, 1, 2} blanks, where blanks are (spaces, tabs, combination of 
+   spaces and tabs).
+3) Test with commas as explicit delimiter with {0, 1, 2} sequences of
+   {0, 1, 2} commas
+
+Scaling Up Tests
+----------------
+Test with {1, 2, 3} files that are too large to fit into available RAM x
+merge option is {on, off}
+
+Spanning Key Fields Tests
+-------------------------
+Sorting {with, with invalid ranges, without} spanning key fields x 
+  
+  1-9 sort keys x 
+  {0, 1, 2, =field width, >field width} start position of a field x
+  {0, 1, 2, =field width, >field width} end position of a field
+
+
+Note: sort needs more testcases than the ones mentioned above; those are just
+the ones I had time to determine.
+

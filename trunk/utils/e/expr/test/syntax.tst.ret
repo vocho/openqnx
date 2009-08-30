@@ -1,0 +1,46 @@
+expr abc \( a = b \) > /dev/null; echo Retval = $?
+expr \( a = b \) abc > /dev/null; echo Retval = $?
+expr abc \( a = b \) abc > /dev/null; echo Retval = $?
+expr = > /dev/null; echo Retval = $?
+expr = abc > /dev/null; echo Retval = $?
+expr abc = > /dev/null; echo Retval = $?
+expr abc = = > /dev/null; echo Retval = $?
+expr abc = \( a \& b \| \)  > /dev/null; echo Retval = $?
+expr abc = \( = a \& b \)  > /dev/null; echo Retval = $?
+expr 123 456 > /dev/null; echo Retval = $?
+expr 123 \( 1 + 2 \) > /dev/null; echo Retval = $?
+expr \( 1 + 2 \) 123 > /dev/null; echo Retval = $?
+expr 123 \( 1 + 2 \) 123 > /dev/null; echo Retval = $?
+expr + > /dev/null; echo Retval = $?
+expr + 123 > /dev/null; echo Retval = $?
+expr 123 + > /dev/null; echo Retval = $?
+expr 123 + + > /dev/null; echo Retval = $?
+expr 123 + \( 1 * 3 + \)  > /dev/null; echo Retval = $?
+expr 123 + \( + 1 * 3 \)  > /dev/null; echo Retval = $?
+expr \( \) > /dev/null; echo Retval = $?
+expr \) > /dev/null; echo Retval = $?
+expr \( 1 + 2 \) \) > /dev/null; echo Retval = $?
+expr \( 1 \* \( 9 + 3 \) / 4 \) \) > /dev/null; echo Retval = $?
+expr \( > /dev/null; echo Retval = $?
+expr \( 1 + 2 > /dev/null; echo Retval = $?
+expr \( 1 \* \( 9 + 3 \) / 4 > /dev/null; echo Retval = $?
+expr 1 ~ 4 > /dev/null; echo Retval = $?
+expr ~ 123 > /dev/null; echo Retval = $?
+expr 123 ~ > /dev/null; echo Retval = $?
+expr ~ > /dev/null; echo Retval = $?
+expr 12 \<=34 > /dev/null; echo Retval = $?
+expr 12 \<= 34 > /dev/null; echo Retval = $?
+expr 12 \<=34 > /dev/null; echo Retval = $?
+expr 1 2\>=34 > /dev/null; echo Retval = $?
+expr 12\>=3 4 > /dev/null; echo Retval = $?
+expr 1 2\>=3 4 > /dev/null; echo Retval = $?
+expr 12\< =34 > /dev/null; echo Retval = $?
+expr 1 2\< =3 4 > /dev/null; echo Retval = $?
+expr 1 2 \< = 3 4 > /dev/null; echo Retval = $?
+expr ab\<=cd > /dev/null; echo Retval = $?
+expr a b\<=cd > /dev/null; echo Retval = $?
+expr ab\<=c d > /dev/null; echo Retval = $?
+expr a b\<=c d > /dev/null; echo Retval = $?
+expr a b\<=c d > /dev/null; echo Retval = $?
+expr a b\< =c d > /dev/null; echo Retval = $?
+expr a b \< = c d > /dev/null; echo Retval = $?

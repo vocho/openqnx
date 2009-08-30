@@ -1,0 +1,104 @@
+function hook_preconfigure {
+  export TARGET_SYSNAME
+}
+
+
+function hook_postconfigure {
+        case ${TARGET_SYSNAME} in
+        nto)
+			sed -e's^unix/Makefile^Makefile^' \
+				-e's^-I\.^-I. -I..^' \
+				-e's^\$\*\.c^$<^' \
+				-e'/\$(CP).*_\.c/s^[a-z/]*\.c^../&^' \
+				-e'/\$(CP).*f\.c/s^[a-z/]*\.c^../&^' \
+				-e'/\$(CP).*unzipsfx\.c/s^[a-z/]*\.c^../&^' \
+				Makefile >$$
+			echo "\nVPATH=.." >>$$
+			mv $$ Makefile	
+			;;
+        linux)
+			sed -e's^unix/Makefile^Makefile^' -e's^-I\.^-I. -I..^' Makefile >$$
+			mv $$ Makefile	
+                ;;
+        win32)
+			sed -e's!^\(LOCFLAGS = \)!\1 -I.. !' -e's!-mpentium!!' Makefile >$$
+			mv $$ Makefile	
+			# VPATH doesn't work for source in targets with an explicit rule.
+			# At least that's the empirical evidence for win32
+			for i in crypt.c globals.c inflate.c ttyio.c unzip.c crc32.c crctab.c extract.c fileio.c match.c process.c 
+			do
+				ln -s ../$i .
+			done
+            ;;
+        *)
+                echo "Don't have config for ${SYSNAME}"
+                exit 1
+                ;;
+        esac
+}
+
+function hook_premake {
+	case ${TARGET_SYSNAME} in
+	nto)
+		make_opts="ARCH=${cpudir} VPATH=.."
+		make_cmds=qnxnto
+		if [ ! -s unix ]; then 
+		  if test "${SYSNAME}" != win32; then
+			ln -s ../unix unix
+		  else
+		    # TODO: on win32, we need to copy
+		    echo ""
+		  fi
+		fi		
+		;;
+	solaris)
+		make_opts=""
+		make_cmds=solaris
+		if [ ! -s unix ]; then 
+			ln -s ../unix unix
+		fi		
+		;;
+	linux)
+		make_opts="VPATH=.."
+		make_cmds=linux
+		if [ ! -s unix ]; then 
+			ln -s ../unix unix
+		fi		
+		;;
+	win32)
+		 #make_CC="gcc -mno-cygwin"
+		make_opts="VPATH=.."
+		if [ ! -s win32 ]; then 
+			ln -s ../win32 win32
+		fi		
+		;;
+	*)
+		;;
+	esac
+}
+
+function hook_postmake {
+	case ${SYSNAME} in
+	nto)
+		rm -f unix
+		;;
+	solaris)
+		rm -f unix
+		;;
+	linux)
+		rm -f unix
+		;;
+	win32)
+		rm -f win32
+		;;
+	*)
+		;;
+	esac
+}
+
+
+function hook_pinfo {
+	gen_pinfo -e unzip     usr/bin "DESCRIPTION=InfoZIP dearchiver"           "USE=%1>%C -h" SYMLINK=zipinfo
+	gen_pinfo -e funzip    usr/bin "DESCRIPTION=InfoZIP dearchiver filter"    "USE=%1>%C -h"
+	gen_pinfo -e unzipsfx  usr/bin "DESCRIPTION=InfoZIP self-extracting stub" "USE=%1>%C -h"
+}

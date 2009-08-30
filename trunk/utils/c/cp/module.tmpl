@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<module name="cp">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<component id="cp" generated="true">
+			<location basedir="nto/{cpu}/o{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				cp
+			</location>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/util"/>
+		<part build="true" location="lib/qnx43"/>
+	</requires>
+
+</module>

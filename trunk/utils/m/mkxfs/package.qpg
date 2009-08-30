@@ -1,0 +1,43 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="mkifsf_opah/nto/*/*/mkifsf_opah" pinfo="$" handling="exclude"/>
+         <QPG:Add type="file" file="mkxfs/nto/*/*/mkxfs" pinfo="mkxfs.pinfo"/>
+         <QPG:Add type="file" file="dumpifs/nto/*/*/dumpifs" pinfo="dumpifs.pinfo"/>
+         <QPG:Add type="file" file="mkifsf_densan/nto/*/*/mkifsf_densan" pinfo="$"/>
+         <QPG:Add type="file" file="mkifsf_openbios/nto/*/*/mkifsf_openbios" pinfo="$"/>
+         <QPG:Add type="file" file="mkifsf_srec/nto/*/*/mkifsf_srec" pinfo="$"/>
+         <QPG:Add type="file" file="mkifsf_elf/nto/*/*/mkifsf_elf" pinfo="$"/>
+ <!--    <QPG:Add type="file" file="mkifsf_coff/nto/*/*/mkifsf_coff" pinfo="$"/> -->
+
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_opah/solaris/*/*/mkifsf_opah" pinfo="$" handling="exclude"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkxfs/solaris/*/*/mkxfs" pinfo="mkxfs.pinfo"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="dumpifs/solaris/*/*/dumpifs" pinfo="dumpifs.pinfo"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_densan/solaris/*/*/mkifsf_densan" pinfo="$"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_openbios/solaris/*/*/mkifsf_openbios" pinfo="$"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_srec/solaris/*/*/mkifsf_srec" pinfo="$"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_elf/solaris/*/*/mkifsf_elf" pinfo="$"/>
+ <!--    <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="mkifsf_coff/solaris/*/*/mkifsf_coff" pinfo="$"/> -->
+
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_opah/linux/*/*/mkifsf_opah" pinfo="$" handling="exclude"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkxfs/linux/*/*/mkxfs" pinfo="mkxfs.pinfo"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="dumpifs/linux/*/*/dumpifs" pinfo="dumpifs.pinfo"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_densan/linux/*/*/mkifsf_densan" pinfo="$"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_openbios/linux/*/*/mkifsf_openbios" pinfo="$"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_srec/linux/*/*/mkifsf_srec" pinfo="$"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_elf/linux/*/*/mkifsf_elf" pinfo="$"/>
+ <!--    <QPG:Add hos="linux" type="file" install="/usr/bin/" file="mkifsf_coff/linux/*/*/mkifsf_coff" pinfo="$"/> -->
+
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_opah/win32/*/*/mkifsf_opah.exe" pinfo="$" handling="exclude"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkxfs/win32/*/*/mkxfs.exe"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="dumpifs/win32/*/*/dumpifs.exe" pinfo="dumpifs.exe.pinfo"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_densan/win32/*/*/mkifsf_densan.exe" pinfo="$"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_openbios/win32/*/*/mkifsf_openbios.exe" pinfo="$"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_srec/win32/*/*/mkifsf_srec.exe" pinfo="$"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_elf/win32/*/*/mkifsf_elf.exe" pinfo="$"/>
+ <!--    <QPG:Add hos="win32" type="file" install="/usr/bin/" file="mkifsf_coff/win32/*/*/mkifsf_coff.exe" pinfo="$"/> -->
+
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

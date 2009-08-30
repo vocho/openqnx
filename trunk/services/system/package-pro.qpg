@@ -1,0 +1,20 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="public/kernel/*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/*cisco*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/*_g*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/procnto*.*" handling="exclude"/> 
+			<QPG:Add file="public/c6x/*" handling="exclude" />
+			<QPG:Add file="proc/*/*/procnto*instr" handling="exclude" /> 
+			<QPG:Add file="proc/*/*/procnto*tx79*" handling="exclude" /> 
+			<QPG:Add file="proc/*/*/procnto*gcc*" handling="exclude" /> 
+			<QPG:Add filetype="exe" file="proc/*/*/procnto-800" pinfo="$"/> 
+			<QPG:Add filetype="exe" file="proc/*/*/procnto-600-smp" pinfo="$"/> 
+			<QPG:Add filetype="exe" file="proc/*/*/procnto-400" pinfo="$"/> 
+			<QPG:Add filetype="exe" file="proc/mips/*/procnto" pinfo="$"/> 
+			<QPG:Add filetype="exe" file="proc/mips/be.32/procnto-32" pinfo="$"/> 
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

@@ -1,0 +1,22 @@
+@c This is part of GNU tar manual.
+@c Copyright (C) 1992, 1994, 1995, 1996, 1997, 1999, 2000, 2001,
+@c 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+@c See file tar.texi for copying conditions.
+
+@macro GNUTAR
+@acronym{GNU} @command{tar}
+@end macro
+
+@macro xopindex{option,text}
+@opindex \option\@r{, \text\}
+@end macro
+
+@macro opsummary{option}
+@ifclear ANCHOR--\option\
+@set ANCHOR--\option\ 1
+@anchor{--\option\}
+@end ifclear
+@xopindex{\option\, summary}
+@end macro
+
+

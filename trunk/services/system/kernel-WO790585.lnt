@@ -1,0 +1,52 @@
+//
+// FlexeLint Configuration (policy for WO790585)
+//
+//     @@@ FIXME: documentation
+//
+
+//
+// DEFINES
+//
+
+-dRD_PROBE_INT()=0
+-dRD_VERIFY_PTR()=0
+-dWR_PROBE_INT()=0
+-dWR_VERIFY_PTR()=0
+
+//
+// FLEXELINT FLAGS
+//
+
+//
+// FLEXELINT MISCELLANEOUS OPTIONS
+//
+
+//
+// FLEXELINT AUTHOR OPTIONS
+//
+
+//
+// FLEXELINT STRONG TYPES
+//
+
+//
+// FLEXELINT SEMANTIC OPTIONS
+//
+
+//
+// FLEXELINT INHIBITION OPTIONS
+//
+
+// global suppressions
+
+-e652						// permit macro/sym coexist
+
+// miscellaneous suppressions
+
+-esym(578,index)			// permit hiding (common param name)
+
+-emacro(62,RD_PROBE_INT,RD_VERIFY_PTR,WR_PROBE_INT,WR_VERIFY_PTR)
+-emacro(155,RD_PROBE_INT,RD_VERIFY_PTR,WR_PROBE_INT,WR_VERIFY_PTR)
+-emacro(506,RD_PROBE_INT,RD_VERIFY_PTR,WR_PROBE_INT,WR_VERIFY_PTR)
+
+-emacro(613,LINK3_REM,DISPATCH_THP,DISPATCH_CLR) // permit poss NULL ptr

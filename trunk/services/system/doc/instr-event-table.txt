@@ -1,0 +1,1615 @@
+# The format of this file is as follows
+# #'s are comments
+# Event blocks are delimited by a blank line
+# Class -> The external class description
+# Event -> The external event description
+# Fast -> Comma delimited list of wide argument subset
+# Wide -> Full arguments emmitted 
+# Call -> If the event is associated with a kernel call, put them here
+
+Note - all _NTO_TRACE_KERCALLEXIT calls now have errno as the second
+parameter if the kercall failed (ie the retval is -1)
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_BAD
+Fast: empty, empty 
+Wide: empty, empty 
+Call: N/A 
+#Args: BAD, fHempty, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_BAD
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: N/A 
+#Args: BAD, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CHANNEL_CREATE
+Fast: flags, empty 
+Wide: flags, empty 
+Call: ChannelCreate 
+#Args: CHANNEL_CREATE, fHflags, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CHANNEL_CREATE
+Fast: chid, empty 
+Wide: chid, empty 
+Call: ChannelCreate 
+#Args: CHANNEL_CREATE, fHchid, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CHANNEL_DESTROY
+Fast: chid, empty 
+Wide: chid, empty 
+Call: ChannelDestroy 
+#Args: CHANNEL_DESTROY, fHchid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CHANNEL_DESTROY
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ChannelDestroy 
+#Args: CHANNEL_DESTROY, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CHANCON_ATTR
+Fast: chid, flags 
+Wide: chid, flags, new_attr
+Call: ChannelConnectAttr 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CHANCON_ATTR
+Fast: chid, flags 
+Wide: chid, flags, old_attr
+Call: ChannelConnectAttr 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CLOCK_ADJUST
+Fast: id, new->tick_count 
+Wide: id, new->tick_count, new->tick_nsec_inc 
+Call: ClockAdjust 
+#Args: CLOCK_ADJUST, fDid, fDnew->tick_count, Dnew->tick_nsec_inc 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CLOCK_ADJUST
+Fast: ret_val, old->tick_count 
+Wide: ret_val, old->tick_count, old->tick_nsec_inc 
+Call: ClockAdjust 
+#Args: CLOCK_ADJUST, fDret_val, fDold->tick_count, Dold->tick_nsec_inc 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CLOCK_ID
+Fast: pid, tid 
+Wide: pid, tid 
+Call: ClockId 
+#Args: CLOCK_ID, fDpid, fDtid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CLOCK_ID
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ClockId 
+#Args: CLOCK_ID, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CLOCK_PERIOD
+Fast: id, new->nsec 
+Wide: id, new->nsec, new->fract 
+Call: ClockPeriod 
+#Args: CLOCK_PERIOD, fDid, fDnew->nsec, Dnew->fract 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CLOCK_PERIOD
+Fast: ret_val, old->nsec 
+Wide: ret_val, old->nsec, old->fract 
+Call: ClockPeriod 
+#Args: CLOCK_PERIOD, fDret_val, fDold->nsec, Dold->fract 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CLOCK_TIME
+Fast: id, new(sec) 
+Wide: id, new(sec), new(nsec) 
+Call: ClockTime 
+#Args: CLOCK_TIME, fDid, fDnew(sec), Dnew(nsec) 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CLOCK_TIME
+Fast: ret_val, old(sec) 
+Wide: ret_val, old(sec), old(nsec) 
+Call: ClockTime 
+#Args: CLOCK_TIME, fDret_val, fDold(sec), Dold(nsec) 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CONNECT_ATTACH
+Fast: nd, pid 
+Wide: nd, pid, chid, index, flags 
+Call: ConnectAttach 
+#Args: CONNECT_ATTACH, fHnd, fDpid, Hchid, Dindex, Hflags 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CONNECT_ATTACH
+Fast: coid, empty 
+Wide: coid, empty 
+Call: ConnectAttach 
+#Args: CONNECT_ATTACH, fHcoid, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CONNECT_CLIENT_INFO
+Fast: scoid, ngroups 
+Wide: scoid, ngroups 
+Call: ConnectClientInfo 
+#Args: CONNECT_CLIENT_INFO, fHscoid, fDngroups 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CONNECT_CLIENT_INFO
+Fast: ret_val, info->nd 
+Wide: ret_val, info->nd, info->pid, info->sid, flags, info->ruid, info->euid, info->suid, info->rgid, info->egid, info->sgid, info->ngroups, info->grouplist[0], info->grouplist[1], info->grouplist[2], info->grouplist[3], info->grouplist[4], info->grouplist[5], info->grouplist[6], info->grouplist[7]
+Call: ConnectClientInfo 
+#Args: CONNECT_CLIENT_INFO, fHscoid, fDngroups 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CONNECT_DETACH
+Fast: coid, empty 
+Wide: coid, empty 
+Call: ConnectDetach 
+#Args: CONNECT_DETACH, fHcoid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CONNECT_DETACH
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ConnectDetach 
+#Args: CONNECT_DETACH, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CONNECT_FLAGS
+Fast: coid, bits 
+Wide: pid, coid, masks, bits 
+Call: ConnectFlags 
+#Args: CONNECT_FLAGS, Dpid, fHcoid, Hmasks, fHbits 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CONNECT_FLAGS
+Fast: old_flags, empty 
+Wide: old_flags, empty 
+Call: ConnectFlags 
+#Args: CONNECT_FLAGS, fHold_flags, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_CONNECT_SERVER_INFO
+Fast: pid, coid 
+Wide: pid, coid 
+Call: ConnectServerInfo 
+#Args: CONNECT_SERVER_INFO, fDpid, fHcoid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_CONNECT_SERVER_INFO
+Fast: coid, info->nd
+Wide: coid, info->nd, info->srcnd, info->pid, info->tid, info->chid, info->scoid, info->coid, info->msglen, info->srcmsglen, info->dstmsglen, info->priority, info->flags, info->reserved
+Call: ConnectServerInfo 
+#Args: CONNECT_SERVER_INFO, fDpid, fHcoid 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_ATTACH
+Fast: intr, flags 
+Wide: intr, handler_p, area_p, areasize, flags 
+Call: InterruptAttach 
+#Args: INTERRUPT_ATTACH, fDintr, Phandler_p, Parea_p, Dareasize, fHflags 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_ATTACH
+Fast: int_fun_id, empty 
+Wide: int_fun_id, empty 
+Call: InterruptAttach 
+#Args: INTERRUPT_ATTACH, fHint_fun_id, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_DETACH
+Fast: id, empty 
+Wide: id, empty 
+Call: InterruptDetach 
+#Args: INTERRUPT_DETACH, fDid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_DETACH
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: InterruptDetach
+#Args: INTERRUPT_DETACH, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_DETACH_FUNC
+Fast: intr, handler_p 
+Wide: intr, handler_p 
+Call: N/A
+#Args: INTERRUPT_DETACH_FUNC, fDintr, fPhandler_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_DETACH_FUNC
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: N/A
+#Args: INTERRUPT_DETACH_FUNC, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_MASK
+Fast: intr, id 
+Wide: intr, id 
+Call: InterruptMask 
+#Args: INTERRUPT_MASK, fDintr, fDid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_MASK
+Fast: mask_level, empty 
+Wide: mask_level, empty 
+Call: InterruptMask 
+#Args: INTERRUPT_MASK, fHmask_level, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_UNMASK
+Fast: intr, id 
+Wide: intr, id 
+Call: InterruptUnmask 
+#Args: INTERRUPT_UNMASK, fDintr, fDid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_UNMASK
+Fast: mask_level, empty 
+Wide: mask_level, empty 
+Call: InterruptUnmask 
+#Args: INTERRUPT_UNMASK, fHmask_level, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_INTERRUPT_WAIT
+Fast: flags, timeout_tv_sec 
+Wide: flags, timeout_tv_sec, timeout_tv_nsec 
+Call: InterruptWait 
+#Args: INTERRUPT_WAIT, fHflags, fDtimeout_tv_sec, Dtimeout_tv_nsec 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_INTERRUPT_WAIT
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: InterruptWait 
+#Args: INTERRUPT_WAIT, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_CURRENT
+Fast: rcvid, empty 
+Wide: rcvid, empty 
+Call: MsgCurrent 
+#Args: MSG_CURRENT, fHrcvid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_CURRENT
+Fast: empty, empty 
+Wide: empty, empty 
+Call: MsgCurrent 
+#Args: MSG_CURRENT, fHempty, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_DELIVER_EVENT
+Fast: rcvid, event->sigev_notify 
+Wide: rcvid, event->sigev_notify, event->sigev_notify_function_p, event->sigev_value, event->sigev_notify_attributes_p
+Call: MsgDeliverEvent 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_DELIVER_EVENT
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: MsgDeliverEvent 
+#Args: MSG_DELIVER_EVENT, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_ERROR
+Fast: rcvid, err 
+Wide: rcvid, err 
+Call: MsgError 
+#Args: MSG_ERROR, fHrcvid, fDerr 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_ERROR
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: MsgError 
+#Args: MSG_ERROR, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_INFO
+Fast: rcvid, info_p 
+Wide: rcvid, info_p 
+Call: MsgInfo 
+#Args: MSG_INFO, fHrcvid, fPinfo_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_INFO
+Fast: ret_val, info->nd 
+Wide: ret_val, info->nd, info->srcnd, info->pid, info->tid, info->chid, info->scoid, info->coid, info->msglen, info->srcmsglen, info->dstmsglen, info->priority, info->flags, info->reserved
+Call: MsgInfo 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_KEYDATA
+Fast: rcvid, op 
+Wide: rcvid, op 
+Call: MsgKeyData 
+#Args: MSG_KEYDATA, fHrcvid, fHop 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_KEYDATA
+Fast: ret_val, newkey 
+Wide: ret_val, newkey 
+Call: MsgKeyData 
+#Args: MSG_KEYDATA, fHret_val, fDnewkey 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_READIOV
+Fast: rcvid, offset 
+Wide: rcvid, parts, offset, flags 
+Call: MsgReadiov 
+#Args: MSG_READIOV, fHrcvid, Dparts, fHoffset, Hflags 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_READIOV
+Fast: rbytes, rmsg[0] 
+Wide: rbytes, rmsg[0], rmsg[1], rmsg[2]  
+Call: MsgReadiov 
+#Args: MSG_READIOV, fDrbytes, fSrmsg, s, s 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_READV
+Fast: rcvid, offset 
+Wide: rcvid, rmsg_p, rparts, offset 
+Call: MsgRead,MsgReadv 
+#Args: MSG_READV, fHrcvid, Prmsg_p, Drparts, fHoffset 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_READV
+Fast: rbytes, rmsg[0]
+Wide: rbytes, rmsg[0], rmsg[1], rmsg[2]  
+Call: MsgRead,MsgReadv 
+#Args: MSG_READV, fDrbytes, fSrmsg, s, s 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_READWRITEV
+Fast: src_rcvid, dst_rcvid 
+Wide: src_rcvid, dst_rcvid 
+Call: N/A
+#Args: MSG_READWRITEV, fHsrc_rcvid, fHdst_rcvid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_READWRITEV
+Fast: msglen, empty 
+Wide: msglen, empty 
+Call: N/A
+#Args: MSG_READWRITEV, fDmsglen, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_RECEIVEPULSEV
+Fast: chid, rparts 
+Wide: chid, rparts 
+Call: MsgReceivePulse,MsgReceivePulsev 
+#Args: MSG_RECEIVEPULSEV, fHchid, fDrparts 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_RECEIVEPULSEV
+Fast: rcvid, rmsg[0] 
+Wide: rcvid, rmsg[0], rmsg[1], rmsg[2], info->nd, info->srcnd, info->pid, info->tid, info->chid, info->scoid, info->coid, info->msglen, info->srcmsglen, info->dstmsglen, info->priority, info->flags, info->reserved 
+Call: MsgReceivePulse,MsgReceivePulsev 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_RECEIVEV
+Fast: chid, rparts 
+Wide: chid, rparts 
+Call: MsgReceive,MsgReceivev 
+#Args: MSG_RECEIVEV, fHchid, fDrparts 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_RECEIVEV
+Fast: rcvid, rmsg[0] 
+Wide: rcvid, rmsg[0], rmsg[1], rmsg[2], info->nd, info->srcnd, info->pid, info->tid, info->chid, info->scoid, info->coid, info->msglen, info->srcmsglen, info->dstmsglen, info->priority, info->flags, info->reserved 
+Call: MsgReceive,MsgReceivev 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_REPLYV
+Fast: rcvid, status 
+Wide: rcvid, sparts, status, smsg[0], smsg[1], smsg[2]  
+Call: MsgReply,MsgReplyv 
+#Args: MSG_REPLYV, fHrcvid, Dsparts, fHstatus, Ssmsg, s, s 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_REPLYV
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: MsgReply,MsgReplyv 
+#Args: MSG_REPLYV, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_SEND_PULSE
+Fast: coid, code 
+Wide: coid, priority, code, value 
+Call: MsgSendPulse 
+#Args: MSG_SEND_PULSE, fHcoid, Dpriority, fHcode, Hvalue 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_SEND_PULSE
+Fast: status, empty 
+Wide: status, empty 
+Call: MsgSendPulse 
+#Args: MSG_SEND_PULSE, fDstatus, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_SENDV
+Fast: coid, msg 
+Wide: coid, sparts, rparts, msg[0], msg[1], msg[2]
+Call: MsgSend,MsgSendv,MsgSendvs 
+#Args: MSG_SENDV, fHcoid, Dsparts, Drparts, fSmsg, s, s
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_SENDV
+Fast: status, rmsg[0] 
+Wide: status, rmsg[0], rmsg[1], rmsg[2] 
+Call: MsgSend,MsgSendv,MsgSendvs
+#Args: MSG_SENDV, fDstatus, fSrmsg, s, s 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_SENDVNC
+Fast: coid, msg 
+Wide: coid, sparts, rparts, msg[0], msg[1], msg[2]
+Call: MsgSendnc,MsgSendvnc,MsgSendvsnc
+#Args: MSG_SENDVNC, fHcoid, Dsparts, Drparts, fSmsg, s, s
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_SENDVNC
+Fast: ret_val, rmsg[0] 
+Wide: ret_val, rmsg[0], rmsg[1], rmsg[2]  
+Call: MsgSendnc,MsgSendvnc,MsgSendvsnc
+#Args: MSG_SENDVNC, fHret_val, fSrmsg, s, s 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_VERIFY_EVENT
+Fast: rcvid, event->sigev_notify 
+Wide: rcvid, event->sigev_notify, event->sigev_notify_function_p, event->sigev_value, event->sigev_notify_attribute_p 
+Call: MsgVerifyEvent 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_VERIFY_EVENT
+Fast: status, empty 
+Wide: status, empty 
+Call: MsgVerifyEvent 
+#Args: MSG_VERIFY_EVENT, fDstatus, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_MSG_WRITEV
+Fast: rcvid, offset 
+Wide: rcvid, sparts, offset, msg[0], msg[1], msg[2]  
+Call: MsgWrite,MsgWritev 
+#Args: MSG_WRITEV, fHrcvid, Dsparts, fHoffset, Smsg, s, s 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_MSG_WRITEV
+Fast: wbytes, empty 
+Wide: wbytes, empty 
+Call: MsgWrite,MsgWritev 
+#Args: MSG_WRITEV, fDwbytes, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NET_CRED
+Fast: coid, info_p 
+Wide: coid, info_p 
+Call: NetCred 
+#Args: NET_CRED, fHcoid, fPinfo_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NET_CRED
+Fast: ret_val, info->nd 
+Wide: ret_val, info->nd, info->pid, info->sid, info->flags, info->ruid, info->euid, info->suid, info->rgid, info->egid, info->sgid, info->ngroups, info->grouplist[0], info->grouplist[1], info->grouplist[2], info->grouplist[3], info->grouplist[4], info->grouplist[5], info->grouplist[6], info->grouplist[7]
+Call: NetCred 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NET_INFOSCOID
+Fast: scoid, infoscoid 
+Wide: scoid, infoscoid 
+Call: NetInfoScoid 
+#Args: NET_INFOSCOID, fHscoid, fHinfoscoid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NET_INFOSCOID
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: NetInfoScoid 
+#Args: NET_INFOSCOID, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NET_SIGNAL_KILL
+Fast: pid, signo
+Wide: cred->ruid, cred->euid, nd, pid, tid, signo, code, value
+Call: NetSignalKill
+#Args: NET_SIGNAL_KILL, fDstatus, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NET_SIGNAL_KILL
+Fast: status, empty 
+Wide: status, empty 
+Call: NetSignalKill
+#Args: NET_SIGNAL_KILL, fDstatus, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NET_UNBLOCK
+Fast: vtid, empty 
+Wide: vtid, empty 
+Call: NetUnblock 
+#Args: NET_UNBLOCK, fHvtid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NET_UNBLOCK
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: NetUnblock 
+#Args: NET_UNBLOCK, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NET_VTID
+Fast: vtid, info_p
+Wide: vtid, info_p, tid, coid, priority, srcmsglen, keydata, srcnd, dstmsglen
+Call: NetVtid
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NET_VTID
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: NetVtid 
+#Args: NET_VTID, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_NOP
+Fast: dummy, empty 
+Wide: dummy, empty 
+Call: N/A 
+#Args: NOP, fHdummy, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_NOP
+Fast: empty, empty 
+Wide: empty, empty 
+Call: N/A 
+#Args: NOP, fHempty, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_RING0
+Fast: func_p, arg_p 
+Wide: func_p, arg_p 
+Call: __Ring0 
+#Args: RING0, fPfunc_p, fParg_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_RING0
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: __Ring0 
+#Args: RING0, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SCHED_GET
+Fast: pid, tid 
+Wide: pid, tid 
+Call: SchedGet 
+#Args: SCHED_GET, fDpid, fDtid 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SCHED_GET
+Fast: ret_val, sched_priority
+Wide: ret_val, sched_priority, param.ss_low_priority, param.ss_max_repl, param.ss_repl_period.tv_sec, param.ss_repl_period.tv_nsec, param.ss_init_budget.tv_sec, param.ss_init_budget.tv_nsec
+Call: SchedGet 
+#Args: SCHED_GET, fDpid, fDtid 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SCHED_INFO
+Fast: pid, policy 
+Wide: pid, policy 
+Call: SchedInfo 
+#Args: SCHED_INFO, fDpid, fDpolicy 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SCHED_INFO
+Fast: ret_val, priority_max
+Wide: ret_val, priority_min, priority_max, interval_sec, interval_nsec, priority_priv
+Call: SchedInfo 
+#Args: SCHED_INFO, fDpid, fDpolicy 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SCHED_SET
+Fast: pid, sched_priority 
+Wide: pid, tid, policy, sched_priority, sched_curpriority, param.ss_low_priority, param.ss_max_repl, param.ss_repl_period.tv_sec, param.ss_repl_period.tv_nsec, param.ss_init_budget.tv_sec, param.ss_init_budget.tv_nsec
+Call: SchedSet 
+#Args: SCHED_SET, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SCHED_SET
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SchedSet 
+#Args: SCHED_SET, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SCHED_YIELD
+Fast: empty, empty 
+Wide: empty, empty 
+Call: SchedYield
+#Args: SCHED_YIELD, fHempty, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SCHED_YIELD
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SchedYield 
+#Args: SCHED_YIELD, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_FAULT
+Fast: sigcode, addr 
+Wide: sigcode, addr 
+Call: N/A
+#Args: SIGNAL_FAULT, fDsigcode, fPaddr 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_FAULT
+Fast: ret_val, reg_1 
+Wide: ret_val, reg_1, reg_2, reg_3, reg_4, reg_5 
+Call: N/A
+#Args: SIGNAL_FAULT, fHret_val, fHreg_1, Hreg_2, Hreg_3, Hreg_4, Hreg_5 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_KILL
+Fast: pid, signo 
+Wide: nd, pid, tid, signo, code, value 
+Call: SignalKill 
+#Args: SIGNAL_KILL, Hnd, fDpid, Dtid, fDsigno, Hcode, Hvalue 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_KILL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SignalKill 
+#Args: SIGNAL_KILL, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_RETURN
+Fast: s_p, empty 
+Wide: s_p, empty 
+Call: SignalReturn 
+#Args: SIGNAL_RETURN, fPs_p, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_RETURN
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SignalReturn 
+#Args: SIGNAL_RETURN, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_SUSPEND
+Fast: sig_blocked->bits[0], sig_blocked->bits[1] 
+Wide: sig_blocked->bits[0], sig_blocked->bits[1] 
+Call: SignalSuspend
+#Args: SIGNAL_SUSPEND, fHsig_blocked->bits[0], fHsig_blocked->bits[1] 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_SUSPEND
+Fast: ret_val, sig_blocked_p 
+Wide: ret_val, sig_blocked_p 
+Call: SignalSuspend
+#Args: SIGNAL_SUSPEND, fHret_val, fPsig_blocked_p 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_WAITINFO
+Fast: sig_wait->bits[0], sig_wait->bits[1] 
+Wide: sig_wait->bits[0], sig_wait->bits[1] 
+Call: SignalWaitinfo 
+#Args: SIGNAL_WAITINFO, fHsig_wait->bits[0], fHsig_wait->bits[1] 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_WAITINFO
+Fast: sig_num, si_code
+Wide: sig_num, si_signo, si_code, si_errno, p[0], p[1], p[2], p[3], p[4], p[5], p[6]
+Call: SignalWaitinfo 
+#Args: SIGNAL_WAITINFO, fHsig_wait->bits[0], fHsig_wait->bits[1] 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_CONDVAR_SIGNAL
+Fast: sync_p, all 
+Wide: sync_p, all, sync->count, sync->owner 
+Call: SyncCondvarSignal 
+#Args: SYNC_CONDVAR_SIGNAL, fPsync_p, fDall, Dsync->count, Dsync->owner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_CONDVAR_SIGNAL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncCondvarSignal 
+#Args: SYNC_CONDVAR_SIG, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_CONDVAR_WAIT
+Fast: sync_p, mutex_p 
+Wide: sync_p, mutex_p, sync->count, sync->owner, mutex->count, mutex->owner 
+Call: SyncCondvarWait 
+#Args: SYNC_CONDVAR_WAIT, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_CONDVAR_WAIT
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncCondvarWait 
+#Args: SYNC_CONDVAR_WAIT, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_CREATE
+Fast: type, sync_p
+Wide: type, sync_p, count, owner, protocol, flags, prioceiling, clockid
+Call: SyncCreate 
+#Args: SYNC_CREATE, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_CREATE
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncCreate 
+#Args: SYNC_CREATE, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_CTL
+Fast: cmd, sync_p 
+Wide: cmd, sync_p, data_p, count, owner 
+Call: SyncCtl 
+#Args: SYNC_CTL, fDcmd, fPsync_p, Pdata_p, Dcount, Downer 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_CTL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncCtl 
+#Args: SYNC_CTL, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_DESTROY
+Fast: sync_p, owner 
+Wide: sync_p, count, owner 
+Call: SyncDestroy 
+#Args: SYNC_DESTROY, fPsync_p, Dcount, fDowner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_DESTROY
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncDestroy 
+#Args: SYNC_DESTROY, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_MUTEX_LOCK
+Fast: sync_p, owner 
+Wide: sync_p, count, owner 
+Call: SyncMutexLock 
+#Args: SYNC_MUTEX_LOCK, fPsync_p, Dcount, fDowner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_MUTEX_LOCK
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncMutexLock 
+#Args: SYNC_MUTEX_LOCK, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_MUTEX_REVIVE
+Fast: sync_p, owner 
+Wide: sync_p, count, owner 
+Call: SyncMutexRevive 
+#Args: SYNC_MUTEX_REVIVE, fPsync_p, Dcount, fDowner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_MUTEX_REVIVE
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncMutexRevive 
+#Args: SYNC_MUTEX_REVIVE, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_MUTEX_UNLOCK
+Fast: sync_p, owner 
+Wide: sync_p, count, owner 
+Call: SyncMutexUnlock 
+#Args: SYNC_MUTEX_UNLOCK, fPsync_p, Dcount, fDowner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_MUTEX_UNLOCK
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncMutexUnlock 
+#Args: SYNC_MUTEX_UNLOCK, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_SEM_POST
+Fast: sync_p, count 
+Wide: sync_p, count, owner 
+Call: SyncSemPost 
+#Args: SYNC_SEM_POST, fPsync_p, fDcount, Downer 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_SEM_POST
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncSemPost 
+#Args: SYNC_SEM_POST, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYNC_SEM_WAIT
+Fast: sync_p, count 
+Wide: sync_p, try, count, owner 
+Call: SyncSemWait 
+#Args: SYNC_SEM_WAIT, fPsync_p, Dtry, fDcount, Downer 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYNC_SEM_WAIT
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: SyncSemWait 
+#Args: SYNC_SEM_WAIT, fDret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SYS_CPUPAGE_GET
+Fast: index, empty 
+Wide: index, empty 
+Call: N/A
+#Args: SYS_CPUPAGE_GET, fDindex, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SYS_CPUPAGE_GET
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: N/A
+#Args: SYS_CPUPAGE_GET, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_CANCEL
+Fast: tid, canstub_p 
+Wide: tid, canstub_p 
+Call: ThreadCancel 
+#Args: THREAD_CANCEL, fDtid, fPcanstub_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_CANCEL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ThreadCancel 
+#Args: THREAD_CANCEL, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_CREATE
+Fast: func_p, arg_p
+Wide: pid, func_p, arg_p, flags, stacksize, stackaddr_p, exitfunc_p, policy, sched_priority, sched_curpriority, param.ss_low_priority, param.ss_max_repl, param.ss_repl_period.tv_sec, param.ss_repl_period.tv_nsec, param.ss_init_budget.tv_sec, param.ss_init_budget.tv_nsec
+Call: ThreadCreate 
+#Args: THREAD_CREATE, fHthread_id, fHowner 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_CREATE
+Fast: thread_id, owner 
+Wide: thread_id, owner 
+Call: ThreadCreate 
+#Args: THREAD_CREATE, fHthread_id, fHowner 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_CTL
+Fast: cmd, data_p 
+Wide: cmd, data_p 
+Call: ThreadCtl 
+#Args: THREAD_CTL, fHcmd, fPdata_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_CTL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ThreadCtl 
+#Args: THREAD_CTL, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_DESTROY
+Fast: tid, status_p 
+Wide: tid, priority, status_p 
+Call: ThreadDestroy 
+#Args: THREAD_DESTROY, fDtid, Dpriority, fPstatus_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_DESTROY
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ThreadDestroy 
+#Args: THREAD_DESTROY, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_DESTROYALL
+Fast: empty, empty 
+Wide: empty, empty 
+Call: N/A
+#Args: THREAD_DESTROYALL, fHempty, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_DESTROYALL
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: N/A
+#Args: THREAD_DESTROYALL, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_DETACH
+Fast: tid, empty 
+Wide: tid, empty 
+Call: ThreadDetach 
+#Args: THREAD_DETACH, fDtid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_DETACH
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: ThreadDetach 
+#Args: THREAD_DETACH, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_THREAD_JOIN
+Fast: tid, status_p 
+Wide: tid, status_p 
+Call: ThreadJoin 
+#Args: THREAD_JOIN, fDtid, fPstatus_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_THREAD_JOIN
+Fast: ret_val, status_p 
+Wide: ret_val, status_p 
+Call: ThreadJoin 
+#Args: THREAD_JOIN, fHret_val, fPstatus_p 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_CREATE
+Fast: timer_id, event->sigev_notify 
+Wide: timer_id, event->sigev_notify, event->sigev_notify_function_p, event->sigev_value, event->sigev_notify_attributes_p 
+Call: TimerCreate 
+#Args: TIMER_CREATE, fHtimer_id, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_CREATE
+Fast: timer_id, empty 
+Wide: timer_id, empty 
+Call: TimerCreate 
+#Args: TIMER_CREATE, fHtimer_id, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_DESTROY
+Fast: id, empty 
+Wide: id, empty 
+Call: TimerDestroy 
+#Args: TIMER_DESTROY, fHid, fHempty 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_DESTROY
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: TimerDestroy 
+#Args: TIMER_DESTROY, fHret_val, fHempty 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_INFO
+Fast: pid, id 
+Wide: pid, id, flags, info_p 
+Call: TimerInfo 
+#Args: TIMER_INFO, fDpid, fHid, Hflags, Pinfo_p 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_INFO
+Fast: prev_id, info->itime.nsec
+Wide: prev_id, info->itime.nsec, info->itime.interval_nsec, info->otime.nsec, info->otime.interval_nsec, info->flags, info->tid, info->notify, info->clockid, info->overruns, info->event.sigev_notify, info->event.sigev_notify_function_p, info->event.sigev_value, info->event.sigev_notify_attributes_p
+Call: TimerInfo 
+#Args: TIMER_INFO, fDpid, fHid, Hflags, Pinfo_p 
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TRACE_EVENT
+Fast: mode, class 
+Wide: mode, class, event, data_1, data_2 
+Call: TraceEvent
+#Args: TRACE_EVENT, fHmode, fHclass[header], Hevent[time_off], Hdata_1, Hdata_2 
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TRACE_EVENT
+Fast: ret_val, empty 
+Wide: ret_val, empty 
+Call: TraceEvent 
+#Args: TRACE_EVENT, fHret_val, fHempty 
+
+Class: _NTO_TRACE_INTENTER
+Event: _NTO_TRACE_INTFIRST - _NTO_TRACE_INTLAST
+Fast: IP, kernel_flag 
+Wide: interrupt_number, kernel_flag
+Call: N/A
+
+Class: _NTO_TRACE_INTEXIT
+Event: _NTO_TRACE_INTFIRST - _NTO_TRACE_INTLAST
+Fast: interrupt_number, kernel_flag 
+Wide: interrupt_number, kernel_flag
+Call: N/A
+
+Class: _NTO_TRACE_INT_HANDLER_ENTER
+Event: _NTO_TRACE_INTFIRST - _NTO_TRACE_INTLAST
+Fast: pid, interrupt_number, ip, area
+Wide: pid, interrupt_number, ip, area
+Call: N/A
+
+Class: _NTO_TRACE_INT_HANDLER_EXIT
+Event: _NTO_TRACE_INTFIRST - _NTO_TRACE_INTLAST
+Fast: interrupt_number, sigevent
+Wide: interrupt_number, sigevent
+Call: N/A
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_ACTION
+Fast: signo, act->sa_handler_p
+Wide: pid, sigstub_p, signo, act->sa_handler_p, act->sa_flags, act->sa_mask.bits[0], act->sa_mask.bits[1]
+Call: SignalAction
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_ACTION
+Fast: ret_val, act->sa_handler_p
+Wide: ret_val, act->sa_handler_p, act->sa_flags, act->sa_mask.bits[0], act->sa_mask.bits[1]
+Call: SignalAction
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_SIGNAL_PROCMASK
+Fast: pid, tid
+Wide: pid, tid, how, sig_blocked->bits[0], sig_blocked->bits[1]
+Call: SignalProcmask
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_SIGNAL_PROCMASK
+Fast: ret_val, sig_blocked->bits[0]
+Wide: ret_val, sig_blocked->bits[0], sig_blocked->bits[1]
+Call: SignalProcmask
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_SETTIME
+Fast: clock_id, itime->nsec
+Wide: clock_id, flags, itime->nsec, itime->interval_nsec 
+Call: TimerSettime
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_SETTIME
+Fast: ret_val, itime->nsec
+Wide: ret_val, itime->nsec, itime->interval_nsec
+Call: TimerSettime
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_ALARM
+Fast: clock_id, itime->nsec
+Wide: clock_id, itime->nsec, itime->interval_nsec
+Call: TimerAlarm
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_ALARM
+Fast: ret_val, itime->nsec
+Wide: ret_val, itime->nsec, itime->interval_nsec
+Call: TimerAlarm
+
+Class: _NTO_TRACE_KERCALLENTER
+Event: __KER_TIMER_TIMEOUT
+Fast: clock_id, timeout_flags, ntime
+Wide: clock_id, timeout_flags, ntime, event->sigev_notify, event->sigev_notify_function_p, event->sigev_value, event->sigev_notify_attributes_p
+Call: TimerTimeout
+
+Class: _NTO_TRACE_KERCALLEXIT
+Event: __KER_TIMER_TIMEOUT
+Fast: prev_timeout_flags, otime
+Wide: prev_timeout_flags, otime
+Call: TimerTimeout
+
+# Control Events
+
+Class: _NTO_TRACE_CONTROL
+Event: _NTO_TRACE_CONTROLTIME
+Fast: msbtime, lsbtime
+Wide: msbtime, lsbtime
+Call: N/A
+
+Class: _NTO_TRACE_CONTROL
+Event: _NTO_TRACE_CONTROLBUFFER
+Fast: buffer sequence number, num events
+Wide: buffer sequence number, num events
+Call: N/A
+
+# Process Events
+
+Class: _NTO_TRACE_PROCESS
+Event: _NTO_TRACE_PROCCREATE
+Fast: ppid, pid
+Wide: ppid, pid
+Call: N/A
+
+Class: _NTO_TRACE_PROCESS
+Event: _NTO_TRACE_PROCCREATE_NAME
+Fast: ppid, pid, name
+Wide: ppid, pid, name
+Call: N/A
+
+Class: _NTO_TRACE_PROCESS
+Event: _NTO_TRACE_PROCDESTROY
+Fast: ppid, pid
+Wide: ppid, pid
+Call: N/A
+
+Class: _NTO_TRACE_PROCESS
+Event: _NTO_TRACE_PROCDESTROY_NAME
+Fast: ppid, pid, name
+Wide: ppid, pid, name
+Call: N/A
+
+Class: _NTO_TRACE_PROCESS
+Event: _NTO_TRACE_PROCTHREAD_NAME
+Fast: pid, tid, name
+Wide: pid, tid, name
+Call: N/A
+
+#Thread state changes
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THDEAD
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A 
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THRUNNING
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A 
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THREADY
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A 
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSTOPPED
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A 
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSEND
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THRECEIVE
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THREPLY
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSTACK
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THWAITTHREAD
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THWAITPAGE
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSIGSUSPEND
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSIGWAITINFO
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THNANOSLEEP
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THMUTEX
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THCONDVAR
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THJOIN
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THINTR
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THSEM
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THWAITCTX
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THNET_SEND
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THNET_REPLY
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THCREATE
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THDESTROY
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A
+
+Class: _NTO_TRACE_THREAD
+Event: _NTO_TRACE_THNET_REPLY
+Fast: pid, tid
+Wide: pid, tid, priority, policy, partition id, sched_flags (incl APS_SCHED_* critical bit def'd in kermacros.h)
+	** note: partition id and sched_flags only present if APS scheduler module is loaded.
+Call: N/A 
+
+#VThread state changes
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHDEAD
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A 
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHRUNNING
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A 
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHREADY
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A 
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSTOPPED
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A 
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSEND
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHRECEIVE
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHREPLY
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSTACK
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHWAITTHREAD
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHWAITPAGE
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSIGSUSPEND
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSIGWAITINFO
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHNANOSLEEP
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHMUTEX
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHCONDVAR
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHJOIN
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHINTR
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHSEM
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHWAITCTX
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHNET_SEND
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHNET_REPLY
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHCREATE
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHDESTROY
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A
+
+Class: _NTO_TRACE_VTHREAD
+Event: _NTO_TRACE_VTHNET_REPLY
+Fast: pid, tid
+Wide: pid, tid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SMSG
+Fast: rcvid, pid
+Wide: rcvid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_RMSG
+Fast: rcvid, pid
+Wide: rcvid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_REPLY
+Fast: tid, pid
+Wide: tid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_ERROR
+Fast: tid, pid
+Wide: tid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_RPULSE
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+# SIGEV_PULSE delivered
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE_EXE
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+# _PULSE_CODE_DISCONNECT pulse delivered
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE_DIS
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+# _PULSE_CODE_COIDDEATH pulse delivered
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE_DEA
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+# _PULSE_CODE_UNBLOCK delivered
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE_UN
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+# _PULSE_CODE_NET_UNBLOCK delivered
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SPULSE_QUN
+Fast: scoid, pid
+Wide: scoid, pid
+Call: N/A 
+
+Class: _NTO_TRACE_COMM
+Event: _NTO_TRACE_COMM_SIGNAL
+Fast: si_signo, si_code
+Wide: si_signo, si_code, si_errno, __data.__pad[0-6]
+Call: N/A 
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_PATHMGR
+Fast: pid, tid, pathname
+Wide: pid, tid, pathname
+Call: Any pathname operation (routed via libc connect)
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_APS_NAME
+Fast: partition id, partition name
+Wide: partition id, partition name
+Call: SchedCtl with sched_aps.h:: SCHED_APS_CREATE_PARTITION
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_APS_BUDGETS
+Fast: partition id, new percentage cpu budget, new critical budget ms
+Wide: partition id, new percentage cpu budget, new critical budget ms
+Call: SchedCtl with sched_aps.h SCHED_APS_CREATE_PARTITION or SCHED_APS_MODIFY_PARTITION. Also emitted automatically when APS scheduler clears a crtical budget as part of handling a bankruptcy. 
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_APS_BNKR
+Fast: suspect pid, suspect tid, partition id
+Wide: suspect pid, suspect tid, parition id
+Call: automatically when a partition exceeds its critical budget. 
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_MMAP
+Fast: pid, addr (64), len (64), flags
+Wide: pid, addr (64), len (64), flags, prot, fd, align (64), offset (64), name
+Call: mmap/mmap64
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_MUNMAP
+Fast: pid, addr (64), len (64)
+Wide: pid, addr (64), len (64)
+Call: munmap
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_MAPNAME
+Fast: pid, addr (32), len (32), name
+Wide: pid, addr (32), len (32), name
+Call: dlopen
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_ADDRESS
+Fast: addr(32), <null>
+Wide: addr(32), <null>
+Call: whenever a breakpoint is hit
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_FUNC_ENTER
+Fast: thisfn(32), call_site(32)
+Wide: thisfn(32), call_site(32)
+Call: whenever a function is entered (and it is instrumented)
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_FUNC_EXIT
+Fast: thisfn(32), call_site(32)
+Wide: thisfn(32), call_site(32)
+Call: whenever a function is exited (and it is instrumented)
+
+Class: _NTO_TRACE_SYSTEM
+Event: _NTO_TRACE_SYS_FUNC_SLOG
+Fast: opcode(32), severity(32), message
+Wide: opcode(32), severity(32), message
+Call: when the kernel wants to note an unusual occurrance
+
+

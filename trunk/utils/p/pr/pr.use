@@ -1,0 +1,28 @@
+%C - print files (POSIX)
+
+%C [+nn] [-nn] [-a] [-b] [-c] [-d] [-e[char][gap]] [-F]
+   [-f] [-h header] [-i[char][gap]] [-l lines] [-m]
+   [-n[char][width]] [-o offset] [-r] [-s[char]] [-t]
+   [-w width] [file....]
+Options:
+ +nn     Begin output at page number nn.
+ -nn     Produce output nn columns wide.
+ -a      Print multiple text-column across the page.
+ -b      (extension) Balance columns on last page.
+ -c      (extension) Print unprintable chars with ^ prefix
+ -d      Produce double spaced output.
+ -e      Expand input tabs to columns gap+1, 2*gap+1, etc.
+         expand with [char] character or space (default).
+ -F      Use a form feed for new pages.
+ -f      (extension) Synonym for -F.
+ -h      Use the string header as the header instead of file.
+ -i      Reduce multiple spaces with tabs when they reach gap+1,
+         2*gap+1, etc.  Reduce to [char] character or <tab> (default).
+ -l      Override 66 line default and reset page length to lines.
+ -m      Merge files.  Write 1 line from each file side by side.
+ -n      Provide width-digit line numbering (default is 5).
+ -o      Each line of output is preceeded by offset <spaces>.
+ -r      Print no diagnostic reports on failure to open files.
+ -s      Separate text columns by single char [char].
+ -t      Do not print 5 line header or trailer.
+ -w      Set the width of the line to width column positions.

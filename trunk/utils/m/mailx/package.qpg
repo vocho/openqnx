@@ -1,0 +1,11 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/mailx" pinfo="mailx.pinfo"/>
+	 <QPG:Add type="file" file="misc/mail.help" install="/usr/share/misc/mail.help">
+	 <QPG:Add type="file" file="misc/mail.tildehelp" install="/usr/share/misc/mail.tildehelp">
+	 <QPG:Add type="file" file="misc/mail.rc" install="/usr/share/misc/mail.rc">
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

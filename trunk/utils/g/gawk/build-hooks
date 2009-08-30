@@ -1,0 +1,66 @@
+# qnx_target_version default: 6.4.0
+# Can be overriden by VERSION_REL
+# If native compiled on neutrino, it will be determined
+# unless overriden by VERSION_REL environment variable.
+qnx_target_version=6.4.0
+
+if [ ! -z "${VERSION_REL}" ]; then
+	qnx_target_version=${VERSION_REL}
+else
+	if test "${SYSNAME}" = "${TARGET_SYSNAME}" -a "${SYSNAME}" != win32 ; then
+		qnx_target_version=$(uname -r)
+	fi
+fi
+
+#if target_version is 6.4.x then default to 6.4.0. We have the same
+#toolchain for 6.4.x.
+case ${qnx_target_version} in
+  6.3.*) qnx_target_version=6.3.0
+  ;;
+  6.4.*) qnx_target_version=6.4.0
+  ;;
+esac
+
+SIFS=${IFS}
+IFS=-
+set -- ${PWD##*/}
+IFS=${SIFS}
+cpu_string=$2
+if [ "$cpu_string" = "x86" ]; then
+cpu_string=i386-pc
+elif [ "$cpu_string" = "ppc" ]; then
+cpu_string=powerpc-unknown
+else
+cpu_string=$cpu_string-unknown
+fi
+target=${cpu_string}-nto-qnx${qnx_target_version}
+
+
+function hook_preconfigure {
+	configure_opts="$configure_opts --prefix=$INSTALL_ROOT_nto/${cpudir}"
+	if [ ${TARGET_SYSNAME} = nto ]; then
+	  if test ${SYSNAME} != nto; then
+		configure_opts="${configure_opts} --target=${target} --host=${target}"
+		export CC="${make_CC}"
+		export CONFIG_SITE="${PWD}/../nto-config.site"
+	  fi
+	fi
+}
+
+function hook_premake {
+      # Work around mips optimization bug.
+      targ=${PWD#*-}
+      case $targ in
+      mips*)
+              sed 's/-O2/-O0/g' < Makefile > sed.makefile.sed
+              mv sed.makefile.sed Makefile
+              ;;
+      esac
+}
+
+function hook_pinfo {
+    gen_pinfo -e gawk usr/bin USE="%1>%C --help" DESCRIPTION="AWK programming language" SYMLINK=awk
+    cd awklib
+    gen_pinfo -e pwcat usr/libexec DESCRIPTION="pwcat"
+    gen_pinfo -e grcat usr/libexec DESCRIPTION="grcat"
+}

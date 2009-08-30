@@ -1,0 +1,31 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <!-- Binary Files -->
+         <QPG:Add type="file" file="nto-*/src/ci" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/co" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/ident" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/merge" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/rcs" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/rcsclean" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/rcsdiff" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/rcsmerge" install="/usr/bin/"/>
+         <QPG:Add type="file" file="nto-*/src/rlog" install="/usr/bin/"/>
+
+         <!-- Man Pages -->
+         <QPG:Add type="file" file="nto-*/man/ci.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/co.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/ident.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/merge.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcs.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcsclean.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcsdiff.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcsintro.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcsmerge.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rlog.1" install="/usr/man/man1/"/>
+         <QPG:Add type="file" file="nto-*/man/rcsfile.5" install="/usr/man/man5/"/>
+
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

@@ -1,0 +1,12 @@
+/*
+ * $QNXLicenseC: $
+ */
+
+#include <sys/platform.h>
+#ifdef _STD_USING
+ #undef _STD_USING
+ #include <malloc_g/malloc.h>
+ #define _STD_USING 1
+#else
+ #include <malloc_g/malloc.h>
+#endif

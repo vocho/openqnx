@@ -1,0 +1,40 @@
+16c16
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+21c21
+< expr error: attempted modulus by zero.
+---
+> expr: division by zero
+41c41
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+46c46
+< expr error: attempted modulus by zero.
+---
+> expr: division by zero
+66c66
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+71c71
+< expr error: attempted modulus by zero.
+---
+> expr: division by zero
+91c91
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+96c96
+< expr error: attempted modulus by zero.
+---
+> expr: division by zero
+116c116
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+121c121
+< expr error: attempted modulus by zero.
+---
+> expr: division by zero

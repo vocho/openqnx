@@ -1,0 +1,18 @@
+function hook_preconfigure {
+	configure_opts="$configure_opts --prefix=/usr"
+	export DIFF=/usr/bin/diff
+	export DIFF3=/usr/bin/diff3
+}
+
+function hook_pinfo {
+ cd src
+ # gen_pinfo ci usr/bin
+ # gen_pinfo co usr/bin
+ # gen_pinfo ident usr/bin
+ # gen_pinfo merge usr/bin
+ # gen_pinfo rcs usr/bin
+ # gen_pinfo rcsclean usr/bin
+ # gen_pinfo rcsdiff usr/bin
+ # gen_pinfo rcsmerge usr/bin
+ # gen_pinfo rlog usr/bin
+}

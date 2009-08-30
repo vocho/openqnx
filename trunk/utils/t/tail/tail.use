@@ -1,0 +1,8 @@
+%C - copy the last part of a file (POSIX)
+
+%C  [-l] [-f] [-c number | -n number] [file]
+Options:
+ -l         Quantity of output is measured in lines (default).
+ -f         Loop copying further bytes from input file (regular files only).
+ -c number  Number of bytes to output.
+ -n number  Number of lines to output.

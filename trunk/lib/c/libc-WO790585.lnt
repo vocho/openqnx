@@ -1,0 +1,45 @@
+//
+// FlexeLint Configuration (policy for WO790585)
+//
+//     @@@ FIXME: documentation
+//
+
+//
+// DEFINES
+//
+
+//
+// FLEXELINT FLAGS
+//
+
+//
+// FLEXELINT MISCELLANEOUS OPTIONS
+//
+
+//
+// FLEXELINT AUTHOR OPTIONS
+//
+
+//
+// FLEXELINT STRONG TYPES
+//
+
+//
+// FLEXELINT SEMANTIC OPTIONS
+//
+
+//
+// FLEXELINT INHIBITION OPTIONS
+//
+
+// global suppressions
+
+-e424   // Dinkum locale code does ptr arithmetic for free() (xfreeloc.c)
+-e506   // constant value boolean (while(1), max(sizeof,sizeof), !0)
+
+// miscellaneous suppressions
+
+-esym(31,__DTOR_LIST__,__CTOR_END__) // permit redef
+-esym(85,__DTOR_LIST__,__CTOR_END__) // permit zero-dim ary
+
+-esym(578,index)			// permit hiding (common param name)

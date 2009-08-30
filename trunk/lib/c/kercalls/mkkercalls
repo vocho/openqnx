@@ -1,0 +1,208 @@
+#!/usr/bin/env ksh
+
+rootdir=${0%/*}
+if [ "${rootdir}" = "${0}" ]; then
+	# In place for Windows.  Any normal shell expansion of \ characters
+      # should be stripped away by this point.  This is needed to build from cmd.exe
+	rootdir=${0%\\*}
+	if [ "${rootdir}" = "${0}" ]; then
+		rootdir=.
+	fi
+fi
+
+extension=s
+kcprefix=""
+select="*"
+test_mode=""
+
+
+while getopts s:p:T ARG; do
+	case ${ARG} in
+	s)
+		select="${OPTARG}"
+		;;
+	p)
+		kcprefix="${OPTARG}"
+		;;
+	T)
+		test_mode="yes"
+		;;
+	*)
+		echo Unknown option ${ARG} >&2
+		exit 1
+		;;
+	esac
+done
+
+let "i = $OPTIND - 1"
+shift $i
+
+if [ "${test_mode}" ]; then
+	if [ ! -r "${rootdir}/$1/template" ]; then
+		echo "Missing '$1' template file" >&2
+		exit 1
+	fi
+
+	. ${rootdir}/$1/template
+
+	shift 1
+	gen_call $*
+	exit 0
+fi
+
+if [ $# -lt 2 ]; then
+	echo Expecting at least 2 arguments >&2
+	exit 1
+fi
+
+if [ $# -eq 2 ]; then
+	outdir=$2
+else
+	outdir=$3
+fi
+
+if [ ! -r "${rootdir}/$2/template" ]; then
+	echo "Missing '$2' template file" >&2
+	exit 1
+fi
+
+. ${rootdir}/$2/template
+
+# parse the <sys/kercalls.h> file to find the kercall names & numbers
+function parse_header {
+	let "kcnum = 0"
+	while read -r name remainder; do
+		root=${name#__KER_}
+		if [ "${root}" != "${name}" ]; then
+			root=${root%,}
+			eval kc_${root}=${kcnum}
+			let "kcnum = ${kcnum} + 1"
+		fi	
+	done
+}
+
+# generate all the kernel call files
+function generate {
+	while read -r name kc nparms rent neglist; do
+		case ${name} in
+		"")
+			;;
+		"#")
+			;;
+		${select})
+			eval kcnum=\${kc_${kc}}
+			if [ "${kcnum}" = "" ]; then
+				echo "Missing kernel call number '${kc}'" >&1
+				exit 1
+			fi
+			fullname=${kcprefix}${name}
+			gen_call ${fullname} ${kcnum} ${nparms} NONE "${neglist}" >${outdir}/${name}.${extension}
+			if [ "${rent}" != "NONE" ]; then
+				gen_call "${fullname}_r" ${kcnum} ${nparms} ${rent} "${neglist}" >${outdir}/${name}_r.${extension}
+			fi
+			;;
+		esac
+	done
+}
+
+parse_header <$1
+
+generate <<HERE
+
+# name				kercall_number	   #parms	rent	neg_list
+
+__Ring0  			RING0					1	NORMAL
+__traceevent  		TRACE_EVENT 			1	NONE
+__interruptmask  	INTERRUPT_MASK 			1	NONE
+__interruptunmask  	INTERRUPT_UNMASK 		1	NONE
+__kerbad  			BAD 					0	NONE
+__kernop  			NOP 					0	NONE
+__SysCpupageGet 	SYS_CPUPAGE_GET 		1	NONE
+__SysCpupageSet 	SYS_CPUPAGE_SET 		2	NONE
+NetCred 			NET_CRED 				2	NONE
+NetInfoscoid 		NET_INFOSCOID 			2	NONE
+NetUnblock 			NET_UNBLOCK 			1	NONE
+NetVtid 			NET_VTID 				2	NONE
+NetSignalKill  		NET_SIGNAL_KILL  		2	NONE
+ChannelCreate  		CHANNEL_CREATE  		1	NEGATIVE
+ChannelCreateExt 	CHANNEL_CREATE  		6	NONE
+ChannelDestroy  	CHANNEL_DESTROY  		1	NORMAL
+ChannelConnectAttr 	CHANCON_ATTR  			4	NONE
+ClockAdjust  		CLOCK_ADJUST  			3	NORMAL
+ClockPeriod  		CLOCK_PERIOD  			3	NORMAL
+ClockTime  			CLOCK_TIME  			3	NORMAL
+ClockId  			CLOCK_ID  				2	NEGATIVE
+ConnectAttach 		CONNECT_ATTACH  		5	NEGATIVE
+ConnectAttachExt 	CONNECT_ATTACH  		6	NONE
+ConnectClientInfo  	CONNECT_CLIENT_INFO  	3	NORMAL
+ConnectDetach  		CONNECT_DETACH  		1	NORMAL
+ConnectFlags  		CONNECT_FLAGS  			4	NEGATIVE
+ConnectServerInfo  	CONNECT_SERVER_INFO  	3	NEGATIVE
+InterruptAttach  	INTERRUPT_ATTACH  		5	NEGATIVE
+InterruptDetachFunc INTERRUPT_DETACH_FUNC 	2	NORMAL
+InterruptDetach  	INTERRUPT_DETACH 		1	NORMAL
+InterruptWait  		INTERRUPT_WAIT  		2	NORMAL
+MsgCurrent  		MSG_CURRENT  			1	NORMAL
+MsgDeliverEvent  	MSG_DELIVER_EVENT  		2	NORMAL
+MsgVerifyEvent  	MSG_VERIFY_EVENT  		2	NORMAL
+MsgError  			MSG_ERROR  				2	NORMAL
+MsgInfo  			MSG_INFO  				2	NORMAL
+MsgKeyData  		MSG_KEYDATA  			6	NORMAL
+MsgRead  			MSG_READV  				4	NEGATIVE 3
+MsgReadiov  		MSG_READIOV  			5	NEGATIVE
+MsgReadv  			MSG_READV  				4	NEGATIVE
+MsgReceive  		MSG_RECEIVEV  			4	NEGATIVE 3
+MsgReceivev  		MSG_RECEIVEV  			4	NEGATIVE
+MsgReceiveAsyncGbl 	MSG_RECEIVEV  			5	NEGATIVE 3
+MsgReceivePulse  	MSG_RECEIVEPULSEV 		4	NEGATIVE 3
+MsgReceivePulsev 	MSG_RECEIVEPULSEV 		4	NEGATIVE
+MsgReply  			MSG_REPLYV  			4	NEGATIVE 4
+MsgReplyv  			MSG_REPLYV  			4	NEGATIVE
+MsgSendPulse  		MSG_SEND_PULSE  		4	NORMAL
+MsgSend  			MSG_SENDV  				5	NEGATIVE 3 5
+MsgSendnc  			MSG_SENDVNC  			5	NEGATIVE 3 5
+MsgSendsv  			MSG_SENDV  				5	NEGATIVE 3
+MsgSendsvnc  		MSG_SENDVNC  			5	NEGATIVE 3
+MsgSendvs  			MSG_SENDV  				5	NEGATIVE 5
+MsgSendvsnc  		MSG_SENDVNC  			5	NEGATIVE 5
+MsgSendv  			MSG_SENDV  				5	NEGATIVE
+MsgSendvnc  		MSG_SENDVNC  			5	NEGATIVE
+MsgWrite  			MSG_WRITEV  			4	NEGATIVE 3
+MsgWritev  			MSG_WRITEV  			4	NEGATIVE
+SchedGet 			SCHED_GET  				3	NEGATIVE
+SchedSet  			SCHED_SET  				4	NORMAL
+SchedYield  		SCHED_YIELD  			0	NORMAL
+SchedInfo  			SCHED_INFO 				3	NORMAL
+SchedCtl			SCHED_CTL				3	NORMAL
+SignalAction  		SIGNAL_ACTION  			5	NORMAL
+SignalKill  		SIGNAL_KILL  			6	NORMAL
+SignalProcmask  	SIGNAL_PROCMASK  		5	NORMAL
+SignalReturn  		SIGNAL_RETURN  			1	NONE
+SignalSuspend  		SIGNAL_SUSPEND  		1	NORMAL
+SignalWaitinfo  	SIGNAL_WAITINFO 		2	NEGATIVE
+SignalFault  		SIGNAL_FAULT  			3	NONE
+SyncCondvarSignal  	SYNC_CONDVAR_SIGNAL  	2	NORMAL
+SyncCondvarWait 	SYNC_CONDVAR_WAIT  		2	NORMAL
+SyncTypeCreate  	SYNC_CREATE  			3	NORMAL
+SyncDestroy  		SYNC_DESTROY  			1	NORMAL
+SyncCtl 			SYNC_CTL				3	NEGATIVE
+SyncMutexLock  		SYNC_MUTEX_LOCK  		1	NORMAL
+SyncMutexUnlock  	SYNC_MUTEX_UNLOCK  		1	NORMAL
+SyncMutexRevive 	SYNC_MUTEX_REVIVE  		1	NORMAL
+SyncSemPost  		SYNC_SEM_POST  			1	NORMAL
+SyncSemWait  		SYNC_SEM_WAIT  			2	NORMAL
+ThreadCancel  		THREAD_CANCEL  			2	NORMAL
+ThreadCreate  		THREAD_CREATE  			4	NEGATIVE
+ThreadCtl  			THREAD_CTL  			2	NORMAL
+ThreadDestroy  		THREAD_DESTROY  		3	NORMAL
+ThreadDetach  		THREAD_DETACH  			1	NORMAL
+ThreadJoin  		THREAD_JOIN  			2	NORMAL
+TimerAlarm  		TIMER_ALARM  			3	NORMAL
+TimerCreate  		TIMER_CREATE  			2	NEGATIVE
+TimerDestroy  		TIMER_DESTROY  			1	NORMAL
+TimerInfo 		 	TIMER_INFO 		 		4	NEGATIVE
+TimerSettime  		TIMER_SETTIME  			4	NORMAL
+TimerTimeout  		TIMER_TIMEOUT  			5	NEGATIVE
+MtCtl				MT_CTL					2	NORMAL
+
+HERE

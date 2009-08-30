@@ -1,0 +1,248 @@
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+expr: Invalid back reference
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+expr: Invalid back reference
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr: Invalid range end
+Retval = 2
+Retval = 0
+Retval = 0
+expr: Invalid back reference
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr: Invalid back reference
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+expr: warning: unportable BRE: `^a$': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr: warning: unportable BRE: `^abc$': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 0
+expr: warning: unportable BRE: `^abc$': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+expr: warning: unportable BRE: `^abc': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 0
+expr: warning: unportable BRE: `^abc$': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+Retval = 1
+expr: warning: unportable BRE: `^': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 0
+expr: Invalid range end
+Retval = 2
+expr: Unmatched [ or [^
+Retval = 2
+expr: Unmatched [ or [^
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+expr: warning: unportable BRE: `^*': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr: Trailing backslash
+Retval = 2
+expr: Unmatched ( or \(
+Retval = 2
+expr: Unmatched ( or \(
+Retval = 2
+expr: Unmatched ( or \(
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+expr: warning: unportable BRE: `^(ab\|cd)e': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+expr: warning: unportable BRE: `^a(bc+\|b[eh])g\|.h$': using `^' as the first character
+of the basic regular expression is not portable; it is being ignored
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+expr: Unmatched ( or \(
+Retval = 2
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+expr: Invalid back reference
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1

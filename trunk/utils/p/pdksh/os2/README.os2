@@ -1,0 +1,498 @@
+	OS/2 port of pdksh version 5
+	June, 1996
+
+Introduction
+
+This document is intended to define the specific features and
+differences in the os/2 port of pdksh.  For general features and
+descriptions of pdksh itself please refer to the standard pdksh README
+or the man page.  In general the port has tried to maintain as many of
+the standard ksh features as possible.  For installation details and
+an introduction to ksh please read the README.1st file shipped in the
+run time zip package for os2.
+
+A default build of pdksh, called ksh.exe, is included in the os2
+run time package.  This version was built using the emx environment and
+therefore requires that an emx run time package 0.9b or later be
+installed on the system.  This is not normally a problem since you
+probably already installed it for 'ls' and other Unix commands from
+the file gnufutil.zip. (If you haven't install gnufutil.zip you may
+want to consider it.)
+
+Building KSH.EXE
+
+If you would rather build your own, you should obtain the sources from
+ftp.cs.mun.ca in the directory pub/pdksh.  You will need a copy of tar
+and gunzip to unload the archive and install on an hpfs partition. Change
+to the source directory and run the script os2\configure.cmd. (If you
+prefer you can copy configure.cmd to the source directory.)  This will
+prepare the build environment so that your version of make can be used
+to build the executable.  Note that configure.cmd is still under
+construction and you may need to make changes to the Makefile and to
+config.h to match your specific needs.  Copies of all of these files
+will be placed into the source directory. In addition you may want to
+make changes to config.h to define your particular preferences.
+Configure.cmd for os2 support these optional options and arguments:
+ /h | /? | -h   Print a usage message and exit.
+ /v | -v        Print verbose output during configure 
+ /d | -d        build a debug version with symbols (for gcc)  
+ sh             build sh rather than ksh 
+Any configuration other that the default requires that sed be in your
+search path.  You should always get a copy of the latest pre-built version
+of ksh as well since the file os2bugs may contain some last minute fixes
+that were too late to include in the formal release, and you may find some
+other updates.  In addition the run time version supplies a couple of
+sample icons for use with ksh.
+
+At this point you can use your favorite make command to build the
+executable. Pdksh is known to work with nmake and dmake, gnu make requires
+at least version 3.7.3 and is the only one that will automatically make the
+man page. You can manually run mkman after starting your new copy of ksh,
+'ksh mkman ksh|sh ksh.man'.  (A prebuilt sh and expanded cat version of
+ksh.1 is included in the rt package.)
+
+There is a built in check routine that is part of the makefile.  Type
+'make check' to run it.  This routine needs a copy of perl on your
+machine in order to support the test harness used to test the build.  I
+have built the infrastructure into the port to support this checking but
+have not been able to get it all to run correctly yet.  The problem is
+because of a bug in the os2 port of ksh.  To check the build without using
+perl, run the command: 'ksh Bugs ksh'.  This will use the older checking
+facility.  You should run this if you make any changes to the source to
+insure that you haven't broken something crucial.  Run make check on an
+unmodified version first so that you will know what to expect.  If you
+want to get the perl version running please contact me for information.
+
+KSH 5 VERSUS KSH 4.9
+
+The KSH version 5 effort is being spearheaded by Michael Rendell. Michael
+took over the effort from Simon J. Gerraty who maintained the version 4
+code.  While the version 4 code was a good implementation of ksh
+version 5 strives to continue the conformance to the actual posix
+definitions and to AT&T ksh.
+
+For my version 5 port to os/2, I originally started with the 4.9 os/2
+changes and applied them to the new version.  Subsequently many changes
+have been made so that there is little resemblance to that version.
+One of my goals for version 5 is to make ksh not only and interactive 
+shell, but one that can run some limited Unix(tm) shell scripts as well.
+
+Generally the two shells behave the same.  Version 5 has no logout script
+(This can be set up using a trap in your profile.ksh file if desired.)  and
+the option 'hashall' has been replaced with 'trackall'.  (To see all of the
+options use the command 'set -o'.)  In addition the prompt has been changed
+to conform with the at&t ksh shell instead of the csh like implemetation of
+version 4.  The '!' sign is used for the history number and $variable
+substitutions can be used in the prompt.  The commands generally behave more
+consistently.  For example bind now goes to standard out so it can be
+redirected or piped.  Arrays are now implemented as are almost all AT&T ksh
+features plus a few more.  The os/2 port provides file name completion that
+is not case sensitive.  The startup file kshrc.ksh is still supported, but
+the way it works is slightly different.
+
+OS2 IMPLEMENTATION VS. UNIX
+
+The original OS/2 port was done by Kai Uwe Rommel.  I have re-implemented
+his ideas in this os/2 version.  The os/2 version of ksh has been modified
+to accept the standard os/2 conventions.  Drive designations a:, etc., are
+accepted and path separators in variables have been changed to ';'.  In
+addition either '/' or '\' can be used as a directory separator.  The bind
+command in emacs mode has been enhanced to accept function key and alt key
+bindings.  (To see what the alt key binding should be, use ^Q followed by
+the key you are interested in.  Replace the ^ alpha you see with ^0, typed
+as two characters, in the bind command.)  The cursor keys have been
+implemented for command history for both emacs mode and vi insert mode.
+Standard default stty settings are implemented for both modes as well.
+A os2 only print option, -f, can be used to force forward slashes in its
+argument.  This can be used to switch a variable containing '\' to
+output '/' in a pipe to a unix command that doesn't like '\' as a path
+separator, such as sed.
+
+/ vs. \ processing
+
+The remapping of certain keys can lead to some confusion for Unix and OS/2
+users.  The '\' key has a different meaning in Unix where it is used
+to escape a special meaning for the character following it or in the
+case of the echo (typeset) command it provides special meanings to
+certain characters. At the end of a line the '\' is used to escape the
+line feed permitting a command to extend to multiple lines. In OS/2
+this key is generally the directory name separator.  To provide for
+both functions in the OS/2 pdksh the '\' is defined to be a directory
+separator in any pathname specification and will keep its escape
+meaning when it is followed by any non-alphanumeric character.  The
+echo command retains its special interpretation of '\' and will, for
+example, interpret \t as a tab when printing.  This can be
+disconcerting when you echo the variable that you just set to c:\tmp.
+If you want to use echo on a variable with pathnames in it you should
+either use uppercase names or a '/' as a separator. Another choice is
+to alias echo to 'print -r' or perhaps 'echo -E'.  This will disable 
+the special interpretaions.  You could even use the new 'print -f' to 
+force any '\' to switch to '/', but this is less portable.  If you have 
+loaded the printenv command it can be used to look at variables.
+
+Unix uses '/' as a directory separator and the OS/2 implementation
+permits and in some cases prefers this use as well.  Generally you
+can freely mix '/' and '\' characters in a pathname.  However, 'cd \'
+will not complete since '\' will escape the new line command and you
+will get the secondary prompt.  Just enter a / and the command will
+complete.  For many standard os/2 commands the '/' is used to indicate an
+option and may want a '\' as a path separator.  These will still work and
+be correctly interpreted with pdksh as long as a '/' is not attached 
+directly to the command name.  Just be sure and enter the syntax needed
+by the command you are trying to execute.
+
+While backslash processing is usually correct and automatic there are times
+when it doesn't do what you might expect.  For example ls \tmp\*.exe might
+surprise you.  In this case the '\' will be interpreted as an escape for
+the '*' character.  You may need quotes or several backslashes to get what
+you want. Beginning with 5.2.4 the output of ksh favors '/' for any
+generated pathnames.  This is intended to make script processing for
+unix scripts easier.  Unfortunately, this may make interactive use for
+os2 users that prefer the '\' key a little less desirable.  Should you
+prefer the earlier convention then you can rebuild the executable from
+the sources.  Only one change in sh.h, DIRSEP, controls this behavior.
+
+; vs. : processing
+
+Another conflict is the use of ':' and ';'.  Unix uses ':' to separate
+entries in variable assignment and ';' to indicate multiple commands
+on the same line.  OS/2 uses the ';' to separate entries in a variable.
+This could lead to problems when making an assignment to a variable in
+pdksh.  You will need to escape the ';' in OS/2 to prevent the shell
+from interpreting it as the end of the command.  Either surround the
+assignment command with quotes or use '\;'.  Note that since a ';' is
+not a valid filename or pathname character the '\' will be correctly
+interpreted as an escape character.
+
+Since having to escape the ';' character can be a pain when changing
+environmental variables containing a list of paths there are some functions
+defined in the sample kshrc.ksh file to ease this task.  There are three
+functions; add_path, pre_path, and del_path that can be used to append a
+path, prepend a path or delete a path from any environmental variable (PATH
+by default).  If you needed to add a path to /emx/bin you might do "add_path
+e:\emx\bin" for example, or perhaps "add_path e:\emx\book BOOKSHELF" to add
+some books to the bookshelf.  Note that you will need a copy of sed in your
+search path to use the del_path function.
+
+In OS/2 the ':' is used to separate the drive letter from the rest of
+the pathname.  This usage had been preserved in pdksh.  You can imbed
+the drive letter as needed in pathnames.  In addition pdksh preserves
+the notion of separate contexts for each drive.  To change drives you
+would use the cd command.  "cd A:/" would change to the root on drive
+A while "cd C:." would change to whatever was current context on drive
+C.  Some aliases are defined in the sample kshrc.ksh to permit the
+usual A: to automatically do a change directory to the A drive. 
+
+Wildcard Processing
+
+OS/2 and pdksh have similar notions about wildcard characters '*' and
+'?' except that pdksh handles the expansion of these wildcard within
+the shell and then passes the answer as a list to the application.  If
+the application needs to see the wildcard character then you must
+escape it from the shell.  Note that pdksh knows about other wildcard
+techniques as well.  Please see the man page.
+
+Background Processing
+
+Do to some limitations in the os2 fork process and other differences
+between os2 and unix it is not possible to support back-grounding from
+pdksh of commands that begin a new window.  For this reason I have
+automatically backgrounded all such tasks when they are started.  This
+will permit the os2 ksh to serve as a command line launch mechanism for
+dos, full screen, and pm applications. (Note that currently ksh can only
+launch an application of the same type (windowed, or fullscreen) that
+ksh itself is unless you use the 'start' alias.
+
+There is a 'start' alias defined in the sample kshrc.ksh file that can
+be used to start normal command line commands in a new window.  For example
+you could say "start ksh" to start a copy of ksh itself in a new window.
+Since it is a new window it will automatically return control to the existing
+copy of ksh.  Note that the start alias uses the os2 start command so
+you could supply it with any standard start option such as /FS to force
+a full screen copy.  Please check your os2 command reference manual for
+further information on start.
+
+PDKSH, OS/2 and the ENVIRONMENT.
+
+The environment in OS/2 and Unix are quite different.  For one thing
+you don't actually login to your machine in OS/2 and your initial
+environment is established by your CONFIG.SYS file. The Shell will use
+the variables that were set in CONFIG.SYS and you should really
+consider assigning TMPDIR and HOME for use by pdksh. It will also use
+ENV as a variable that names a startup file that will run each time
+the shell is started, even if a script is started.  This start up file
+is located in your home directory.  For compatability with 4.9 this
+shell will also automatically use a startup shell kshrc.ksh if it
+finds one in your home directory, is started interactively, and $ENV
+is not set.  
+
+The variable OS2_SHELL should point to cmd.exe or a fully compatible
+version and will be used as the shell of choice for any scripts that you
+write that do not contain the #! or extproc information in the top line
+of the script.  If you prefer you can set the variable EXECSHELL to a
+shell to be used instead of OS2_SHELL. The use of OS2_SHELL assumes that
+the shell requires the /c option and that the shell needs all pathnames
+separated with '\'.  Setting EXECSHELL will disable both of these
+assumptions.
+
+A special feature is the support of the -l, login option.  If this option is
+entered when starting ksh then the shell will execute a loginfile called
+profile.ksh if located in $INIT/etc, c:/usr/etc, or your home. If you are
+using this shell as your primary shell you may wish to change the settings
+in your os2 command shell notebook to call ksh.exe -l.  I would not
+recommend changing the default shell in config.sys.
+
+Should you destroy your PATH variable try 'unset PATH'.  A default
+path may get you going again.  In addition pdksh for OS/2 always uses
+commands from current context first in the search path even if it is
+not explicitly set.  By default c: drive is used when no variables
+are set.  Specifically c:/usr/bin and c:/usr/etc can be used as defaults
+various places in ksh.  If you build your own version then this can be
+changed.
+
+Generally all of the environmental variables described in the man page will 
+work in OS2 so long as the tools in use understand them in the same way
+as Unix would.
+
+Using KSH
+
+The shell itself can be called any name you wish.  Good names include
+pdksh.exe, ksh.exe, sh.exe.  You can build two completely different
+shells using the options file.  A full blown Korn shell can be built
+or a complete subset that behaves very much like a Bourne shell.  The
+smaller version is excellent for script support.  In the run time
+release I have provided the full shell under the name ksh.exe and the
+smaller version under the name sh.exe.  Be careful with names like
+rksh.exe or you could end up with a restricted shell that can't do
+everything.
+
+In Unix an executable can be tagged with an attribute to
+make it known to the system as an executable.  In OS/2 this is done
+with an extension.  This shell knows all of the standard OS/2
+extensions plus .ksh and .sh.  (Yes it can run dos commands and OS/2 command
+files as well.)  The .ksh or .sh extension tells the shell that this is an
+executable shell script.  The current version will also treat a file
+without an extension as an executable in the style of Unix.  Scripts need not 
+necessarily be a ksh shell scripts however.  The standard Unix #! line at 
+the top of the file determines the actual shell that will be used to run 
+the script.  A feature in this release is that any Unix absolute
+pathnames will be tried and, if they fail a second try will be made by
+stripping the path from the #! line since Unix style paths are unlikely
+to match os2 usage.  Your standard PATH search path will be used.
+Should the same filename with a different extension exist in the same
+directory pdksh will use the extension typed in by the user or if
+no extension is entered then the search order is, .ksh, .exe, no extension,
+.sh, .cmd, .com, .bat.  This search order permits ksh scripts to be used to 
+modify binary executable behavior while allowing the -Zexe option for emx 
+gcc. .  Note that if you explicitly type the extension yourself then any 
+extension can be used so long as the #! processing line is at the top of 
+the file to let pdksh know what to do.
+
+The sample kshrc.ksh file that comes with the distribution can be used as
+an example that shows you how to create aliases that will simulate the
+standard OS/2 commands.  This means you can still use copy, dir, and del if
+you want to.  Keyboard bindings supplied will still provide the command
+stack and suddenly you also have command line completion and alias
+capability.  To get the most from the shell you will probably want the set
+of Unix commands developed by the Gnu team and ported to os2.  You will
+most certainly need them or a similar set if you want to run any Unix
+scripts.  A few functions are also provided in the sample kshrc.ksh file to
+demonstrate the power of functions and to ease common tasks.
+
+Unix file systems are case sensitive and ksh generally expects this also.  
+This means that internal commands as well as aliases are case sensitive.  
+You can use this to your advantage.  For example you might want to run a dos 
+shell only to find out that 'command' is captured as an internal command by
+ksh.  Try 'COMMAND' or even 'Command' and you will get what you wanted.
+The file name completion and wild card expansion has been modified for os2
+to permit it to ignore case.
+
+Working with Editing Modes
+
+As delivered ksh for os2 supports three different editing modes to use
+with the command line.  By default the editing mode is the same as that
+used in cmd.exe in that F1, F2, and F3 can be used to edit the previous
+command.  Left and right cursor keys can also be used to edit the command.
+Support for this comes directly from the emx layer.  The history mechanism
+is supported in this mode but you will not be able to scroll trhough
+history from the command line.  Pdksh commands exist to display and edit
+history and the EDITOR environmental variable can be set to specify the
+editor you want.  Two other mutually exclusive editing modes exist as well.
+
+The sample kshrc.ksh file turns on emacs editing mode.  In this mode
+pdksh emulates the commands and keyboard binding present in emacs.  The
+keyboard binding is fully customizable by the user using the bind command.
+For os2 the default build includes support of the cursor keys to edit
+both current and previous commands.  The sample kshrc.ksh file includes
+some further mapping as examples of keyboard binding.  The bind -m
+command can be used to define special macro commands.  Note that in emacs
+the ESC key following by a letter key is usually synonymous with holding
+down the ALT key and pressing a letter key.  In the current os2 implementation
+these keys are not tied together so they could be programmed independantly
+although this could be confusing for the user.  This may change in the
+future.
+
+Issuing the command 'set -o vi' turns on vi mode. This mode emulates the
+keyboard binding from the vi editor.  In addition using the tab key for
+command line completion is separately programmable using the set command.
+For os2 the cursor keys are also set up to work from within insert mode to
+allow editing of both the current and previous commands without ever
+leaving insert mode.  The Esc Shft-A sequence can be used to jump to the end
+of the line allowing you to append new information to the line.  CTRL-X,
+CTRL-E and CTRL-F permit command line completion within insert mode.  Thus
+you can use vi mode without ever having to learn traditional vi commands.
+
+SHELL SCRIPT PROGRAMMING
+
+One of my goals in porting this shell was to be able to do shell level
+script programming and to run Unix shell scripts with minimal modification.
+The first goal is easy and fully functional in this release.  You can write
+shell scripts for this or other shells. The name of the shell you want to
+run the script is entered in the first line of the script itself after a
+'#!' sequence.  If you only enter the name of the command then pdksh will
+use your search path to find the shell.  This is the recommended approach,
+however absolute paths of the form /bin/ etc. will be stripped
+automatically if needed to permit running Unix scripts unmodified. To write
+portable scripts use the 'uname' command from Gnu to set a variable that
+can be checked for specialized approaches.  As a special case absoulte
+paths using '\' will not be stripped and an error will be generated if
+the command is not found at the exact path specified.
+
+It is even possible to use ksh as a scripting language when your main
+shell is a standard OS/2 shell.  To do this you would write your ksh
+script as usual except that the first line in the script should read
+'extproc ksh'.  The script should be named with a '.cmd' extension so
+that the OS/2 shell can find it.  When the cmd.exe finds this line in
+the file it will call ksh to process the script for you.  A script
+that is written this way can also be called directly from ksh.  As a
+matter of fact you could use this technique entirely for script
+creation and name all your scripts with the .cmd extension.  Pdksh
+will honor 'extproc' exactly like the standard Unix '#!' processing.
+
+Unlike Unix #! processing the OS2 cmd processing of an extproc header line
+only passes the file name to the spawned process instead of the full
+pathname.  This is a bug in os2 IMHO since if you explicitely want a
+certain path for the command you cannot guarantee it.  The workaround was to
+put the path in the extproc line and then shift the extra filename off the
+argument list.  For example my whatis.cmd file used to start like this.
+
+     extproc ksh c:/usr/bin/whatis.cmd
+     shift
+
+You can still do this, but ksh will also search the path to find a copy
+of the command, so this is no longer required.  Of course, the copy that ksh
+finds might not be the one you wanted but at least you can copy your cmd
+files around without having to modify them.  A side effect of this change
+is that typing: "ksh whatis" will now search your path as well which does
+change the standard behavior of ksh which some might construe as a feature!
+
+The second goal of running Unix scripts with little or no modification is
+much more difficult to achieve.  Unix makes many assumptions about how the
+system is set up which makes fully portable scripts difficult to accomplish
+without the knowledge of the script internals.  Many script assume the
+presense of /dev/null and /tmp.  (The emx layer provides an automatic map
+for shell references to /dev/null and /dev/tty as of the 0.9a version and
+pdksh also maps /dev/null to nul for the cases where emx doesn't see it
+unless a /dev/null is present.)  Some scripts assume /bin and certain
+commands within /bin (usually cp and sh). Until I can figure out how to 
+make this more transparent you can simply make these directories on the 
+drive that you intend to run the script on.  (Of course, you could also 
+modify the script.) Some scripts reset the PATH variable near the beginning
+of the script.  While you could copy a whole set of commands it is probably
+easier to modify the script or use tvfs (more about tvfs later.)  Another
+standard "trick" in Bourne shell script programming is to modify IFS to
+include a colon and then use the set command to parse a variable by setting
+$1, $2, etc.  In OS/2 this would need to be a ';'.  For now you will have to
+hand modify the script.
+
+The latest release of ksh for os2 now supports multiple open files
+using standard pdksh syntax.  Note that error checking may not be
+as complete as standard pdksh for some of this usage.
+
+Of course Unix scripts expect the presence of Unix commands.  You will
+need to install a set of Unix utilities, Unix text processing
+commands, and probably sed and a version of awk.  I have created a
+c:/usr directory on my system for Unix stuff.  I have /usr/bin,
+/usr/man, /usr/etc, /usr/home, and /usr/local.  You could establish
+even more, or perhaps less, Unix conformance.  You will also need a ps
+command.  I use procs.exe which I renamed to ps.exe.  Kill is a ksh
+builtin.
+
+RUNNING UNIX GNU CONFIGURE SCRIPTS.
+
+A lot of people would like to use pdksh to permit them to run the
+gnu automatic configure scripts.  I am pleased to report that this
+is possible using pdksh.  However, I can't guarantee that the results
+will match the true configuration for os2 since this is dependant on
+the way the individual configure scripts are written.
+
+To set up to run configure scripts you will need to have a copy of pdksh
+called sh.exe somewhere in your path and, of course, you should be
+running within a pdksh shell.  One of the very early things done
+by most configure scripts is to figure out the compiler.  This will fail
+since it depends on setting the IFS (see the above discussion).  To
+workaround this problem simply set CC to the compiler you want to use
+prior to running the script.  For example to use gcc: 'export CC=gcc'.
+Most configure scripts couldn't figure out the names of os2 compilers
+anyway.  Now you should be able to simply type 'configure' and watch it
+work.  At some point the configure script will build a config.status
+script to perform the final step.  If this is not run using 'sh -c
+config.status' or some such it will fail since .status is not an os2
+legal executable suffix.  You can run it manually however by typing 
+'ksh config.status'.  If you have problems you should inspect the
+config.status script and fix it as required.  Using ksh -x config.status
+will echo the lines as they are executed which should aid in debug.
+
+Many configure scripts actually build and execute programs to test
+for certain features.  In OS2 using emx, the final link step must have
+the .exe extension tied to the executable name or the linker will not
+link correctly.  You will need to modify the configure script to
+insure the correct executable name.  Once this is built it can be
+renamed to a name without an extension if ksh is being used to run it.
+A line similar to the following may work for you if you are using 2.0:
+
+ac_link='${CC-cc} -o conftest.exe $CFLAGS $CPPFLAGS $LDFLAGS \
+conftest.$ac_ext $LIBS && mv conftest.exe conftest'
+
+This trick takes advantage of ksh's ability to run a command without an
+extension.  Even with these changes you may still find that configure does
+not correctly identify some os2 features.  I would recommend that the
+config.cache file be edited as required or the resulting config.h file.
+
+Another trick is to use the -Zexe option to gcc.  This builds a zero length
+file without an extension and the real executable with the extension .exe.
+Makefiles and some configure scripts may be fooled by this behavior.
+
+TVFS
+
+An IBM employee written program called tvfs, toronto virtual file system,
+can be downloaded from most os2 ftp sites and from IBM ftp sites.  This
+program permits you to simulate a Unix like file system that can span
+physical drives and even network drives.  Using tvfs you cd once into the
+drive letter designated as the tvfs drive and from then on you can
+reference all of your drives and directories by only using Unix style
+pathnames if you wish.  Even a limited form of symbolic links can be set 
+up on this drive.  This can be a great aid in running Unix scripts and
+makefiles as well as configure scripts.
+
+WORK IN PROGRESS
+
+There is still much to do and this project will probably never be complete.
+The configure.cmd file needs work as does the Makefile.  Please let me know
+if you get this to compile using a C compiler other than gcc.  The standard
+defaults work in the Makefile but many other things are not implemented.
+And of course there are bugs to fix and enhancements to be made.  Check the
+file os2bugs in the run time release for the latest information on bugs.
+
+Please let me know if you like this port, have found a porting bug,
+have fixed a bug, or have coded a spiffy enhancement.  Michael Rendell
+should be consulted for general pdksh items and is now actually
+maintaining and enhancing all of the code.  Please check the standard
+README for more information and also the file os2bugs for current known
+problems and limitations.  I can be reached at daled@cadence.com.
+
+Note that this is a home brew project and is in no way related to my
+employment.
+
+	Dale DePriest
+

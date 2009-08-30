@@ -1,0 +1,10 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	
+	<QPG:Values>
+		<QPG:Files>
+			 <QPG:Add file="nto/*/*/deflate" pinfo="$"/>
+			 <QPG:Add hos="win32" install="/usr/bin/" file="win32/*/*/deflate.exe" pinfo="$"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

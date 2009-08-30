@@ -1,0 +1,8 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/ln-w.exe" file="win32/x86/o/ln-w.exe" />
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

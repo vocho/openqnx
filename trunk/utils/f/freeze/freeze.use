@@ -1,0 +1,31 @@
+%-freeze
+%C	[-cdfvV] [file ...]
+
+Options:
+ -c     Write output on stdout, don't remove original.
+ -d     If given, melting is done instead.
+ -f     Forces output file to be generated, even if one already exists,
+        and even if no space is saved by freezing.  If -f is not used,
+        the user will be prompted if stdin is a tty, otherwise, the
+        output file will not be overwritten.
+ -v     Verbose (write freezing statistics).
+ -V     Very verbose (write version and compilation options).
+
+Where:
+ file is the file(s) to be frozen (default: stdin).
+%-melt
+%C	[-cfvV] [file ...]
+
+Options:
+ -c     Write output on stdout, don't remove original.
+ -f     Forces output file to be generated, even if one already exists.
+ -v     Verbose (write melting statistics).
+ -V     Very verbose (write version and compilation options).
+
+Where:
+ file is the file(s) to be melted (default: stdin).
+%-fcat
+%C	[file ...]
+
+Where:
+ file is the file(s) to be melted (default stdin) to stdout

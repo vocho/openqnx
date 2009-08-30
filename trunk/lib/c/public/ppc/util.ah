@@ -1,0 +1,173 @@
+#
+#  ppc/util.ah
+#
+#  Copyright by QNX Software Systems Limited 2001. All rights reserved.
+#
+#
+.ifndef PPC_UTIL_AH_INCLUDED
+.set PPC_UTIL_AH_INCLUDED,1
+
+.macro routine_start name, flags
+	.if ((&flags) \(&) 0x1) <> 0
+		.globl &name
+	.endif
+	&name:
+.endm
+
+.macro routine_end name
+	.size &name,.-(&name)
+	.type &name,@function
+.endm
+
+.macro bitset, dst,src,val
+	.if ((&val) \(&) 0xffff0000) <> 0
+		oris	&dst,&src,((&val) >> 16) \(&) 0xffff
+	.else
+		ori		&dst,&src,&val
+	.endif
+.endm
+
+.macro bittst, dst,src,val
+	.if ((&val) \(&) 0xffff0000) <> 0
+		andis.	&dst,&src,((&val) >> 16) \(&) 0xffff
+	.else
+		andi.	&dst,&src,(&val)
+	.endif
+.endm
+
+.macro bitclr, dst,src,val
+	.if (&val) \(&) 0x00000001
+		rlwinm	&dst,&src,0,0,30
+	.endif
+	.if (&val) \(&) 0x00000002
+		rlwinm	&dst,&src,0,31,29
+	.endif
+	.if (&val) \(&) 0x00000004
+		rlwinm	&dst,&src,0,30,28
+	.endif
+	.if (&val) \(&) 0x00000008
+		rlwinm	&dst,&src,0,29,27
+	.endif
+	.if (&val) \(&) 0x00000010
+		rlwinm	&dst,&src,0,28,26
+	.endif
+	.if (&val) \(&) 0x00000020
+		rlwinm	&dst,&src,0,27,25
+	.endif
+	.if (&val) \(&) 0x00000040
+		rlwinm	&dst,&src,0,26,24
+	.endif
+	.if (&val) \(&) 0x00000080
+		rlwinm	&dst,&src,0,25,23
+	.endif
+	.if (&val) \(&) 0x00000100
+		rlwinm	&dst,&src,0,24,22
+	.endif
+	.if (&val) \(&) 0x00000200
+		rlwinm	&dst,&src,0,23,21
+	.endif
+	.if (&val) \(&) 0x00000400
+		rlwinm	&dst,&src,0,22,20
+	.endif
+	.if (&val) \(&) 0x00000800
+		rlwinm	&dst,&src,0,21,19
+	.endif
+	.if (&val) \(&) 0x00001000
+		rlwinm	&dst,&src,0,20,18
+	.endif
+	.if (&val) \(&) 0x00002000
+		rlwinm	&dst,&src,0,19,17
+	.endif
+	.if (&val) \(&) 0x00004000
+		rlwinm	&dst,&src,0,18,16
+	.endif
+	.if (&val) \(&) 0x00008000
+		rlwinm	&dst,&src,0,17,15
+	.endif
+	.if (&val) \(&) 0x00010000
+		rlwinm	&dst,&src,0,16,14
+	.endif
+	.if (&val) \(&) 0x00020000
+		rlwinm	&dst,&src,0,15,13
+	.endif
+	.if (&val) \(&) 0x00040000
+		rlwinm	&dst,&src,0,14,12
+	.endif
+	.if (&val) \(&) 0x00080000
+		rlwinm	&dst,&src,0,13,11
+	.endif
+	.if (&val) \(&) 0x00100000
+		rlwinm	&dst,&src,0,12,10
+	.endif
+	.if (&val) \(&) 0x00200000
+		rlwinm	&dst,&src,0,11,9 
+	.endif
+	.if (&val) \(&) 0x00400000
+		rlwinm	&dst,&src,0,10,8 
+	.endif
+	.if (&val) \(&) 0x00800000
+		rlwinm	&dst,&src,0,9,7 
+	.endif
+	.if (&val) \(&) 0x01000000
+		rlwinm	&dst,&src,0,8,6 
+	.endif
+	.if (&val) \(&) 0x02000000
+		rlwinm	&dst,&src,0,7,5 
+	.endif
+	.if (&val) \(&) 0x04000000
+		rlwinm	&dst,&src,0,6,4 
+	.endif
+	.if (&val) \(&) 0x08000000
+		rlwinm	&dst,&src,0,5,3 
+	.endif
+	.if (&val) \(&) 0x10000000
+		rlwinm	&dst,&src,0,4,2 
+	.endif
+	.if (&val) \(&) 0x20000000
+		rlwinm	&dst,&src,0,3,1 
+	.endif
+	.if (&val) \(&) 0x40000000
+		rlwinm	&dst,&src,0,2,0 
+	.endif
+	.if (&val) \(&) 0x80000000
+		rlwinm	&dst,&src,0,1,31 
+	.endif
+.endm
+
+.macro loadi, dst,val
+	.if ((&val) >= -32768) \(&&) ((&val) <= 32767)
+		li	&dst,&val
+	.else
+		.if (&val) \(&) 0x8000
+			lis	&dst,((&val) >> 16) + 1
+			addi &dst,&dst,((&val) \(&) 0x7fff) - 0x8000 
+		.else
+			lis	&dst,(&val) >> 16
+			.if ((&val) \(&) 0xffff) <> 0 
+				addi &dst,&dst,(&val) \(&) 0xffff
+			.endif
+		.endif
+	.endif
+.endm
+
+.macro loada, dst,addr
+	lis		&dst,(&addr)@ha				
+	la		&dst,(&addr)@l(&dst)
+.endm
+
+.macro loadwz, dst,addr
+	lis		&dst,(&addr)@ha				
+	lwz		&dst,(&addr)@l(&dst)
+.endm
+
+# 
+# Macro to deal with errata #77 on the 405. 
+#
+.macro STWCX405, rs,ra,rb
+.ifndef NO405STWCXBUG
+	dcbt	&ra,&rb
+.endif
+	stwcx.	&rs,&ra,&rb
+.endm
+
+.endif

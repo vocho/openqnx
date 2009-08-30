@@ -1,0 +1,601 @@
+<html><head>
+<title>Elvis-2.2_0 Sessions</title>
+</head><body>
+
+<h1>10. SESSIONS, INITIALIZATION, AND RECOVERY</h1>
+
+This section of the manual describes the life-cycle of an edit session.
+We begin with the definition of an <a href="#SESSION">edit session</a>
+and what that means to Elvis.
+This is followed by sections discussing <a href="#INIT">initialization</a>
+and <a href="#RECOVER">recovery after a crash.</a>
+
+<h2>10.1 Sessions</h2><a name="SESSION"></a>
+
+Elvis is eventually expected to meet the COSE standards,
+which require (among other things) that programs be able to save their
+state so that they can be restarted later.
+It isn't required to restart in <em>exactly</em> the same state,
+but it should come as close as possible.
+
+<p>For Elvis, this means that edit sessions should be restartable.
+It is possible to begin an edit session with one Elvis process,
+exit that process, and then later start a new Elvis process which
+resumes the previous edit session.
+
+<p>To accomplish this, Elvis stores its state in a file, called the session
+file.
+For all practical purposes, the session file <strong>is</strong> the session.
+
+<p>The name of the session file is stored in the <a href="elvisopt.html#session">session</a> option.
+By default, this will be a file in your home directory, named "elvis*.ses",
+where "*" represents a number chosen at run-time to make the file name unique.
+You can specify some other name for the session file via the
+<strong>-s</strong><var>session</var> command-line flag.
+
+<p>If the session file doesn't already exist when Elvis starts running,
+then Elvis will create it.
+
+<p>When Elvis exits, it will normally delete the session file if this
+is the Elvis process that created it.
+If the session file was left over from some other Elvis process, then
+Elvis will not delete it upon exiting.
+This is controlled by the <a href="elvisopt.html#tempsession">tempsession</a>
+option; if you don't like Elvis' default behavior then you can change it.
+
+<h2>10.2 Initialization</h2><a name="INIT"></a>
+
+Before discussing Elvis' initialization, let me just say that if you're having
+trouble configuring Elvis, you might want to try invoking Elvis with the
+command line flag <strong>-VVV</strong>, which causes Elvis to write status
+information to stdout/stderr so you can see what it is doing.
+The flag <strong>-o</strong><var>logfile</var> will redirect this information
+to a file named <var>logfile</var>.
+Windows programs such as <strong>WinElvis.exe</strong> aren't allowed to
+write anything to stdout, so you <em>must</em> use
+<strong>-o</strong><var>logfile</var> any time you use <strong>-VVV</strong>.
+Now, back to the topic at hand...
+
+<p>Elvis begins by initializing some options to hardcoded values.
+
+<p>Elvis then chooses which user interface it should use.
+Elvis does this by scanning the command line arguments for a
+<strong>-G</strong><var>gui</var> flag.
+If there is no such flag, then it checks for an ELVISGUI environment variable;
+its value is the name of the interface to use.
+If neither <strong>-G</strong><var>gui</var> nor ELVISGUI is present,
+then Elvis tests each user interface
+and uses the best one that is expected to work.
+(For example, the "x11" interface is expected to work if there is a DISPLAY
+environment variable and the X server is accessible.
+If not, then the "x11" interface is rejected and some other interface is used.)
+
+<p>The session file is then opened or created.
+For preexisting session files, Elvis scans the session file for any buffers
+in it, and adds them to its internal list.
+Elvis can even reload the "undo" versions of some buffers.
+
+<p>Elvis searches through the directories named in the
+<a href="elvisopt.html#elvispath">elvispath</a> option for a file named
+"elvis.ini".
+If it finds that file, then it loads it into a buffer named "Elvis&nbsp;initialization"
+and executes its contents as a series of ex commands.
+See <a href="#elvis.ini">section 10.2.1</a> for description of the default
+contents of this file.
+
+<p>After that, it attempts to similarly load some other files, but they
+aren't executed.
+Some of them will be executed later.
+These files are:
+
+<pre graphic>.-----------.----------------------.------------------------------.
+| FILE NAME | BUFFER NAME          | PURPOSE                      |
+|-----------|----------------------|------------------------------|
+| <a href="elvismsg.html#elvis.msg">elvis.msg</a> | Elvis messages       | used to translate messages   |
+| <a href="#elvis.brf">elvis.brf</a> | Elvis before reading | executed before loading file |
+| <a href="#elvis.arf">elvis.arf</a> | Elvis after reading  | executed after loading file  |
+| <a href="#elvis.bwf">elvis.bwf</a> | Elvis before writing | executed before saving file  |
+| <a href="#elvis.awf">elvis.awf</a> | Elvis after writing  | executed after saving file   |
+^-----------^----------------------^------------------------------^
+</pre>
+The "elvis.msg" file is described in section
+<a href="elvismsg.html">11: Messages.</a>
+The other files are described later in this section.
+
+<p>The next step in initialization is to load the first file and display
+it in a window.
+To do this, it first creates an empty buffer with the same name as the file.
+It then executes the "Elvis before reading" buffer (if it exists) on the
+empty buffer.
+The file's contents are then read into the buffer.
+Then the "Elvis after reading" buffer (if it exists) is executed on
+the new buffer.
+Finally, Elvis creates a new window that shows the new buffer.
+
+<p>If the <strong>-a</strong> flag was given on the command line, then
+Elvis will repeat the above steps for each file named on the command line.
+On the other hand, if no filenames were given on the command line then
+Elvis will simply create a single untitled buffer and a window that shows it.
+
+<p>Finally, if a <strong>-t</strong><var>tag</var> or
+<strong>-c</strong><var>excmd</var> flag was given, it is executed in the
+first window.
+
+<h3>10.2.1 The "elvis.ini" file</h3><a name="elvis.ini"></a>
+
+The "elvis.ini" file is loaded into a buffer named "Elvis&nbsp;initialization".
+That buffer is then executed before any other initialization files are loaded.
+If the session file is later restarted, this script will be executed again
+at that time.
+Here's a line-by-line analysis of the default "elvis.ini" file...
+
+<pre>
+	" CHOOSE A LOCALE
+	try let! locale= $LC_ALL || $LANG
+</pre>
+This chooses a locale.
+This affects elvis' choice of spelling dictionaries.
+See the <a href="elvisopt.html#locale">locale</a> and
+<a href="elvisopt.html#spelldict">spelldict</a> options.
+<p>
+The "!" suffix on a <a href="elvisex.html#let">:let</a> or
+<a href="elvisex.html#set">:set</a> command causes the value to be stored
+as the new default, so <a href="elvisex.html#mkexrc">:mkexrc</a> won't have
+to save it with your customized settings.
+
+<pre>
+	" SET SOME SYSTEM DEFAULTS
+	set! lptype=ps2 lplines=60 lpcolumns=80 lpwrap
+	set! ruler showmatch showmode
+</pre>
+This sets a few other options for things like printing and window decorations.
+Note that for WinElvis, the default <a href="elvisopt.html#lptype">lptype</a>
+is changed to "windows" later.
+
+<pre>
+	" DEFINE SOME DIGRAPHS
+	if os=="msdos" || os=="os2" || (os=="win32" &amp;&amp; gui!="windows")
+	then source! (elvispath("elvis.pc8"))
+	else source! (elvispath("elvis.lat"))
+</pre>
+This attempts to locate the "elvis.lat" or "elvis.pc8" file and execute it.
+Those files contain ex scripts, consisting of a bunch of
+<a href="elvisex.html#digraph">:digraph</a> commands that set up the
+digraph table appropriately for the PC-8 or Latin-1 symbol sets.
+The "!" at the end of the <a href="elvisex.html#source">:source</a>
+command name causes <code>:source</code> to silently ignore errors.
+
+<pre>
+	" CHOOSE SOME DEFAULT OPTION VALUES BASED ON THE INVOCATION NAME
+	let p=tolower(basename(program))
+	if p == "ex" || p == "edit"
+	then set! initialstate=ex
+	if p == "view"
+	then set! defaultreadonly
+	if p == "edit" || p == "vedit"
+	then set! novice
+	if home == ""
+	then let home=dirdir(program)
+</pre>
+These lines initialize certain options according to the name by which
+Elvis was invoked.
+Traditionally, invoking vi by the name "ex" causes it to start up in
+ex mode instead of vi mode, and "view" causes the files to be treated
+as readonly.
+<p>
+Also, if the <a href="elvisopt.html#home">home</a> option is unset,
+then this tries to set it to the directory containing elvis.
+Generally, some OS-specific code will set <code>home</code> appropriately
+before we get here, so this code isn't normally needed.
+
+<pre>
+	" IF SPELL-CHECKING IS SUPPORTED, THEN LOAD THE DEFAULTS
+	if feature("spell")
+	then source! (elvispath("elvis.spe"))
+</pre>
+This initializes the <a href="elvistip.html#spell">spell checker</a>,
+if that feature is supported in this version of elvis.
+
+<pre>
+	" IF ALIASES ARE SUPPORTED, THEN LOAD THE DEFAULT ALIASES
+	if feature("alias") &amp;&amp; security!="restricted"
+	then source! (elvispath("elvis.ali"))
+</pre>
+This loads some standard aliases, if the alias feature is supported by
+this version of elvis, and elvis isn't being used as a "restricted" editor.
+
+<pre>
+	" SYSTEM TWEAKS GO HERE
+	"
+	" The Linux console can't handle colors and underlining.
+	if gui=="termcap"
+	then {
+	  if term=="linux" || (os=="msdos" &amp;&amp; (term&gt;&gt;4)=="ansi")
+	  then set! nottyunderline
+	  if term=="linux"
+	  then set! nottyitalic
+	}
+</pre>
+This is an attempt to work around a bug in the Linux console driver.
+The Linux console can't mix color attributes with the underline attribute.
+Also, underlining looks ugly in an MS-DOS console.
+<pre>
+	" GUI DEFAULT SETUP GOES HERE (may be overridden in .exrc file)
+	switch gui
+	case windows so! (elvispath("elvis.win"))
+	case x11     so! (elvispath("elvis.x11"))
+	case gnome   so! (elvispath("elvis.gnome"))
+</pre>
+These lines set the defaults for the "windows", "x11", and "gnome" user
+interfaces.
+For "x11" and "gnome", these set up the toolbar and other features.
+There isn't actually an "elvis.win" file distributed with Elvis because
+those features are hardcoded in the Windows version of Elvis.
+The "!" suffix on the <a href="elvisex.html#source">:so</a> command
+prevents an error message when no file is found.
+
+<pre>
+	" SOME MAPS THAT MAKE HTML BROWSING EASIER
+	if feature("html") &amp;&amp; feature("autocmd")
+	then {
+	  augroup! html
+	  au!
+	  " <lt;Space>gt; jumps forward one page
+	  au DispMapEnter html map nosave command <lt;Space>gt; <lt;C-F>gt;
+	  au DispMapLeave html unmap command <lt;Space>gt;
+	  " <lt;Enter>gt; follows a hypertext link
+	  au DispMapEnter html map nosave command <lt;Enter>gt; <lt;C-]>gt;
+	  au DispMapLeave html unmap command <lt;Enter>gt;
+	  augroup END
+	}
+</pre>
+These lines affect the behavior of the <kbd>&lt;Space&gt;</kbd> and
+<kbd>&lt;Enter&lt;</kbd> keys, while in the <a href="elvisdm.html#html">html</a>
+display mode.
+<kbd>&lt;Space&gt;</kbd> will move forward one page, and
+<kbd>&lt;Enter&lt;</kbd> will follow a hypertext link.
+
+<pre>
+	" EXECUTE THE STANDARD CUSTOMIZATION SCRIPTS
+	let f=(os=="unix" ? ".elvisrc" : "elvis.rc")
+	if security != "restricted"
+	then {
+	  if $EXINIT
+	  then eval $EXINIT
+	  else source! (exists(home/f)?home/f:home/".exrc")
+	}
+	if security != "restricted" &amp;&amp; exrc &amp;&amp; getcwd()!=home
+	  then safely source! (exists(f)?f:".exrc")
+	set f=""
+</pre>
+These lines temporarily set the <a href="elvisopt.html#f">f</a> option to either
+".elvisrc" or "elvis.rc", whichever is appropriate for your operating system.
+They then check whether an environment variable named "EXINIT" is set
+to a non-empty value.
+If so, then the value of <code>EXINIT</code> is executed as an ex command line;
+otherwise the ".elvisrc" or "elvis.rc" file in your home directory is
+executed, if it exists.
+If that file doesn't exist, then it tries ".exrc"... which probably only makes
+sense for Unix, but it is quicker to try &amp; fail then to test before trying.
+The "~" notation is UNIX's conventional notation for referring to files in your
+home directory; Elvis handles it correctly on non-UNIX systems too.
+
+<p><strong>Note:</strong>
+There is a hardcoded limit of (normally) 1023 characters for the result of
+an expression.  If your <code>EXINIT</code> environment variable's value is
+longer than that, Elvis won't be able to execute it.
+
+<p>If EXINIT or .elvisrc/elvis.rc/.exrc (whichever was executed) has set the
+<a href="elvisopt.html#exrc">exrc</a> option then Elvis will
+execute ".elvisrc" or "elvis.rc" in the current directory, if it exists;
+if not, then it tries ".exrc".
+Elvis uses <a href="elvisex.html#safely">:safely source</a> instead of
+<a href="elvisex.html#source">:source</a> to execute the file
+for security reasons.
+
+<pre>
+	" X11 INTERFACE DEFAULT FONTS GO HERE
+	if gui == "x11" &amp;&amp; alias("courier")
+	then if font == ""
+	then courier 14
+</pre>
+These cause the x11 interface to use 14-point courier fonts, if you don't
+explicitly name some other font on the command line
+via <strong>-font</strong> <var>fontname</var>, or
+by setting the <a href="elvisopt.html#font">font</a> option in your .exrc file.
+
+<h3>10.2.2 The "elvis.brf" file</h3><a name="elvis.brf"></a>
+
+The "elvis.brf" file is loaded into a buffer named
+"Elvis before reading".
+That buffer is executed immediately before loading any
+user file into a user buffer.
+
+<pre>
+	" TAKE A GUESS AT THE BUFFER'S TYPE
+	let! readeol=fileeol(filename)
+</pre>
+This line tries to guess whether the file is binary or not.
+This must be done before the file is loaded because for non-binary
+files Elvis converts newlines to linefeeds as it reads the file.
+
+<h3>10.2.3 The "elvis.arf" file</h3><a name="elvis.arf"></a>
+
+The "elvis.arf" file is loaded into a buffer named "Elvis after reading".
+That buffer is automatically executed immediately after a user file has been
+loaded into a user buffer.
+
+<pre>
+	" TAKE A GUESS AT THE BUFFER'S PREFERRED DISPLAY MODE
+	let e=tolower(dirext(filename))
+	if knownsyntax(filename)
+	then set! bufdisplay=syntax
+	if os=="unix" &amp;&amp; buflines &gt;= 1
+	then 1s/^#! *[^ ]*\/\([^ ]\+\).*/set! bufdisplay="syntax \1"/x
+	if !newfile
+	then {
+	 if readeol=="binary" &amp;&amp; bufdisplay=="normal"
+	 then set! bufdisplay=hex
+	 if e==".man"
+	 then set! bufdisplay=man
+	 if strlen(e)==2 &amp;&amp; isnumber(e&gt;&gt;1) &amp;&amp; buflines&gt;=1
+	 then 1s/^\./set! bufdisplay=man/x
+	 if e==".tex"
+	 then set! bufdisplay=tex
+	 if e&lt;&lt;4==".htm"
+	 then set! bufdisplay=html
+	 if buflines &gt;= 1 &amp;&amp; bufdisplay=="hex"
+	 then 1s/^&lt;[HIThit!]/set! bufdisplay=html/x
+	 if (filename&lt;&lt;5=="http:" || filename&lt;&lt;4=="ftp:")
+	                                  &amp;&amp; strlen(e)&lt;4 &amp;&amp; bd=="hex"
+	 then set! bufdisplay=normal
+	 if bufdisplay=="normal" &amp;&amp; buflines &gt;= 1
+	 then 1s/^From .*/set! bufdisplay="syntax email"/x
+	 if dirdir(filename)=="/tmp" || dirdir(filename)=="/var/tmp"
+	 then set! bufdisplay="syntax email"
+	}
+</pre>
+These lines try to guess the preferred display mode for the file.
+First it checks to see if the filename's extension is listed in the
+<a href="#elvis.syn">elvis.syn</a> file;
+if so, then the buffer is shown in the <a href="elvisdm.html#syntax">syntax</a>
+display mode.
+Then, for UNIX, if the first line of the file starts with "#!shell",
+Elvis will use the <a href="elvisdm.html#syntax">syntax</a> display mode for
+that named shell.
+This is followed by many special cases.
+
+<pre>
+	" EXECUTE MODELINES, IF "modelines" OPTION IS SET
+	if modelines &amp;&amp; buflines &gt;= 1 &amp;&amp; buflines &lt;= modelines * 2
+	then %s/ex:\(.*\):/\1/x
+	if modelines &amp;&amp; buflines &gt; modelines * 2
+	then {
+	 eval 1,(modelines)s/[ev][xi]:\\\(.*\\\):/\1/x
+	 eval (buflines - modelines + 1),(buflines)
+	                                  s/[ev][xi]:\\\(.*\\\):/\1/x
+	}
+</pre>
+These commands search for modelines in the newly loaded file,
+if the <a href="elvisopt.html#modelines">modelines</a> option is set.
+The modelines are executed via the new "x" option to the
+<a href="elvisex.html#substitute">:s</a> command.
+
+<p>Note: The second "eval" line is split above merely as a typographical
+convenience.
+In the real "elvis.arf" file, the "eval" line and "s" line are actually a
+single line.
+
+<h3>10.2.4 The "elvis.bwf" file</h3><a name="elvis.bwf"></a>
+
+The "elvis.bwf" file is loaded into a buffer named "Elvis before writing".
+That buffer is executed as a series of ex commands immediately before
+writing the entire contents of a buffer out over its original file.
+
+<pre>
+	if backup &amp;&amp; !newfile
+	then {
+	 if os=="unix"
+	 then eval ! cp (filename) (filename).bak
+	 else eval ! copy (filename) (basename(filename)).bak &gt;NUL
+	}
+</pre>
+These lines copy the original version of the file to a "*.bak" file.
+Note that we implement separate Unix and non-Unix versions of the
+copy command here.
+
+<h3>10.2.5 The "elvis.awf" file</h3><a name="elvis.awf"></a>
+
+The "elvis.awf" file is loaded into a buffer named "Elvis after writing".
+That buffer is executed as a series of ex commands immediately after
+writing the entire contents of a buffer out over its original file.
+
+<p>There is no default "elvis.awf" file,
+because I haven't found any need for one yet.
+
+<h2>10.3 Recovery</h2><a name="RECOVER"></a>
+
+If Elvis ever dies an unnatural death, the session file will be left behind.
+This session file contains all of the changes you've made during your edit
+session, so you should be able to start a new Elvis process on the
+old session file and recover all of your changes.
+
+<p>Only one Elvis process at a time is allowed to use a given session file.
+To enforce this, when Elvis starts up it sets an "in use" flag in the
+session file's header.
+Any later Elvis process will test that flag, and refuse to use a session
+file which is already in use.
+
+<p>When Elvis crashes, it leaves the "in use" flag set, even though the
+process that was using it has died.
+You must restart your edit session via "<code>elvis&nbsp;-r</code>".
+The <code>-r</code> flag tells Elvis to ignore the "in use" flag.
+If you aren't using the default session file, then you'll need to add a
+"<code>-f&nbsp;sessionfile</code>" flag to tell Elvis which session file it
+should recover from.
+
+<p>If you always use the default session file, and allow several old files
+to accumulate after crashes, then "<code>elvis&nbsp;-r</code>" will always
+recover from the lowest-numbered one.
+The command "<code>elvis&nbsp;-r&nbsp;-Gquit</code>" will tell you its name.
+If you prefer to recover from a different session file,
+you can either delete the lower-numbered session files, or 
+use the "<code>-f&nbsp;sessionfile</code>" flag to make Elvis use a different
+one.
+
+<p>When this new Elvis process starts up, it will be displaying a new,
+empty buffer.
+<strong>Don't panic!</strong>
+Your edit buffers are still intact; they just don't happen to be displayed
+in the initial window.
+You can use the "<a href="elvisex.html#buffer">:buffer</a>" command to list
+the buffers.
+
+<p>After a crash, the session file might not be entirely self-consistent.
+Because of this, it is dangerous to edit the file using this session file.
+<strong>You should save your old buffer to a file immediately,
+and then exit Elvis.</strong>
+To save your old buffer give Elvis the command
+"<code>:(</code><var>buffer</var><code>)w </code><var>filename</var>"
+where <var>buffer</var> is the name of your buffer
+(usually the same as the original file name) and
+<var>filename</var> is the name of a new file where you wish to store the text.
+Note that the buffer name should be in parentheses!
+And for safety's sake, you should not write the salvaged buffer out over the top
+of the original text file.
+
+<p>Under normal circumstances Elvis automatically deletes the session file
+when it exits, but when recovering after a crash Elvis is more cautious.
+It never deletes a recovered session file itself.
+After recovering your text and exiting Elvis, you should manually delete the
+session file via
+"<code>rm&nbsp;/var/tmp/elvis*.ses</code>", or whatever the session file's name
+is.
+For DOS/Windows users, the command would be "<code>DEL&nbsp;\TEMP\ELVIS-2.2_0</code>".
+
+<p>If you can figure out how to reproduce the problem, please let me know!
+My email address is <address>kirkenda@cs.pdx.edu</address>
+
+<h2>10.4 Other files</h2>
+The following configuration files aren't necessarily related to initialization
+or sessions, but since we've discussed so many configuration files in this
+chapter already, we might as well finish it off.
+
+<dl>
+
+<dt>*.man
+<dd>These files are Unix-style "man pages" describing each of the programs.
+You can view them with Elvis' "man" display mode, or you can print them
+via "troff -man ..." or the local equivalent.
+
+<dt>elvis.ftp or ~/.netrc
+<dd>This file stores account names and passwords to be used when contacting
+certain FTP sites.
+It is described in <a href="elvisnet.html#elvis.ftp">Chapter 15: The Internet</a>.
+
+<dt>elvis*.html
+<dd>These files store the on-line interactive manual for Elvis.
+When you use the <a href="elvisex.html#help">:help</a> command, Elvis
+locates the necessary file and loads it.
+These files are written in HTML so you can also view/print them using
+a Web browser such as Netscape.
+
+<dt>howto.html
+<dd>This file contains a lot of "How To" discussions for various features.
+It is meant to be searched via the "<a href="elvistip.html#howto">:howto</a>"
+alias defined in <a href="#elvis.ali">elvis.ali</a>.
+Most of the discussions contain links into the manual, so it is important
+for this file to be located in the same directory as all of the
+<code>elvis*.html</code> files.
+
+<dt><a name="elvis.lat">elvis.lat</a>
+<dd>This file contains a bunch of <a href="elvisex.html#digraph">:digraph</a>
+commands for setting up the digraph table for the Latin-1 symbol set.
+The default <a href="#elvis.ini">elvis.ini</a> file interprets this file's
+contents automatically.
+
+<dt><a name="elvis.pc8">elvis.pc8</a>
+<dd>This file contains a bunch of <a href="elvisex.html#digraph">:digraph</a>
+commands for setting up the digraph table for the PC-8 symbol set
+(which corresponds to IBM Code Page 437).
+The default <a href="#elvis.ini">elvis.ini</a> file interprets this file's
+contents automatically for MS-DOS, OS/2 and text-mode Win32.
+
+<dt><a name="elvis.ali">elvis.ali</a>
+<dd>This contains an assortment of aliases,
+<a href="elvistip.html#EXAMPLES">described in the Tips chapter</a>.
+If your copy of Elvis is configured to support aliases (and all versions are,
+except for MS-DOS) then this file will be automatically loaded via the
+<a href="elvis.ini">elvis.ini</a> script, each time you run Elvis.
+
+<dt><a name="elvis.msg">elvis.msg</a>
+<dd>This file stores a translation table, which allows you to customize
+Elvis' messages.
+This file is described in the <a href="elvismsg.html#elvis.msg">Messages</a>
+chapter.
+
+<dt><a name="elvistrs.msg">elvistrs.msg</a>
+<dd>This contains a rough list of nearly all of Elvis' terse messages.
+You can use this as a resource when constructing an
+<a href="elvismsg.html#elvis.msg">elvis.msg</a> file.
+The idea here is that you'll copy a line from elvistrs.msg into elvis.msg,
+and then append a ":" and the new message text.
+
+<dt>elvis.net
+<dd>This tells Elvis which sites can be accessed directly, and which can
+only be accessed via proxy servers.
+It is described in <a href="elvisnet.html#elvis.net">Chapter 15: The Internet</a>.
+
+<dt><a name="elvis.ps">elvis.ps</a>
+<dd>The PostScript printer drivers (<a href="elvisopt.html#lptype">lptype</a>=ps
+or ps2) include this file's contents in the printer output.
+This file should contain PostScript code which defines the symbols
+<code>ElvisN, ElvisB,</code> and <code>ElvisI</code> as 12-point monospaced fonts
+to be used for normal text, bold text, and italic text, respectively.
+Similarly, it defines <code>ElvisPN, ElvisPB,</code> and <code>ElvisPI</code>
+as 12-point proportional fonts.
+It also defines <code>ElvisPage, ElvisLeftPage,</code> and <code>ElvisRightPage</code>
+procedures for setting the size and position of a page's text on the paper.
+If this file doesn't exist or is unreadable, Elvis will use the following
+definitions:
+<pre>
+/ElvisN /Courier findfont 12 scalefont def
+/ElvisB /Courier-Bold findfont 12 scalefont def
+/ElvisI /Courier-Oblique findfont 12 scalefont def
+/ElvisPN /Times-Roman findfont 12 scalefont def
+/ElvisPB /Times-Bold findfont 12 scalefont def
+/ElvisPI /Times-Italic findfont 12 scalefont def
+/ElvisPage { 12 36 translate } def
+/ElvisPage { 12 36 translate } def
+/ElvisLeftPage { 12 750 translate -90 rotate 0.58 0.75 scale } def
+/ElvisRightPage { newpath 12 394 moveto 576 0 rlineto stroke
+                 12 366 translate -90 rotate 0.58 0.75 scale } def
+</pre>
+
+<dt><a name="elvis.spe">elvis.spe</a>
+<dd>This contains an ex script which initializes the spell-checker.
+The <a href="#elvis.ini">elvis.ini</a> script invokes this if Elvis was
+compiled with the <a href="elvistip.html#SPELL">spell-check feature</a> enabled.
+
+<dt><a name="elvis.syn">elvis.syn</a>
+<dd>This contains descriptions of all languages supported by the
+<a href="elvisdm.html#syntax">syntax display mode.</a>
+For a full description of this file, see the
+<a href="elvisdm.html#elvis.syn">Language Specification</a> section in the
+<a href="elvisdm.html">Display Modes</a> chapter.
+
+<dt><a name="elvis.xbm">elvis.xbm</a>
+<dd>This stores a two-color Elvis icon, in the X-Windows XBM format.
+
+<dt><a name="elvis.xpm">elvis.xpm</a>
+<dd>This stores a four-color Elvis icon, in the X-Windows XPM format.
+
+<dt><a name="printdoc.bat">printdoc.bat</a>
+<dd>This contains a series of program invocations for printing all of the 
+Elvis documentation in the correct sequence.
+This file should be executable under MS-DOS, Win32, and Unix.
+<em>You must install Elvis before this will work!</em>
+
+</dl>
+
+</body></html>

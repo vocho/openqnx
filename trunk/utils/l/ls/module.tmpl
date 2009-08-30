@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<module name="ls">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<component id="ls" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				ls
+			</location>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/util"/>
+		<part build="false" location="lib/compat"/>
+<!--		<part build="false" location="hardware/devb/cam"/> -->
+<!--		<part build="false" location="services/blk/fs"/> -->
+	</requires>
+
+</module>

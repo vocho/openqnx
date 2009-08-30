@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="kdumper">
+	<type>Element</type>
+	<classification>Runtime</classification>
+	<kind type="exe"/>
+
+	<!-- Available for what platforms? -->
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<!-- Source for source modules and builds -->
+	<source available="false">
+		<location subdirs="true" relative="true">.</location>
+		<!-- NYI: Have to exclude "cisco" variant directories from src pkg -->
+	</source>
+
+	<!-- Binary packaging info (including public headers -->
+
+	<GroupOwner>os</GroupOwner>
+
+	<contents>
+		<!-- Thingies that go into an internal package -->
+		<package name="internal" isInternal="true">
+			<component id="kdumper-internal" generated="true">
+				<kind type="exe"/>
+				<location type="install">/boot/sys/</location>
+				<location basedir="{cpu}/{o|endian}" runtime="true" strip="false" >kdumper</location>
+			</component>
+			<component id="kdumper-headers" basedir="public">
+				<kind type="header"/>
+				<source available="false">
+				<location runtime="false" subdirs="false">.</location>
+				</source>
+			</component>
+		</package>
+	</contents>
+
+	<!-- Dependencies -->
+	<requires>
+		<part build="true"  location="lib/kdutil"/>
+	</requires>
+</module>

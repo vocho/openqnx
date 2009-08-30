@@ -1,0 +1,17 @@
+       This package contalns:
+-rw-------   1    6234 Mar 21 21:44 README
+-rw-------   1    1650 Mar 20 12:49 bitio.c
+-rw-------   1    1567 Mar 20 12:49 debug.c
+-rw-------   1    1023 Mar 20 12:50 decode.c
+-rw-rw-r--   1    1155 Mar 20 12:49 default.c
+-rw-------   1    3800 Mar 20 13:02 encode.c
+-rw-r--r--   1    5973 Mar 21 21:56 freeze.1
+-rw-------   1   16740 Mar 21 21:56 freeze.c
+-rw-------   1    2495 Mar 20 12:49 freeze.h
+-rw-------   1    8291 Mar 20 12:58 huf.c
+-rw-------   1     201 Mar 20 12:50 huf.h
+-rw-------   1    2451 Mar 20 12:49 lz.c
+-rw-------   1    1547 Mar 20 12:50 lz.h
+-rw-rw-r--   1    1248 Mar 20 12:50 makefile
+-rw-------   1    4475 Mar 20 12:50 statist.c
+Total: 15 files.

@@ -1,0 +1,69 @@
+About
+-----
+These files contain the testsuite for the SAT's functionality. These 
+tests take no command line arguments, and should generate output like
+this:
+	START: ./bk1_interrupt, pid 9416776
+	POINT: file bk1_interrupt.c, line 172 Get interrupt entry in wide mode
+	PASS:  file bk1_interrupt.c, line 221 Got the correct values
+	<Snip>
+	STOP:  ./bk1_interrupt, pid 9416776
+
+The lines starting with POINT: indicate what a certain test is checking.
+In this test the result was a PASS. Other results that could occure
+are FAIL: which means the functionality is broken, or UNRES: which
+means for some reason the test could not be preformed, or is not valid
+in this case.  If the test case causes an assert failure, this means that
+a condition occurred that cannot be recovered from.
+
+All of the test cases must be run as root with the instrumented kernel running, 
+and tracelogger must be in the PATH
+
+Building
+--------
+To build these tests run make in the /usr/src/sat-1.0.0/sat/src/regress/instr
+directory. 
+The tests will be built in the following directories:
+	cpu/[le/be/gcc.dynamic]  dynamically linked executables
+	cpu/*.static			 statically linked executables
+
+For each test, three files will be created. For example, for the
+bk1_interrupt.c test on x86:
+	x86/gcc.dynamic/bk1_interrupt		uncompressed, stripped executable
+	x86/gcc.dynamic/bk1_interrupt.gz	compressed, stripped executable
+	x86/gcc.dynamic/bk1_interrupt.sym	uncompressed, unstripped executable
+
+Files
+-----
+These four tests check kernel call entry and exit parmeters. They will 
+check that they are passed to event handlers, and logged to the tracebuffer
+properly.
+
+bk1_kercalls.c
+bk2_kercalls.c
+bk3_kercalls.c
+bk4_kercalls.c
+
+This test makes sure that interrupts get looged to the tracebuffer
+
+bk1_interrupt.c
+
+These two test check that thread state changes (scheduler activity) 
+is properly passed to event handlers, as well as logged to the 
+tracebuffer 
+
+bk1_threadstate.c
+bk2_threadstate.c
+
+These tests check that communications events are properly intercepted, and 
+trigger event handlers.
+
+bk1_comm.c
+bk2_comm.c
+
+
+This test is to verify that the timestamps that are logged to the 
+tracebuffer are sane (non-zero)
+
+wh1_timezero.c
+

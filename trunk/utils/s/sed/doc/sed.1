@@ -1,0 +1,358 @@
+.\"
+.\" sed.1 - the *roff document processor source for the sed manual
+.\"
+.\" This file is part of GNU sed.
+.\" Copyright (C) 1998 Free Software Foundation, Inc.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2, or (at your option)
+.\" any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
+.TH SED 1 "1998-05-07" "GNU Project"
+.ds sd \fIsed\fP
+.ds Sd \fISed\fP
+.SH NAME
+sed \- a Stream EDitor
+.SH SYNOPSIS
+.nf
+sed [-n] [-V] [--quiet] [--silent] [--version] [--help]
+    [-e script] [--expression=script]
+    [-f script-file] [--file=script-file]
+    [script-if-no-other-script]
+    [file...]
+.fi
+.SH DESCRIPTION
+\*(Sd is a stream editor.
+A stream editor is used to perform basic text
+transformations on an input stream
+(a file or input from a pipeline).
+While in some ways similar to an editor which
+permits scripted edits (such as \fIed\fP),
+\*(sd works by making only one pass over the
+input(s), and is consequently more efficient.
+But it is \*(sd's ability to filter text in a pipeline
+which particularly distinguishes it from other types of
+editors.
+
+.SH OPTIONS
+\*(Sd may be invoked with the following command-line options:
+.TP
+.B -V
+.TP
+.B --version
+Print out the version of sed that is being run and a copyright notice,
+then exit.
+.TP
+.B -h
+.TP
+.B --help
+Print a usage message briefly summarizing these command-line options
+and the bug-reporting address,
+then exit.
+.TP
+.B -n
+.TP
+.B --quiet
+.TP
+.B --silent
+By default, \*(sd will print out the pattern space
+at the end of each cycle through the script.
+These options disable this automatic printing,
+and \*(sd will only produce output when explicitly told to
+via the
+.B p
+command.
+.TP
+.B -e \fIscript\fP
+.TP
+.BI --expression= script
+Add the commands in
+.I script
+to the set of commands to be run while processing the input.
+.TP
+.B -f \fIscript-file\fP
+.TP
+.BI --file= script-file
+Add the commands contained in the file
+.I script-file
+to the set of commands to be run while processing the input.
+.PP
+If no
+.BR -e , -f , --expression ,
+or
+.B --file
+options are given on the command-line,
+then the first non-option argument on the command line is
+taken to be the
+.I script
+to be executed.
+.PP
+If any command-line parameters remain after processing the above,
+these parameters are interpreted as the names of input files to
+be processed.
+A file name of
+.B -
+refers to the standard input stream.
+The standard input will processed if no file names are specified.
+
+.SH
+Command Synopsis
+This is just a brief synopsis of \*(sd commands to serve as
+a reminder to those who already know sed;
+other documentation (such as the texinfo document)
+must be consulted for fuller descriptions.
+.SS
+Zero-address ``commands''
+.TP
+.RI :\  label
+Label for
+.B b
+and
+.B t
+commands.
+.TP
+.RI # comment
+The comment extends until the next newline (or the end of a
+.B -e
+script fragment).
+.TP
+}
+The closing bracket of a { } block.
+.SS
+Zero- or One- address commands
+.TP
+=
+Print the current line number.
+.TP
+a \e
+.TP
+.I text
+Append
+.IR text ,
+which has each embedded newline preceeded by a backslash.
+.TP
+i \e
+.TP
+.I text
+Insert
+.IR text ,
+which has each embedded newline preceeded by a backslash.
+.TP
+q
+Immediately quit the \*(sd script without processing
+any more input,
+except that if auto-print is not diabled
+the current pattern space will be printed.
+.TP
+.RI r\  filename
+Append text read from
+.IR filename .
+.SS
+Commands which accept address ranges
+.TP
+{
+Begin a block of commands (end with a }).
+.TP
+.RI b\  label
+Branch to
+.IR label ;
+if
+.I label
+is omitted, branch to end of script.
+.TP
+.RI t\  label
+If a s/// has done a successful substitution since the
+last input line was read and since the last t command,
+then branch to
+.IR label ;
+if
+.I label
+is omitted, branch to end of script.
+.TP
+c \e
+.TP
+.I text
+Replace the selected lines with
+.IR text ,
+which has each embedded newline preceeded by a backslash.
+.TP
+d
+Delete pattern space.
+Start next cycle.
+.TP
+D
+Delete up to the first embedded newline in the pattern space.
+Start next cycle, but skip reading from the input
+if there is still data in the pattern space.
+.TP
+h H
+Copy/append pattern space to hold space.
+.TP
+g G
+Copy/append hold space to pattern space.
+.TP
+x
+Exchange the contents of the hold and pattern spaces.
+.TP
+l
+List out the current line in a ``visually unambiguous'' form.
+.TP
+n N
+Read/append the next line of input into the pattern space.
+.TP
+p
+Print the current pattern space.
+.TP
+P
+Print up to the first embedded newline of the current pattern space.
+.TP
+.RI s/ regexp / replacement /
+Attempt to match
+.I regexp
+against the pattern space.
+If successful, replace that portion matched
+with
+.IR replacement .
+The
+.I replacement
+may contain the special character
+.B &
+to refer to that portion of the pattern space which matched,
+and the special escapes \e1 through \e9 to refer to the
+corresponding matching sub-expressions in the
+.IR regexp .
+.TP
+w
+.I filename
+Write the current pattern space to
+.IR filename .
+.TP
+.RI y/ source / dest /
+Transliterate the characters in the pattern space which appear in
+.I source
+to the corresponding character in
+.IR dest .
+.SH
+Addresses
+\*(Sd commands can be given with no addresses, in which
+case the command will be executed for all input lines;
+with one address, in which case the command will only be executed
+for input lines which match that address; or with two
+addresses, in which case the command will be executed
+for all input lines which match the inclusive range of
+lines starting from the first address and continuing to
+the second address.
+Three things to note about address ranges:
+the syntax is
+.IR addr1 , addr2
+(i.e., the addresses are separated by a comma);
+the line which
+.I addr1
+matched will always be accepted,
+even if
+.I addr2
+selects an earlier line;
+and if
+.I addr2
+is a
+.IR regexp ,
+it will not be tested against the line that
+.I addr1
+matched.
+.PP
+After the address (or address-range),
+and before the command, a
+.B !
+may be inserted,
+which specifies that the command shall only be
+executed if the address (or address-range) does
+.B not
+match.
+.PP
+The following address types are supported:
+.TP
+.I number
+Match only the specified line
+.IR number .
+.TP
+.IR first ~ step
+Match every
+.IR step 'th
+line starting with line
+.IR first .
+For example, ``sed -n 1~2p'' will print all the odd-numbered lines in
+the input stream, and the address 2~5 will match every fifth line,
+starting with the second.
+(This is a GNU extension.)
+.TP
+$
+Match the last line.
+.TP
+.RI / regexp /
+Match lines matching the regular expression
+.IR regexp .
+.TP
+.BI \fR\e\fPc regexp c
+Match lines matching the regular expression
+.IR regexp .
+The
+.B c
+may be any character.
+.SH
+Regular expressions
+POSIX.2 BREs
+.I should
+be supported, but they aren't completely yet.
+The
+.B \en
+sequence in a regular expression matches the newline character.
+There are also some GNU extensions.
+[XXX FIXME: more needs to be said.
+At the very least, a reference to another document which
+describes what is supported should be given.]
+.SH
+Miscellaneous notes
+This version of sed supports a
+.RB \e <newline>
+sequence in
+all regular expressions, the
+.I replacement
+part of a substitute (s) command, and in the
+.I source
+and
+.I dest
+parts of a transliterate (y) command.
+The \e is stripped, and the newline is kept.
+.SH
+SEE ALSO
+.BR awk (1),
+.BR ed (1),
+.BR expr (1),
+.BR emacs (1),
+.BR perl (1),
+.BR tr (1),
+.BR vi (1),
+.BR regex (5)
+[well, one
+.I ought
+to be written... XXX],
+sed.info,
+any of various books on \*(sd,
+.na
+the \*(sd FAQ (http://www.wollery.demon.co.uk/sedtut10.txt,
+http://www.ptug.org/sed/sedfaq.htm).
+.SH
+BUGS
+.PP
+E-mail bug reports to
+.BR bug-gnu-utils@gnu.org .
+Be sure to include the word ``sed'' somewhere in the ``Subject:'' field.

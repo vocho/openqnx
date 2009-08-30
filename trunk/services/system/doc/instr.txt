@@ -1,0 +1,382 @@
+
+                       +-----------------+
+                       | INSTRUMENTATION |
+                       +-----------------+
+
+
+ANALYSIS DESIGN AND IMPLEMENTATION
+==================================
+
+Neutrino ukernel has been equipped with sophisticated tracing and
+profiling mechanism (instrumentation module) that allows monitoring
+its execution in real-time. The ukernel instrumentation module is
+interfaced using simple and efficient interfaces that isolate the
+ukernel emitting events from the event sources and its tracing
+parameters (control parameters) from external applications.
+
+The design and implementation of the ukernel instrumentation module
+and ukernel interfaces have been driven, among others, by the
+following main requirements:
+
+  1) Modularity,
+  2) Generic functionalities,
+  3) Clear hierarchical design and implementation,
+  4) Independence with fixed generic interfacing,
+  5) Speed,
+  6) Simplicity,
+  7) Code efficiency and,
+  8) Future expandability.
+
+The analysis of the requirements presented above leads to the
+general model of the instrumentation process presented in figure 1.
+
+
+   (e) USER CONTROL INTERFACE
+              |                                      "user application"
+              |
+       +------+------+                                         ^
+       |             |                                         |
+       |             |                                         |
+       V             |                                         |
+ (a) INSTR.          V                                      USER TRACE
+     UKERNEL <------------> "trace file" <------------> (f) APPLICATION
+            (b) TRACELOGGER             (c) TRACEPARSER     INTERFACE
+                                                               |
+                                                               |
+                                                               V
+                                                     [ (d) TRACEPRINTER ]
+
+      Figure 1 - General model of the instrumentation process.
+
+
+As it can be seen from figure 1, the implementation of the
+instrumentation process has been performed with 3 [+1 optional]
+computational and 2 interface entities:
+
+         (a) - INSTRUMENTED UKERNEL
+         (b) - TRACELOGGER
+         (c) - TRACEPARSER
+       [ (d) - TRACEPRINTER (optional) ]
+
+         (e) - USER CONTROL INTERFACE
+         (f) - USER TRACE APPLICATION INTERFACE
+
+The instrumented ukernel emits trace events that are copied to the
+internal ring composed of set of buffers grouped into circular link
+list. Once the number of events inside the buffer reaches "hi water
+mark" the notified tracelogger appends all trace events from the
+buffer to the trace file.
+
+The process of emitting trace events can be controlled through the
+user interface. The user can control the emitting process by:
+
+  A) Specifying the initial conditions that control the
+     process of emitting events,
+  B) By setting up filter masks that can selectively adjust the
+     event stream and by
+  C) Designing and implementing its own event handlers that
+     can be attached to the specific events to be controlled.
+
+The trace events stored inside a trace file can be post-runtime
+analyzed with the help of a traceparser library that provides
+trace application programming interface and the traceprinter
+that uses that interface to display resulting trace events.
+
+The main objective of fulfilling the presesnted requirements has
+been met with the following design decisions:
+
+   a)  Events are emitted to the internal trace buffers organized
+       as circular link list as it is shown in figure 2.
+
+
+
+          +------+    +------+    +------+         +------+
+          |      |    |      |    |      |         |      |
+      +-->|  B1  |--->|  B2  |--->|  B3  |---> ... |  Bn  | --+
+      |   |      |    |      |    |      |         |      |   |
+      |   +------+    +------+    +------+         +------+   |
+      |                                                       |
+      |                                                       |
+      +-------------------------------------------------------+
+
+             Figure 2 - Internal buffer organization.
+
+       Every trace buffer (Bk) presented in figure 2 stores m trace
+       events.  When m reaches "hi water mark" (around 80% capacity
+       of the buffer) the buffer is "closed" and its location is
+       passed to the "dumping module" - tracelogger.
+
+       The fixed size structure of every trace buffer is defined
+       as follow:
+
+typedef struct tracebuf {
+  struct traceheader{
+    struct tracebuf* baseaddr;    /* base address of the trace buffer  */
+    struct tracebuf* next;        /* pointer to the next trace buffer  */
+    _Uint32t         flags;       /* event mask, locking states, ...   */
+    _Uint32t         num_events;  /* number of events in the buffer    */
+    _Uint32t         seq_buff_num;/* buffer number in the sequence     */
+    _Uint32t         ls13_rb_num; /* 13 pos left-shifted ring buff num */
+    struct intrspin  spin;        /* spin lock (assume 32-bit length)  */
+    traceevent_t volatile* begin_ptr;/* begin of the traceevent chain  */
+    traceevent_t volatile* tail_ptr; /* end of the traceevent chain    */
+    _Uint32t         reserved[31];/* reserved for future expansions    */
+  } h;
+  struct traceevent data[_TRACELEMENTS];
+} tracebuf_t;
+
+       Trace buffers are pointed to by a field within the syspage
+       of the ukernel.
+
+   b)  The fixed size structure of trace events stored within every
+       trace buffer consisting of 4 fundamental c-types is defined
+       as follow:
+
+       typedef struct traceevent {
+         uint32_t  header;        // CPU number, flags, class, event
+         uint32_t  timeoff;       // LSB 32-bit timeoff/data
+         uint32_t  data[2];       // event data
+       } traceevent_t;
+
+       The small size of the traceevent_t (16 bytes) helps eliminate
+       "instrumentation overhead" and improves "granularity" of
+       a trace event stream by allowing a precise modulation of
+       its output. This modulation is achieved by a "thin" protocol
+       composed of simple trace events that are grouped into more
+       complex trace events called COMBINE EVENTS. Experiments
+       shows, that in the case of combine events time is less
+       critical and, introduced with the protocol time delays can
+       be negligible.  The protocol is robust and can be safely
+       used in SMP systems.
+
+       Consequently, the following events can be composed of
+       traceevent_t structures:
+
+        - SIMPLE  EVENT - composed of exactly one traceevent_t structure,
+        - COMBINE EVENT - composed of two or more traceevent_t structures.
+
+       An example of the event stream containing a total of 7
+       traceevent_t structures that code one simple event and two
+       combine events is shown in figure 3.
+
+                    combine event C1
+           -----------------------------------
+          |                 |                 |
+      +--------------------------------------------------------------+
+      |        |        |        |        |        |        |        |
+      | trace  | trace  | trace  | trace  | trace  | trace  | trace  |
+      | event  | event  | event  | event  | event  | event  | event  |
+      | struct | struct | struct | struct | struct | struct | struct |
+      |        |        |        |        |        |        |        |
+      +--------------------------------------------------------------+
+          1        2        3        4         5        6        7
+                   |                 |                  |        |
+             simple event S1          ---------------------------
+                                         combine event C2
+      STREAM BEGIN                                         STREAM END
+
+             Figure 3 - A coding example of one simple and two
+                          interlaced combine events.
+
+
+       As it can be seen in figure 3, the combine events can be
+       interlaced, however, they have to be causal in time domain
+       and their components (traceevent_t structures) have to be
+       linearly ordered. At the end, combine events are linearly
+       merged traceevent_t structures. The merging procedure
+       combines the data portions of the traceevent_t structures
+       in respect to its two control struct bits of the header that
+       represent begin, continuation and the end of the combine
+       event. The traceevent_t structures that constitute the same
+       (one) combine event are identified by their time stamps
+       (member timeoff) that have to be the same.
+
+       The 32-bit header of the traceevent_t structure represents:
+
+            1 - control struct   (2bits),
+            2 - CPU-number       (6bits),
+            3 - flags            (8bits),
+            4 - reserved         (1bit),
+            5 - event-class      (5bits) and
+            6 - event-type       (10bits).
+
+       Bit encoding and bit description of the header of the
+       traceevent_t structure is presented in figure 4.
+
+
+                  |- 00 - simple event
+                  |- 01 - combine event begin
+                  |- 10 - combine event continuation
+                  |- 11 - combine event end
+                  |
+                  |                           event    event
+                  |    CPU #    flags         class    type
+                  |    6-bits   8-bits        5-bits   10-bits
+                 /\   /----\   /------\       /---\   /--------\
+                 00   000000   00000000   0   00000   0000000000
+                 |                        |                    |
+                b31                   reserved                b0
+                MSB                                           LSB
+
+              Figure 4 - Header member bit encoding and description.
+
+
+   c)  All emitting trace events (simple/combine) within the
+       instrumentation module have been partitioned internally into
+       disjointed logical sets of event classes. This structured
+       approach simplifies any interfacing model and implementation
+       that would require event streaming and event grouping.
+       There is a total of 32 event classes each represented by a
+       5-bit number. Every event class can contain 1024 events
+       each represented by a 10-bit number.
+
+       At present, there have been identified six event classes
+       containing trace events to be emitted:
+
+          - empty           - empty class with zero ID (never emitted)
+          - control         - control events
+          - kernel call     - kernel call entries/exits 
+          - interrupt       - interrupt entries/exits
+          - process/thread  - process/thread state/creation/destruction
+          - container       - universal container (buffer)
+
+       The process of emitting trace events is controlled by several
+       layers of user defined filters. Those filters can filter
+       in/out events statically (independent on the present state
+       of the ukernel) and dynamically (dependent on the present
+       state of the ukernel).
+
+   d)  There is a fixed generic interface between intercepting
+       modules and trace buffers. The interface is generic/transparent
+       enough to accommodate future expansions and it hides all
+       the details of a serialization process. The interface consists
+       of following functions emitting simple/combine events:
+
+         add_trace_event()     - emits simple event
+         add_trace_buffer()    - emits arbitrary continues buffer
+         add_trace_b_init()    - initializes multi-entry protocol
+         add_trace_b_add()     - emits multi-entry protocol stream
+         add_trace_b_end()     - ends multi-entry protocol
+         add_trace_string()    - emits formatted string
+         add_trace_d1_string() - emits formatted string and one argument
+         add_trace_d2_string() - emits formatted string and two arguments
+
+       All interface functions are multi-entry/SMP safe and can be
+       used during processing of an interrupt.
+
+   e)  In order to minimize the intercepting overhead and, at the
+       same time, to allow the large amount of data to be emitted
+       with the intercepting modules, two emitting modes are
+       provided:
+
+                  - FAST EMITTING MODE,
+                  - WIDE EMITTING MODE.
+
+       During emitting process that utilizes the fast emitting
+       mode, all tracing and profiling information is serialized
+       into simple events. This minimizes the execution overheat
+       introduced by the intercepting modules.
+
+       During emitting process that utilizes the wide emitting
+       mode, some tracing and profiling information may be serialized
+       into combine events. This mode is useful in the case when
+       one wants to emit large amount of tracing information.
+
+       These two emitting modes can be used at the same time, i.e,
+       some tracing and profiling events maybe be emitted with the
+       fast emitting mode while others can use wide emitting mode.
+       Using this approach, the emitting event stream can be adjusted
+       precisely to meet its demands.
+
+   f)  The designed and implementation (execution flow) of the
+       intercepting modules have been optimized to minimize the
+       overheat associated with the emitting trace events in fast
+       emitting mode or in the case when the trace event is filtered
+       out. This is especially important during intercepting fast,
+       short and frequent time events such as interrupts or
+       scheduling events.
+
+       In most of the cases an intercepting module is implemented
+       as inlined macro definition that, at the very first entry,
+       perform static filtering operation (see pkt. g)). A typical
+       example of an intercepting macro definition can be schematically
+       depicted as:
+
+       #define _TRACE_"EVENT"(t) if("EVENT_MASK"==OK) intercept(t)
+
+       In some cases ("whenever possible") the very first entry
+       point was implemented in assembly language or, since the
+       filtering decision was made during initialization before
+       run-time tracing, the first level decision part within an
+       intercepting macro has been eliminated.
+
+   g)  The emitting trace event stream can be initialized/modulated
+       statically (during initialization of the instrumentation
+       module) and dynamically (during run-time execution).
+
+       The static initialization is performed by setting/clearing
+       set of "filtering masks" that control the emitting process.
+       It is also allowed to use the static initialization mechanisms
+       during run-time execution, however, one has to take into
+       account introduced time delays that may potentially filter/pass
+       unwanted tracing events. A typical filtering mask that is
+       declared/defined within the external (global) struct
+       trace_mask{..}trace_masks can be schematically presented as:
+
+       uint32_t _TRACE_"EVENT_CLASS"["_TRACE_MAX_CLASS_EVENTS"];
+
+       The dynamic filtering is performed with user defined event
+       handlers or provided dynamical filters.  At present there
+       are two types of dynamical filters. Those two filter types
+       allow filtering trace events related to a particular process
+       ID or/and a particular thread ID. The attached event handlers
+       are executed every time the associated with the event handler
+       event occurs. The outcome of the filtering operation depends
+       on the return value of this executed event handler. Since
+       the handlers are defined externally by the user, the user
+       has a full control over the filtering process.
+
+       The filtering mechanism has been designed and implemented
+       using hierarchical approach - filtering levels. The layout
+       of the filtering levels reflects inverse of the overhead
+       associated with the filtering tasks and probability of its
+       effective usage. For example, the static filtering with the
+       trace masks is performed first before potential execution
+       of the event handlers.
+
+
+
+DEFINITIONS 
+===========
+
+kernel instrumentation - functionality added to the Neutrino
+                         "procnto" module (or "kernel" allowing
+                          kernel time events and states to be
+                         selectively emitted.  This events can then
+                         be later processed by a user defined
+                         application.
+
+kernel trace           - the same as "kernel instrumentation"
+
+kernel trace event     - A small emount of data emitted by a
+                         "procnto" module describing the ukernel
+                         current activity. The ukernel stores the
+                         emitted trace events into the kernel trace
+                         buffer.
+
+kernel trace buffer    - Memory allocated by the ukernel to store
+                         trace events.
+
+ukernel                - The Neutrino "procnto"
+
+module Logfile         - A file (or device) created by an
+                         application containing ukernel
+                         instrumentaion events
+
+trace file             - same as "log file"
+
+Trace post-processing  - The action of processing kernel trace
+                         events that reside within the trace file.
+
+
+

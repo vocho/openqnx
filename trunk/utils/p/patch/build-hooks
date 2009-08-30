@@ -1,0 +1,54 @@
+# qnx_target_version default: 6.4.0
+# Can be overriden by VERSION_REL
+# If native compiled on neutrino, it will be determined
+# unless overriden by VERSION_REL environment variable.
+qnx_target_version=6.4.0
+
+if [ ! -z "${VERSION_REL}" ]; then
+	qnx_target_version=${VERSION_REL}
+#if target_version is 6.4.x then default to 6.4.0. We have the same
+#toolchain for 6.4.x.
+	case ${qnx_target_version} in
+	  6.4.*) qnx_target_version=6.4.0
+	  ;;
+	esac
+else
+	if test "${SYSNAME}" = "${TARGET_SYSNAME}"; then
+		qnx_target_version=$(uname -r)
+	fi
+fi
+
+SIFS=${IFS}
+IFS=-
+set -- ${PWD##*/}
+IFS=${SIFS}
+cpu_string=$2
+if [ "$cpu_string" = "x86" ]; then
+cpu_string=i386-pc
+elif [ "$cpu_string" = "ppc" ]; then
+cpu_string=powerpc-unknown
+else
+cpu_string=$cpu_string-unknown
+fi
+target=${cpu_string}-nto-qnx${qnx_target_version}
+
+function hook_preconfigure {
+	configure_opts="$configure_opts --prefix=$INSTALL_ROOT_nto/${cpudir}"
+	if [ ${TARGET_SYSNAME} = nto ]; then
+		export CC=${make_CC}
+		export CONFIG_SITE=../nto-config.site
+
+		if [ ${SYSNAME} != nto ]; then
+		  configure_opts="${configure_opts} --host=${target}"
+		  configure_opts="${configure_opts} --target=${target}"
+		fi
+	fi
+}
+
+function hook_premake {
+	    strip_r_switch
+}
+
+function hook_pinfo {
+    gen_pinfo -e patch usr/bin USE="%1>%C --help" DESCRIPTION="Apply a source patch"
+}

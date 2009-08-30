@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<module name="mkxfs">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+	
+	<description>
+		<short>Short Outline</short>
+		<abstract>
+			<![CDATA[Long Outline]]>
+		</abstract>
+	</description>
+
+	<supports>
+		<availability ref="toolshosts"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true">
+			<component id="mkxfs" generated="true">
+				<location basedir="mkxfs/{os}/{cpu}/o{.:endian}" runtime="true">mkxfs</location>
+			</component>
+			<component id="mkifsf_elf" generated="true">
+				<location basedir="mkifsf_elf/{os}/{cpu}/o{.:endian}" runtime="true">mkifsf_elf</location>
+			</component>
+			<component id="mkifsf_openbios" generated="true">
+				<location basedir="mkifsf_openbios/{os}/{cpu}/o{.:endian}" runtime="true">mkifsf_openbios</location>
+			</component>
+			<component id="mkifsf_srec" generated="true">
+				<location basedir="mkifsf_srec/{os}/{cpu}/o{.:endian}" runtime="true">mkifsf_srec</location>
+			</component>
+		</package>
+	
+		<package isHost="true" isInternal="true">
+			<component id="mkifsf_vmware" generated="true">
+				<location basedir="mkifsf_vmware/{os}/{cpu}/o{.:endian}" runtime="true">mkifsf_vmware</location>
+			</component>
+		</package>
+		<package name="internal" isInternal="true">
+			<component id="mkxfs" generated="true">
+				<location os="nto" isa="arm" byteorder="be" basedir="mkxfs/nto/arm/o.be" runtime="true">mkxfs</location>
+				<location os="nto" isa="arm" byteorder="le" basedir="mkxfs/nto/arm/o.le" runtime="true">mkxfs</location>
+				<location os="nto" isa="mips" byteorder="be" basedir="mkxfs/nto/mips/o.be" runtime="true">mkxfs</location>
+				<location os="nto" isa="mips" byteorder="le" basedir="mkxfs/nto/mips/o.le" runtime="true">mkxfs</location>
+				<location os="nto" isa="ppc" byteorder="be" basedir="mkxfs/nto/ppc/o.be" runtime="true">mkxfs</location>
+				<location os="nto" isa="sh" byteorder="le" basedir="mkxfs/nto/sh/o.le" runtime="true">mkxfs</location>
+			</component>
+		</package>	
+	</contents>
+	
+	
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+		<part build="true" location="lib/z"/>
+		<part build="true" location="lib/ucl"/>
+		<part build="true" location="lib/lzo"/>
+		<part build="false" location="lib/elf"/>
+		<part build="false" location="hardware/startup/lib"/>
+		<part build="false" location="services/system"/>
+		<part build="false" location="lib/m"/>
+		<part build="false" location="lib/etfs"/>
+		<part build="false" location="lib/fs-flash3"/>
+		<part build="false" location="lib/fs-flash"/>
+	</requires>
+
+</module>

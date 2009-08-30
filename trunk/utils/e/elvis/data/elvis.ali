@@ -1,0 +1,493 @@
+switch os
+case unix alias! lf !!ls -CF
+default alias! lf !!dir/w
+
+alias! pwd calc getcwd("!*")
+
+alias! save {
+ "Write this file, but only if it has been modified
+ if modified
+ then w!? !*
+}
+
+alias! ww {
+ "Write this file, but if readonly then check it out first
+ if readonly && "!?!%!*" == ""
+ then !!co -l %
+ then w!!
+ else !%w!? !*
+}
+
+alias! man {
+ "Display a man page in a new window
+ local b report=0 nosaveregexp magic magicchar=^$.[* noignorecase
+ let b = newbuffer()
+ (=b) set bd=man
+ (=b)r !!man !*
+ try (=b)1 s/^Reformatting.*ait\.\.\.$//
+ try (=b)% s/\\/\\\\/g
+ try (=b)% s/_\(.\)*\(.\)/\\fI\2\\fR/g
+ try (=b)% s/.\(.\)*\(.\)/\\fB\2\\fR/g
+ try (=b)% s/\\fR\\fB//g
+ try (=b)% s/\\fR\\fI//g
+ (=b)1 i .nf
+ (=b) set nomod nospell
+ (=b)split
+}
+
+alias! howto {
+ "Search Elvis' "How To" appendix.  ! makes it try harder.
+ local magic magicchar=^$.[* noignorecase
+ if "!?" == "!!"
+ then split +/*!1.*!2.*!3.*!4 (elvispath("howto.html"))
+ else split +/^<dt>.*!1.*!2.*!3.*!4 (elvispath("howto.html"))
+}
+
+
+alias! kwic {
+ "Build a table showing instances of a word from the manual
+ local d
+ if "!^" == ""
+ then error :kwic missing lhs
+ let d=dirdir(elvispath("elvis.html"))
+ eval split +"kwictweak !^" !!grep -i -n -w !\^ (d/"*.html")
+}
+
+alias! kwictweak {
+ "Convert grep's output to a nice HTML table
+ local ic report=0 magic magicchar=^$.[* noignorecase
+ try %s/	/ /g
+ try %s/ \{2,}/ /g
+ try %s/<[^>]*>//g
+ try %s/&[[:alnum:]]*;//g
+ try v/\<!\^\>/d
+ %s/^\([^:]*\):\([^:]*\):\(.*\)\<\(!\^\)\>\(.*\)$/\3<a href="\1?\2">\4<\/a\>\5/
+ %s/^/                              /
+ %s/^[^<]*\([^<]\{30}<.*>.\{0,30}\).*$/\1/
+ 1 i <h1>Instances of "!^" in Elvis' manual</h1><pre>
+ $ a </pre>
+ se bd=html mapmode=html nomod
+ dis html
+ 1;/>\=!\^
+}
+
+if feature("proto")
+then {
+ alias! readDIR {
+  "Implement a dir: protocol for reading directories
+
+  "read the list of file names
+  switch os
+  case unix  r !ls !2*
+  case win32 r !dir /b /a-d !*
+  "What are the equivalent commands for OS/2 and whatever other OSes are valid?
+  default    r !dir !*
+
+  " if fbrowsetweak isn't aliased yet, then load it now
+  if !alias("fbrowsetweak")
+  then load sfb
+
+  " convert the list to html
+  fbrowsetweak !2*
+ }
+}
+
+alias! text {
+ "Like :tag but for any text in *.c or *.h
+ local tagprg="grep -nsw '(quote(\"'\",$1))' *.[ch] /dev/null \| sed 's/^\\\\\\(.*\\\\\\):\\\\\\(.*\\\\\\):.*/!^	\\1	\\2/'"
+ tag!? !*
+}
+
+alias! btext {
+ "Like :browse but for any text in *.c or *.h
+ local tagprg="grep -nsw '(quote(\"'\",$1))' *.[ch] /dev/null \| sed 's/^\\\\\\(.*\\\\\\):\\\\\\(.*\\\\\\):.*/!^	\\1	\\2/'"
+ browse!! !*
+}
+
+if gui=="x11"
+then {
+ alias! courier {
+  "Use Courier fonts of a given size (X11 only)
+  if !isnumber(!(14)1)
+  then error usage: courier [fontsize ["bold"]]
+  set font="courier*!(14)1!2"
+  let italicfont=font;"i"
+  if "!2" != "bold"
+   then let boldfont=font;"b"
+ }
+ alias! luxi {
+  "Use Luxi mono fonts of a given size (X11 only)
+  if !isnumber(!(14)1)
+  then error usage: luxi [fontsize ["bold"]]
+  set font="luxi mono*!(14)1!2"
+  let italicfont=font;"i"
+ }
+ alias! andale {
+  "Use Andale mono font for the main font, and Courier for italic (X11 only)
+  if !isnumber(!(14)1)
+  then error usage: andale [fontsize]
+  set font="luxi mono*!(14)1" italicfont="courier*!(14)1i"
+ }
+
+ alias! fork {
+  "Run a program in the background (X11 only)
+  !! >/dev/null 2>&1 !* &
+ }
+}
+
+if feature("array")
+then {
+  alias! wrapset {
+    "Given a label and name of option containing a set, print it
+    local l a e b
+    eval let a = "(!$)"
+    let b="!$* "
+    let l = strlen(b)
+    for i (1..a[,,0])
+    do {
+      let e = a[,,i]
+      if i < a[,,0]
+      then let e ;= ","
+      if strlen(b e) >= columns
+      then {
+        calc b
+        let b = "" << l
+      }
+      let b = b e
+    }
+    if strlen(b) > l
+    then calc b
+  }
+} 
+
+if feature("image")
+then {
+ alias! theme {
+   "list themes, or load one
+   local a="" i d f
+   if "!1" == ""
+   then {
+     for i (1..elvispath[:,0])
+     do {
+       let d=elvispath[:,i]
+       for f in (d/"themes"/"*.ex")
+       do {
+         if basename(f) != "*"
+         then let a |= basename(f)
+       }
+     }
+     if a == ""
+     then error no themes
+     else wrapset Themes: a
+   }
+   else {
+     let f = elvispath("themes/!1.ex")
+     if f != ""
+     then safely source (f)
+     else error the !1 theme isn't installed here
+   }
+ }
+
+ alias! readTHEME {
+   " download a "theme:name" URL
+   local a="ftp://ftp.cs.pdx.edu/pub/elvis/themes_archive"
+   local f nowrapscan magicchar="^$[*." magic noignorecase report=0 nolock
+   set reol=text bufdisplay=normal
+   "
+   " Read the theme's files, in a single "*.thm" file
+   if "!2" == "" || "!2" == "/" || dirext("!2") != ""
+   then {
+     if "!2" == "" || "!2" == "/"
+     then let f=a/"index.html"
+     else let f=a/"!2"
+     r (f)
+     if strlen("!2") < 2 || tolower(basename("!2")<<4) == ".htm"
+     then {
+       eval %s/index.html/(quote("/~", a))\/&/g
+       eval %s/src="/&(quote("/~", a))\//g
+       set bd=html mapmode=html
+     }
+     else set bd=hex
+   }
+   else {
+     r (a)/!2.thm
+     "ta !2.thm
+     "
+     " Make sure the user's themes directory exists
+     let f=elvispath[:,1]
+     if f[/,1] == "~"
+     then let f = home / f[/,2...]
+     if dirperm(f) != "directory"
+     then eval !!mkdir "(f)"
+     if dirperm(f/"themes") != "directory"
+     then eval !!mkdir "(f/"themes")"
+     if dirperm(f/"themes") != "directory"
+     then fail could not create the (f/"themes") directory
+     "
+     " Extract the theme files
+     %s?^BEGIN \([^.][^[:space:]$/\\!!~]*\)?+;/^END /-w!! (f/"themes"/"\1")?x
+     "
+     " Delete the data, but keep any introductory comments
+     1;/^BEGIN /,$d
+     "
+     " The above steps are not considered to be modifications
+     set nomod
+     "
+     " Load the theme
+     theme !2
+   }
+ }
+
+ alias! mktheme {
+   " Create a new theme, in the current buffer
+   local i p f="" magicname wrapscan report=0
+   if "!1" == ""
+   then error usage: mktheme name
+   "
+   " put the introductory text into the buffer
+   %d
+   i !1
+   s/.*/\U&\E\n\nDescribe the theme here.  Include your name and any credits.\n/
+   "
+   " add the ex script for setting up the colors
+   $a BEGIN !1.ex
+   a try set textcursor=opaque
+   eval a try set (scrollbgimage?"":"no")scrollbgimage
+   eval a color normal (color("normal"))
+   a if color("idle") != "like normal"
+   eval a then color idle (color("idle"))
+   if color("idle") == "like normal"
+   then warning You should probably set the idle colors to something other than "like normal"
+   for i in cursor selection bottom toolbar tool scrollbar scroll statusbar status 
+   do {
+     if color(i) == ""
+     then error You need to set the (i) colors
+     else eval a color (i) (color(i))
+   }
+   a END !1.ex
+   "
+   " add any image files
+   %s/\S\+\.xpm/let f = f "&"/x
+   for i (f)
+   do {
+     try 1;/^BEGIN $i/goto
+     else {
+       eval ("$")a BEGIN (i)
+       if exists(i)
+       then let p = i
+       else let p = elvispath("themes"/i)
+       "Note: The odd method of reading the image files is necessary due to the
+       "fact that sometimes the last line is a comment without a \n terminator.
+       eval r !! cat (p); echo
+       $s/.*/END $i/
+     }
+   }
+   "
+   " leave the cursor on the line with the comment
+   3
+   "
+   " rename the edit buffer.  This also displays the new name on the bottom row
+   if filename != "!1.thm"
+   then file !1.thm
+ }
+}
+
+alias! copying split (elvispath("license.html"))
+
+alias! fe features
+alias! features {
+ "Describe the configuration of this Elvis
+ local i f l
+
+ calc "Elvis version:     ";version
+
+ set f="normal"
+ for i in syntax hex html man tex
+ do let f=f (feature(i) ? i)
+ calc "Display modes:     ";f
+
+ set f=""
+ let f=f (feature("ftp") ? "ftp")
+ let f=f (feature("http") ? "http")
+ calc "Network protocols: ";(f ? f : "none")
+
+ set f="" l="Other features:    "
+ for i in alias array autocmd backtick browse cachedesc calc complete equaltilde fold g hlobject hlsearch image incsearch listchars litre lpr make mapdb misc mkexrc normal proto ram rcsid showtag smartargs spell split tags textobj v xft
+ do {
+  if feature(i)
+  then {
+   if strlen(l;f i) > columns-2
+   then {
+    calc l;f
+    set l="                   " f="" 
+   }
+   let f=f i
+  }
+ }
+ if f != ""
+ then calc l;f
+}
+
+alias! customize {
+ "Edit a personal copy of one of Elvis' configuration files
+ local d o n f="!^"
+ if f == ""
+ then error :customize requires the name of a configuation file
+ let o = elvispath(f)
+ if o == ""
+ then error "!^" is not a known configuration file
+ if os=="msdos" || os=="os2" || os == "win32"
+ then let d=$HOME/"dotelvis"
+ else let d=$HOME/".elvis"
+ if dirperm(d) == "new"
+ then eval !mkdir "(d)"
+ let n = d / f
+ if exists(n)
+ then e (n)
+ else {
+	e (o)
+	(=o) file (n)
+	(=n)se noro
+ }
+}
+
+alias! left {
+ "Move text to the left side of each line
+ local report=0 magic magicchar=^$.[* noignorecase
+ !%s/^\s*
+ !%s/\s*$
+}
+
+alias! right {
+ "Move text to the right side of each line
+ local w report=0 magic magicchar=^$.[* noignorecase
+ !%left
+ try !%s/ \{2,}/ /g
+ let w = (textwidth == 0) ? columns : textwidth
+ eval !%s/.$/&("" << w)
+ eval !%s/^\\\(.\\{(w)}\\\).*/\\1
+ !%s/^\(.*[^ ]\)\( \+\)$/\2\1/
+}
+
+alias! center {
+ "Move text to the center of each line
+ local report=0 magic magicchar=^$.[* noignorecase
+ !%right
+ !%s/  / /g
+}
+
+alias! cfmt {
+ "Adjust C or C++ comment block.  Omit the */ line from range.
+ local report=0 nosaveregexp magic magicchar=^$.[* noignorecase
+ if !< == !>
+ then error you must invoke cfmt with a range of two or more lines
+ !>a STOP!!
+ try !%s/^\(\s*\)\/\/\s*/\1/
+ then {
+  "C++ comments, already removed the //
+  !%!!fmt
+  !<,/^STOP!!$/- s/^\s*/&\/\/ /
+ }
+ else {
+  "C comments, still need to remove the /* or *
+  !<s,^\s*\([/ ]\*\)\s*,let a="\1",x
+  !%s,^\(\s*\)[/ ]\*\s*,\1,
+  !%!!fmt
+  eval !< s,^\\s*,&(a) ,
+  try !<+,/^STOP!!$/- s,^\s*,& * ,
+ }
+ /^STOP!!$/d
+}
+
+alias! wascii {
+ "Write formatted text as plain ASCII
+ local lptype=dumb nolpheader lplines=0
+ if "!*" == ""
+ then error You must specify a file name
+ !% lp!? !*
+}
+
+alias! lpd {
+ "Print text using the current display mode
+ local bufdisplay
+ let bufdisplay=display
+ !%lpr!? !*
+}
+
+if feature("fold")
+then {
+  alias! foldc {
+    " Fold C functions and conditional code
+    local l magic magicchar=^$.[* noignorecase
+    let l = current("line")
+
+    " This alias works around a bug -- The :g command gets confused by
+    " the :fold command, apparently because it changes the definition of
+    " `line' as the :g is running.  The work-around is to use :unfold
+    " until all of the :g commands are finished, and then do :%fold! to
+    " fold them.
+
+    " #if and #else directives
+    g/^\s*#\s*[ie][fl]/ {
+      local t a z
+      let t = quote("()$",line())
+      let a = current("line");
+      normal ^%
+      eval (a),- unfold (t)
+    }
+
+    " function bodies
+    if feature("showtag")
+    then {
+      g/^{/ {
+	if current("tag")
+	then .,/^}/ unfold { (current("tag")) }
+	else .,/^}/ unfold { ... }
+      }
+    }
+    else g/^{/,/^}/ unfold { ... }
+
+    " now fold everything
+    %fold!
+    eval (l)
+  }
+}
+
+alias! sperror {
+  " Show the errors from a :make or :cc command, in a new window
+  if !window("Elvis error list")
+  then (Elvis error list)split
+}
+
+if feature("array")
+then {
+  alias! load {
+    "list scripts, or load one
+    local a="" i j k d f
+    if "!1" == ""
+    then {
+      for i (1..elvispath[:,0])
+      do {
+	let d=elvispath[:,i]
+	for f in (d/"scripts"/"*.ex")
+	do {
+	  if basename(f) != "*"
+	  then let a |= basename(f)
+	}
+      }
+      if a == ""
+      then error no scripts
+      else wrapset Scripts: a
+    }
+    else {
+      let f = elvispath("scripts/!1.ex")
+      if f != ""
+      then source (f)
+      else error the !1 script isn't installed here
+    }
+  }
+}
+
+alias! safer {
+  safely source!! !*
+}

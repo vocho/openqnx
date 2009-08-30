@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<module name="z">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+		<availability ref="toolshosts"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true" isInternal="true">
+			<component id="Archive" generated="true">
+				<kind type="library"/>
+				<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+					libz.a
+				</location>
+			</component>
+
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<source available="true">
+					<location basedir="public" runtime="false">
+						.
+					</location>
+				</source>
+			</component>
+		</package>
+
+		<package name="target" isHost="false">
+
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<source available="true">
+					<location basedir="public" runtime="false">
+						.
+					</location>
+				</source>
+			</component>
+
+			<component id="Archive" generated="true">
+				<kind type="library"/>
+				<location os="nto" isa="{cpu}" byteorder="{endian}" basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+					libz.a
+				</location>
+			</component>
+
+			<component id="SharedObj" generated="true">
+				<kind type="library"/>
+				<location basedir="nto/{cpu}/so{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+					libz.so
+				</location>
+			</component>
+	
+		</package>
+	</contents>
+
+</module>

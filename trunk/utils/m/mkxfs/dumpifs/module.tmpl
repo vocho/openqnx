@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<module name="dumpifs">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<description>
+	    <short>Short Outline</short>
+	    <abstract>
+	        <![CDATA[Long Outline]]>
+    	</abstract>
+	</description>
+
+	<supports>
+		<availability ref="ostargets"/>
+		<availability ref="toolshosts"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true">
+			<component id="dumpifs" generated="true">
+				<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				 	dumpifs	
+				</location>
+			</component>
+		</package>
+		<package>
+			<component id="dumpifs_target" generated="true">
+				<location os="nto" isa="{cpu}" byteorder="{endian}" basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				 	dumpifs	
+				</location>
+			</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+		<part build="true" location="lib/z"/>
+		<part build="true" location="lib/ucl"/>
+		<part build="true" location="lib/lzo"/>
+		<part build="true" location="lib/util" />
+		<part build="false" location="lib/elf"/>
+		<part build="false" location="hardware/startup/lib"/>
+		<part build="false" location="services/system"/>
+		<part build="false" location="lib/m"/>
+		<part build="false" location="lib/etfs"/>
+		<part build="false" location="lib/fs-flash3"/>
+	</requires>
+
+</module>

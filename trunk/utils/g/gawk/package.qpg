@@ -1,0 +1,15 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add file="nto-*/gawk" pinfo="$"/>
+         <QPG:Add file="nto-*/awklib/grcat" pinfo="$"/>
+         <QPG:Add file="nto-*/awklib/pwcat" pinfo="$"/>
+         <QPG:Add file="awklib/eg/lib/*.awk" install="usr/share/awk/"/>
+         <QPG:Add file="doc/*.info" install="/usr/info/"/>
+         <QPG:Add file="doc/*.1" install="/usr/man/man1/"/>
+         <QPG:Add file="nto-x86-o/awklib/igawk" install="usr/bin/"/>
+         <QPG:Add file="nto-x86-o/awklib/*.awk" install="usr/share/awk/"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

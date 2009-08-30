@@ -1,0 +1,52 @@
+The directories under the cvs/nto/system tree are organized into a number
+of sections. These sections (at the current time) are:
+
+	ker:		microkernel source
+	pathmgr:	path manager related source, /dev/*, /proc/*, 
+				image file system source
+	procmgr:	procmgr related source
+	memmgr:		memory manager related source
+	proc:		misc. process manager source
+	doc:		various internal documentation
+	public:		public header files.
+	
+When building a kernel and/or process manager, go into proc/<cpu>/<variant>
+and type make. The makefiles will collect all the *.[csS] files from
+the sections and compile them into a libnto.a (for anything from the "ker"
+section) and process manager object files that are ultimately linked 
+together to form a procnto. Within each section you can optionally have 
+<sect>/<cpu>/<variant> and <sect>/<cpu> directories as well. For example, 
+there are "ker/x86/smp" and "ker/x86" directories. As per usual, these lower 
+level directories contain variant and/or cpu specific source that override 
+any higher level source files of the same name. Note that you can get 
+cross-sectional overriding as well (something in proc/x86/* will override a 
+pathmgr/* file), so be careful that your source file names are unique.
+
+When compiling a file from a particular section, the include path
+checks: 
+	cvs/nto/system/<sect>/<cpu>/<variant>
+	cvs/nto/system/<sect>/<cpu>
+	cvs/nto/system/<sect>
+	cvs/nto/system
+	
+in that order, so header files under <sect> are private to that section.
+Header files that need to be shared across multiple sections can be
+put in the "system" directory. Currently all the process manager header
+files are up in the "system" directory because of some global cross
+section referencing. This will get fixed eventually and the section
+specific header files will move down to their appropriate level.
+
+The common.mk optionally includes a cvs/nto/system/proc/<cpu>/cpu.mk
+file that can provide CPU specific makefile processing. See "proc/x86/cpu.mk",
+"proc/mips/cpu.mk" and "proc/ppc/cpu.mk" for current examples.
+
+To make just the microkernel, type: "make nto"
+To make the microkernel test executable, type: "make tnto"
+To install just the microkernel, type: "make ninstall"
+
+The standard symbolic make targets are available as well.
+
+You can define the make macro "EXCLUDE_SECTIONS" to be a space seperated
+list of sections _not_ to be included in the procnto executable. This
+can be used when we're working on the new VM code and want to exclude
+the current "memmgr" section.

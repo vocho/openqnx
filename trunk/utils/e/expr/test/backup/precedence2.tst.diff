@@ -1,0 +1,424 @@
+514c514
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+516c516
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+522c522
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+524c524
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+526c526
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+528c528
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+802c802
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+804c804
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+810c810
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+812c812
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+814c814
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+816c816
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+898c898
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+900c900
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+906c906
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+908c908
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+910c910
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+912c912
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1186c1186
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1188c1188
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1194c1194
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1196c1196
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1198c1198
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1200c1200
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1234c1234
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1236c1236
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1242c1242
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1244c1244
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1246c1246
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1248c1248
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1281,1284c1281,1284
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1289,1296c1289,1296
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1329,1332c1329,1332
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1337,1344c1337,1344
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1378c1378
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1380c1380
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1386c1386
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1388c1388
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1390c1390
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1392c1392
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1426c1426
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1428c1428
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1434c1434
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1436c1436
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1438c1438
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1440c1440
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1473c1473
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1475c1475
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1481c1481
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1483c1483
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1485c1485
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1487c1487
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1521c1521
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1523c1523
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1529c1529
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1531c1531
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1533c1533
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1535c1535
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1570c1570
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1572c1572
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1578c1578
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1580c1580
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1582c1582
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1584c1584
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1618c1618
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1620c1620
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1626c1626
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1628c1628
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1630c1630
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1632c1632
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1665,1668c1665,1668
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1673,1680c1673,1680
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1713,1716c1713,1716
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1721,1728c1721,1728
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+> expr: division by zero
+1810c1810
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1812c1812
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1818c1818
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1820c1820
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1822c1822
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1824c1824
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1906c1906
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1908c1908
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1914c1914
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1916c1916
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1918c1918
+< expr error: attempted division by zero.
+---
+> expr: division by zero
+1920c1920
+< expr error: attempted division by zero.
+---
+> expr: division by zero

@@ -1,0 +1,25 @@
+"Try to find a word list to use as a spelling dictionary
+local elvispath locale i
+if !locale
+then set locale=gibberish
+let! spelldict = elvispath("words")
+if !spelldict
+then {
+   for i in ("/usr/dict/";locale) /usr/dict /usr/share/dict
+   do {
+      if !spelldict && exists(i/"words")
+      then let! spelldict = i/"words"
+   }
+}
+
+"some common English suffixes
+set! spellsuffix="'ve 'll 'd 's n't 're s ed"
+
+"some valid English words which aren't in most /usr/dict/words files, and
+"which can't be derived via the above suffixes.
+words! won't can't I'm pragma etc
+words! a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+"disable spell checking in parts of source code where it wouldn't be useful.
+check! -string char regexp regsub prep prepquote variable keyword other number
+check! -docindent docmarkup markup fold fixed libc libd libf libt libv

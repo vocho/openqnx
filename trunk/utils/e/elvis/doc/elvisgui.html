@@ -1,0 +1,1016 @@
+<html><head>
+<title>Elvis-2.2_0 User Interfaces</title>
+</head><body>
+
+<h1>8. USER INTERFACES</h1>
+
+A single Elvis binary can be compiled to support multiple user interfaces.
+For example, under UNIX Elvis can be compiled to have a graphical user
+interface when run under X-windows, a termcap interface for use on most
+text terminals, an "open" interface for use on any terminal, and a "quit"
+interface for running scripts.  Here's a comprehensive list of the user
+interfaces which <em>may</em> be available in your copy of Elvis:
+<ul>
+<li><a href="#x11">x11</a> - a graphical interface under Unix and OS/2.
+<li><a href="#windows">windows</a> - a graphical interface under Win32.
+<li><a href="#termcap">termcap</a> - a full-screen text-based interface.
+<li><a href="#vio">vio</a> - OS/2-specific version of the termcap interface.
+<li><a href="#open">open</a> - a simpler text-based interface.
+<li><a href="#quit">quit</a> - a pseudo-interface for non-interactive editing.
+<li><a href="#script">script</a> - a pseudo-interface for running scripts.
+</ul>
+
+
+<p>The exact list of available user interfaces will vary from one system to
+another.
+You can make Elvis output a list of available interfaces by running
+"<code>elvis -G?</code>".
+This will also show you which interface Elvis will use by default.
+
+<p>Elvis chooses the default user interface at run time by testing each
+user interface in turn, starting with the most desirable, and working its
+way down the list until it finds one that appears to be supported in the
+current environment.
+For example, if you're using Elvis on a text terminal under UNIX, then
+Elvis will bypass the "x11" interface because X-windows doesn't work on
+text terminals, and then Elvis will find that the "termcap" interface
+would work, so that'll be the default.
+
+<p>If you don't want to use the default user interface,
+you can specify which interface to use via the
+<strong>-G</strong> <var>gui</var> command-line flag.
+
+<h2>8.1 X11 Interface</h2><a name="x11"></a>
+
+The x11 interface is used under X-Windows on UNIX or OS/2 systems.
+(See the <a href="elvisos.html#os2x11">OS/2</a> section of the OS chapter
+for a description of what you need to run X11 under OS/2.)
+Subsections here are
+<a href="#x11.flags">command line flags</a>, the
+<a href="#x11.mouse">mouse</a>, the
+<a href="#x11.toolbar">toolbar</a>,
+<a href="#x11.resources">resources</a>,
+<a href="#x11.keys">keys</a>,
+<a href="#x11.icons">icons</a>, and
+<a href="#x11.bgimage">background images</a>.
+
+<p>The x11 interface provides a scrollbar and mouse support, and allows you to
+select which fonts to use.
+There is also a configurable toolbar.
+Buttons on that toolbar can even be configured to use pop-up dialog windows.
+
+<p>The x11 interface reads app-defaults (as listed below) but those are
+only used to provided default values for options and colors.  You can
+override them with <a href="elvisex.html#set">:set</a> and
+<a href="elvisex.html#color">:color</a> commands.
+The x11-specific options are described in the
+<a href="elvisopt.html#GUI">options</a> chapter.
+
+<h3><a name="x11.flags"></a>8.1.1 X11 Command-line Flags</h3>
+
+To specify a normal font, use <strong>-font</strong> <var>fontname</var> or
+<strong>-fn</strong> <var>fontname.</var>
+Proportional fonts are not supported.
+If you don't specify a normal font, then Elvis will use a font named "fixed"
+by default.
+
+<p>To specify a bold font, use <strong>-fb</strong> <var>fontname.</var>
+The specified font should have the same character cell size as the normal
+font, but Elvis does not verify this.
+If you don't specify a bold font, then Elvis will fake it by smearing the
+normal font rightward one pixel.
+
+<p>To specify an italic font, use <strong>-fi</strong> <var>fontname.</var>
+The specified font should have the same size character cell as the normal
+font, but Elvis does not verify this.
+If you don't specify an italic font, then Elvis will fake it by sliding the
+top half of the normal font rightward one pixel.
+
+<p>The <strong>-fc</strong> <var>fontname</var> flag can be used to specify
+the font to be used for controls -- currently just the toolbar and statusbar, but eventually
+Elvis will offer a menubar too.
+If you don't specify a control font, then Elvis will use a font named
+"variable" by default.
+
+<p>If you want to use Courier fonts, there is a shortcut:
+<strong>-courier</strong> <var>size</var> will use the normal, bold,
+and italic versions of the courier font in the requested size.
+
+<p>You can also specify the foreground and background colors with
+<strong>-fg</strong> <var>color</var> and <strong>-bg</strong> <var>color,</var>
+respectively.
+All standard X color names are supported.
+
+<p>Elvis has a built-in icon, which is generally a good thing.
+Some window managers won't allow you to assign a new icon to a program that
+has a built-in one, so Elvis has a <strong>-noicon</strong> flag which
+disables the built-in icon.
+
+<p>Elvis also supports the <strong>-geometry</strong> <var>WxH+X+Y</var> flag
+for specifying the size and/or position of the first window.
+The size is specified in characters, and the default size is 80x34.
+There is no default position.
+
+<p>The <strong>-fork</strong> option causes Elvis to fork a new process,
+so you get a new shell prompt immediately.
+
+<p>The <strong>-client</strong> option causes Elvis to look for an
+already-running Elvis process on the same X server, and if there is one,
+send the new arguments to it.
+This causes the old Elvis process to create new windows for file arguments.
+The new Elvis process then exits, leaving the old one to do the real work.
+If there is no Elvis process already running, then <strong>-client</strong>
+will act like <strong>-fork</strong> so that either way, you get a new
+shell prompt immediately.
+
+<p>You can change Elvis' defaults by editing the
+<a href="elvisses.html#elvis.ini">elvis.ini</a> or <code>~/.exrc</code> files.
+You can use the <a href="elvisex.html#color">:color</a> command to assign
+colors to various fonts, and the cursor and scrollbar/toolbar.
+Most other aspects are controlled via <a href="elvisopt.html#GUI">options.</a>
+
+<h3><a name="x11.mouse"></a>8.1.2 X11 Mouse</h3>
+
+I've tried to reach a balance between the mouse behavior of
+<strong>xterm(1)</strong> and what makes sense for an editor.
+To do this right, Elvis has to distinguish between clicking and dragging.
+
+<p>Dragging the mouse always selects text.
+Dragging with button 1 pressed (usually the left button) selects characters,
+dragging with button 2 (the middle button) selects a rectangular area, and
+dragging with button 3 (usually the right button) selects whole lines.
+These operations correspond to Elvis' 
+<a href="elvisvi.html#v">v</a>,
+<a href="elvisvi.html#^V">^V</a>, and
+<a href="elvisvi.html#V">V</a> commands, respectively.
+When you release the button at the end of the drag, the selected text is
+immediately copied into an X11 cut buffer, so you can paste it into another
+application such as xterm.
+The text remains selected, so you can apply an operator command to it.
+
+<p>Clicking button 1 cancels any pending selection, and moves the cursor to
+the clicked-on character.
+Clicking button 3 moves the cursor without canceling the pending selection;
+you can use this to extend a pending selection.
+
+<p>Clicking button 2 "pastes" text from the X11 cut butter.
+If you're entering an ex command line, the text will be pasted into the
+command line as though you had typed it.
+If you're in visual command mode or input mode, the text will be pasted into
+your edit buffer.
+When pasting, it doesn't matter where you click in the window; Elvis always
+inserts the text at the position of the text cursor.
+
+<p>Double-clicking button 1 simulates a <a href="elvisvi.html#^cbra">^]</a>
+keystroke, causing Elvis to perform tag lookup on the clicked-on word.
+If Elvis happens to be displaying an HTML document, then tag lookup
+pursues hypertext links so you can double-click on any underlined text
+to view the topic that describes that text.
+Double-clicking button 3 simulates a <a href="elvisvi.html#^T">^T</a> keystroke,
+taking you back to where you did the last tag lookup.
+
+<p>If your mouse has a scroll wheel, Elvis will support it
+-- provided it is configured to act like buttons 4 and 5.
+(See the "How to" section of this manual instructions to
+<a href="howto.html#scrollwheel">configure XFree86 to use wheel mice</a> that way.)
+
+<h3><a name="x11.toolbar"></a>8.1.3 Toolbar</h3>
+
+The X11 interface supports a user-configurable toolbar.
+The toolbar is enabled by default; you can disable it in your ~/.exrc file
+by adding a "<code>set&nbsp;notoolbar</code>" command.
+
+<p>If enabled, you will find that the default toolbar already has some
+buttons defined.
+You can use the <a href="elvisex.html#gui">:gui</a> command to reconfigure
+the toolbar.
+The following commands are supported:
+
+<dl>
+
+<dt>:gui
+<dd>This displays the <code>:gui</code> commands which were used to set up all
+toolbar buttons.
+
+<dt>:gui <var>label</var>
+<dd>This displays the <code>:gui</code> commands which were used to set up the
+toolbar button that has the given label.
+
+<dt>:gui newtoolbar
+<dd>This deletes all buttons from the toolbar.
+
+<dt>:gui ~<var>label</var>
+<dd>This deletes a single, specific button from the toolbar.
+
+<dt>:gui gap
+<dd>This leaves a small gap between the previous button and the following
+button.
+
+<dt>:gui <var>label</var> : <var>excommand</var>
+<dd>This creates a button named <var>label</var>.
+Whenever you click the button, the <var>excommand</var> will be interpreted
+as an ex command line.
+The <var>label</var> can begin with any non-whitespace character.
+The remaining characters can be letters, digits, or another instance of the
+initial character.
+<pre>
+:gui Help:help</pre>
+
+<p><strong>NOTE:</strong> If you want to have more than one line's worth of
+ex commands associated with a toolbar button, then you might consider defining
+an <a href="elvistip.html#ALIAS">alias</a>.
+
+<dt>:gui <var>label</var> = <var>condition</var>
+<dd>Normally buttons are drawn as though sticking out;
+this command gives you a way to make them selectively appear to be stuck in.
+The <var>condition</var> is a <a href="elvisexp.html#NORMAL">C-like expression.</a>
+When it is true, the button will be drawn "sticking in".
+When it is false, the button will be drawn "sticking out".
+The button behaves exactly the same either way.
+<pre>
+:gui List:set neglist
+:gui List=list</pre>
+
+<dt>:gui <var>label</var> ? <var>condition</var>
+<dd>This gives you a way to selectively disable the button.
+The <var>condition</var> is a <a href="elvisexp.html#NORMAL">C-like expression.</a>
+When it is true, the button behaves as normal;
+when it is false, the button ignores any mouse clicks.
+Also, buttons which are disabled this way are displayed as being "flat",
+instead of the normal 3D shading that makes them appear to stick out or in.
+<pre>
+:gui Quit:q
+:gui Quit?!modified</pre>
+
+<p><strong>NOTE:</strong>
+The <var>condition</var> expressions are re-evaluated after nearly
+every input event.
+If you have many complex expressions, this may take a noticeable amount of
+time.
+With the default toolbar, Elvis seems to slow down by about 20%.
+Toolbar buttons which don't use <var>condition</var> expressions have
+no such overhead.
+
+<dt>:gui <var>label</var> " <var>description</var>
+<dd>Add a one-line description to the button.
+The description is shown on the statusbar when the button is pressed.
+It is also displayed on pop-up dialogs, as described below.
+<pre>
+:gui Quit"Close this window, and maybe exit Elvis</pre>
+
+<dt>:gui <var>label</var> ; ;
+<br>:gui <var>label</var> ; <var>option</var> ; <var>...</var>
+<br>:gui <var>label</var> ; "<var>prompt</var>" (<var>type</var>) <var>option</var> = <var>value</var> ; <var>...</var>
+<dd>This allows you to define a pop-up dialog for a given toolbar button.
+When you click on the toolbar button, the dialog appears immediately.
+You can then edit some values, and then hit the [Submit] button
+to store the edited values into <a href="elvisopt.html">options</a> and
+run the toolbar button's ex command (if any), or hit the [Cancel] button
+to do nothing.
+
+<p>The simplest dialog is specified by giving just a pair of semicolons after
+the label.  This dialog will have no editable fields, but it still shows the
+[Submit] and [Cancel] buttons, so it is a handy way to ask for confirmation
+before doing something.
+
+<p>But usually you'll give a semicolon-delimited list of options after the
+toolbar button's label.  The dialog will then allow you to edit those options.
+When you hit the [Submit] button on that dialog window, Elvis will store the
+values into the options before running the ex command.
+
+<p>The default prompt for each option is its name.  If you precede the option
+name with a quoted string, then the string is used for the prompt instead.
+
+<p>You can also override the option's data type.  The default type for each
+option is the same type used by the <a href="elvisex.html#set">:set</a>
+command.  You can override that by placing one of the following before the
+option name:
+<table>
+<tr><th>TYPE</th><th>MEANING</th></tr>
+<tr><td>(oneof <var>list</var>)</td><td>Allow any single value from the space-delimited <var>list</var></td></tr>
+<tr><td>(boolean)</td><td>Same as <code>(oneof true false)</code></td></tr>
+<tr><td>(number)</td><td>Allow any number</td></tr>
+<tr><td>(number <var>m</var>:<var>n</var>)</td><td>Allow number between <var>m</var> and <var>n</var>, inclusive</td></tr>
+<tr><td>(string)</td><td>Allow any string</td></tr>
+<tr><td>(file)</td><td>Allow any string, but use the <kbd>Tab</kbd> key for file name completion</td></tr>
+<tr><td>(locked)</td><td>Display it, but don't allow any editing</td></tr>
+</table>
+
+</dl><dl>
+
+<dd>The default value for each option is the option's actual value at the time
+the dialog pops up.  You can override that by appending an '=' followed by
+an expression for some other value.  Note that the option itself isn't changed
+unless/until you hit the [Submit] button.
+
+<p><strong>NOTE:</strong>
+The <a href="elvisopt.html#USER">user options "a" through "z"</a> are useful
+for inputting (via the dialog) and storing temporary values.
+You'll almost certainly want to override the prompt and type of those options.
+
+<p><strong>NOTE:</strong>
+Because the edited option values are stored before the toolbar button's ex
+command is executed, the ex command can access the options' values via
+commands such as <a href="elvisex.html#eval">:eval</a>.  Also, since Elvis
+always subjects file names to evaluation via the
+<a href="elvisexp.html#SIMPLER">simpler expression syntax</a>,
+you can don't need to use <code>:eval</code> to expand file names.
+The following shows one useful example of this:
+<pre>
+:gui Split;"File to load:" (file) f = filename
+:gui Split:split (f)</pre>
+
+<p><strong>NOTE:</strong>
+If you just want to use the dialog for adjusting options, and don't need
+to run an ex command afterward, then you can simply omit the ex command
+definition for that toolbar button.  For example, the following is sufficient
+for editing the display options:
+<pre>
+:gui Display Options; list; number; wrap; sidescroll</pre>
+
+<p><strong>NOTE:</strong>
+You can display a non-editable line of text in the dialog by using
+<code>="string"</code> without giving any option name.  Here's an example:
+<pre>
+:gui Save;"Save as:"(file)f=basename(file);="In current directory!"
+:gui Save:w (f)</pre>
+
+</dl>
+
+<h3><a name="x11.resources"></a>8.1.4 Resources</h3>
+Elvis uses the following X resources.  The resource values can be overridden
+by command-line flags, or by explicit <a href="elvisex.html#set">:set</a> or
+<a href="elvisex.html#color">:color</a> commands in the initialization scripts.
+
+<pre graphic>
+.----------------------------.---------.----------.--------------------.
+|      RESOURCE CLASS        |         | DEFAULT  |                    |
+|(name is lowercase of class)|  TYPE   |  VALUE   | PARTIAL EX COMMAND |
+|----------------------------|---------|----------|--------------------|
+| Elvis.Toolbar              | Boolean | True     | set toolbar        |
+| Elvis.Statusbar            | Boolean | True     | set statusbar      |
+| Elvis.Font                 | Font    | fixed    | set font=          |
+| Elvis.Geometry             | Geometry| 80x34    | set firstx= xrows= |
+| Elvis.Foreground           | Color   | black    | color normal       |
+| Elvis.Background           | Color   | gray90   | color normal       |
+| Elvis.MultiClickTimeout    | Timeout | 3        | set dblclicktime=  |
+| Elvis.XEncoding            | String  | *-*      | set xencoding=     |
+| Elvis.Control.Font         | Font    | variable | set controlfont=   |
+| Elvis.Cursor.Foreground    | Color   | red      | color cursor       |
+| Elvis.Cursor.Selected      | Color   | red      | color cursor       |
+| Elvis.Cursor.BlinkTime     | Timeout | 3        | set blinktime=     |
+| Elvis.Tool.Foreground      | Color   | black    | color tool         |
+| Elvis.Tool.Background      | Color   | gray75   | color tool         |
+| Elvis.Toolbar.Foreground   | Color   | gray75   | color toolbar      |
+| Elvis.Toolbar.Background   | Color   | gray60   | color toolbar      |
+| Elvis.Scrollbar.Width      | Number  | 11       | set scrollbarwidth=|
+| Elvis.Scrollbar.Repeat     | Timeout | 4        | set scrollbartime= |
+| Elvis.Scrollbar.Enabled    | Boolean | True     | set scrollbar      |
+^----------------------------^---------^----------^--------------------^
+</pre>
+The "Timeout" type gives a time value, in tenths of a second.
+
+<p>For example, if your X resources database contains the line
+"elvis.font:&nbsp;10x20" then the default text font would be "10x20".
+This value would therefore be used if the
+<a href="elvisopt.html#normalfont">font</a> option was unset.
+
+<p>The method for changing a resource may vary from one X server to another.
+Typically, you would edit a file named ~/.Xdefaults, and then run
+"<code>xrdb&nbsp;-merge&nbsp;~/.Xdefaults</code>".
+(xrdb is part of the standard X distribution.)
+
+<h3><a name="x11.keys"></a>8.1.5 X11 Keys</h3>
+If there is a standard way to map a Keysym value into a text string, then
+Elvis will use it.
+This means that when you hit the &lt;m&gt; key, you get an "m" character.
+Function keys and cursor keys have no standard translation, so
+Elvis converts them to a ^K character followed the Keysym binary value,
+expressed as four hex digits.
+
+<p>You can use the "^Kxxxx" character sequences as the first argument to a
+<a href="elvisex.html#map">:map</a> command.
+In the interest of readability and portability, Elvis also allows
+you to use the symbolic name of a key in that context, instead of the
+raw characters.
+These are the same key names that are used by (among other things)
+the xmodmap command, except that Elvis adds angle brackets.
+Here are some of the more important names:
+&lt;Begin&gt;, &lt;End&gt;, &lt;Home&gt;, &lt;Print&gt;, &lt;Menu&gt;,
+&lt;Insert&gt;, &lt;Undo&gt;, &lt;Redo&gt;, &lt;Help&gt;, &lt;Break&gt;, 
+&lt;Multi_key&gt;, &lt;Kanji&gt;, and &lt;Mode_switch&gt;.
+
+<h3><a name="x11.icons"></a>8.1.6 X11 Icons</h3>
+Elvis has a 48x32 monochrome icon compiled into it.  This icon is stored in
+the file <code>guix11/elvis.xbm</code>.  It is a standard X11 bitmap file.
+
+<p>There are also a variety of colored icons in that directory,
+in standard X11 pixmap files.
+These are not compiled into Elvis, but
+if Elvis is compiled with the FEATURE_IMAGE defined (i.e.,
+if "<code>:calc</code> <a href="elvisexp.html#feature">feature("image")</a>"
+returns <code>True</code>)
+then you can use the
+<a href="elvisex.html#gui">:gui</a> command to change Elvis' icon.
+<dl>
+<dt>:gui icon
+<dd>Display the name of the current icon, if any.
+<dt>:gui icon <var>filename.xpm</var>
+<dd>Load an image from an XPM file, and use the image as Elvis' icon.
+If <var>filename.xpm</var> isn't found in the current directory then
+Elvis will search for it in the <a href="elvisopt.html#elvispath">elvispath</a>.
+</dl>
+
+<p>Even without FEATURE_IMAGE, you may still be able to use the icons with
+some window managers.
+For example, with FVWM2 you could put the following in your ~/.fvwm2rc file...
+<pre>
+	Style "elvis" Icon /usr/include/X11/pixmaps/elvis.xpm</pre>
+
+<p>The following color icons are available:
+<pre graphic>
+    .------------.------------------------------------------------.
+    |    NAME    | DESCRIPTION                                    |
+    |------------|------------------------------------------------|
+    | elvis.xpm  | 48x32, 4 colors, same as the monochrome icon   |
+    | kde.xpm    | 32x32, a resized version of elvis.xpm          |
+    | mini.xpm   | 16x14, 6 colors, for fvwm95 taskbar            |
+    | normal.xpm | 56x46, on a shaded button for NextStep-ish WMs |
+    | small.xpm  | 21x18, on a shaded button for NextStep-ish WMs |
+    | elvis1.xpm | 32x32, Spike                                   |
+    | elvis2.xpm | 32x32, 2 1/2 Years (among others)              |
+    | elvis3.xpm | 32x32, My Aim Is True                          |
+    ^------------^------------------------------------------------^
+</pre>
+The last three use a lot of colors, and should be avoided if you're
+using a Pseudocolor display (8 bits per pixel or less).
+The "normal.xpm", "small.xpm", and "kde.xpm" icons use many colors,
+but most of those colors are for the shaded button background,
+not the icon itself.
+Other shaded-button icons use the exact same colors for the shading,
+so the overall impact on your color table isn't too bad.
+But if you don't normally use icons on shaded buttons,
+then you should probably use only the first three icons.
+
+<h3><a name="x11.bgimage"></a>8.1.7 X11 Background Images</h3>
+Elvis supports the use of images in some backgrounds.
+Specifically, you can use image backgrounds for the "normal" and "idle"
+fonts, and the "toolbar", "statusbar", and "scrollbar" controls.
+You can adjust all of these using the <a href="elvisex.html#color">:color</a>
+command.
+
+<p>When parsing the background color name for any of the above fonts/controls,
+Elvis looks for a word containing punctuation.
+None of the regular colors have names that contain punctuation, so the
+first word with punctuation is assumed to mark the start of an image file name.
+If there are no such words, then the whole background color string is
+treated as the name of a solid color, which is converted like any other X color name.
+
+<p>But if an image file is named, then Elvis loads the image.
+Elvis first tries loading it from the current directory.
+If that fails, then it looks in the "themes" subdirectory of each
+directory in the <a href="elvisopt.html#elvispath">elvispath</a>.
+The image is then used as the new background.
+
+<p>If a color was given with the image name, then that color is used to tint
+the image.
+For example, "<code>:color normal black on white sand.xpm</code>" will cause
+Elvis to load the "sand.xpm" image, blend it with the "white" color to produce
+a pale version of the sand image, and use the result as the background for
+normal text.
+Since most faces inherit their background color from "normal", this will also
+cause most other text to use the same background image.
+
+<p>When setting the "normal" background in this way, you might want to
+change the <a href="elvisopt.html#textcursor">textcursor</a> option's value
+from "xor" to "opaque", because Exclusive-ORing an image can have some weird
+effects -- the cursor won't always be the color you want it to be.
+
+<h2>8.2 Windows Interface</h2><a name="windows"></a>
+
+The windows interface works under Microsoft's Windows95, Windows98, or
+WindowsNT (version 3.51 or later) operating systems.
+It offers a full graphical interface with all the usual bells and whistles.
+Subsections here discuss the
+<a href="#windows.mouse">mouse</a>,
+<a href="#windows.keys">keys</a>,
+<a href="#windows.colors">colors</a>,
+<a href="#windows.lpr">printing</a>, and
+<a href="#windows.fonts">fonts</a>.
+
+<p>Because Microsoft doesn't allow a single .EXE file to contain both a
+Windows interface and a text-based interface, the Windows version resides
+in a separate file named WinElvis.exe.
+(The text-based version is named Elvis.exe, and it uses the
+<a href="#termcap">termcap</a> interface.)
+
+<h3><a name="windows.mouse"></a>8.2.1 Windows Mouse</h3>
+
+In addition to all the usual mouse actions in the menubar, toolbar, and
+scrollbar, you can use the mouse in Elvis' main text area as follows.
+
+<p>Dragging the mouse with the left button pressed causes Elvis to select
+characters, like the lowercase <a href="elvisvi.html#v">v</a> command.
+Dragging with the right button pressed causes it to select a rectangular
+area, like the <a href="elvisvi.html#^V">^V</a> command.  Dragging in the
+left margin (where the mouse cursor changes to up-and-right-arrow) causes
+whole lines to be selected.
+
+<p>Clicking with either the left or right mouse button will move the cursor
+to the clicked-on character.  When you click with the left button, if a
+selection is highlighted then Elvis will cancel the selection; clicking
+with the right extends the selection to include the clicked-on character.
+
+<p>Double-clicking on a word with the left button causes Elvis to perform
+a tag search, like the <a href="elvisvi.html#^cbra">^]</a> command.
+Double-clicking with the right button pops back to the previous position
+via the tag stack, like the <a href="elvisvi.html#^T">^T</a> command.
+
+<h3><a name="windows.keys"></a>8.2.2 Windows Keys</h3>
+
+In addition to all the ASCII keys,
+WinElvis allows you to <a href="elvisex.html#map">:map</a> any cursor keys
+or function keys.  In fact, the cursor keys all have rather convenient
+maps built-in; you can see them by running "<code>:map</code>" with no arguments.
+
+<p>All of the cursor keys and function keys send multi-character sequences
+to WinElvis.  WinElvis then uses its standard mapping facilities to convert
+those sequences into something that it can recognize and act on.  Since the
+multi-character sequences aren't standardized, and are usually hard to guess
+or remember, WinElvis allows you to refer to them symbolically.  The following
+symbols are used for referring to the cursor keys:
+
+<pre graphic>
+.--------------------.----------.-----------.
+| KEY                | SYMBOL   | MAPPED TO |
+|--------------------|----------|-----------|
+| up arrow           | &lt;Up&gt;     |     k     |
+| down arrow         | &lt;Down&gt;   |     j     |
+| left arrow         | &lt;Left&gt;   |     h     |
+| right arrow        | &lt;Right&gt;  |     l     |
+| Page Up            | &lt;PgUp&gt;   |     ^B    |
+| Page Down          | &lt;PgDn&gt;   |     ^F    |
+| Home               | &lt;Home&gt;   |     ^     |
+| End                | &lt;End&gt;    |     $     |
+| Ctrl + left arrow  | &lt;C-Left&gt; |     B     |
+| Ctrl + right arrow | &lt;C-Right&gt;|     W     |
+| Ctrl + Page Up     | &lt;C-PgUp&gt; |     1G    |
+| Ctrl + Page Down   | &lt;C-PgDn&gt; |     G     |
+| Ctrl + Home        | &lt;C-Home&gt; |     1G    |
+| Ctrl + End         | &lt;C-End&gt;  |     G     |
+| Insert             | &lt;Insert&gt; |     i     |
+| Delete             | &lt;Delete&gt; |     x     |
+^--------------------^----------^-----------^
+</pre>
+
+<p>The function keys are a different story.  Vi has a traditional way to
+access function keys in a terminal-independent manner, so WinElvis starts
+with that and extends it just slightly.  The benefit of this is that you
+can use the same function key maps in other versions of Elvis, or even in
+other implementations of vi.
+
+<p>The basic function key symbols are <code>#1</code> for the <kbd>F1</kbd> key,
+<code>#2</code> for the <kbd>F2</kbd> key, and so on through <code>#12</code> for the
+<kbd>F12</kbd> key.  Combinations involving the <code>Shift</code>, <code>Ctrl</code>,
+and <code>Alt</code> keys are specified by appending "s", "c", or "a" onto the
+symbol.  For example, <kbd>Ctrl-F1</kbd> is mapped using the symbol
+<code>#1c</code>.
+
+<h3><a name="windows.colors"></a>8.2.3 Windows colors</h3>
+
+WinElvis allows you use the <a href="elvisex.html#color">:color</a> command
+to change the colors used for the different fonts.  The color names that it
+supports are: black, blue, cyan, green, red, magenta, brown, gray, darkgray,
+lightblue, lightcyan, lightgreen, lightred, lightgray, yellow, and white.
+
+<p>If there is a file named "rgb.txt" located in the
+<a href="elvisopt.html#elvispath">elvispath</a>,
+then Elvis can use it to translate other color names into RGB balues.
+The default distribution includes such a file, derived from the
+color table distributed with <a href="www.xfree86.org">XFree86</a>,
+so you can use all of the same color names that work with X11.
+
+<p>You can also use color names of the form "#<var>RRGGBB</var>" or
+"#<var>RGB</var>" to give hexadecimal color values, as in X11.
+For example, #c00060 is a nice maroon color.
+
+<p>If WinElvis has been compiled with FEATURE_IMAGE defined
+(i.e., if <a href="elvisex.html#calculate">:calc</a>
+<a href="elvisexp.html#feature">feature("image")</a> returns <code>true</code>)
+then you can also use images in the background color for the "normal" or "idle"
+text faces.
+This is done in the same way as in the
+<a href="#x11.bgimage">X11 version of Elvis</a>.
+Briefly, this means you can give the name of an XPM-format image file, or
+a color name followed by an XPM file name for a tinted image.
+Unlike X11, WinElvis does <em>not</em> support the use of background
+images for the menubar, scrollbar, and statusbar controls.
+
+<h3><a name="windows.lpr"></a>8.2.4 Windows Printing</h3>
+
+The default value of the <a href="elvisopt.html#lptype">lptype</a> option
+is "windows".  This uses the standard Windows graphical print spooler and
+should be able to print on any printer that Windows supports.  The
+<a href="elvisopt.html#lpout">lpout</a> option is ignored when
+<code>lptype=windows</code>.
+
+<p>However you still have the option of changing
+<a href="elvisopt.html#lptype">lptype</a> to one of its other values.
+The other values will generally print faster, and may even look slightly
+better, but that isn't much of a motivation.
+A more common reason for changing lptype would be to print into
+a file in a specified format, as a way to convert the file.
+
+<h3><a name="windows.fonts"></a>8.2.5 Windows Fonts</h3>
+
+WinElvis allows you to specify one base font for each window, via the
+<a href="elvisopt.html#font">font</a> option.  You can set this to the name
+of any fixed-pitch font, such as "courier*12".
+
+<p>Elvis derives the other fonts, such as bold or italic, from the base font.
+You can use the <a href="elvisex.html#color">:color</a> command to
+change the boldness, color, and other attributes of various types of text.
+
+<h2>8.3 Termcap Interface</h2><a name="termcap"></a>
+
+The termcap interface is the one you'll use most often on non-graphic terminals.
+It looks and acts a heck of a lot like the traditional vi.
+The biggest addition is the support for multiple windows.
+(For more information on how to use multiple windows, start Elvis and give
+the command <a href="elvisvi.html#^W">:help ^W</a>.)
+Subsections here discuss
+<a href="#termcap.db">terminal databases</a>,
+<a href="#termcap.common">termcap fields</a>,
+<a href="#termcap.keys">keys</a>, and
+<a href="#termcap.graphic">graphic characters</a>.
+
+<p>If your terminal supports ANSI color escape sequences, then you can
+use the <a href="elvisex.html#color">:color</a> command to assign different
+colors to the six basic fonts:
+normal, bold, italic, underlined, emphasized, and fixed.
+You must assign a normal color first, e.g., ":color normal yellow".
+
+<p>There are three additional options when using the termcap interface:
+<a href="elvisopt.html#term">term,</a>
+<a href="elvisopt.html#ttyrows">ttyrows,</a>and
+<a href="elvisopt.html#ttycolumns">ttycolumns.</a>
+The term option contains the name of the termcap entry being used;
+it should correspond to the type of terminal you're using.
+The ttyrows and ttycolumns options give the size of the screen.
+
+<p>Under Win32, there is also a <a href="elvisopt.html#codepage">codepage</a>
+option for detecting or changing the current code page.
+Win32's termcap interface also supports the mouse,
+using basically the same rules as the x11 interface.
+The only differences are that it doesn't cut &amp; paste via the clipboard,
+and pressing both buttons of a two-button mouse will simulate pressing
+the missing middle button.
+
+<h3><a name="termcap.db"></a>8.3.1 Termcap, Terminfo, and tinytcap</h3>
+
+<em>Termcap</em> is a database of terminal characteristics, and a library
+of C functions for accessing that database.
+It was created at Berkeley to allow the original vi editor to be
+terminal-independent.
+Elvis' termcap user interface was written to use this.
+
+<p>AT&amp;T created the <em>terminfo</em> database and library, adding a few
+minor features.
+The terminfo database uses different names and syntax than the termcap database.
+Most modern UNIX systems use terminfo instead of termcap.
+Fortunately, terminfo's library contains functions which emulate the
+termcap functions, so the termcap interface can be compiled to work with
+the terminfo library.
+
+<p>The <code>tinytcap.c</code> file contains a simple reimplementation of the
+termcap library, for those systems (such as MS-DOS) which don't have either
+a real termcap or terminfo.
+Tinytcap's database is hard-coded into it;
+to add or modify a terminal description, you need to edit tinytcap.c and
+recompile Elvis.
+
+<h3><a name="termcap.common"></a>8.3.2 Common termcap values</h3>
+
+This section describes most of the termcap values used by Elvis.
+The values which deal with cursor keys and graphic characters will be
+described in the following sections.
+
+<p>Termcap field names are two characters long.
+Some names supply Boolean values, and others supply numeric or string values.
+A Boolean value is made true by giving the name; the absence of its name in
+a terminal's entry indicates a false value for that field, for that terminal.
+For numeric fields, the name is followed by a '#' character and then decimal
+digits specifying the value.
+For string fields, the name is followed by a '=' character and then a string.
+Fields are delimited by ':' characters.
+
+<pre graphic>
+.-------.----------------------------------------------------.
+|TERMCAP|                                                    |
+| FIELD |                   DESCRIPTION                      |
+|-------|----------------------------------------------------|
+| :AL=: | Insert a given number of lines before current line |
+| :al=: | Insert one line before the current line            |
+| :am:  | Automargin - cursor wraps at end-of-line           |
+| :bc=: | Move the cursor back one character                 |
+| :cI=: | Set cursor shape to "insert" shape                 |
+| :cQ=: | Set cursor shape to "quit" shape                   |
+| :cR=: | Set cursor shape to "replace" shape                |
+| :cV=: | Set cursor shape to "vi command" shape (ELVIS ONLY)|
+| :cX=: | Set cursor shape to "ex command" shape (ELVIS ONLY)|
+| :ce=: | Clear from cursor to end-of-line                   |
+| :cm=: | Move cursor to a given row/column                  |
+| :co#: | Width of screen, in columns                        |
+| :DC=: | Delete a given number of character at the cursor   |
+| :dc=: | Delete one character at the cursor position        |
+| :DL=: | Delete a given number of lines at the cursor       |
+| :dl=: | Delete one line at the cursor position             |
+| :IC=: | Insert a given number of characters at the cursor  |
+| :ic=: | Insert one character at the cursor position        |
+| :ke=: | Disable the cursor keypad                          |
+| :ks=: | Enable the cursor keypad                           |
+| :li#: | Height of screen, in lines                         |
+| :md=: | Start bold text                                    |
+| :me=: | End bold or half-bright text                       |
+| :mh=: | Start half-bright text (used for italic text)      |
+| :pt:  | Terminal supports physical tabs                    |
+| :se=: | End standout text                                  |
+| :sg#: | Width of gap required by the :so=:se=: strings     |
+| :so=: | Start standout text                                |
+| :sr=: | Reverse scroll one line (limited form of :ic=:)    |
+| :te=: | String that Elvis sends upon exiting               |
+| :ti=: | String that Elvis sends when starting              |
+| :us=: | End underlined text                                |
+| :ug#: | Width of gap required by the :us:ue:md:me: strings |
+| :up=: | move cursor up one line                            |
+| :us=: | Start underlined text                              |
+| :vb=: | Visible alternative to the bell                    |
+| :ve=: | Set cursor shape to "quit" shape                   |
+| :vs=: | Set cursor shape to "vi command" shape             |
+| :xn:  | Brain-damaged newline; ignore the :am: flag        |
+^-------^----------------------------------------------------^
+</pre>
+
+<h3><a name="termcap.keys"></a>8.3.3 Cursor Keys and Function Keys</h3>
+
+Cursor keys and function keys generally send escape sequences when struck.
+Elvis needs to know what those escape sequences are, so it can recognize
+the keystroke and act accordingly.
+
+<p>The names of the fields for the arrows are pretty well standardized in
+termcap, but the other cursor keys are still rather unsettled.
+Different UNIX variants use different names for the same key.
+Elvis supports all common names for each key.
+
+<p>Function keys are even more challenging.
+Originally termcap only had strings which described the first 4 function keys.
+This was easy to extend to 9 keys, but starting with the 10th function key
+things get strange because termcap field names must be two characters long.
+Also, there was no way to describe shift-function keys, control-function keys,
+or alt-function keys, so I invented by own fields for them.
+
+<p>The following table lists all of the key field names, and the keys they
+refer to.
+For keys which may be described via more than one field name, the preferred
+field name is listed first.
+It also lists the key's label, as reported by <a href="elvisex.html#map">:map</a>
+and what (if anything) that key is normally mapped to.
+
+<pre graphic>
+.-----------.---------------.-----------------------------------.
+| KEY LABEL | TERMCAP NAMES |            DESCRIPTION            |
+|-----------|---------------|-----------------------------------|
+|  &lt;Up&gt;     | :ku=:         | Up arrow, mapped to "k"           |
+|  &lt;Down&gt;   | :kd=:         | Down arrow, mapped to "j"         |
+|  &lt;Left&gt;   | :kl=:         | Left arrow, mapped to "h"         |
+|  &lt;Right&gt;  | :kr=:         | Right arrow, mapped to "l"        |
+|  &lt;PgUp&gt;   | :kP=:PU=:K2=: | Previous Page, mapped to "^B"     |
+|  &lt;PgDn&gt;   | :kN=:PD=:K5=: | Next Page, mapped to "^F"         |
+|  &lt;Home&gt;   | :kh=:HM=:K1=: | Home, mapped to "^"               |
+|  &lt;End&gt;    | :kH=:EN=:K4=: | End, mapped to "$"                |
+|  &lt;Insert&gt; | :kI=:         | Insert key, mapped to "i"         |
+|  &lt;Delete&gt; | :kD=:         | Delete key, mapped to "x"         |
+|  &lt;C-Left&gt; | :#4=:KL=:     | Ctrl + Left arrow, mapped to "B"  |
+|  &lt;C-Right&gt;| :%i=:KR=:     | Ctrl + Right arrow, mapped to "W" |
+|  #1       | :k1=:         | F1 key                            |
+|  #2       | :k2=:         | F2 key                            |
+|  #3       | :k3=:         | F3 key                            |
+|  #4       | :k4=:         | F4 key                            |
+|  #5       | :k5=:         | F5 key                            |
+|  #6       | :k6=:         | F6 key                            |
+|  #7       | :k7=:         | F7 key                            |
+|  #8       | :k8=:         | F8 key                            |
+|  #9       | :k9=:         | F9 key                            |
+|  #10      | :k0=:ka=:k;=: | F10 key                           |
+|  #1s      | :s1=:         | Shift-F1 key          (ELVIS ONLY)|
+|  #2s      | :s2=:         | Shift-F2 key          (ELVIS ONLY)|
+|  #3s      | :s3=:         | Shift-F3 key          (ELVIS ONLY)|
+|  #4s      | :s4=:         | Shift-F4 key          (ELVIS ONLY)|
+|  #5s      | :s5=:         | Shift-F5 key          (ELVIS ONLY)|
+|  #6s      | :s6=:         | Shift-F6 key          (ELVIS ONLY)|
+|  #7s      | :s7=:         | Shift-F7 key          (ELVIS ONLY)|
+|  #8s      | :s8=:         | Shift-F8 key          (ELVIS ONLY)|
+|  #9s      | :s9=:         | Shift-F9 key          (ELVIS ONLY)|
+|  #10s     | :s0=:         | Shift-F10 key         (ELVIS ONLY)|
+|  #1c      | :c1=:         | Control-F1 key        (ELVIS ONLY)|
+|  #2c      | :c2=:         | Control-F2 key        (ELVIS ONLY)|
+|  #3c      | :c3=:         | Control-F3 key        (ELVIS ONLY)|
+|  #4c      | :c4=:         | Control-F4 key        (ELVIS ONLY)|
+|  #5c      | :c5=:         | Control-F5 key        (ELVIS ONLY)|
+|  #6c      | :c6=:         | Control-F6 key        (ELVIS ONLY)|
+|  #7c      | :c7=:         | Control-F7 key        (ELVIS ONLY)|
+|  #8c      | :c8=:         | Control-F8 key        (ELVIS ONLY)|
+|  #9c      | :c9=:         | Control-F9 key        (ELVIS ONLY)|
+|  #10c     | :c0=:         | Control-F10 key       (ELVIS ONLY)|
+|  #1a      | :a1=:         | Alt-F1 key            (ELVIS ONLY)|
+|  #2a      | :a2=:         | Alt-F2 key            (ELVIS ONLY)|
+|  #3a      | :a3=:         | Alt-F3 key            (ELVIS ONLY)|
+|  #4a      | :a4=:         | Alt-F4 key            (ELVIS ONLY)|
+|  #5a      | :a5=:         | Alt-F5 key            (ELVIS ONLY)|
+|  #6a      | :a6=:         | Alt-F6 key            (ELVIS ONLY)|
+|  #7a      | :a7=:         | Alt-F7 key            (ELVIS ONLY)|
+|  #8a      | :a8=:         | Alt-F8 key            (ELVIS ONLY)|
+|  #9a      | :a9=:         | Alt-F9 key            (ELVIS ONLY)|
+|  #10a     | :a0=:         | Alt-F10 key           (ELVIS ONLY)|
+^-----------^---------------^-----------------------------------^
+</pre>
+
+<h3><a name="termcap.graphic"></a>8.3.4 Graphic characters</h3>
+
+Elvis uses graphic characters for HTML mode's
+&lt;pre graphic&gt; and &lt;hr&gt; tags.
+
+<p>Originally termcap didn't support a way to access the terminal's
+graphic characters.
+A standard of sorts was eventually developed under the XENIX variant of UNIX.
+Later, the terminfo library adopted a different way to access the graphic
+characters, and this was worked back into the termcap standard, displacing
+the XENIX standard.
+The terminfo method is preferred, these days.
+Elvis supports both.
+
+<pre graphic>
+                      Terminfo Strings
+.-------.---------------------------------------------------.
+|TERMCAP|                                                   |
+| FIELD |                  DESCRIPTION                      |
+|-------|---------------------------------------------------|
+| :as=: |Start graphic text                                 |
+| :ae=: |End graphic text                                   |
+| :ac=: |Maps VT100 graphic chars to this terminal's chars  |
+^-------^---------------------------------------------------^
+</pre>
+
+The terminfo method uses the :as=:ae=: strings for turning the
+graphical character attribute on and off.
+While in graphic mode, the value of the :ac=: string is interpreted
+as a list of character pairs;
+the first character is a VT-100 graphic character,
+and the following character is this terminal's corresponding graphic character.
+The following table lists the (text versions of) VT-100 graphic characters,
+and descriptions of them.
+It also includes IBM PC characters.
+
+<pre graphic>
+   .--------.--------.--------------------------------------.
+   | VT-100 | IBM PC |             DESCRIPTION              |
+   |--------|--------|--------------------------------------|
+   |   'q'  | '\304' | horizontal line                      |
+   |   'x'  | '\263' | vertical line                        |
+   |   'm'  | '\300' | lower left corner (third quadrant)   |
+   |   'v'  | '\301' | horizontal line with up-tick         |
+   |   'j'  | '\331' | lower right corner (fourth quadrant) |
+   |   't'  | '\303' | vertical line with right-tick        |
+   |   'n'  | '\305' | four-way intersection, like '+' sign |
+   |   'u'  | '\264' | vertical line with left-tick         |
+   |   'l'  | '\332' | upper left corner (second quadrant)  |
+   |   'w'  | '\302' | horizontal line with down-tick       |
+   |   'k'  | '\277' | upper right corner (first quadrant)  |
+   ^--------^--------^--------------------------------------^
+</pre>
+
+So, for example, an entry describing the IBM PC would contain the following:
+<pre>
+:ac=q\304x\263m\300v\301j\331t\303n\305u\264l\332w\302k\277:
+</pre>
+
+<pre graphic>
+                    XENIX Termcap Strings
+.-------.---------------------------------------------------.
+|TERMCAP|                                                   |
+| FIELD |                  DESCRIPTION                      |
+|-------|---------------------------------------------------|
+| :GS=: |Start graphic text                                 |
+| :GE=: |End graphic text                                   |
+| :GH=: |Horizontal bar                                     |
+| :GV=: |Vertical bar                                       |
+| :G3=: |Lower-left corner (i.e., third quadrant)           |
+| :GU=: |Horizontal bar with up-tick                        |
+| :G4=: |Lower-right corner (i.e., fourth quadrant)         |
+| :GR=: |Vertical bar with right-tick                       |
+| :GC=: |Center crosspiece (i.e., a big '+' sign)           |
+| :GL=: |Vertical bar with a left-tick                      |
+| :G2=: |Upper-left corner (i.e., second quadrant)          |
+| :GD=: |Horizontal bar with a down-tick                    |
+| :G1=: |Upper-right corner (i.e., first quadrant)          |
+^-------^---------------------------------------------------^
+</pre>
+In Xenix, a separate string is used for each line-drawing graphic
+character.
+There are also optional :GS=:GE=: strings for starting and ending graphic mode.
+If the :GS=:GE=: strings aren't specified,
+then termcap is expected to set the MSB of each character in the graphic
+character strings.
+
+
+<h2>8.4 VIO Interface for OS/2</h2><a name="vio"></a>
+
+The <em>vio</em> interface is an OS/2-specific text-mode interface.
+It should behave almost exactly like the <a href="#termcap">termcap</a>
+interface in all respects:
+same options, same colors, same windowing features, etc.
+Unlike the termcap interface, the vio interface must be run locally.
+It can't run over a network via telnet, but the termcap interface can.
+
+<h2>8.5 Open Interface</h2><a name="open"></a>
+
+The <em>open</em> interface was created for use on terminals which lack some
+necessary capability (such as the :cm=: cursor movement command),
+or terminals of an unknown type.
+The open interface is ugly;
+if you have a choice, you should always use the termcap interface instead.
+
+<p>The open interface works on all text terminals because the only control
+codes it uses are backspace, carriage return, and line feed.
+
+<p>It only allows you to edit one line at a time.
+When you move to a new line (e.g., by using the <a href="elvisvi.html#j">j</a>
+or <a href="elvisvi.html#k">k</a> commands), the screen scrolls up and the
+new line is displayed at the bottom of the screen.
+This is true even when you're moving the cursor back towards the beginning
+of the edit buffer;
+the lines of the buffer will appear on the screen in reverse order!
+The open interface can be very confusing.
+
+<p>However, practically all of the normal visual commands are available.
+The only ones missing are those that specifically affect a whole window.
+
+<h2>8.6 Quit Interface</h2><a name="quit"></a>
+
+The <em>quit</em> interface is intended to be used for executing scripts
+of ex commands.
+It performs all of the usual initialization, and then quits.
+It is normally used in conjunction with the <strong>-c</strong> <var>command</var>
+flag.
+
+<p>For example, you can have Elvis load a file, print it, and then exit
+via the following command line...
+<pre>
+elvis -G quit -c lp <var>somefile</var>
+</pre>
+
+Because the usual initialization guesses a file's display mode
+automatically, this one command can be used to format and print HTML documents,
+man pages, C code, and even hex dumps of binary files.
+
+<h2>8.7 Script Interface</h2><a name="script"></a>
+
+The <em>script</em> interface is similar to the <a href="#quit">quit</a>
+interface, except that this interface reads ex commands from stdin and
+executes them; when it detects end-of-file on stdin, it exits.
+Status messages are disabled while running a script, but error messages
+are still output.
+
+<p>Rather than selecting this interface via <code>-Gscript</code>, you will
+usually select it via the <code>-s</code> flag
+(or the obsolete <code>-</code> flag),
+which has the additional side-effect of disabling all initialization scripts.
+This is desirable since it causes the script to behave exactly the same way
+for different users, regardless of any customization they have done.
+
+<p>Here's an example shell script that uses this feature to swap instances of
+the words "left" and "right" in a group of files.
+
+<pre>
+	#!/bin/sh
+	for file
+	do
+		elvis -s $file &lt;&lt;EOF
+try %s/\&lt;left\&gt;/:TEMP:/g
+try %s/\&lt;right\&gt;/left/g
+try %s/:TEMP:/right/g
+if modified
+then write
+EOF
+	done
+</pre>
+Note that the five lines between "<code>&lt;&lt;EOF</code>" and
+"<code>EOF</code>" are a series of Elvis commands, and
+everything else is handled by the /bin/sh shell.
+The <a href="elvisex.html#try">:try</a> commands are used to silence error
+messages from any <a href="elvisex.html#substitute">:s</a> commands which
+fail to find any matching text.
+The <a href="elvisex.html#if">:if/:then</a> commands are used to test the
+buffer's <a href="elvisopt.html#modified">modified</a> option, so a file which
+contains no instances of "left" or "right" won't be rewritten needlessly.
+</body></html>

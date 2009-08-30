@@ -1,0 +1,134 @@
+/*
+ * gawkmisc.c --- miscellanious gawk routines that are OS specific.
+ */
+
+/* 
+ * Copyright (C) 1986, 1988, 1989, 1991 - 96 the Free Software Foundation, Inc.
+ * 
+ * This file is part of GAWK, the GNU implementation of the
+ * AWK Progamming Language.
+ * 
+ * GAWK is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * GAWK is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+ */
+
+char quote = '"';
+char envsep  = ';';
+#ifdef DEFPATH
+char *defpath = DEFPATH;
+#else
+char *defpath = ".;c:\\lib\\awk;c:\\gnu\\lib\\awk";
+#endif
+
+/* gawk_name --- pull out the "gawk" part from how the OS called us */
+
+char *
+gawk_name(filespec)
+const char *filespec;
+{
+	char *p, *q;
+
+	p = (char *) filespec;  /* Sloppy... */
+
+	/* OS/2 allows / for directory separator too */
+	if ((q = strrchr(p, '\\')) != NULL)
+		p = q + 1;
+	if ((q = strrchr(p, '/')) != NULL)
+		p = q + 1;
+	if ((q = strchr(p, '.')) != NULL)
+		*q = '\0';
+	return strlwr(p);
+}
+
+/* os_arg_fixup --- fixup the command line */
+
+void
+os_arg_fixup(argcp, argvp)
+int *argcp;
+char ***argvp;
+{
+#ifdef __EMX__
+	_response(argcp, argvp);
+	_wildcard(argcp, argvp);
+	setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
+#endif
+	return;
+}
+
+/* os_devopen --- open special per-OS devices */
+
+int
+os_devopen(name, flag)
+const char *name;
+int flag;
+{
+	/* no-op */
+	return -1;
+}
+
+/* optimal_bufsize --- determine optimal buffer size */
+
+int
+optimal_bufsize(fd, stb)
+int fd;
+struct stat *stb;
+{
+	/* force all members to zero in case OS doesn't use all of them. */
+	memset(stb, '\0', sizeof(struct stat));
+
+	/*
+	 * DOS doesn't have the file system block size in the
+	 * stat structure. So we have to make some sort of reasonable
+	 * guess. We use stdio's BUFSIZ, since that is what it was
+	 * meant for in the first place.
+	 */
+#define	DEFBLKSIZE	BUFSIZ
+
+	if (isatty(fd))
+		return BUFSIZ;
+	if (fstat(fd, stb) == -1)
+		fatal("can't stat fd %d (%s)", fd, strerror(errno));
+	if (lseek(fd, (off_t)0, 0) == -1)	/* not a regular file */
+		return DEFBLKSIZE;
+	if (stb->st_size > 0 && stb->st_size < DEFBLKSIZE) /* small file */
+		return stb->st_size;
+	return DEFBLKSIZE;
+}
+
+/* ispath --- return true if path has directory components */
+
+int
+ispath(file)
+const char *file;
+{
+	for (; *file; file++) {
+		switch (*file) {
+		case '/':
+		case '\\':
+		case ':':
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/* isdirpunct --- return true if char is a directory separator */
+
+int
+isdirpunct(c)
+int c;
+{
+	return (strchr(":\\/", c) != NULL);
+}
+

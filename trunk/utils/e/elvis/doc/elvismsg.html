@@ -1,0 +1,153 @@
+<html><head>
+<title>Elvis-2.2_0 Messages</title>
+</head><body>
+
+<h1>12. MESSAGES</h1>
+
+Elvis has an extremely versatile method for handling messages.
+You can change the wording, or even the language, of any message.
+You can make any message ring the terminal's bell.
+You can hide certain messages.
+
+<p>This section of the manual describes how messages are generated,
+and how you can customize them.
+A list of the individual messages can be found in <a href="elvistrs.msg">
+Appendix A.</a>
+
+<h2>12.1 The msg() function.</h2>
+
+Every message begins with a call to the msg() function.
+The message function is passed at least two arguments:
+the message's importance, and the text of the message.
+Some messages also have other arguments.
+
+<p>The importance of a message is a symbol which describes what type of message
+it is.
+The symbol can be any of the following:
+MSG_STATUS, MSG_INFO, MSG_WARNING, MSG_ERROR, or MSG_FATAL.
+This affects the way that the message is displayed.
+For example, MSG_STATUS messages are always displayed immediately,
+and can be overwritten by later messages; this is used for messages like
+"Reading foo.c..."
+MSG_ERROR messages cause the <a href="elvisopt.html#exitcode">exitcode</a>
+option to be set to 1.
+MSG_FATAL messages cause Elvis to exit immediately after displaying the message.
+You can't alter a message's importance without editing Elvis' source code
+and recompiling; each message's importance is hardcoded.
+
+<p>The text of the message is a string.
+If there are other arguments, then the text of the message will be preceded
+by a bracketed list of letters which help the msg() function convert
+the arguments to strings.
+Although this bracketed list is part of the string, it is not considered
+to be part of the message's text.
+
+<p>Each letter in the bracketed list describes how one argument is to be
+displayed.
+<strong>d</strong> indicates that a long int argument is to be converted into
+a decimal number string.
+<strong>c</strong> and <strong>C</strong> indicate that a char or CHAR is to
+be converted into a string of length 1.
+<strong>s</strong> and <strong>S</strong> indicate that the argument is
+already a string of chars or CHARs.
+(The CHAR data type could be either an 8-bit character or a 16-bit character,
+depending on the compile-time configuration of Elvis.
+The <a href="elvisopt.html#bitsperchar">bitsperchar</a> option indicates which.)
+
+<h2>12.2 Translation</h2>
+
+All of the messages built into Elvis are terse.
+If the <a href="elvisopt.html#terse">terse</a> option is turned off,
+then Elvis will attempt to translate each terse message into a verbose one.
+Although the terse messages are written in English, the verbose messages
+can be in any language.
+
+<p>When Elvis first creates a new edit session, it attempts to locate a
+file named "<a name="elvis.msg">elvis.msg</a>" and load it into a buffer named
+"Elvis messages".
+To find the "elvis.msg" file, Elvis searches through all of the directories
+named in the <a href="elvisopt.html#elvispath">elvispath</a> option.
+
+<p>Each line of the "Elvis messages" buffer describes how a single message
+should be translated.
+To translate a message, Elvis scans through the "Elvis messages" buffer
+for a line which begins with the terse message text followed immediately
+by a ':' character.
+If it finds one, then it skips any whitespace after the ':' and uses the
+remainder of the line as the message text.
+If it doesn't find any matching line, then the terse text is used.
+
+<p>This is primarily intended to be used for translating the messages into
+your native language.
+
+<p>The file that contains <a href="elvistrs.msg">Appendix A</a>
+(initially "lib/elvistrs.msg")
+is a handy resource when you're constructing your "elvis.msg" file.
+It contains the terse forms of almost all messages.
+You can yank a line from Appendix A, paste it into your "elvis.msg" file,
+and add a colon and verbose message to the end of the message.
+
+<p>By the way, Appendix A is created automatically via the command
+<code>"make&nbsp;lib/elvistrs.msg".</code>
+This just searches for all messages in any source file, sorts them, and
+discards any duplicates.
+I intend to add another appendix some day which describes some of the
+more subtle messages in detail.
+
+<h2>12.3 Argument substitution</h2>
+
+After translation, the message text is evaluated using the
+<a href="elvisexp.html#SIMPLER">simpler syntax of the built-in calculator.</a>
+This basically means that you can use <strong>$1</strong> in the message text
+to indicate where the first argument should appear, <strong>$2</strong> for
+the second argument, and so on.
+
+<p>It also means that anything inside of parentheses is evaluated using the
+full power of the calculator, which has a C-like syntax.
+The message output by the <a href="elvisex.html#file">:file</a> command
+uses this to calculate the percentage of the way through the file.
+
+<p>If you want to output a literal '$', '(', ')', or '\' character as part of
+the message, you'll need to precede it with a '\' character.
+
+<h2>12.4 Bell control</h2>
+
+You can force any individual messages to ring the bell by using the
+"Elvis messages" buffer to translate them into a message which begins with
+a <kbd>^G</kbd> character.
+
+<p>There are also two options which allow you to force the bell to ring for
+certain message types.
+If Elvis is outputting a MSG_ERROR message, and the
+<a href="elvisopt.html#errorbells">errorbells</a> option is set, then Elvis
+will ring the terminal's bell.
+It will also ring the bell for MSG_WARNING messages if the
+<a href="elvisopt.html#warningbells">warningbells</a> option is set.
+
+<p>Note that there is also a <a href="elvisopt.html#flash">flash</a> option which
+instructs Elvis to use a visible alternative to the bell, if one is available.
+
+<h2>12.5 Displaying the message</h2>
+
+Messages are normally displayed at the bottom of the current window.
+Usually this is exactly what you would expect, but it can be a little
+counterintuitive when you're creating or closing windows.
+
+<p>When you're creating a window, the "current window" is the window where
+you gave the command which caused the window to be created.
+So if you're editing "foo.c" and give the command
+<a href="elvisopt.html#split">:split bar.c</a> then the information about
+the "bar.c" file will show up in the window where you're editing "foo.c".
+The bottom line of the "bar.c" window will be blank.
+
+<p>When you're closing a window, Elvis chooses some other window to become
+the new "current window" so that it'll have a place where it can display
+the messages.
+You can't always predict which window it will choose.
+
+<p>When you close the last window and exit Elvis, any messages that Elvis
+wants to output will simply be written to stdout or stderr.
+Typically, the only message that Elvis wants to output when closing will be
+"wrote foo.c, 1234 lines, 56789 characters".
+
+</body></html>

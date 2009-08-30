@@ -1,0 +1,1231 @@
+<html><head>
+<title>Elvis-2.2_0 Arithmetic Expressions</title>
+</head><body>
+<h1><a name="CONTENTS"></a>13. ARITHMETIC EXPRESSIONS</h1>
+<menu>
+   <li><a href="#13.1">	13.1 Normal (C-like) Syntax</a>
+   <li><a href="#13.2">	13.2 Functions</a>
+   <li><a href="#13.3">	13.3 Subscripts</a>
+   <li><a href="#13.4">	13.4 Simpler Syntax</a>
+   <li><a href="#13.5">	13.5 EX Commands Which Use Expressions</a>
+   <li><a href="#13.6">	13.6 VI Commands Which Use Expressions</a>
+   <li><a href="#13.7">	13.7 Other Uses of Expressions</a>
+</menu>
+
+<p>Elvis can evaluate expressions involving numbers, strings, and boolean values,
+using a C-like syntax.
+These are used in several EX commands, one VI command, and a couple of other
+situations.
+
+<p>There are two syntaxes.
+The normal syntax is extremely similar to C, and is used in circumstances
+where you probably would never use a literal value, such as for the
+<a href="elvisex.html#if">:if</a> command.
+The simpler syntax makes literal values easier to enter, while still
+making the full power of the expression evaluator available if you need it.
+
+<h2><a name="13.1"></a><a name="NORMAL"></a>13.1 Normal (C-like) Syntax</h2>
+
+The <a href="elvisex.html#calculate">:calculate</a> command uses the normal syntax
+and displays the results.
+We'll use it for most of the examples in this section.
+
+<p>The normal syntax is intended to resemble the syntax of the C programming
+language very closely.
+You can't define your own functions or use flow-control constructs though;
+you can only use expressions.
+In traditional C documentation, these would be called "rvalues."
+Basically that means you can use literal values, option names, operators,
+parentheses, and some built-in functions.
+
+<h3>13.1.1 Primary expressions</h3>
+Literals can be given in any of the following formats:
+<dl>
+<dt>"<var>text</var>"
+<dd>Any text in double-quotes is taken literally.
+The usual C escapes are supported: <code>\b</code>, <code>\E</code>
+(uppercase, representing the <kbd>Esc</kbd> character), <code>\f</code>,
+<code>\n</code>, <code>\r</code>, and <code>\t</code>.
+Also, you can use <code>\\</code> for a literal backslash character, or
+<code>\"</code> for a literal double-quote character within a string.
+
+<dt>/<var>regexp</var>/
+<dd>This is a special notation for passing a regular expression as the
+argument to a function such as <a href="#current">current()</a>.
+In any other context, the leading '/' character would be taken as a division
+operator, but as a function argument you can use
+<code>/</code><var>regexp</var><code>/</code> to pass the regular expression
+text.
+Note that the regular expression is passed as a string;
+it is equivalent to <code>"/</code><var>regexp</var><code>"</code>.
+
+
+<dt>\$
+<br>\(
+<br>\)
+<br>\\
+<dd>You can use a backslash to quote a single dollar sign, parenthesis, or
+backslash as though it was a string of length 1.
+This was done mostly for the benefit of the <a href="#13.2">simpler syntax</a>,
+where these four character are normally the only ones which have any special
+interpretation.
+
+<dt><var>digits</var>
+<dd>Any word which contains only digits will be taken as a literal value.
+Generally this value will be interpreted as a number,
+but internally the expression evaluator always stores values as strings.
+Some operators look at their arguments and act differently depending
+on whether those strings happen to look like numbers or Boolean values.
+
+<dt>0<var>octaldigits</var>
+<br>0x<var>hexdigits</var>
+<br>'<var>character</var>'
+<dd>Octal, hex, and character constants can be used in expressions.
+These are converted to decimal when they are parsed, before they are passed to any operator or function.
+Passing an octal, hex, or character constant therefore is exactly like
+passing the equivalent decimal number.
+Elvis supports escapes as character constants:
+'\0', '\b', '\E', '\f', '\n', '\r', and '\t'.
+
+<dt>true
+<br>false
+<dd>These can be used as Boolean literals.
+Technically, they are implemented via options (as described below) named
+<a href="elvisopt.html#true">true</a> and
+<a href="elvisopt.html#false">false</a>.
+All of the boolean operators accept "false", "0", "", or the value of the
+<a href="elvisopt.html#false">false</a> option as
+Boolean <strong>false</strong> values, and
+anything else as a Boolean <strong>true</strong> value.
+
+</dl>
+<p>The following examples produce <em>exactly</em> identical results.
+<pre>
+	:calc "8"
+	8
+	:calc 8
+	8
+	:calc 010
+	8
+	:calc 0x8
+	8
+	:calc '\b'
+	8</pre>
+
+<p>You can also use option names in Elvis the same way you would use variable
+names in C.
+<pre>
+	:calc list
+	false
+	:calc scroll
+	12
+	:calc display
+	normal</pre>
+
+<p>There is also a pseudo-option named "_" (the underscore character).
+Its value is the content of the current line.
+<pre>
+	:calc _
+	Its value is the content of the current line.</pre>
+
+<p>Additionally, a dollar sign followed by the name of an environment variable
+is replaced by the value of that environment variable.  If there is no such
+environment variable, then Elvis will act as though it exists and has a
+null value... unless there is an option with that name, in which case the
+option's value is used.
+(In other words, "$" is optional before option names, but mandatory before
+environment variable names.)
+<pre>
+	:calc $TERM
+	xterm
+	:calc $NOSUCHVARIABLE
+
+	:calc $autoindent
+	false
+	:calc $_
+	Its value is the content of the current line.</pre>
+
+<p>In some circumstances, you can use a dollar sign followed by a digit
+to access special arguments.
+This is used in error messages and also in the values of a few options,
+as described in <a href="#13.6">section 13.6.</a>
+These special arguments can only be supplied by Elvis' internal code,
+and it only supplies them in a few special circumstances so you can't use
+them in <a href="elvisex.html#calculate">:calculate,</a> for example.
+
+<h3><a name="operators">13.1.2 Operators</a></h3>
+The following operators are available.
+When passed integer values, these operators act like their C counterparts.
+When passed string values, most of them concatenate
+their arguments with the operator name in between, but some of them
+do something that is useful for strings,
+as described below.
+Items at the top of this list have a higher precedence than those lower down.
+<dl>
+
+<dt>[ ]
+<dd>Subscripts can be used for extracting substrings.
+This is very powerful, and is worthy of a longer discussion than will fit
+in this list.
+See the <a href="#subscripts">subscripts</a> discussion, below.
+
+<dt>(no operator)
+<dd>Any two expressions placed side-by-side with no operator between them will
+be concatenated as strings.  C does this for literal strings, but Elvis does
+it for anything.
+
+<p>Elvis' style of concatenation is smart about whitespace.
+If neither argument is an empty string, and the left argument doesn't end
+with whitespace, and the right argument doesn't start with whitespace,
+then Elvis will insert a single space character between them.
+Otherwise it concatenates them without adding or removing any characters.
+
+<p>If you don't want Elvis to add whitespace, use the <a href="#semi">;</a>
+operator instead.
+
+<dt>~
+<dd>(tilde) Perform a bitwise NOT operation on the argument, if it is a number.
+<dt>!
+<dd>Return <strong>true</strong> if the argument is <strong>false</strong>
+and vice versa.
+<dt>* / %
+<dd>The usual arithmetic operators.  (% is the modulo operator.)
+
+<p>If the first argument to * is a string instead of a number, then the second
+value is used as the number of times to repeat the first argument.
+<pre>
+	:calc "[]" * 6
+	[][][][][][]
+</pre>
+<p>Also, the / operator can be used to combine a directory name and a file name,
+to form an absolute pathname.
+Here are some examples showing how this works in DOS:
+<pre>
+	:set dir home
+	directory=C:\temp  home=C:\
+	:calc dir/"tempfile"
+	C:\temp\tempfile
+	:calc home/"elvis.rc"
+	C:\elvis.rc</pre>
+<dt>+ -
+<dd>The usual arithmetic operators.
+Note that there is no special unary - sign; the minus sign serves double-duty.
+Because C normally gives the unary - sign a higher precedence than
+other operators and Elvis doesn't, you may occasionally need to enclose
+negated values in parentheses to achieve the same effect.
+<dt>&lt;&lt; &gt;&gt;
+<dd>For integers these operators perform bitwise shifting, exactly like C.
+However, if the left argument is a string and the right argument is a number
+then Elvis will pad or truncate the string to make its length match the
+number argument.
+&lt;&lt; pads/truncates on the right, and &gt;&gt; pads/truncates on the left.
+<pre>
+	:calc "[" ; "port" &lt;&lt; 6 ; "]"
+	[port  ]
+	:calc "[" ; "starboard" &gt;&gt; 6 ; "]"
+	[rboard]</pre>
+<dt><a name="relational">&lt; &lt;= &gt; &gt;= == !=</a>
+<dd>Compare the arguments and return <strong>true</strong> if the comparison
+holds, or <strong>false</strong> otherwise.
+If both arguments look like numbers, then they will be compared as numbers;
+otherwise they will be compared as strings.
+<dt>&amp;
+<dd>For numbers, this returns the bitwise AND of the arguments.
+For strings, it <em>may</em> perform set intersection.
+See the discussion of <a href="#sets">sets</a>, below.
+<dt>^
+<dd>For numbers, this returns the bitwise XOR of the arguments.
+For strings, it <em>may</em> perform set difference.
+See the discussion of <a href="#sets">sets</a>, below.
+<dt>|
+<dd>For numbers, this returns the bitwise OR of the arguments.
+For strings, it <em>may</em> perform set union.
+See the discussion of <a href="#sets">sets</a>, below.
+<dt>&amp;&amp;
+<dd>If the left argument is <strong>false</strong>
+(any of "", "0", "false", or <a href="elvisopt.html">false</a>) then return it;
+else return the right argument.
+Elvis differs from C in that both arguments are always evaluated.
+Also, Elvis' version is more powerful since the return value isn't simply
+a Boolean value.
+<dt>||
+<dd>If the left argument is <strong>true</strong>
+(anything but "", "0", "false", or <a href="elvisopt.html#false">false</a>)
+then return it;
+else return the right argument.
+Elvis differs from C in that both arguments are always evaluated.
+right argument is only evaluated if the left argument is <strong>false</strong>.
+Also, Elvis' version is more powerful since the return value isn't simply
+a Boolean value.
+<dt>.. ...
+<dd>These two operators (dot-dot and dot-dot-dot) are identical to each other.
+They both return a space-delimited list of integers between the left argument
+and the right argument.
+If the right argument is less than the left argument, it returns an empty
+string.
+<dt>?:
+<dd>This one is tricky because internally Elvis always uses binary (two operand)
+operators.
+In C this is a ternary operator but in Elvis it is implemented as two binary
+operators which cooperate in a subtle way so they seem like a single ternary
+operator.
+You probably don't need to know the details, but the upshot of it all is
+that 1) It associates left-to-right (instead of right-to-left as in C), and
+2) The <code>:</code> and third argument are optional; if omitted,
+then Elvis mentally sticks <code>:""</code> on the end of the expression.
+<dt>:
+<dd>When <code>:</code> is used without a <code>?</code>, its behavior is
+totally different.
+It concatenates its arguments, with an OS-specific path delimiter between them.
+On Unix systems, the delimiter is ":" but on most other systems it is ";".
+This is useful when constructing values for path options such as
+<a href="elvisopt.html#includepath">includepath</a> or
+<a href="elvisopt.html#tags">tags</a>.
+<pre>
+	:let includepath = includepath:home/"include"</pre>
+
+<dt>,
+<dd>(That's a comma, not an apostrophe.)
+Concatenates two strings, with a comma inserted between them.
+This can be handy when you're passing arguments to the <code>quote()</code>
+and <code>unquote()</code> functions.
+<dt><a name="semi">;</a>
+<dd>Concatenates two strings without inserting any extra characters.
+Note that this has a much lower precedence than <code>(no operator)</code>.
+<pre>
+	:calc 1+2 3*4
+	1+2 32 32 32 3
+	:calc (1+2)(3*4)
+	3 12
+	:calc 1+2;3*4
+	312</pre>
+</dl>
+
+<h2><a name="13.2"></a><a name="FUNCTIONS"></a>13.2 Functions</h2>
+There are many built-in functions.
+When you call one of these functions, there must <strong>not</strong> be any
+whitespace between the function name and the following parenthesis.
+
+<p>All of these functions accept a single string as an argument.
+Omitting the argument is equivalent to passing an empty string ("").
+Some functions are described as taking two arguments; actually, they
+take one argument and divide it at the first comma character.
+
+<p>The built-in functions are:
+<dl>
+
+<dt><a name="absolute">absolute</a>(<var>filename</var>)
+<dd>Return a full pathname for <var>filename</var>.
+
+<dt><a name="alias">alias</a>(<var>name</var>)
+<dd>Return <a href="elvisopt.html#true">true</a> if an alias exists with that
+<var>name</var>, or <a href="elvisopt.html#false">false</a> otherwise.
+
+<dt><a name="basename">basename</a>(<var>filename</var>)
+<dd>Return the substring of the filename without any directory names or
+extension.
+For example, `<code>basename("foo/bar.c")</code>' would return "bar".
+(If you want "bar.c", use the <a href="#dirfile">dirfile()</a> function.)
+
+<dt><a name="buffer">buffer</a>(<var>bufname</var>)
+<dd>Return <a href="elvisopt.html#true">true</a> if a buffer exists with that
+<var>name</var>, or <a href="elvisopt.html#false">false</a> otherwise.
+
+<dt><a name="char">char</a>(<var>number</var>)
+<dd>Convert <var>number</var> to a single ASCII character, as a string.
+For example, `<code>char(65)</code>' returns "A".
+
+<dt><a name="current">current</a>(<var>item</var>)
+<dd>Return a value indicating an aspect of Elvis' state.
+The <var>item</var> can be any of the following:
+<table cellpadding=1>
+<tr><th>Item</th><th>Returned data</th></tr>
+<tr><td valign=top>"line"</td>
+<td>Current line number.
+</td></tr>
+<tr><td valign=top>"column"</td>
+<td>Current column number.
+</td></tr>
+<tr><td valign=top>"word"</td>
+<td>The word at the cursor location.
+If the cursor isn't on a word, then this returns an empty string.
+(Note: To get the contents of the current line,
+use the <strong>line()</strong> function.)
+</td></tr>
+<tr><td valign=top>"wspell"</td>
+<td>The spell-checker word at the cursor location.
+This differs from the normal "word" in that the spell checker allows
+apostrophes to appear in words if they have a letter on both sides.
+</td></tr>
+<tr><td valign=top>/<var>regexp</var>/</td>
+<td>Text matching the <var>regexp</var> and containing the cursor.
+For example, <code>current(/\S*/)</code> returns the current
+whitespace-delimited word.
+Note that<br><code>/</code><var>regexp</var><code>/</code> is equivalent to
+<code>"/</code><var>regexp</var><code>"</code>.
+</td></tr>
+<tr><td valign=top>"tag"</td>
+<td>If the <a href="elvisopt.html#show">show</a> option contains the keyword
+"tag", then
+this returns the name of the tag that is defined at the cursor location, or
+the nearest one before it.
+If the <code>show</code> option doesn't contain "tag", or the
+cursor is located above the first tag defined in this file,
+then <code>current("tag")</code> will return an empty string.
+</td></tr>
+<tr><td valign=top>"mode"</td>
+<td>Current key parsing mode.
+This returns the same string that the
+<a href="elvisopt.html#showmode">showmode</a> option displays, except that this
+function converts it to all lowercase, and strips out whitespace.
+The usual return values are "command", "input", and "replace".
+If the window isn't editing its main buffer (i.e., if you're entering
+an ex command line, regular expression, or filter command) then this function
+will return an empty string.
+</td></tr>
+<tr><td valign=top>"next"</td>
+<td>Next file.
+This returns the name of the file that the <a href="elvisex.html#next">:next</a>
+command would load, or an empty string if you're at the end of the args list.
+</td></tr>
+<tr><td valign=top>"previous"</td>
+<td>Previous file.
+This returns the name of the file that the
+<a href="elvisex.html#previous">:previous</a> command would load, or
+an empty string if you're at the start of the args list.
+</td></tr>
+<tr><td valign=top>"face"</td>
+<td>The face name (as used in the <a href="elvisex.html#color">:color</a> command) at the cursor location.
+This value is only updated when the window is updated.
+<tr><td valign=top>"region"</td>
+<td>The current <a href="elvisex.html#REGION">region</a>'s face name.
+</td></tr>
+<tr><td valign=top>"rcomment"</td>
+<td>The current <a href="elvisex.html#REGION">region</a>'s comment.
+
+</td></tr>
+<tr><td valign=top>"selection"</td>
+<td>Visible selection type.
+This returns one of "character", "rectangle", or "line" to indicate the type
+of visible selection which is currently marked in the window, or
+an empty string if no visible selection is marked.
+</td></tr>
+<tr><td valign=top>"tagstack"</td>
+<td>If the window's tag stack is empty, this returns "".
+Otherwise it returns the name of the buffer to which
+<a href="elvisex.html#pop">:pop</a> would move the cursor.
+</td></tr>
+<tr><td valign=top>"background"</td>
+<td>If the normal background color is known, then this returns "light" or "dark"
+to describe it.
+If the background is unknown (which can only happen with the
+<a href="elvisgui.html#termcap">termcap</a> user interface), it returns "".
+<p>
+This function is different from the <a href="elvisopt.html#background">background</a>
+option -- <code>current("background")</code> examines the RGB values of the
+current color, while the <code>background</code> option is merely something
+that you can explicitly set to "light" or "dark", independent of what the
+real background color happens to be.
+Note that the <a href="elvisex.html#color">:color</a> command's choices for
+foreground colors is affected by the <code>background</code> option
+only if <code>current("background")</code> returns "".
+</td></tr>
+</table>
+
+<dt><a name="dirdir">dirdir</a>(<var>filename</var>)
+<dd>Return the directory portion of the <var>filename</var>,
+like <a href="#dirname">dirname()</a>.
+
+<dt><a name="dirext">dirext</a>(<var>filename</var>)
+<dd>Return the extension portion of the <var>filename</var>
+(including the . character).
+
+<dt><a name="dirfile">dirfile</a>(<var>filename</var>)
+<dd>Return basename and extension portions of the <var>filename</var>.
+For example, `dirfile("/usr/tmp/filename.ext")' would return "filename.ext".
+
+<dt><a name="dirname">dirname</a>(<var>filename</var>)
+<dd>Return the directory portion of the <var>filename</var>.
+
+<dt><a name="dirperm">dirperm</a>(<var>filename</var>)
+<dd>Return a string indicating the permissions on the file named
+<var>filename</var>.
+The possible return values are:
+<table cellpadding=1>
+<tr><th>Output</th><th>What it means</th></tr>
+<tr><td>"invalid"</td>
+<td>The argument is malformed; it could not possibly be a valid file name.</td></tr>
+<tr><td>"badpath"</td>
+<td>The argument is a pathname, and one or more of the directories named
+in that pathname either doesn't exist or is something other than a directory.</td></tr>
+<tr><td>"notfile"</td>
+<td>The argument is the name of something other than a file or directory;
+for example, it may be a named socket or block device.</td></tr>
+<tr><td>"directory"</td>
+<td> The argument is the name of a directory (folder).</td></tr>
+<tr><td>"new"</td>
+<td>There is no file, directory, or anything else with the given name.</td></tr>
+<tr><td>"unreadable"</td>
+<td>The file exists but you don't have permission to read it.</td></tr>
+<tr><td>"readonly"</td>
+<td>The file exists and you can read it, but you don't have permission to write
+to it.</td></tr>
+<tr><td>"readwrite"</td>
+<td>The file exists and you can read or write it.</td></tr>
+</table>
+
+<dt><a name="elvispath">elvispath</a>(<var>filename</var>)
+<dd>Search for a file named <var>filename</var> in each directory named
+in the <a href="elvisopt.html#elvispath">elvispath</a> option.
+Return the full pathname of the first file found, or "" if the file can't
+be found in any of those directories.
+
+<dt><a name="exists">exists</a>(<var>filename</var>)
+<dd>Return <a href="elvisopt.html#true">true</a> if a file named
+<var>filename</var> exists,
+or <a href="elvisopt.html#false">false</a> otherwise.
+
+<dt><a name="color">color</a>(<var>face</var>)
+<br>color(<var>face</var>,"set")
+<br>color(<var>face</var>,"fg")
+<br>color(<var>face</var>,"bg")
+<br>color(<var>face</var>,"like")
+<dd>If <var>face</var> is unknown, this returns "" regardless of any other
+arguments.
+
+<p>Otherwise, when passed only a face name, it returns the attributes of that face
+as set via the <a href="elvisex.html#color">:color</a> command.
+When invoked with "set" as a second argument, it returns
+<a href="elvisopt.html#true">true</a> or <a href="elvisopt.html#false">false</a>
+to indicate whether the colors were explicitly set, or are merely the defaults.
+When invoked with "fg", "bg", or "like" as a second argument,
+it parses the face's description and returns that particular attribute.
+
+<p>Note that the foreground may be a single color, or a list of colors
+delimited by the word "or".
+Also, in "<a href="elvisgui.html#x11">x11</a>" at least, the background
+may be a single color, an XPM image file name, or both for a tinted image.
+
+<dt><a name="feature">feature</a>(<var>name</var>)
+<dd>Return <a href="elvisopt.html#true">true</a> if this version of Elvis
+supports the named feature,
+or <a href="elvisopt.html#false">false</a> otherwise.
+Currently <code>feature()</code> returns <code>true</code> for all
+supported display modes, network protocols, and certain other words;
+it returns <code>false</code> for anything else.
+Specifically, Elvis will return <a href="elvisopt.html#true">true</a> for
+any of the following which are supported by Elvis' configuration:
+<table>
+<tr><th>Name</th><th>The tested feature</th></tr>
+<tr><td>"alias"</td><td><a href="elvisex.html#alias">:alias</a> command</td></tr>
+<tr><td>"array"</td><td><a href="#subscripts">subscripts</a> in expressions</td></tr>
+<tr><td>"autocmd"</td><td><a href="elvisex.html#autocmd">:autocmd</a> and related commands</td></tr>
+<tr><td>"backtick"</td><td><a href="elvisex.html#FILES">use of `<var>program</var>`</a> in ex command lines</td></tr>
+<tr><td>"browse"</td><td><a href="elvisex.html#browse">:browse</a> command</td></tr>
+<tr><td>"complete"</td><td><a href="elvisex.html#Tab">name completion</a> via the &lt;Tab&gt; key</td></tr>
+<tr><td>"equaltilde"</td><td>The <a href="elvisex.html#let">:let</a> command supports "<code>=~</code> <var>excmds</var>"
+<tr><td>"fold"</td><td><a href="elvisex.html#fold">:fold and :unfold</a> commands</td></tr>
+<tr><td>"ftp"</td><td><a href="elvisnet.html#FTP">ftp</a> network protocol</td></tr>
+<tr><td>"g"</td><td>Commands with a <a href="elvisvi.html#g">g</a> prefix</td></tr>
+<tr><td>"hex"</td><td><a href="elvisdm.html#hex">hex</a> display mode</td></tr>
+<tr><td>"hlobject"</td><td><a href="elvisopt.html#hlobject">hlobject</a> and <a href="elvisopt.html#hllayers">hllayers</a> options</td></tr>
+<tr><td>"hlsearch"</td><td><a href="elvisopt.html#hlsearch">hlsearch</a> option</td></tr>
+<tr><td>"html"</td><td><a href="elvisdm.html#html">html</a> display mode</td></tr>
+<tr><td>"http"</td><td><a href="elvisnet.html#HTTP">http</a> network protocol</td></tr>
+<tr><td>"image"</td><td><a href="elvisgui.html#x11.bgimage">background images</a> and themes (<a href="elvisgui.html#x11">X11</a> and <a href="elvisgui.html#windows">Windows</a>)</td></tr>
+<tr><td>"incsearch"</td><td><a href="elvisopt.html#incsearch">incsearch</a> option</td></tr>
+<tr><td>"listchars"</td><td>The <a href="elvisopt.html#listchars">listchars</a> option.</td></tr>
+<tr><td>"lpr"</td><td><a href="elvisex.html#lpr">:lpr</a> command and <a href="elvisopt.html#LPR">printing options</a></td></tr>
+<tr><td>"make"</td><td><a href="elvisex.html#make">:make</a> and related commands</td></tr>
+<tr><td>"man"</td><td><a href="elvisdm.html#man">man</a> display mode</td></tr>
+<tr><td>"mapdb"</td><td>map debugger, via <a href="elvisopt.html#maptrace">maptrace</a> and <a href="elvisopt.html#maplog">maplog</a> options.</td></tr>
+<tr><td>"mkexrc"</td><td><a href="elvisex.html#mkexrc">:mkexrc</a> command</td></tr>
+<tr><td>"normal"</td><td>Vim's <a href="elvisex.html#normal">:normal</a> command</td></tr>
+<tr><td>"proto"</td><td><a href="elvistip.html#PROTO">add new protocols</a> via aliases</td></tr>
+<tr><td>"ram"</td><td><a href="elvistip.html#FEATURE_RAM">-f ram</a> command-line option (mostly for MS-DOS)</td></tr>
+<tr><td>"region"</td><td><a href="elvisex.html#region">:region</a> and related commands</td></tr>
+<tr><td>"showtag"</td><td>The "tag" keyword in the <a href="elvisopt.html#show">show</a> option</td></tr>
+<tr><td>"smartargs"</td><td><a href="elvisopt.html#smartargs">smartargs</a> option</td></tr>
+<tr><td>"spell"</td><td><a href="elvistip.html#SPELL">spell checker</a></td></tr>
+<tr><td>"split"</td><td><a href="elvisex.html#split">:split</a> and related commands</td></tr>
+<tr><td>"stdin"</td><td>Use Elvis as filter by giving "-" as file name</td></tr>
+<tr><td>"syntax"</td><td><a href="elvisdm.html#syntax">syntax</a> display mode</td></tr>
+<tr><td>"tex"</td><td><a href="elvisdm.html#tex">tex</a> display mode</td></tr>
+<tr><td>"textobj"</td><td><a href="elvisvi.html#textobject">text objects</a> for use with vi operators</td></tr>
+<tr><td>"v"</td><td>The <a href="elvisvi.html#v">v</a>, <a href="elvisvi.html#V">V</a>, and <a href="elvisvi.html#^V">^V</a> commands</td></tr>
+<tr><td>"xft"</td><td>antialiased fonts (<a href="elvisgui.html#x11">X11</a> only)</td></tr>
+</table>
+
+<p>As new features are added to future versions of Elvis,
+I expect to add them to <code>feature()</code>'s list.
+
+<dt><a name="fileeol">fileeol</a>(<var>filename</var>)
+<dd>Try to guess the type of newlines used in the named file.
+The list of possible return values is the same as the legal values for
+the <a href="elvisopt.html#readeol">readeol</a> option.
+If <var>filename</var> is an <strong>http:</strong> or <strong>ftp:</strong>
+URL, then this function always returns "binary" because it would take too long
+to do the real check.
+If <var>filename</var> is the name of a nonexistent or unreadable file, then
+it returns "text".
+Otherwise, it reads the first few hundred bytes of the file and looks for
+any type of newlines, or for NUL bytes suggesting it is a "binary" file.
+
+<dt><a name="folded">folded</a>()
+<br>folded(<var>number</var>)
+<br>folded(<var>bufname</var>, <var>number</var>)
+<br><a name="unfolded">unfolded</a>()
+<br>unfolded(<var>number</var>)
+<br>unfolded(<var>bufname</var>, <var>number</var>)
+<dd>Return the name of the folded or unfolded "FOLD" region
+containing a given line, or "" if it has never been folded.
+When invoked with no arguments, it checks the current line.
+When invoked with one argument, it checks that line number in the current
+buffer.
+Otherwise it checks the given line number within the given buffer.
+
+<dt><a name="getcwd">getcwd</a>()
+<dd>Return the name of the current working directory.
+
+<dt><a name="hex">hex</a>(<var>number</var>)
+<dd>Convert <var>number</var> to hexadecimal, and
+return it as string of hex digits preceded by "0x".
+
+<dt><a name="htmlsafe">htmlsafe</a>(<var>string</var>)
+<dd>Convert all characters of <var>string</var> from ASCII to HTML.
+Most characters are unaffected by this;
+the only characters that are changed are "&lt;", "&gt;", and "&amp;".
+
+<dt><a name="isnumber">isnumber</a>(<var>string</var>)
+<dd>Return <a href="elvisopt.html#true">true</a> if <var>string</var>
+looks like a number,
+or <a href="elvisopt.html#false">false</a> otherwise.
+Some of the expression operators behave differently depending on whether
+their arguments are numbers or strings;
+this function can be used to predict which behavior the operator will employ.
+
+<dt><a name="knownsyntax">knownsyntax</a>(<var>filename</var>)
+<dd>Attempt to lookup the <var>filename</var> extension in the
+<a href="elvisdm.html#elvis.syn">elvis.syn</a> file.
+If found, return the name of the language;
+otherwise, return an empty string.
+
+<dt><a name="line">line</a>()
+<br>line(<var>number</var>)
+<br>line(<var>bufname</var>, <var>number</var>)
+<dd>Return the contents of a given line.
+If invoked with no arguments or with "" as the only argument,
+it returns the contents of the current line of the current buffer.
+If invoked with one argument, it assumes the argument is a line number in
+the current buffer, and it returns that line's contents.
+If invoked with two arguments, it returns the contents of the given line of
+the given buffer.
+For invalid input, it fails.
+
+<dt><a name="list">list</a>(<var>string</var>)
+<dd>Return a version of <var>string</var> in which any control characters
+have been replaced with caret-letter sequences.
+Note that unlike the <a href="elvisex.html#list">:list</a> command and
+<a href="elvisopt.html#list">list</a> option, this function does <em>not</em> append
+a $ to mark the end of the line
+
+<dt><a name="newbuffer">newbuffer</a>()
+<br>newbuffer(<var>bufname</var>)
+<dd>This function can have the <strong>side-effect</strong> of creating a buffer.
+If invoked with the name of an existing buffer, then it will leave that
+buffer unchanged and return "".
+If invoked with the name of a non-existing buffer, it will create that
+buffer and return its name.
+If invoked without any arguments, or with "" as the only argument,
+it will create a buffer with a name of the form "Elvis untitled #<var>n</var>"
+where <var>n</var> is an integer chosen to make the name unique.
+
+<p>Note that the buffer is not necessarily associated with any file.
+In particular, this function does not load a file's contents into the buffer.
+
+<dt><a name="octal">octal</a>(<var>number</var>)
+<dd>Convert <var>number</var> to octal, and
+return it as string of octal digits preceded by "0".
+
+<dt><a name="quote">quote</a>(<var>list</var>, <var>str</var>)
+<dd>Return a version of <var>str</var> which has backslashes inserted before
+any existing backslash, or before any character which appears in the
+<var>list</var> argument.
+For example...
+<pre>
+	:set t="/* regexp */"
+	:set r="*^$/.["
+	:eval /(quote(r, t))/
+</pre>
+... will search for the next instance of the literal string
+"/*&nbsp;regexp&nbsp;*/".
+The '/' and '*' characters won't be treated as metacharacters in the regular
+expression, because the quote() function inserts backslashes before them.
+
+<p>Quite often, the character list will simply be the
+<a href="elvisopt.html#magicchar">magicchar</a> option.
+This works perfectly for quoting plain text to be used in a
+<a href="elvisre.html">regular expression</a>,
+with the <a href="elvisopt.html#magic">magic</a> option set.
+
+<dt><a name="rand">rand</a>(<var>number</var>)
+<br>rand(<var>item ...</var>)
+<dd>This function accesses a random number generator.
+If passed a number, it will return a random integer between 1 and that number.
+Any other argument is interpreted as a comma-delimited list of values; it will
+randomly choose one item and return it.
+<pre>
+	:calc rand(6)
+	2
+	:calc rand(6)
+	5
+	:calc rand("north", "south", "east", "west")
+	north
+	:calc rand("north,south,east,west")
+	east</pre>
+<p>
+(If you want to choose from a list with some other type of delimiter,
+you can use an <a href="#subscripts">array subscript</a> of "?".)
+
+<dt><a name="shell">shell</a>(<var>program</var>)
+<dd>Run program, and return its output (i.e., the text that it writes to
+stdout).
+The final newline, if any, is removed.
+If the output is too large to fit in Elvis' evaluation buffer, then it will
+be truncated.
+Generally, it is a good idea to limit the output to a single line.
+
+<p>The following example will fetch the computer's name,
+by running the Unix "uname" program:
+<pre>
+	:let n = shell("uname -n")</pre>
+
+<dt><a name="spell">spell</a>(<var>string</var>)
+<br><a name="spelltag">spelltag</a>(<var>string</var>)
+<dd><var>String</var> is a single word.
+If it appears to be correctly spelled, then <code>spell()</code>
+or <code>spelltag()</code> returns "".
+Otherwise, it returns a space-delimited list of possible corrected spellings.
+If no corrected spellings are found, then it returns "?".
+
+<p>The <code>spelltag()</code> function looks up words via the tags dictionary,
+while <code>spell()</code> uses both the tags and natural-language dictionaries.
+These only find words that have been loaded into RAM, however.
+This includes all tags so the <code>spelltag()</code> function should work well,
+but Elvis only loads natural-language words the first time it displays
+them on the screen.
+This will often prevent <code>spell()</code> from finding the corrected word.
+You can use the <a href="elvisex.html#wordfile">:wordfile</a> command
+or <a href="elvisopt.html#spellautoload">spellautoload</a> option to load
+all of the natural-language words into RAM, so <code>spell()</code> will work
+better.
+
+<dt><a name="strlen">strlen</a>(<var>string</var>)
+<dd>Return the number of characters in <var>string</var>.
+
+<dt><a name="time">time</a>()
+<br>time(<var>filename</var>)
+<dd>When invoked without any arguments, or an empty string as an argument,
+it returns the current time.
+When given the name of a file, it returns the timestamp of that file;
+if the file doesn't exist or is invalid, then an empty string is returned.
+Time strings are always of the form
+"<var>YYYY</var>-<var>MM</var>-<var>DD</var>T<var>hh</var>:<var>mm</var>:<var>ss</var>"
+where the timezone is understood to be local time zone.
+This is an ISO-8660 compliant date format.
+Two timestamps can be compared as strings, using Elvis' normal
+<a href="#relational">relational operators</a>.
+
+<dt><a name="tolower">tolower</a>(<var>string</var>)
+<dd>Return a lowercase version of <var>string</var>.
+
+<dt><a name="toupper">toupper</a>(<var>string</var>)
+<dd>Return an uppercase version of <var>string</var>.
+
+<dt><a name="unquote">unquote</a>(<var>list</var>, <var>str</var>)
+<dd>Return a version of <var>str</var>,
+after removing backslashes before another backslash or
+any characters in <var>list</var>.
+This is the opposite of the <a href="#quote">quote()</a> function.
+
+<dt><a name="window">window</a>(<var>buffer</var>)
+<dd>Return the <a href="elvisopt.html#windowid">windowid</a> of a window
+that is currently showing <var>buffer</var>, or "" if there is no such window.
+(See also the <a href="elvisex.html#window">:window</a> command for a way to
+switch windows.)
+</dl>
+
+<h2><a name="13.3"></a><a name="subscripts"></a>13.3 Subscripts</h2>
+
+Elvis can be compiled with support for subscripts in expressions.
+To determine whether your version of Elvis supports this, you can
+check the value returned by <a href="#feature">feature("array")</a>.
+If <code>True</code> then subscripts should work.
+
+<h3>13.3.1 Extracting substrings</h3>
+
+<p>Subscripts offer a way to extract parts of a string.
+By default it divides the string into words.
+By placing index numbers in square brackets at the end of a string expression,
+you can extract the indexed words.
+<pre>
+	:let a="this is a test"
+	:calc a[1]
+	this	
+	:calc a[2 3 4]
+	is a test</pre>
+
+<p>Note that subscripts start 1, not 0 as in C.
+Positive subscripts count from the left edge of the string, and
+negative subscripts count from the right edge.
+Zero returns the number of items in the string.
+<pre>
+	:calc a[-1]
+	test
+	:calc a[0]
+	4</pre>
+
+<p>Using "?" in the subscript chooses an element randomly.
+<pre>
+	:calc a["?"]
+	is</pre>
+<p>You aren't limited to a single index number.
+You can use a space-delimited list of elements to extract.
+The ".." operator is handy for this.
+An empty list extracts an empty string.
+<pre>
+	:calc a[1..3]
+	this is a
+	:calc a[2..]
+	is a test
+	:calc a[]
+
+	:calc a[4 3 2 1]
+	test a is this
+	:calc a["?????"]
+	this a test a is
+	:calc a["?."]
+	a test</pre>
+
+<p>Although the subscripting works on space-delimited words by default,
+it can also use any single-character delimiter.
+Simply pass the delimiter inside the square brackets, before the index values.
+<pre>
+	:calc "/var/tmp/myfile"["/", 2]
+	var
+	:calc "/var/tmp/myfile"["/", -1]
+	myfile</pre>
+
+<p>Notice that the text before the first instance of the delimiter
+(a zero-length string in the above examples) counts as item #1, so
+"var" is actually the second item in that string.
+
+<p>You can index by individual characters.
+This is denoted by giving an empty string as the delimiter.
+<pre>
+	:calc a["",1..6]
+	This i
+	:calc a["",7..]
+	s a test</pre>
+
+<h3>13.3.2 Changing substrings</h3>
+
+<p>The <a href="elvisex.html#let">:let</a> command also allows you to use
+subscripts to change the value of <em>part</em> of an option's value.
+<pre>
+	:let a[2] = "has been"
+	:calc a
+	this has been a test
+	:calc a[0]
+	5</pre>
+
+<p>There are some limitations on what subscripts you can use for assignments.
+You can't change the length by assigning to subscript [0] for example.
+The replaced text must be contiguous, not scattered around the string.
+You also can't change an element which doesn't exist yet.
+<pre>
+	:let a[0] = 3
+	invalid subscript for assignment
+	:let a[2 4] = "foo"
+	invalid subscript for assignment
+	:let a[6] = "dude!"
+	invalid subscript for assignment</pre>
+
+<p>Remember, this may look like you're using arrays but it is really just
+string processing.
+If you want to add a new item to a string, use a concatenation operator.
+<pre>
+	:let a = a "dude!"
+	:calc a
+	this has been a test dude!
+	:calc a[0]
+	6
+	:let a["", 3 4] = "at"
+	:calc a
+	that has been a test dude!</pre>
+
+<h3>13.3.3 <a name="fields">Field names as subscripts</a></h3>
+
+<p>The subscript string can be a field name instead of a list of subscript
+numbers.
+Field names can be any alphanumeric strings that start with a letter.
+When you do this, Elvis will look for a comma-delimited item which begins
+with the field name followed by a ':' character.
+The remainder of the item is then used as the value.
+<pre>
+	:let n = "first:1,last:2"
+	:calc n["first"]
+	1
+	:let n["first"] = "Steve"
+	:calc n
+	first:Steve,last:2</pre>
+
+<p>For field names that are constant strings, you can also use <code>.</code><var>name</var>
+notation.
+<pre>
+	:calc n.first
+	Steve
+	:let n.last = "Kirkendall"
+	:calc n
+	first:Steve,last:Kirkendall</pre>
+
+<p>In a command of the form
+"<code>:let </code><var>option.name</var><code>=</code><var>value</var>",
+if the <var>option</var> doesn't already contain a field with the given
+<var>name</var>, then Elvis will append it.
+
+<p>It is also worth noting that the
+<a href="elvisopt.html#listchars">listchars</a> option uses this format.
+Consequently, you can use named subscripts to access its fields.
+<pre>
+	:let listchars.esc="<Esc>"</pre>
+
+<h3>13.3.4 Subscript idioms</h3>
+
+<p>There are some tricks you can use to simplify the way you specify a delimiter.
+First, since any empty expression returns an empty string, you can leave off
+the "" (but retain the comma) when indexing by characters.
+<pre>
+	:calc a[,1..4]
+	that</pre>
+
+<p>Next, many punctuation characters are used as arithmetic operators, and
+many arithmetic operators will concatenate strings with a copy of the operator
+between them, if either of their arguments isn't a number.
+This means that you can sometimes avoid quoting operators.
+<pre>
+	:calc "*-courier-medium-r-*-18-*"[-,-2]
+	18
+	:calc "Portland|Oregon|97201"[|,1]
+	Portland</pre>
+
+<p>Some other operators do interesting and useful things.
+For example, the <code>/</code> operator concatenates strings using the
+operating system's directory delimiter, and the <code>:</code> operator
+concatenates them with the path delimiter.
+This means that unquoted <code>/</code> and <code>:</code> can be used
+to pick apart file names and directory paths in an OS-independent manner.
+<pre>
+	:calc filename
+	C:\tmp\filename.txt
+	:calc filename[/,-1]
+	filename.txt
+	:calc $PATH
+	C:\windows;C:\windows\command;C:\msdev\bin
+	:calc $PATH[:,1]
+	C:\windows</pre>
+
+<p>Here is an <em>incomplete</em> table summarizing some of these idioms:
+<pre graphic>
+      .--------.-------------------------------------------.
+      | Idiom  | What it returns                           |
+      |--------|-------------------------------------------|
+      | a[i]   | The i'th word                             |
+      | a[,i]  | The i'th character                        |
+      | a[,,i] | The i'th comma-delimited item             |
+      | a[/,i] | The i'th part of a filename               |
+      | a[:,i] | The i'th element in a directory path list |
+      ^--------^-------------------------------------------^</pre>
+
+<h3><a name="sets">13.3.5 Sets</a></h3>
+If <a href="#feature">feature("array")</a> returns <code>True</code>,
+then Elvis also supports sets.
+Sets are represented as comma-delimited lists of <var>name</var>s or
+<var>name</var>:<var>value</var> pairs.
+<p>
+This format is very similar to the way Elvis uses field names as subscripts,
+and that's why sets are supported only when arrays are supported.
+This similarity means you can test whether a given element is in a set
+by using an expression of the form <var>set</var>.<var>fieldname</var>,
+like this:
+<pre>
+	:let a="red:255,green:150,blue:0,allocated,private"
+	:calc a.red
+	255
+	:calc a.alpha
+
+	:calc a.allocated
+	True</pre>
+<p>Note that elements that are present but have no value will return
+the value of the <a href="elvisopt.html#true">true</a> option, but missing
+elements will simply return ""
+(not <a href="elvisopt.html#false">false</a>, although "" is treated as a false
+value in Boolean contexts such as an <a href="elvisex.html#if">:if</a> command).
+Elements with values will return their value.
+
+<p>The <strong>&amp;</strong>, <strong>|</strong>, and <strong>^</strong>
+operators will perform set intersection, union, and difference, respectively,
+when passed non-numeric arguments.
+Specifically...
+<dl>
+<dt><var>leftset</var> &amp; <var>rightset</var>
+<dd>
+The return value is the <strong>intersection</strong> of the sets.
+The <var>value</var> components from <var>rightset</var> are kept.
+<pre>
+	:calc 2345 &amp; 0xff
+	41
+	:calc "a,b,c" &amp; "a,c,e"
+	a,c
+	:calc "foo:1,bar:true" &amp; "foo"
+	foo
+	:calc "foo" &amp; "foo:1,bar:true"
+	foo:1</pre>
+
+<dt><var>leftset</var> ^ <var>rightset</var>
+<dd>
+The return value is the <strong>difference</strong> of the sets.
+In other words, the result consists of any elements from <var>leftset</var>
+which don't also appear in <var>rightset</var>.
+The <var>value</var> components from <var>leftset</var> are kept.
+<pre>
+	:calc "a,b,c" ^ "b"
+	a,c
+	:calc "a:1,b:2,c:3" ^ "b:don't care"
+	a:1,c:3
+	:set listchars?
+	listchars=trail:_,tab:&gt;-
+	:let listchars ^= "trail"
+	:set listchars?
+	listchars=tab:&gt;-</pre>
+<dt><var>leftset</var> | <var>rightset</var>
+<dd>
+The return value is the <strong>union</strong> of the sets.
+For <var>name</var>:<var>value</var> pairs that appear in both arguments,
+the <var>value</var> components from <var>rightset</var> are kept.
+<pre>
+	:calc "a,b,c" | "a,c,e"
+	a,b,c,e
+	:calc "a:1,b:2,c:3" | "b:two,d:four"
+	a:1,b:two,c:3,d:four
+	:calc listchars?
+	listchars=tab:&gt;-
+	:let listchars |= "trail:_"
+	:calc listchars?
+	listchars=tab:&gt;-,trail:_</pre>
+</dl>
+Notice that set operators can be handy for manipulating the
+<a href="elvisopt.html#listchars">listchars</a> option.
+They can also be useful if you pack multiple fields into the
+<a href="elvisopt.html#bb">bb</a> and <a href="elvisopt.html#ww">ww</a>
+options.
+
+<p>If both argument sets are sorted, then the resulting set from any of
+the operators will also be sorted.
+The <a href="elvistip.html#theme">:theme</a> alias uses the following code
+to build a sorted list of available themes.
+Since the set of themes starts out empty (which is inherently sorted),
+and we only add single elements at a time (which are also inherently sorted),
+this means the list of themes will be sorted.
+<pre>
+	local a="" i d f
+	for i (1..elvispath[:,0])
+	do {
+	  let d=elvispath[:,i]
+	  for f in (d/"themes"/"*.ex")
+	  do {
+	    if basename(f) != "*"
+	    then let a |= basename(f)
+	  }
+	}
+	if a == ""
+	then error no themes
+	else calc a</pre>
+
+<p>The real magic happens in the "<code>:let a |= basename(f)</code>" command,
+which adds an item to the set, while avoiding duplicates and keeping the set
+sorted.
+
+<h2><a name="13.4"></a><a name="SIMPLER"></a>13.4 Simpler Syntax</h2>
+In comparison to the <a href="#13.1">normal</a> expression syntax,
+the simpler syntax makes it easier to enter literal strings because
+outside of parentheses the only special characters are the backslash,
+dollar sign, and parentheses.
+(These may be escaped by preceding them with a backslash.)
+Inside parentheses, the normal syntax is used.
+
+<p>The <a href="elvisex.html#eval">:eval</a> command uses the simpler syntax,
+and the <a href="elvisex.html#echo">:echo</a> command displays its arguments.
+These commands can be used together to experiment with the simpler syntax,
+the same way we used <a href="elvisex.html#calculate">:calculate</a> to experiment with
+the normal syntax.
+<pre>
+   :eval echo TERM=$TERM
+   TERM=xterm
+   :eval echo home=(home)
+   home=/home/steve
+   :eval echo 2+2=(2+2)
+   2+2=4
+</pre>
+
+<h2><a name="13.5"></a>13.5 EX Commands Which Use Expressions</h2>
+The <a href="elvisex.html#calculate">:calculate</a> command evaluates its
+argument using the normal syntax, and displays the result.
+
+<p>The <a href="elvisex.html#if">:if</a> command evaluates its argument using
+the normal syntax.
+If the resulting value is any Boolean <strong>true</strong> value then a
+flag is set; otherwise the flag is reset.
+After that, you can use <a href="elvisex.html#then">:then</a> and
+<a href="elvisex.html#else">:else</a> commands to conditionally execute some
+commands, depending on the state of that flag.
+
+<p>The <a href="elvisex.html#while">:while</a> command defines the expression
+that is to be tested by a later <a href="elvisex.html#do">:do</a> command.
+The <a href="elvisex.html#for">:for</a> command, on the other hand,
+can evaluate its argument immediately and use the result as a list of values
+to be used by <a href="elvisex.html#do">:do</a>.
+
+<p>The <a href="elvisex.html#eval">:eval</a> command evaluates its arguments
+using the simpler syntax.
+The resulting string value is then interpreted as an EX command line.
+This gives you a way to use the expression evaluator with commands which
+otherwise wouldn't evaluate expressions.
+
+<p>The <a href="elvisex.html#let">:let</a> command allows you to change the
+values of options.
+Its syntax is "<code>:let <var>option</var>=<var>expression</var></code>",
+where <var>expression</var> is any expression using the normal syntax.
+You can use this to change the value of any unlocked option,
+similarly to <a href="elvisex.html#set">:set.</a>
+<pre>
+   :set i=14
+   :calc i
+   14
+   :let i=i+1
+   :set i?
+   i=15
+   :eval set i=(i*2)
+   :calc i
+   30
+
+   :let elvispath="."
+   :let list="false"
+   :let sidescroll=0x10
+</pre>
+
+<h2><a name="13.6"></a>13.6 VI Commands Which Use Expressions</h2>
+There is only one way to use expressions in a visual command:
+Move the cursor to the start of some expression in your edit buffer,
+hit the lowercase <kbd>v</kbd> key, move to the other end, and
+then hit the <kbd>=</kbd> key.
+Elvis will then evaluate the highlighted expression, and replace the original
+expression with the result.
+
+<p>Note that the <a href="elvisvi.html#=">=</a> operator only works this way
+when used with the <a href="elvisvi.html#v">v</a> command for marking characters.
+If you visibly mark lines, or use the traditional <kbd>=</kbd><var>movement</var>
+syntax, then Elvis will send the selected lines though the external filter
+program named in the <a href="elvisopt.html#equalprg">equalprg</a> option.
+
+<p>The <a href="elvisvi.html#hash">#</a> command doesn't use expressions, but
+it does perform some simple math.
+
+<h2><a name="13.7"></a>13.7 Other Uses of Expressions</h2>
+
+<h3>13.6.1 Messages</h3>
+All of Elvis' warning and error messages are actually expressions,
+using the simpler syntax.
+When outputting a message, Elvis may supply other parameters which are
+accessible as <strong>$1</strong> through <strong>$9.</strong>
+See the <a href="elvismsg.html">Messages</a> chapter for a longer description
+of how Elvis handles messages.
+
+<h3>13.6.2 Options</h3>
+The <a href="elvisopt.html#ccprg">ccprg</a> and
+<a href="elvisopt.html#makeprg">makeprg</a> options' values are expressions,
+using the simpler syntax.
+When evaluating these expressions, <strong>$1</strong> is replaced by
+whatever arguments are supplied on the ex command line, and <strong>$2</strong> is replaced by the
+the name of the file being edited.
+
+<p>Similarly, the <a href="elvisopt.html#keywordprg">keywordprg</a> option
+uses the simpler syntax with
+<strong>$1</strong> being replaced by the name of a tag to be looked up, and
+<strong>$2</strong> by the current file name.
+
+<p>The <a href="elvisopt.html#tagprg">tagprg</a> option, if set, replaces $1
+with the arguments of the <a href="elvisex.html#tag">:tag</a> command --
+generally the name of the tag to be looked up, although the user is free to
+type in anything.
+
+<h3>13.6.3 File Names</h3>
+File names are evaluated as expressions (using the simpler syntax),
+primarily as a means for expanding environment variable names.
+This is done prior to wildcard expansion.
+
+<p>The full power of the expression evaluator is available; you can use
+it to do more than just expand environment variable names.
+For example, you could store the name of a file in one of the user
+options, and then later use that option name in parentheses wherever
+a filename was expected.
+<pre>
+   :set f=myfile.txt
+   :w (f)
+   wrote myfile.txt, ...
+</pre>
+
+<p>If you use this trick, remember that it only works when Elvis is expecting
+a file name.
+It won't work when invoking external programs, because Elvis doesn't know
+which program arguments are supposed to be file names.
+Elvis always passes program arguments literally.
+
+<p>Recall that when a backslash character is followed by an alphanumeric
+character, both the backslash and the alphanumeric character become part
+of the resulting value.
+This was done mostly for the benefit of file names.
+If the backslash was always dropped
+then MS-DOS users would have a heck of a time entering pathnames of files!
+By making the backslash a little smarter, we avoid that problem.
+<pre>
+   :eval echo c:\tmp \(notice the backslashes\)
+   c:\tmp (notice the backslashes)</pre>
+
+<p>To simplify the task of writing portable ex scripts,
+the behavior of the <strong>/</strong> operator has been extended.
+When one or both of its arguments are strings, it concatenates them as
+a directory name and a file name, yielding a full pathname.
+
+<h3>13.6.4 Buffer names</h3>
+Ex commands allow you to specify a buffer name by putting its name in
+parentheses.
+You can have Elvis compute a buffer name by putting '=' and an expression
+inside parentheses.
+For example, if option <a href="elvisopt.html#x">x</a> is set to "foo"
+then "<code>:(=x)%p</code>" is equivalent to "<code>:(foo)%p</code>".
+Both commands would print the contents of the "foo" buffer.
+
+<p>This feature was added because using <code>:eval</code> to evaluate buffer
+names was cumbersome.
+The parentheses have special meaning in both expressions and ex addresses,
+and <code>:eval</code> affects parentheses and backslashes throughout the line,
+not just in the buffer name.
+The following example demonstrates the two techniques, deleting any backspace
+sequences in the buffer whose name is stored in option <strong>x</strong>.
+Clearly, the "<code>:(=x)</code>" version is smaller and easier to understand.
+<pre>
+   :eval \((x)\)%s/.\\b\\\(.\\\)/\\1/g
+   :(=x)%s/.\b\(.\)/\1/g</pre>
+
+</body></html>

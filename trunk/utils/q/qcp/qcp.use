@@ -1,0 +1,15 @@
+%C  [device] SEnd [options]* src_file[,dst_file] ... [x=index_file] ..
+%C  [device] REceive [options]* [-f forced_filename | -p prefix]
+Options:
+ -f filename     Force the received file to have this filename
+ -l logfile      Log file transmission / receptions to this logfile
+ -m              Supress making directories for received files
+ -n              Receive only files newer than existing files
+ -p prefix       Place this file or path prefix on received filenames
+ -q              Be quiet during file transfer
+ -r              Relaxed timing, double timeouts and quadruple retry counts
+ -s packet_size  Specify an alternate packet_size (default: 2048 bytes)
+ -t              Stamp today's date on received files
+ -u              Unlink existing files that lack write permission
+ -V, -v          Display error status while transferring files
+ x=index_file    A list of filenames to send.

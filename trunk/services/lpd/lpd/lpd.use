@@ -1,0 +1,16 @@
+
+lpd - line printer spooler daemon
+
+lpd [-l][-n] [port#]
+
+Options:
+ -l	The -l flag causes lpd to log valid requests received from the
+ 	network. This can be useful for debugging purposes.
+
+ -n	No checking of job host.  Allows anyone on the network to print,
+  	without validating the host.
+
+ port#	The Internet port number used to rendezvous with other processes
+ 	is normally obtained with getservbyname(3) but can be changed
+ 	with the port# argument.
+

@@ -1,0 +1,8 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" install="/usr/bin/" file="nto/*/*/mkrom" pinfo="$"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

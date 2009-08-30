@@ -1,0 +1,44 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Version 1.15.92 sent verbose output to the archive when invoked
+# as  tar cvf - foo.txt > foo.tar
+# Reported by Mike Frysinger <vapier@gentoo.org>
+# References: <200610131946.20530.vapier@gentoo.org>
+
+AT_SETUP([tar cvf -])
+AT_KEYWORDS([stdout verbose])
+
+AT_TAR_CHECK([
+genfile --file file --length 10240
+echo Creating the archive
+tar cvf - file > archive
+echo Testing the archive
+tar tf archive
+],
+[0],
+[Creating the archive
+Testing the archive
+file
+],
+[file
+])
+
+AT_CLEANUP

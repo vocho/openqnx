@@ -1,0 +1,292 @@
+<html><head>
+<title>Elvis-2.2_0 and the Internet</title>
+</head><body>
+
+<h1>15. THE INTERNET</h1>
+
+This chapter describes Elvis' ability to read and write data via the Internet.
+The topics discussed here are:
+<menu>
+<li><a href="#URL">15.1 URLs</a>
+<li><a href="#FTP">15.2 FTP</a>
+<li><a href="#elvis.ftp">15.2.1 elvis.ftp or ~/.netrc</a>
+<li><a href="#HTTP">15.3 HTTP</a>
+<li><a href="#PROXY">15.3.1 Proxy Servers</a>
+<li><a href="#elvis.net">15.3.2 elvis.net</a>
+</menu>
+
+<p>In addition, you should probably read the
+<a href="elvistip.html#URLS">Information via the Web</a> and 
+<a href="elvistip.html#WEB">Using Elvis as a Web browser</a>
+sections of the <a href="elvistip.html">Tips</a> chapter.
+You may also wish to read the <a href="elvisdm.html#html">"html"</a>
+section of the <a href="elvisdm.html">Display Modes</a> chapter.
+
+<h1><a name="URL"></a>15.1 URLs</h1>
+
+Wherever the traditional vi expects a filename,
+Elvis expects a Universal Resource Locator, or URL.
+The names of local files are one type of URL; other types give the names
+of resources available from servers on other machines, accessible via the
+Internet.
+
+<p>URLs have the form <code>protocol://server.domain.name:port/directory/file</code>
+where the components of the URL have the following meanings:
+<dl>
+<dt>protocol
+<dd>This tells Elvis how to read the URL.
+It can be one of the following:
+	<ul>
+	<li><strong>file:</strong> for local files.
+	<li><strong>buffer:</strong> for already-loaded edit buffers. 
+	<li><strong>http:</strong> for the <a href="#HTTP">HTTP</a> Internet protocol
+	<li><strong>ftp:</strong> for the <a href="#FTP">FTP</a> Internet protocol
+	<li>Anything else isn't directly supported by Elvis, but may be
+		accessible via a <a href="elvistip.html#PROTO">user defined
+		protocol</a> or a <a href="#PROXY">proxy server.</a>
+	</ul>
+<dt>server.domain.name
+<dd>For the <strong>http:</strong> and <strong>ftp:</strong> protocols, this
+tells Elvis which machine to contact on the Internet.
+<dt>port
+<dd>Both <strong>http:</strong> and <strong>ftp:</strong> have default port
+numbers (80 and 21 respectively), but if a given machine's server is
+listening at a non-standard port, you would give the port number here.
+<dt>directory
+<dd>This tells the server which directory contains the file.
+<dt>file
+<dd>This is the file to be loaded.
+</dl>
+
+<p>You can append a "#<var>name</var>" to the end of the URL.
+After loading the URL, Elvis searches through its text for a
+&lt;a name=<var>name</var>&gt; tag -- even if the file isn't an HTML file.
+
+<p>You can also append a "?<var>expression</var>" to the end of an URL.
+The expression's meaning depends on the protocol.
+For "file:" and "buffer:", it is used as an ex line address
+(usually a line number or a regular expression), and the cursor will be moved
+to that line.
+This is used by the <a href="elvisex.html#browse">:browse</a> command.
+For "http:", it is passed to the server and usually interpreted by a program
+residing there.
+For other protocols it has no meaning, and should not be used.
+
+<p>While in the <a href="elvisdm.html#html">"html" display mode,</a>
+tag names are assumed to be URLs too.
+However, if a tag name lacks the protocol, site, port, or directory name
+then it inherits those properties from the current document.
+This is true <em>only</em> for tags, and <em>only</em> if you're in the
+"html" display mode.
+For example, if you're viewing "ftp://ftp.cs.pdx.edu/pub/elvis/README.html",
+and then give the command "<code>:ta Announce.21d</code>",
+then Elvis will load the URL "ftp://ftp.cs.pdx.edu/pub/elvis/Announce.21d".
+
+<h1><a name="FTP"></a>15.2 FTP</h1>
+
+The name "FTP" stands for "File Transfer Protocol".
+It is a robust and versatile protocol for transferring data between
+different types of computers over the Internet, providing support for
+various formats or text or paged data.
+
+<p>Elvis always uses FTP's non-paged binary data format.
+Many files require this, and most other files will can be converted manually
+later if necessary.
+
+<p>If possible, when Elvis is downloading a file via FTP it will display the
+file's size along with the number of bytes downloaded so far, so you can
+gauge how much longer the download will take.
+However, not all FTP servers support the "SIZE" command that Elvis uses to
+learn the file's size, so sometimes Elvis can't display the file's size
+while downloading.
+Also, Elvis never displays the size of a directory while downloading.
+
+<p>Elvis converts FTP directory listings into HTML documents.
+For each file or subdirectory, Elvis constructs a hypertext link from the
+directory to the file/subdirectory, so you can browse through an FTP
+file system using Elvis' "html" display mode.
+
+<p>In addition to reading, Elvis allows you to write via FTP.
+You can even append to a remote file via FTP, with a command such as...
+<pre>
+    :w &gt;&gt;ftp://ftp.somesite.com/incoming/filename</pre>
+
+<p>Unfortunately, the FTP protocol doesn't have a well-defined means for
+testing the attributes of a file.
+I tried to make Elvis clever enough to infer the file type from the limited
+information that the FTP server can provide, but in some cases it may fail.
+
+<h2><a name="elvis.ftp"></a>15.2.1 elvis.ftp or ~/.netrc</h2>
+
+When using the World Wide Web, FTP accesses are normally anonymous.
+This allows you to read public files, which is all that a Web browser is
+expected to do anyway.
+On some sites, anonymous FTP may also allow you to write into a directory
+named "/incoming" but Web browsers don't use that facility.
+
+<p>Since Elvis is an editor (not merely a browser),
+it has different requirements.
+You may wish to fetch a private file from your own account at some FTP site,
+modify it, and write it back again.
+You can't do that with anonymous FTP; Elvis must therefore support
+user-specific FTP in addition to anonymous FTP.
+
+<p>To remain compatible with the Web, Elvis normally uses anonymous FTP.
+If you want to access an FTP server using your own account,
+Elvis requires you to give a directory name which begins with a "~".
+For example, "ftp://localhost/pub/myfile" refers to "pub/myfile" in the
+anonymous directory hierarchy,
+but "ftp://localhost/~/myfile" refers to "myfile" in your home directory
+using your own account's privileges.
+You can also put a user name after the tilde to access some other user's
+account, as in  "ftp://localhost/~bob/bobsfile".
+
+<p>Elvis doesn't prompt for your password when you access an FTP site using
+a non-anonymous account, though.
+Instead, it searches for account information in the ".netrc" file in your
+home directory, or if that doesn't exist then it searches for "elvis.ftp"
+anywhere in your <a href="elvisopt.html#elvispath">elvispath</a>.
+Regardless of the name, the file has the exact same format.
+
+<p>The file is divided into words.
+Some of these are keywords; others are data associated with the preceding
+keywords.
+Line breaks are no more significant than any other whitespace, but for the
+sake of readability it is a good idea to keep all data for a particular FTP
+site on a single line.
+To describe multiple accounts on a single FTP site, I suggest you put each
+account on a separate line.
+
+<p>A typical line will have a format like this...
+<pre>
+    machine <var>server.domain.name</var> login <var>yourlogin</var> password <var>yourpass</var>
+</pre>
+...where <var>server.domain.name</var> is the name of an FTP server,
+<var>yourlogin</var> is your login name there, and
+<var>yourpass</var> is your unencrypted password.
+
+<p><strong>Warning!</strong>
+Because this file contains unencrypted passwords,
+you must be very careful to make this file unreadable by other users.
+
+<p>For more information about the ~/.netrc file, look in the Unix manual at
+the <strong>ftp</strong>(1) and <strong>netrc</strong>(5) man-pages.
+Elvis' use of the ~/.netrc file is intended to be compatible with ftp's use
+of that file.
+
+<p>The first entry for a given FTP site is assumed to be your own account;
+it is used for accessing URLs which begin with a tilde but have no user name.
+For other accounts (with the user name after the tilde), Elvis looks for the
+first entry in which the machine and user fields both match the values from
+the URL.
+This is a slight extension of ~/.netrc's traditional meaning.
+<h1><a name="HTTP"></a>15.3 HTTP</h1>
+
+The name "HTTP" stands for "HyperText Transfer Protocol".
+It is a light-weight protocol which is used mostly for fetching Web pages.
+"Light-weight" means that it handles small transfers efficiently, with very
+little overhead for initialization.
+
+<p>Elvis supports HTTP.
+In fact, Elvis requires you to configure HTTP support if you want FTP support;
+you can't have FTP without HTTP.
+
+<p>Elvis doesn't support authentication or security.
+Authentication would embed your user name and password into each request
+you make;
+this would be useful for accessing subscription sites for things like stock
+market information, or an online encyclopedia.
+Security would encrypt each request; this would be useful when the request
+contains sensitive information such as your credit card number.
+Since Elvis doesn't support these features, it can't replace a real Web browser.
+
+<p>HTTP is a read-only protocol.
+Consequently, you can't write to an "http:" URL.
+
+<h2><a name="PROXY"></a>15.3.1 Proxy Server</h2>
+
+A proxy server is an HTTP server which allows you to send it a request for 
+an URL which resides on a totally separate system.
+There are two reasons why you might want to do this.
+
+<p>The first reason is to get around a firewall.
+For security reasons, many Local Area Networks are configured to severely
+restrict the flow of data between the LAN and the Internet.
+This prevents you from accessing an Internet site directly.
+A proxy server may straddle that firewall, so it can receive requests from
+computers on the LAN, and send requests to Internet sites.
+
+<p>The second reason is that the URL you send to an HTTP proxy doesn't
+necessarily have to be an "http:" URL.
+It could use Gopher, WAIS, or whatever.
+Elvis can thus use its built-in HTTP support, and the services of an HTTP
+proxy, to support any protocol which the proxy supports.
+
+<h2><a name="elvis.net"></a>15.3.2 elvis.net</h2>
+
+The <code>elvis.net</code> configuration file tells Elvis which requests
+must go through a proxy, and which can be sent directly.
+When a proxy is needed, it also gives the name of the proxy.
+
+<p>The file is divided into words.
+The word "direct" means that following words are domain names which
+can be accessed directly (without a proxy).
+The word "proxy" is followed by the name of an HTTP proxy server,
+and then by the names of domains which must use that proxy.
+
+<p>The domain names in this file can either be the complete names of servers
+("www.othersite.com"), or a partial name which starts with a dot
+(".othersite.com") which matches all sites whose name has the same ending.
+
+<p>When Elvis wants to read from a URL,
+it scans through the file and uses the first "proxy" or "direct" list
+which mentions the URL's domain.
+If the domain doesn't appear in any of list,
+then the last "proxy" or "direct" list is used;
+i.e., the last "proxy" or "direct" command is used as the default.
+As a simple example, if <em>all</em> requests must go through a proxy,
+then <code>elvis.net</code> would contain:
+<pre>
+    proxy www.myproxy.com</pre>
+
+<p>When Elvis is given a URL that uses any protocol
+other than "ftp:" or "http:" it searches through the <code>elvis.net</code> file
+for a proxy using the usual rules,
+except that if the URL's domain isn't mentioned in any list,
+then Elvis will use the last proxy mentioned in the file
+(even if there is a "direct" list after that).
+If there is no proxy, then Elvis gives an error message.
+For example, if you can access all sites directly,
+but also have access to a proxy which can fetch non-ftp/http URLs for you,
+then Elvis.net should look like this:
+<pre>
+    proxy www.myproxy.com
+    direct</pre>
+
+<p>As a final example, here's a file which causes all
+accesses to sites whose domain name ends with ".mylan.com" to be accessed
+directly, but all other sites accessed via a proxy.
+This is a typical set-up for a proxy which is used to reach out through a
+firewall.
+<pre>
+    direct .mylan.com
+    proxy www.myproxy.com</pre>
+
+<p>Note that all proxy accesses use the HTTP protocol,
+even if they are to FTP sites.
+This means that you can only <em>read</em> through a proxy;
+you can't write through a proxy because HTTP is a read-only protocol.
+
+<p>The proxy accesses work by sending an HTTP "GET" request to the HTTP server,
+passing it the whole URL rather than just the directory and filename.
+The server must then be clever enough to parse the URL, and fetch the requested
+document from the proper site, using the proper protocol.
+Not all servers are that smart, so don't be surprised if your closest
+server can't handle proxy requests.
+
+<p>If <code>elvis.net</code> doesn't exist, then all FTP or HTTP accesses will be
+direct, and other protocols will generate an error.
+The same behavior can also be generated by creating an <code>elvis.net</code>
+file containing only the word "direct".
+
+</body></html>

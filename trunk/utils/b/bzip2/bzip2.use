@@ -1,0 +1,21 @@
+%C 	- file compression
+
+%C [flags and input files in any order]
+options:
+ -h --help           print this message
+ -d --decompress     force decompression
+ -z --compress       force compression
+ -k --keep           keep (don't delete) input files
+ -f --force          overwrite existing output filess
+ -t --test           test compressed file integrity
+ -c --stdout         output to standard out
+ -v --verbose        be verbose (a 2nd -v gives more)
+ -s --small          use less memory (at most 2500k)
+ -1 .. -9            set block size to 100k .. 900k
+ --repetitive-fast   compress repetitive blocks faster
+ --repetitive-best   compress repetitive blocks better
+Note:
+ If invoked as `bzip2', default action is to compress.  As `bunzip2',
+ default action is to decompress.  As `bz2cat', default action is
+ to decompress to stdout.  If no file names are given, bzip2 compresses
+ or decompresses from standard input to standard output.

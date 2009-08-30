@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<module name="sendnto">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="sendnto" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+				sendnto
+			</location>
+		</component>
+		</package>
+		<package>
+		<component id="sendnto_target" generated="true">
+			<location basedir="{os}/{cpu}/o{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				sendnto
+			</location>
+		</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+	</requires>
+
+</module>

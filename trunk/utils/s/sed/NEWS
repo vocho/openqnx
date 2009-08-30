@@ -1,0 +1,33 @@
+Sed 3.02
+
+Fixed a bug in the parsing of character classes (e.g., /[[:space:]]/).
+Corrected an omission in djgpp/Makefile.am and an improper dependency
+in testsuite/Makefile.am.
+
+----------------------------------------------------------------------------
+Sed 3.01
+
+This version of sed mainly contains bug fixes and portablility
+ehancements, plus performance enhancements related to sed's handling
+of input files.  Due to excess performance penalties, I have reverted
+(relative to 3.00) to using regex.c instead of the rx package for
+regular expression handling, at the expense of losing true POSIX.2
+BRE compatability.  However, performance related to regular expression
+handling *still* needs a fair bit of work.
+
+One new feature has been added: regular expressions may be followed
+with an "I" directive ("i" was taken [the "i"nsert command]) to
+indicate that the regexp should be matched in a case-insensitive
+manner.  Also of note are a new organization to the source code,
+new documentation, and a new maintainer.
+----------------------------------------------------------------------------
+Sed 3.0
+
+This version of sed passes the new test-suite donated by
+Jason Molenda.
+
+Overall performance has been improved in the following sense: Sed 3.0
+is often slightly slower than sed 2.05.  On a few scripts, though, sed
+2.05 was so slow as to be nearly useless or to use up unreasonable
+amounts of memory.  These problems have been fixed and in such cases,
+sed 3.0 should have acceptable performance.

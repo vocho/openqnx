@@ -1,0 +1,69 @@
+/
+/ This file contains some common util routines 
+/
+
+#ifdef	VARIANT_smp
+
+#define pause .byte 0xf3,0x90
+
+/	extrn	cpunum
+
+	.macro SETXFERHANDLER, handler,reg,preserve
+		#ifdef SMP_MSGOPT 	
+		.if &preserve <> 0
+			push	&reg
+		.endif
+		movzbl 	cpunum,&reg
+		movl 	$&handler,xfer_handlers(,&reg,4)
+		.if &preserve <> 0
+			pop		&reg
+		.endif
+		#else
+		movl 	$&handler,xfer_handlers
+		#endif		
+	.endm
+	
+	.macro GETXFERHANDLER, reg
+		#ifdef SMP_MSGOPT	
+		movzbl 	cpunum,&reg
+		movl 	xfer_handlers(,&reg,4),&reg
+		#else
+		movl 	xfer_handlers,&reg
+		#endif		
+	.endm
+	
+   	//
+   	// Note that if this macro changes, you also have to change the code
+	// that implements INTR_GENFLAG_LOAD_CPUNUM in init_cpu.c.
+	//
+	.macro GETCPU, reg1, reg2
+//		&seg
+//		mov	lapicid_addr,&reg2	// LAPIC id register address
+//		mov	(&reg2),&reg2			// Read the id
+//		shr	$24,&reg2			// Id is in bits 27-24
+		xor	&reg2,&reg2
+		str	&reg1
+		shr	$3,&reg2
+		sub	$32,&reg2
+	.endm
+	
+	.macro SETCPU,	reg
+		movb	&reg,cpunum
+	.endm
+#else
+	.macro SETXFERHANDLER, handler,reg,preserve
+		movl 	$&handler,xfer_handlers
+	.endm
+	
+	.macro GETXFERHANDLER, reg
+		movl 	xfer_handlers,&reg
+	.endm
+	
+	.macro GETCPU, reg1, reg2
+	.endm
+
+	.macro SETCPU,	reg
+	.endm
+
+#endif
+

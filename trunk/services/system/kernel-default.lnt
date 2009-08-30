@@ -1,0 +1,40 @@
+//
+// FlexeLint Configuration (default policy)
+//
+//     @@@ FIXME: documentation
+//
+
+//
+// DEFINES
+//
+
+//
+// FLEXELINT FLAGS
+//
+
+//
+// FLEXELINT MISCELLANEOUS OPTIONS
+//
+
+//
+// FLEXELINT AUTHOR OPTIONS
+//
+
+//
+// FLEXELINT STRONG TYPES
+//
+
+//
+// FLEXELINT SEMANTIC OPTIONS
+//
+
+//
+// FLEXELINT INHIBITION OPTIONS
+//
+
+// global suppressions
+
+
+// miscellaneous suppressions
+
+-esym(578,index)			// permit hiding (common param name)

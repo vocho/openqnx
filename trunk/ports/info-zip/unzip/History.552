@@ -1,0 +1,215 @@
+UnZip, version 5.52, 28 February 2005
+
+Features added (or removed):
+
+5.52a (10 Dec 04):
+ - no new features
+
+5.52b (30 Dec 04):
+ - no new features
+
+5.52c (8 Jan 05):
+ - no new features
+
+5.52d (17 Jan 05):
+ - VMS: Faster I/O, both reading the archive and creating extracted data
+    files.  Disk paralysis during file allocation, when highwater marking
+    is enabled on the destination device, is gone.  [Steven Schweda (SMS)]
+ - VMS: Where the C RTL permits, with SET PROCESS /PARSE = EXTENDED,
+    command-line case is preserved, obviating quotation of upper- or
+    mixed-case options and parameters.  [SMS]
+
+5.52e (23 Jan 05):
+ - i386 ASM_CRC code crc_i386.S, win32/crc_i386.asm, win32/crc_i386.c:
+    enabled optimization for i686 by default, as pre-686 CPUs are no longer
+    widely used nowadays. (win32/crc_lcc.asm was already i686-optimized)
+    [Cosmin Truta (CT)]
+ - INSTALL, unzpriv.h: unshrinking is now enabled by default [CT]
+ - AtheOS/BeOS/Unix: do not restore SUID/SGID/Tacky bits per default; added
+    new security override option "-K" for backward compatibility, updated
+    unzip.1 man page [Johnny Lee, EG]
+
+5.52f (27 Jan 05):
+ - unzpriv.h, list.c, zipinfo.c: added recognition of additional hosts and
+    compression methods according to latest PKWARE appnote specs [SPC]
+ - AtheOS/Syllable: new port, kindly contributed by Nikolaev Ruslan [SPC]
+
+5.52g (06 Feb 05):
+ - no new features
+
+5.52h (20 Feb 05):
+ - no new features
+
+5.52i (24 Feb 05):
+ - no new features
+
+5.52j (27 Feb 05):
+ - no new features
+
+5.52 (28 Feb 05):
+ - no new features
+
+Bugs fixed:
+
+5.52a (10 Dec 04):
+ - Debian patch 001 - change __GNU__ to __GLIBC__ in unix/unxcfg.h.  This is
+    required to build under glibc-based systems not being Linux-based (like
+    the Debian GNU/kFreeBSD port, which is in preparation).  In fact,
+    everywhere the macro __GNU__ is used, __GLIBC__ should be used instead.
+    It could be made even shorter since defined(linux) || defined(__GLIBC__)
+    should be the same as simply defined(__GLIBC__).
+ - fileio.c - open_input_file(): added trailing newline to error message
+    [Debian patch 002, Santiago Vila]
+
+5.52b (30 Dec 04):
+ - README: added short note about purpose of release 5.52 [Ed Gordon]
+ - format fixes [Ed Gordon]
+
+5.52c (8 Jan 05):
+ - minor fixes [Ed Gordon]
+
+5.52d (17 Jan 05):
+ - On VMS, when an odd output byte count is incremented to the next
+    larger even value, the extra byte written is now always zero,
+    reducing random differences between original and extracted files.  [SMS]
+ - On VMS, "cannot find either fred;1 or fred;1.zip." messages have been
+    changed to show only non-fictional file names.  [SMS]
+
+
+5.52e (23 Jan 05):
+ - win32/vc6/unzip.dsw (new): replaced win32/VC6.dsp with a complete
+    Visual C++ 6.0 project to build unzip, funzip and unzipsfx, with both
+    ASM and non-ASM settings  [CT]
+ - win32: MSC project files now preserve Win32 CRLF line ends [CT]
+ - win32/crc_i386.c: compile only if ASM_CRC is defined [CT]
+ - changed strcasecmp to strncasecmp in vms/vmszip.c [SMS]
+
+5.52f (27 Jan 05):
+ - win32: for UnZip 5.5x, our tradition "distribute all text files with LF line
+    endings" remains in effect, MSC project files are plain text and get
+    distributed in UNIX LF-only format [SPC]
+ - windll/windll.rc: updated copyright year [SPC]
+ - proginfo/extra.fld: synchronized with current appnote.iz (and PKWARE's
+    appnote.txt v6.2 as of 2004-04-26) [SPC]
+ - win32/makefile.lcc: adapted to current lcc-win32 release [SPC]
+ - windll/uzexampl.c: fixed some function definition mismatches (previously
+    there were different but compatible param types used) [SPC]
+ - extract.c: fixed ucsize/csize mismatch test introduced in UnZip 5.51 and
+    corrected a follow-up extraction size bug (12 excess bytes written) for
+    encrypted stored entries [SPC]
+ - MacOS, OS2 - fixed security holes: formatted output (?printf) should not
+    use unchecked strings as format specifiers [Ulf Harnhammar]
+ - man/unzip.1, man/zipinfo.1: added explicit note on how to supply a
+    left bracket in a filename argument; clarified the scope of the -C option;
+    documented the different compressed size calculation modes for encrypted
+    entries in UnZip's and ZipInfo's listing output [Greg Roelofs, SPC]
+ - list.c, zipinfo.c: fixed ancient bug: when specifying only an exclude list,
+    all not-excluded zip archive entries should be listed [SPC]
+ - extract.c, unzpriv.h, w32.cfg, wce.cfg: added Cdecl modifier to the qsort
+    comparison function (allows use of stdcall mode in SFXWiz project) [SPC]
+ - extract.c, unzpriv.h: use LONGINT consistently for >>all<< zipfile offset
+    variables and adapt some type casts (allow handling of 4G archives on
+    systems that support 64bit file offsets) [Paul Slootman]
+ - renamed LONGINT into Z_OFF_T for better "in-code-documentation" [SPC]
+ - unzpriv.h, NEXTBYTE macro modified to allow compatibility with unsigned
+    bufsize counter incnt [Steven M. Schweda]
+ - unix/unxcfg.h: corrected Debian patch #1 by re-adding __GNU__ conditionals
+    where they appeared before [SPC]
+ - unzip.h, win32/decs.h, win32/struct.h: encapsulated declarations as
+    extern "C" for C++ compilation mode [SPC]
+ - Win32 port: integrated deferred NTSD handling for directories in the
+    generic dir attributes setting functionality [SPC]
+ - Win32: synchronized new MSVC6 project files with master Makefile (removed
+    unused modules and link libs, SFX opt for size, enable DBCS) [SPC]
+ - BeOS: synchronized code with Unix port to support reentrancy [SPC]
+ - All but TOPS20, VMS, WinCE: added length check to externally
+    supplied argument in do_wild() [SPC]
+
+5.52g (06 Feb 05):
+ - VMS (fileio.c - open_infile()): corrected VMS specific open-args, patch
+    was accidentally left out in 5.52f [SMS, SPC]
+ - win32/w32cfg.h: define Cdecl as empty macro for Watcom C [P. Kienitz, SPC]
+ - win32/win32.c: updated OS-system message in version() [SPC]
+ - extract.c: corrected integer size mismatch in deferred dirs code [SPC]
+ - VMS: support "-T" option as /TIMESTAMP in CLI command interface [SMC]
+ - VMS: updated help files for UNIX and DCL interface with missing descriptions
+    of recently added options and new hint notes [SMC, SPC]
+ - win32/win32.c - set_direc_attribs(): work-around for "cannot set timestamp
+    of read-only dirs" bug [Cosmin Truta]
+ - win32/win32.c - NTQueryVolInfo(): fixed typecast warning [Cosmin Truta]
+ - unzpriv.h, unix/Makefile, win32/Makefile.gcc: changed build policy for
+    POSIX-emulating gcc distributions on Win32 (e.g. CygWin) to default to
+    creating POSIX-mode binaries; win32/Makefile.gcc may be used to build
+    win32-aware binaries (added -DFORCE_WIN32_OVER_UNIX to default compilation
+    options) [Cosmin Truta, SPC]
+ - INSTALL, History.552: stylistic text corrections [Cosmin Truta]
+ - win32/win32.c: complete revision of timestamp handling code; added prepro-
+    cessor flag NO_W32TIMES_IZFIX to allow optional compile with time handling
+    exactly like the (faulty) standard of other Windows programs [SPC]
+ - unzip.c, INSTALL: announce and document new NO_W32TIMES_IZFIX compilation
+    option [SPC]
+ - WHERE: updated to new version numbers for Zip and UnZip [SPC]
+ - README: summary of main changes for 5.52 added [SPC]
+
+5.52h (20 Feb 05):
+ - License: updated list of core authors [Cosmin Truta, Christian Spieler]
+ - WHERE: further corrections [Cosmin Truta]
+ - windll/windll.c - Wiz_SetOpts(): corrected mapping of PromptToOverwrite and
+    noflag to UnZip's internal options structure, finally fixing the windll
+    extract mode interface (previous change from 5.40 -> 5.41 fixed some
+    issues but created new bugs) [SPC]
+ - windll/windll.txt: documented the exact meaning of the windll struct DCL
+    flags nfflag, ExtractOnlyNewer, noflag, PromptToOverwrite and their
+    interactions [SPC]
+ - win32: set ASM_CRC as default for MSC, GCC, LCC, EMX/RSX (vanilla BCC does
+    not support inline asm) [SPC]
+
+5.52i (24 Feb 05):
+ - proginfo/ziplimit.txt: corrected enhanced limits of the Zip64 extensions,
+    updated status info on Info-ZIP's support of Zip64 archives [SPC]
+ - windll: renamed MS Visual C++ (5&6) project files into unique names, added
+    master workspace file for building all windll projects in one process [SPC]
+ - windll: extended MS Visual C++ project files to support both ASM_CRC and
+    NOASM builds; changed unzip dll projects to link against the multithreading
+    MS C runtime dll [SPC]
+ - wince/intrface.cpp - utimeToFileTime(): revised code for more efficiency,
+    added support for NO_W32TIMES_IZFIX [SPC]
+ - documentation and changelog fixes [SPC]
+
+5.52j (27 Feb 05):
+ - AtheOS: some documentation updates (2004-Sep-06) [SPC]
+ - tandem/tanunz.c: fix typo in do_wild() [SPC]
+ - unix/Makefile: added -DUNIX to some special targets, to be sure [SPC]
+ - vms/cmdline.c: corrected declaration of external string constants [SPC]
+ - vms/vms.h: removed obsolete definitions [SPC]
+ - vms/vms.c: stream-lined code formatting [SPC]
+ - WinCE: added workspace file for VCEmbedded 3.0 environment [SPC]
+ - windll/: windll.{c|txt}, uzexampl.{c|h}: misc formatting cleanups [SPC]
+ - extract.c, fileio.c: cosmetic updates [SPC]
+ - inflate.c: fixed undefined global vars error in DEBUG message of the
+    USE_ZLIB interface code [Johnny Lee]
+ - gbloffs.c: made assembler symbols output safe against multiple defines
+    (from UnZip 6.0 beta)  [Paul Kienitz, SPC]
+ - Theos: updated theos/Contents, theos/makefile to include Theos-specific
+    translation table header file charconv.h [SPC]
+ - VMS (unzip.c): updated some help messages from UnZip 6.0 beta sources
+    [Steven M. Schweda, SPC]
+ - INSTALL: updated description of VMS_TEXT_CONV option [SPC]
+ - LICENSE, unzip.h: added Steven M. Schweda to Info-ZIP group [SPC]
+ - man/unzip.1: updated Authors list [SPC]
+ - README, unzvers.h: switched to "Release" mode (removed BETA note) [SPC]
+
+5.52 (28 Feb 05):
+ - win32/win32.c - defer_dir_attribs(): fixed critical "mem-access to nirwana"
+    bug when processing directory entries without any local extra field;
+    added some explaining comments [Kai Uwe Rommel, Johnny Lee, SPC]
+ - wince/punzip.rcv: derive VERSION_PATCH from UZ_PATCHLEVEL [SPC]
+ - Updated release dates (History.552, README, unzvers.h, all man pages) [SPC]
+
+==================
+
+These changes occurred in beta versions 5.52a to 5.52.  This list may have
+left out some bugfixes and even some features...void where prohibited, your
+mileage may vary, etc., etc.
+
+Christian Spieler

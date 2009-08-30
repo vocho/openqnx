@@ -1,0 +1,48 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# When decoding a header tar was assigning 0 to oldgnu_header.isextended,
+# which destroyed name prefix. When updating archive, modified prefix
+# could have been written to disk thus producing invalid archive member.
+# Reported by Adye, TJ (Tim), <T.J.Adye@rl.ac.uk> 
+# References:
+#  <7231C15EAC2F164CA6DC326D97493C8B36C25D@exchange35.fed.cclrc.ac.uk>
+#  http://lists.gnu.org/archive/html/bug-tar/2005-02/msg00032.html
+ 
+AT_SETUP([appending files with long names])
+AT_KEYWORDS([append append01])
+
+m4_define([PREFIX],[This_is_a_very_long_file_name_prefix_that_is_designed_to_cause_problems_with_appending_long_file_names_that_run_into_a_limit_of_the_ustar_tarX])
+
+AT_TAR_CHECK([
+mkdir PREFIX
+touch PREFIX/file1 PREFIX/file2
+tar cf archive PREFIX/file1
+tar rf archive PREFIX/file2
+tar tf archive
+],
+[0],
+[PREFIX/file1
+PREFIX/file2
+],
+[],[],[],[oldgnu, ustar, posix, gnu])
+
+AT_CLEANUP
+

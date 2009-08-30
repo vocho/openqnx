@@ -1,0 +1,161 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2007 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Test the functioning of --exclude-caches and --exclude-tag option families
+
+AT_SETUP([exclude])
+AT_KEYWORDS([exclude])
+
+AT_TAR_CHECK([
+mkdir dir
+echo blues > dir/blues
+echo jazz > dir/jazz
+mkdir dir/folk
+echo tagfile > dir/folk/tagfile
+echo sanjuan > dir/folk/sanjuan
+mkdir dir/rock
+echo "Signature: 8a477f597d28d172789f06886806bc55" > dir/rock/CACHEDIR.TAG
+echo "test" > dir/rock/file
+
+for option in exclude-caches exclude-caches-under exclude-caches-all 
+do
+  echo OPTION $option
+  tar -cf archive.tar --$option -v dir 2>err
+  cat err
+  echo ARCHIVE
+  tar tf archive.tar
+done
+
+for option in exclude-tag exclude-tag-under exclude-tag-all 
+do
+  echo OPTION $option
+  tar -cf archive.tar --${option}=tagfile -v dir 2>err
+  cat err
+  echo ARCHIVE
+  tar tf archive.tar
+done
+],
+[0],
+[OPTION exclude-caches
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+dir/rock/
+dir/rock/CACHEDIR.TAG
+tar: dir/rock/: contains a cache directory tag CACHEDIR.TAG; contents not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+dir/rock/
+dir/rock/CACHEDIR.TAG
+OPTION exclude-caches-under
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+dir/rock/
+tar: dir/rock/: contains a cache directory tag CACHEDIR.TAG; contents not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+dir/rock/
+OPTION exclude-caches-all
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+tar: dir/rock/: contains a cache directory tag CACHEDIR.TAG; directory not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/folk/sanjuan
+OPTION exclude-tag
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+tar: dir/folk/: contains a cache directory tag tagfile; contents not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/folk/tagfile
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+OPTION exclude-tag-under
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+tar: dir/folk/: contains a cache directory tag tagfile; contents not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/folk/
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+OPTION exclude-tag-all
+dir/
+dir/blues
+dir/jazz
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+tar: dir/folk/: contains a cache directory tag tagfile; directory not dumped
+ARCHIVE
+dir/
+dir/blues
+dir/jazz
+dir/rock/
+dir/rock/CACHEDIR.TAG
+dir/rock/file
+],
+[],[],[],[ustar])
+
+AT_CLEANUP

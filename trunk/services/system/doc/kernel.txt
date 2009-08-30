@@ -1,0 +1,76 @@
+NOTE: This file is not kept up-to-date with reality but should be close.
+
+inkernel   U K I L    Page Fault   Irq Event    Notes
+--------   -------    ----------   ---------    -----
+  00       x . . .    Action A     ---------    Running in user space
+          
+  80       . x . .    Action B     ---------    Kernel call
+          
+  c0       . x . x    Action D     ---------    Kernel call (non-abortable)
+          
+  01       . . 1 .    Action C     Action E     Non-nested interrupt
+          
+  02       . . 2 .    Action C     Action F     Nested interrupt
+          
+  81       . x 1 .    Action C     Action G     Interrupt in kernel
+                  
+  82       . x 2 .    Action C     Action G     Nested interrupt in kernel
+                  
+  c1       . x 1 x    Action D     Action H     Interrupt in kernel (non-abortable)
+          
+  c2       . x 2 x    Action D     Action H     Nested interrupt in kernel (non-abortable)
+                  
+  40      impossible
+
+
+Definition of inkernel
+    7      0
+    KLSIIIII
+
+    K - Set on a kernel call
+    L - Set when kernel call cannot be aborted/restarted
+    S - Set while in specret()
+    I - Each interrupt handler adds 1 on entry and subtracts 1 on exit.
+        The nesting is therefore inkernel & 0x3f.
+
+
+Heading codes
+    U-In user code   K-In kernel call   I-In irq handler   L-Kernel locked
+
+
+Action A|B
+    if(pager)
+        state = STATE_WAIT_PAGE
+        if(B) eip -= 2
+        if(xfer_in_progress) goto xfer_fault_handler
+        block
+    else
+        if(signal masked)
+            remove mask
+            remove handler
+        signal SIGSEGV
+
+Action C
+    if(in_usr_code)
+        Mask current irq
+        Return from irq
+    else
+        Hard crash
+
+Action D
+    Hard crash
+
+Action E
+    Deliver event maybe changing active
+
+Action F|H
+    Queue event
+
+Action G
+    Queue event and set queue_pri
+    When return from outer most irq
+        if(queue_pri > active_pri)
+            if(xfer_in_progress)
+                call xfer_restart_handler
+            active_eip -= 2
+            goto kernel_exit (will process all queued events)

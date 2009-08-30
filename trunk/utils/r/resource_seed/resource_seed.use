@@ -1,0 +1,11 @@
+%C - Resource seeding utility 
+
+This utility seeds the system resource manager database.
+
+options:
+
+mem=start,end  		The start and end addresses
+irq=start,end  		The start and end irq vecotors
+ioport=start,end	The start and end ioport addresses
+dma=start,end		The start and end DMA channels
+pcimem=start,end	The start and end PCI memory addresses

@@ -1,0 +1,11 @@
+%C - adjust the priority of running processes (POSIX)
+
+%C	increment [-p pid ...] [-g gid ...] [-u user ...]
+Options:
+ -p pid ...      Renice these Process IDs
+ -g gid ...      Renice these Process Group IDs
+ -u userid ...   Renice processes owned by User ID
+Where:
+ increment  is the amount to lower the priority of the processes by.
+            A negative increment will RAISE the priority of the
+            processes.

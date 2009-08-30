@@ -1,0 +1,108 @@
+%-cpio
+%C	- copy file archives in and out (UNIX)
+
+%C      -o[Bacv]
+%C      -i[Bcdfmrtuv] [pattern ...]
+%C      -p[adlmruv] directory
+Options:
+ -B     Cause input/output to be blocked 5120 bytes to the record
+ -a     Reset access times of input files after they have been copied
+ -c     Write header information in ASCII character
+ -d     Create directories as needed
+ -f     Copy in all files except those in patterns
+ -l     Whenever possible, link files rather than copy them
+ -m     Retain previous modification times
+ -r     Interactively rename files
+ -t     Print a table of contents of the input
+ -u     Copy files unconditionally
+ -v     Be verbose; print the names of the affected files
+
+Where:
+ [pattern]
+        Simple regular expression given in the name-generating
+        notation of the shell.
+
+ directory
+        The destination directory.
+%-pax
+%C	- portable archive interchange (POSIX)
+
+List archive contents:
+%C      [-cimopuvy] [-f archive] [-s replstr] [-t device] [pattern ...]
+
+Read an archive:
+%C -r   [-cimnopuvy] [-f archive] [-s replstr] [-t device] [pattern ...]
+
+Write an archive:
+%C -w   [-dimuvy] [-b blocking] [-[a]f archive] [-s replstr] [-t device]
+        [-x format] [pathname ...]
+
+Copy files:
+%C -rw  [-ilmopuvy] [-s replstr] [pathname ...] directory
+
+Options:
+ -r     reads an archive file from standard input
+ -w     writes an archive file to standard output
+ -rw    reads the named files and directories and copies them to the
+        destination directory
+
+ -a     Append the files specified by pathname to the specified archive
+ -b     Specify the output blocking size
+ -c     Complement the match sense of the pattern operands
+ -d     Don't create intermediate directories not explicitly listed
+ -f     Specify the pathname of the input or output archive
+ -i     Interactively rename files
+ -l     Link rather than copy files when possible
+ -m     Don't keep file modification times
+ -n     When -r is specified, but -w is not, treat the pattern
+        arguments as ordinary filenames
+ -o     Restore file ownership as specified in the archive
+ -p     Preserve the access time of the input files
+ -s     Modify filenames according to the substitution expression
+ -t     Override default input or output device
+ -u     Copy each file only if it is newer (see manual)
+ -v     Be verbose. List filenames as they are encountered
+ -x     Specifies the output archive format (cpio or ustar)
+ -y     Interactively prompt for the disposition of each file
+
+Where:
+ directory
+        The destination directory pathname for copies when both
+        the -r and -w options are specified. The directory must
+        exist and be writable before the copy begins, or an
+        error results.
+
+ pathname
+        A file whose contents are used instead of the files
+        named on the standard input. When a directory is
+        named, all of its files and (recursively)
+        subdirectories are copied as well.
+
+ pattern
+        A pattern is given in the standard shell pattern-matching
+        notation. If no pattern is specified, the default is *,
+        which selects all files.
+
+%-tar
+%C	- read and write tape archive files (UNIX)
+
+%C -c [-b blksize] [-f file] [-vw] [filename ...]
+%C -r -f file [-b blksize] [-vw] [filename ...]
+%C -t [-f file] [-v] [filename]
+%C -x [-f file] [-lmovw] [filename ...]
+Options:
+ -b     Specify blocking factor for tape records (default 1)
+ -c     Creates a new archive
+ -f     Specify the name of the archive
+ -l     Report if any links cannot be resolved
+ -m     Do not restore modification times
+ -o     Extracted files with current user and group identifiers
+ -r     Writes named files to the end of the archive
+ -t     Lists the names of all of the files in the archive
+ -w     Wait for confirmation before each action
+ -x     Extracts named files from the archive
+ -v     Operate verbosely
+
+Where:
+ filename
+        The pathname of the file to be archived.

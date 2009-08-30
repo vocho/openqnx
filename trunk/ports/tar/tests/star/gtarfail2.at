@@ -1,0 +1,45 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([gtarfail2])
+AT_KEYWORDS([star gtarfail2])
+
+unset TAR_OPTIONS
+
+AT_CHECK([
+AT_STAR_PREREQ([gtarfail2.tar],[6b607d1faec14b82f69525d9c5b66e53])
+tar --utc -tvf $STAR_TESTSCRIPTS/gtarfail2.tar
+],
+[0],
+[-rwxr-xr-x jes/glone       214 2001-09-21 14:08 .clean
+lrwxrwxrwx jes/cats          0 1998-05-07 12:39 RULES -> makefiles/RULES
+drwxr-sr-x jes/glone         0 2001-12-10 00:00 build/
+-rw-r--r-- jes/glone    312019 2001-12-10 00:00 build/smake-1.2.tar.gz
+drwxr-sr-x jes/glone         0 2001-11-09 18:20 build/psmake/
+-rwxr-xr-x jes/glone       259 2000-01-09 16:36 build/psmake/MAKE
+-rwxr-xr-x jes/glone      4820 2001-02-25 22:45 build/psmake/MAKE.sh
+-rw-r--r-- jes/glone       647 2001-02-25 23:50 build/psmake/Makefile
+lrwxrwxrwx jes/glone         0 2001-08-29 10:53 build/psmake/archconf.c -> ../archconf.c
+lrwxrwxrwx jes/glone         0 2001-08-29 10:54 build/psmake/astoi.c -> ../../lib/astoi.c
+])
+
+AT_CLEANUP
+
+

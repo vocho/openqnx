@@ -1,0 +1,87 @@
+PA Optimizations:
+
+1.	Running avoidance:
+
+	We avoid having to 'runify' or iterate over a set of quantum descriptors by
+	changing the way we represent runs of contiguous free memory.  Originally
+	runs would look something like:
+
+	+----+----+----+----+----+----+----+----+----+----+
+	| 10 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 |
+	+----+----+----+----+----+----+----+----+----+----+
+
+	Where now it looks like:
+
+	+----+----+----+----+----+----+----+----+----+----+
+	| 10 | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | -9 |
+	+----+----+----+----+----+----+----+----+----+----+
+
+	This means that the runs are initialized at pa_init() so that the runs contain
+	0's for the 'in betweens', and the head and tail of the run represent the len and
+	head backlink, respectively.  Allocs and frees are responsible for zero'ing only the
+	head and/or tails of runs that aren't needed.  This means that our pa_free can
+	use the back link to find the head of a run via calculation rather than a search,
+	which was both costly(very) and cache polluting.  So unless we're freeing a
+	from the middle of a run (not a high running case), we should have constant time
+	frees.
+
+2.	Resiction Avoidance:
+
+	Our original restriction list setup had (in x86) 256Meg->PADDR_MAX-1 as the first entry,
+	then 0->PADDR_MAX-1.  This was done so that allocations would come out of the non-1:1
+	mapping area first if we had the RAM, then if none existed we would alloc out of the 1:1
+	(ram below 256meg).  On many machines, 256meg+ of RAM wasn't really true and just made
+	the allocator do extra work that never paid off.  While we don't do this now, we need
+	to revisit this as the restriction list eventually might be silly (user specified)
+	and it would be nice to be smarter and just avoid looking in restriction ranges that
+	don't make sense.
+
+3.	Search backwards:
+
+	On the x86 (less for other architectures) we have many blks (due to holes in the memory
+	map of the x86) and the last few blocks tend to have the large hunks of contiguous
+	memory.  So we start searching from the end rather than the start where only small
+	blocks live.
+
+4.	Power of 2 optimization:
+
+	Change the "find next power of two" function such that it doesn't bit shift
+	through the top 64 bits if none of them are set.  High runner case for now is that
+	none of them will be set.
+
+5.	pa_findhunk() removal:
+	
+	Remove the pa_findhunk() call - this allows us to avoid the normal sanity checks
+	and function call over head on a very often called function.  Reduced code size also
+	gave us a very small speed up.
+
+6.	Remove pmem_grow/shrink() from mem_virtual.c in the x86:
+
+	This avoids making a pmem list (paddr list which we already have) in the ANON memory case
+	(not the shared obj one) and then destroying it when we never really need it since the
+	page tables hold the same info (and we use it).  Big pay off (20 uSecs or so).
+
+7.	pa_paddr_to_quantum() rover:
+
+	Added a cached 'last block used' entry for the paddr_to_quantum converter function.  Avoids
+	the search in a high runner case where the last block is probably the blk we need to use
+	to convert.  In addition, we search backwards so we're consistent with our search direction
+	(no sense searching for a block from start->end if we're allocating start<-end.
+
+8.	Do large pa_free() in alloc_entry_free
+
+	Currently we free 4k at a time (for reasons of #8), even if there is a contiguous run.
+	This is rather slow and gives us a linearly increasing cost as the size increases.
+	This optimization should pay off nicely!
+
+	We now free by 'hunk' seperated by either a break in the run.
+
+9.	Avoid mem_obj_destory on each page in alloc_entry_free:
+	
+	We should use the sync flag so that we don't need to call this on each page
+
+TODO:
+
+10.	Push the Kerextlock() farther down and make allocation preemptable [ STARTED ]
+
+

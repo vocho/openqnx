@@ -1,0 +1,77 @@
+	Module		ZIP_CLITABLE
+	Ident		"02-006"
+
+Define	Verb		ZIP
+	Parameter	P1, Label=ZIPFILE, Prompt="Zip file"
+	Parameter	P2, Label=INFILE, VALUE(list), Prompt="Files to Zip"
+	Qualifier	DELETE, NonNegatable
+	Qualifier	FRESHEN, NonNegatable
+	Qualifier	MOVE, NonNegatable
+	Qualifier	UPDATE, NonNegatable
+	Qualifier	EXCLUDE, NonNegatable, VALUE(required,list)
+	Qualifier	INCLUDE, NonNegatable, VALUE(required,list)
+	Qualifier	EXLIST, NonNegatable, VALUE(type=$FILE,required)
+	Qualifier	INLIST, NonNegatable, VALUE(type=$FILE,required)
+	Qualifier	ADJUST_OFFSETS, NonNegatable
+	Qualifier	APPEND, NonNegatable
+	Qualifier	BATCH, NonNegatable, VALUE(type=$FILE)
+	Qualifier	BEFORE, NonNegatable, VALUE(type=$DATETIME)
+	Qualifier	COMMENTS, NonNegatable,
+			VALUE(type=COMMENTS_KEYWORDS)
+	Qualifier	DIRNAMES, Negatable, Default
+	Qualifier	ENCRYPT, Negatable, VALUE
+	Qualifier	EXTRA_FIELDS, Negatable, Default
+	Qualifier	FIX_ARCHIVE, NonNegatable, VALUE(type=FIX_OPTIONS)
+	Qualifier	FULL_PATH, Negatable, Default
+	Qualifier	HELP, NonNegatable
+	Qualifier	JUNK, NonNegatable
+	Qualifier	KEEP_VERSION, Negatable
+	Qualifier	LATEST, NonNegatable
+	Qualifier	LEVEL, VALUE(type=$NUMBER,required)
+	Qualifier	LICENSE, NonNegatable
+	Qualifier	MUST_MATCH, NonNegatable
+	Qualifier	PKZIP, Negatable
+	Qualifier	QUIET, NonNegatable
+	Qualifier	RECURSE, Negatable, VALUE(type=RECURSE_OPTS)
+	Qualifier	SINCE, NonNegatable, VALUE(type=$DATETIME)
+	Qualifier	STORE_TYPES, NonNegatable, VALUE(required,list)
+	Qualifier	TEMP_PATH, VALUE(required,type=$FILE)
+	Qualifier	TEST, NonNegatable
+	Qualifier	TRANSLATE_EOL, NonNegatable,
+			VALUE(type=EOL_KEYWORDS)
+	Qualifier	UNSFX, NonNegatable
+	Qualifier	VERBOSE, NonNegatable,
+			 VALUE(type=VERBOSE_OPTS, list)
+	Qualifier	VMS, NonNegatable, VALUE(type=VMS_OPTS)
+	Qualifier	YYZ_ZIP, NonNegatable, Default
+
+	Disallow	FIX_ARCHIVE.NORMAL and FIX_ARCHIVE.FULL
+	Disallow	TRANSLATE_EOL.LF and TRANSLATE_EOL.CRLF
+	Disallow	FULL_PATH and JUNK
+	Disallow	RECURSE.PATH and RECURSE.FILENAMES
+
+Define	Type		COMMENTS_KEYWORDS
+	Keyword		ZIP_FILE, DEFAULT
+	Keyword		FILES
+
+Define	Type		FIX_OPTIONS
+	Keyword		NORMAL, DEFAULT
+	Keyword		FULL
+
+Define	Type		EOL_KEYWORDS
+	Keyword		LF, DEFAULT
+	Keyword		CRLF
+
+Define	Type		RECURSE_OPTS
+	Keyword		PATH, DEFAULT
+	Keyword		FILENAMES
+
+Define	Type		VERBOSE_OPTS
+	Keyword		NORMAL, DEFAULT
+	Keyword		MORE
+	Keyword		DEBUG
+	Keyword		COMMAND
+
+Define	Type		VMS_OPTS
+	Keyword		ALL
+

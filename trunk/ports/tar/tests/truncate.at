@@ -1,0 +1,53 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Tar 1.15.1 incorrectly padded archive members that were truncated during
+# archiving.
+# References: <1115437005.8530.644529@goedel.fjf.gnu.de>
+# http://lists.gnu.org/archive/html/bug-tar/2005-05/msg00008.html
+#
+# The test case is based on the script by Frank Heckenbach <frank@g-n-u.de>
+# Additionally, the test verifies if tar exits with code 1 (file differs).
+
+AT_SETUP([truncate])
+AT_KEYWORDS([truncate filechange])
+
+AT_TAR_CHECK([
+genfile --file foo --length 50000k
+genfile --file baz
+genfile --run 'tar -vcf bar foo baz' --checkpoint 10 --length 49995k --truncate foo
+echo Exit status: $?
+echo separator
+sleep 1
+genfile --file foo --seek 49995k --length 5k --pattern=zeros
+tar dvf bar],
+[1],
+[foo
+baz
+Exit status: 1
+separator
+foo
+foo: Mod time differs
+baz
+],
+[tar: foo: File shrank by 5120 bytes; padding with zeros
+])
+
+AT_CLEANUP

@@ -1,0 +1,4 @@
+qemu-img create qnxfs.img 1M
+mkifs -r stage -vv qemu-minimal.build qnx.ifs
+dinit -H -R -f qnx.ifs qnxfs.img 
+dinit -B pc2 qnxfs.img 

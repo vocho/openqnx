@@ -1,0 +1,21 @@
+lpc - line printer control program
+
+lpc [command [argument ...]]
+
+Options:
+? [command ...]
+help [command ...]			display help
+abort { all | printer }			abort the current job and disable printing
+clean { all | printer }			remove all print jobs
+disable { all | printer }		disable queuing but continue to print
+down { all | printer } message ...	disable queuing and printing 
+enable { all | printer }		enable queuing
+exit					exit lpc
+quit    				exit from lpc.
+restart { all | printer }		enable queuing and printing
+start { all | printer }			enable queuing and printing
+status { all | printer }		display printer and queue status
+stop { all | printer }			disable printing
+topq printer [ jobnum ... ] [ user ... ]
+					move job to top of queue
+up { all | printer }			enable printing and queuing

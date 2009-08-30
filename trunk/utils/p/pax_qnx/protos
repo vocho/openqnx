@@ -1,0 +1,120 @@
+/* append.c */
+
+extern void append_archive(void );
+
+/* buffer.c */
+
+extern int inentry(char *,Stat *);
+extern void outdata(int ,char *,off_t );
+extern void write_eot(void );
+extern void outwrite(char *,unsigned int );
+extern void passdata(char *,int ,char *,int );
+extern void buf_allocate(off_t );
+extern int buf_skip(off_t );
+extern int buf_read(char *,unsigned int );
+extern int ar_read(void );
+
+/* cpio.c */
+
+void do_cpio(int argc, char **argv);
+
+/* create.c */
+
+extern int create_archive(void );
+
+/* extract.c */
+
+extern void read_archive(void);
+extern int get_header(char *,Stat *);
+
+/* fileio.c */
+
+extern int open_archive(int );
+extern void close_archive(void );
+extern int openout(char *,Stat *,Link *,int );
+extern int openin(char *,Stat *);
+
+/* link.c */
+
+extern Link *linkfrom(char *,Stat *);
+extern Link *islink(char *,Stat *);
+extern Link *linkto(char *,Stat *);
+extern void linkleft(void );
+
+/* list.c */
+
+extern int read_header(char *,Stat *);
+extern void print_entry(char *,Stat *);
+
+/* mem.c */
+
+extern char *mem_get(unsigned int );
+extern char *mem_str(char *);
+
+/* namelist.c */
+
+extern void add_name(char *);
+extern int name_match(char *);
+extern void names_notfound(void );
+extern void name_init(int ,char **);
+extern int name_next(char *,Stat *);
+extern void name_gather(void );
+
+/* names.c */
+
+extern char *finduname(int );
+extern int finduid(char *);
+extern char *findgname(int );
+extern int findgid(char *);
+
+/* pass.c */
+
+extern void pass(char *dirname);
+extern int passitem(char *,Stat *,int ,char *);
+
+/* pathname.c */
+
+extern int dirneed(char *);
+extern int nameopt(char *);
+extern int dirmake(char *,Stat *);
+
+/* pax.c */
+
+extern int main(int ,char **);
+extern int do_pax(int ,char **);
+extern void get_archive_type(void );
+
+/* regexp.c */
+
+extern regexp *regcomp(char *);
+extern int regexec(regexp *,char *);
+extern void regsub(regexp *,char *,char *);
+extern void regerror(char *);
+
+/* replace.c */
+
+extern void add_replstr(char *);
+extern void rpl_name(char *);
+extern int get_disposition(char *,char *);
+extern int get_newname(char *,int );
+
+/* tar.c */
+
+extern int do_tar(int ,char **);
+
+/* ttyio.c */
+
+extern int open_tty(void );
+extern int nextask(char *,char *,int );
+extern int lineget(FILE *,char *);
+extern void next(int );
+
+/* warn.c */
+
+extern void warnarch(char *,off_t );
+extern void fatal(char *);
+extern void warn(char *,char *);
+
+/* wildmat.c */
+
+extern int wildmat(char *,char *);

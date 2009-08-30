@@ -1,0 +1,14 @@
+Usage: infocmp [options] [-A directory] [-B directory] [termname...]
+
+Options:
+  -1    print single-column               -f    with -1, format complex strings
+  -C    use termcap-names                 -i    analyze initialization/reset
+  -F    compare terminfo-files            -l    output terminfo names
+  -I    use terminfo-names                -n    list capabilities in neither
+  -L    use long names                    -p    ignore padding specifiers
+  -R subset (see manpage)                 -r    with -C, output in termcap form
+  -T    eliminate size limits (test)      -s [d|i|l|c] sort fields
+  -V    print version                     -u    produce source with 'use='
+  -c    list common capabilities          -v number  (verbose)
+  -d    list different capabilities       -w number  (width)
+  -e    format output as C initializer

@@ -1,0 +1,704 @@
+.TH elvis 1
+.SH NAME
+elvis \- a clone of the ex/vi text editor
+.SH SYNOPSIS
+.B elvis
+.RB [ -V ...]
+.RB [ -a ]
+.RB [ -r ]
+.RB [ -e ]
+.RB [ -i ]
+.RB [ -s | - ]
+.RB [ -b ]
+.RB [ -R ]
+.RB [ -S | -SS ]
+.RB [ -f
+.IR session ]
+.RB [ -o
+.IR logfile ]
+.RB [ -G
+.IR gui ]
+.RB [ "-c \fIcommand\fP" | +\fIcommand\fP ]
+.RB [ -t
+.IR tag ]
+.RB [ -w
+.IR scroll ]
+.RB [ -B
+.IR blksize ]
+.RI [ file ]...
+.SH VERSION
+Elvis 2.2_0
+.SH DESCRIPTION
+.PP
+.B Elvis
+is a text editor.
+It is intended to be a modern replacement for the classic
+.IR ex / vi
+editor of UNIX fame.
+.B Elvis
+supports many new features, including multiple edit buffers, multiple
+windows, multiple user interfaces (including an X11 interface), and a
+variety of display modes.
+.PP
+To exit
+.BR Elvis,
+you can give the command ":q" in each of its windows.
+If you've modified the buffer in a window, and you want to abandon those
+changes, then give the command ":q!" instead.
+.SH "HELP PAGES"
+For more information please take a look at 
+.BR Elvis '
+help pages.
+These pages should have been installed together with
+.BR Elvis .
+To view the help pages, start
+.B Elvis
+and give the command ":help".
+.PP
+If this does not show you the main help file
+then something is wrong.
+Perhaps the help pages were installed in the wrong place.
+In that case, search for a file named "elvis.html" using either GNU's
+.BR locate (1)
+or the standard
+.BR find (1)
+program.
+Hopefully this will show you where the file is located.
+You can then view it with...
+.nf
+
+	:sp /\fIdirectory\fP/elvis.html
+.fi
+.PP
+If the help pages aren't installed on your system but you have
+access to the Internet, then you can view the help pages via HTTP
+by running...
+.nf
+
+	:sp http://elvis.vi-editor.org/elvisman/elvis.html
+.fi
+.SH OPTIONS
+.IP \fB-V\fR
+"Verbose" mode, causes
+.B Elvis
+to output more status messages.
+You can use multiple \fB-V\fP flags to get even more detailed
+information.  
+\fB-VVV\fP can be handy when
+.B Elvis
+isn't initializing itself quite the way you
+expected.
+See also the
+.BI -o logfile
+option, described below.
+.IP \fB-a\fR
+Instructs
+.B Elvis
+to load all files named on the command line \fIsimultaneously\fR
+with a separate window for each.
+.IP \fB-r\fR
+This is used for recovering an edit session after a crash.
+Each
+.B Elvis
+process uses a single "session file" to store the contents of all edit buffers.
+While
+.B Elvis
+is running, a flag is set near the beginning of the session file
+so that other
+.B Elvis
+processes won't try to use it at the same time.
+If an
+.B Elvis
+process dies abnormally, though, it will leave the session file
+lying around with that flag set;
+the \fB-r\fR flag allows
+.B Elvis
+to open a session file even if it is marked
+as being in use.
+.IP \fB-e\fR
+Causes
+.B Elvis
+to start each window in ex mode, instead of visual command mode.
+Invoking
+.B Elvis
+as "ex" implies this.
+.IP \fB-i\fR
+Causes
+.B Elvis
+to start each window in input mode, instead of visual command mode.
+Novice users may prefer this.
+.IP \fB-b\fR
+This sets the "binary" option, which
+causes new buffers to be marked as "readeol=binary".
+Without \fB-b\fR,
+.B Elvis
+will try to guess the format by examining the first
+hundred bytes or so of the file.
+.IP \fB-R\fR
+This sets the "defaultreadonly" option, which
+causes all new buffers to be marked as "readonly" so you won't accidentally
+overwrite the original file.
+.IP \fB-S\fR
+Sets security=safer, making
+.B Elvis
+paranoid about certain potentially harmful commands.
+The intent is to protect the user against writing by malicious scripts.
+The ./.exrc file and modelines are executed with security=safer temporarily
+regardless of whether \fB-S\fR was given.
+The \fB-S\fR flag is just used to make
+.B Elvis
+permanently paranoid, for the duration of this process.
+.IP \fB-SS\fR
+Sets security=restricted.
+This is more extreme security than "-S".
+The intent is to protect the system against reading by malicious users.
+.IP "\fB-f \fIsession\fR"
+Makes
+.B Elvis
+use the session file named "\fIsession\fR" instead of the default
+file.
+Session files are discussed in the description of the \fB-r\fR flag, above.
+.IP "\fB-o \fIlogfile\fR"
+Redirects messages and trace information out to
+.I logfile
+instead of going to stdout/stderr as usual.
+This is useful under Windows95, where stdout/stderr don't show anywhere.
+If you're having trouble configuring WinElvis, try running "WinElvis -VVV -o log"
+and then you can find the trace and error messages in the file "log".
+.IP "\fB-G \fIgui\fR"
+Makes
+.B Elvis
+use the named \fIgui\fR user interface instead of the default.
+To see a list of supported user interfaces, give the command "elvis -?".
+.IP "\fB-c \fIcommand\fR"
+After loading the first file, interpret \fIcommand\fR as an ex command line.
+Several ex command lines can be sent in one line, separated by "|".
+This is good to know, because only a single
+.BI -c command
+or
+.BI + command
+flag can be used.
+.IP "\fB-s\fR"
+Read an \fIex\fR script from stdin, and execute it.
+This is similar to the \fB-Gscript\fR flag, except that \fB-s\fR has the
+additional side-effect of bypassing all initialization scripts.
+.IP "\fB-t \fItag\fR"
+Causes editing to begin at the location where the given \fItag\fR
+is defined.
+See the
+.BR ctags (1)
+command for more information about tags.
+.IP "\fB-w \fIscroll\fR"
+This sets the "window" option, which has very little effect in
+.BR Elvis .
+.IP "\fB-B \fIblksize\fR"
+If a new session file is created, this causes it to use blocks of size
+.IR blksize .
+.PP
+In addition, the following options are also supported to maintain backward
+compatibility, although their future use is discouraged.
+.IP "\fB+\fIcommand"
+Like \fB-c\fI command\fR, this causes the ex \fIcommand\fR to be executed
+after the first file is loaded.  If the \fIcommand\fR is omitted, it is
+understood to be "$", which causes the cursor to move to the last line of
+the file.
+.IP "\fB-"
+Like \fB-s\fR, this causes
+.B Elvis
+to read a script from stdin and execute it.
+.SH "TERMCAP INTERFACE"
+.PP
+The termcap interface is the one you'll use most often on non-graphic terminals.
+It looks and acts a heck of a lot like the traditional vi.
+The biggest addition is the support for multiple windows.
+For more information on how to use multiple windows, start
+.B Elvis
+and give
+the command ":help ^W".
+The short form of that help is:
+^Ws splits the screen to form an additional window,
+^Wq closes the window, and
+^W^W switches the cursor from one window to another.
+.PP
+If your terminal supports ANSI color escape sequences, then you can
+use the ":color" command to assign different colors to various fonts.
+You must assign a "normal" color first, e.g., ":color normal yellow on blue".
+.PP
+The DOS and (text mode) Win32 version of the termcap interface support the mouse.
+The mouse behaves almost exactly like the X11 mouse, described below.
+The only differences are that the mouse can't be used to cut & paste
+to the clipboard, and on a two-button mouse you can simulate a middle button
+by simultaneously pressing the left and right buttons.
+.SH "X11 INTERFACE"
+.PP
+The x11 interface is used under X-Windows on UNIX systems.
+It provides a scrollbar and mouse support, and allows you to
+select which fonts to use.
+.SS "X11 Options"
+.PP
+To specify a normal font, use \fB-font\fI fontname\fR or \fB-fn\fI fontname.\fR
+Proportional fonts are not properly supported, but they aren't rejected with an error message either.
+If you don't specify a normal font, then
+.B Elvis
+will use a font named "fixed"
+by default.
+(This default can be overridden by a "set font=..." command in the
+.I elvis.ini
+file.
+The default
+.I elvis.ini
+file does this, making the new default font be 18-point Courier.)
+.PP
+To specify a bold font, use \fB-fb\fI fontname.\fR
+The specified font should have the same size character cell as the normal
+font, but
+.B Elvis
+does not verify this.
+If you don't specify a bold font, then
+.B Elvis
+will fake it by smearing the
+normal font rightward one pixel.
+.PP
+To specify an italic font, use \fB-fi\fI fontname.\fR
+The specified font should have the same size character cell as the normal
+font, but
+.B Elvis
+does not verify this.
+If you don't specify an italic font, then
+.B Elvis
+will fake it by sliding the
+top half of the normal font rightward one pixel.
+.PP
+If you want to use Courier fonts, there is a shortcut:
+\fB-courier\fI size\fR will use the normal, bold, and italic versions of
+the Courier font in the requested size.
+.PP
+You can force
+.B Elvis
+to use only black and white with the \fB-mono\fR flag;
+this is the default if your display only has one bitplane.  For color
+displays, \fB-fg \fIcolor\fR and \fB-bg \fIcolor\fR can be used to set
+the normal text color and the background color, respectively.
+.PP
+.B Elvis
+has a built-in icon, which is generally a good thing.
+Some window managers won't allow you to assign a new icon to a program that
+has a built-in one, so
+.B Elvis
+has a \fB-noicon\fR flag which disables the
+built-in icon.
+.PP
+The \fB-fork\fR client causes
+.B Elvis
+to run in the background, so that your
+shell prompt returns immediately.
+.PP
+The \fB-client\fR option causes
+.B Elvis
+to look for an already-running
+.B Elvis
+process on the same X server and, if there is one, send the new arguments to it.
+This causes the old
+.B Elvis
+process to create new windows for file arguments.
+The new
+.B Elvis
+process then exits, leaving the old one to do the real work
+and allowing your shell program to prompt for a new command immediately.
+For the sake of uniformity,
+if \fB-client\fR fails to find an existing
+.B Elvis
+process, then a new
+.B Elvis
+process
+starts up as though you had used the \fB-fork\fR argument instead.
+.PP
+The \fB-client\fR option is implemented in an interesting way:
+the client
+.B Elvis
+simply sends a series of ex commands to an existing window of the server
+.BR Elvis .
+For each file name argument, the client
+.B Elvis
+sends a ":split \fIfile\fR"
+command.
+For \fB-t\fItag\fR, the client
+.B Elvis
+sends a ":stag \fItag\fR" command.
+For \fB-c\fIcommand\fR, the client
+.B Elvis
+simply sends the \fIcommand\fR,
+and this results in some quirks.
+First, the server
+.B Elvis
+temporarily sets security=safer while the
+command is executed, for security reasons.
+Second, the command is executed by the server's existing window, not the
+new one, so (for example) "elvis -client -c 20 foo" creates a new window for the file
+"foo", and then moves the OLD WINDOW's cursor to line 20 of whatever file
+it was showing.
+.SS "X11 Mouse"
+.PP
+I've tried to reach a balance between the mouse behavior of
+.BR xterm (1)
+and what makes sense for an editor.
+To do this right,
+.B Elvis
+has to distinguish between clicking and dragging.
+.PP
+Dragging the mouse always selects text.
+Dragging with button 1 pressed (usually the left button) selects characters,
+dragging with button 2 (the middle button) selects a rectangular area, and
+dragging with button 3 (usually the right button) selects whole lines.
+These operations correspond to
+.BR Elvis '
+v, ^V, and V commands, respectively.
+When you release the button at the end of the drag, the selected text is
+immediately copied into an X11 cut buffer, so you can paste it into another
+application such as xterm.
+The text remains selected, so you can apply an operator command to it.
+.PP
+Clicking button 1 cancels any pending selection, and moves the cursor to
+the clicked-on character.
+Clicking button 3 moves the cursor without canceling the pending selection;
+you can use this to extend a pending selection.
+.PP
+Clicking button 2 "pastes" text from the X11 cut butter.
+If you're entering an ex command line, the text will be pasted into the
+command line as though you had typed it.
+If you're in visual command mode or input mode, the text will be pasted into
+your edit buffer.
+When pasting, it doesn't matter where you click in the window;
+.B Elvis
+always inserts the text at the position of the text cursor.
+.PP
+Double-clicking button 1 simulates a ^] keystroke,
+causing
+.B Elvis
+to perform tag lookup on the clicked-on word.
+If
+.B Elvis
+happens to be displaying an HTML document, then tag lookup
+pursues hypertext links so you can double-click on any underlined text
+to view the topic that describes that text.
+Double-clicking button 3 simulates a ^T keystroke,
+taking you back to where you did the last tag lookup.
+.PP
+If your mouse has a scroll wheel, then
+.B Elvis
+can be configured to use it.
+For instructions on doing this, start
+.B Elvis
+and give the command ":howto scrollwheel".
+.SH "ENVIRONMENT VARIABLES"
+.PP
+.B Elvis
+has commands which can examine any environment variable.
+Because of this, a comprehensive list of environment variables isn't
+possible.
+The following list contains the environment variables which have
+hardcoded meaning in
+.BR Elvis .
+.IP "BASH or BASH_VERSION"
+Under Unix/Linux,
+.B Elvis
+tests for the presence of these variables to decide
+whether or not the /bin/sh shell supports process control,
+especially the ^Z key.
+The values of these variables doesn't matter, only the fact that they exist.
+.IP COLUMNS
+For the "termcap" user interface, this overrides the number of columns specified
+in the termcap/terminfo entry.
+.IP DISPLAY
+For the "x11" user interface, this indicates which display it should run on.
+.IP ELVISBG
+If set to "light" or "dark", its value is used as the default value for the
+background option.
+.IP ELVISGUI
+If set, its value is used to select the default user interface.
+You can still override it by using the
+.BI -G gui
+command line flag.
+.IP ELVISPATH
+If ELVISPATH is defined in the environment, then its value is copied into
+the elvispath option, which is a list of directories that
+.B Elvis
+should search
+through when looking for its support files.
+If ELVISPATH is undefined,
+.B Elvis
+will use a default list which usually
+includes the your home directory, and maybe a system-wide default location.
+.IP EXINIT
+If defined, the value of this option is typically interpreted as a
+series of EX commands when
+.B Elvis
+starts up.
+This behavior isn't built into
+.B Elvis
+though;
+it is handled by the standard
+.I elvis.ini
+file.
+.IP HOME
+This is your home directory.
+Its value is used as the default value for the home option, which is used
+in ~ substitution in file names.
+.IP "HOMEDRIVE and HOMEPATH"
+For Windows, if HOME is unset then HOMEDRIVE and HOMEPATH are checked;
+if they're set then they're concatenated to form the default value of the
+home option.
+.IP INCLUDE
+The "syntax" display mode uses this as a list of directories to search through
+when looking for a header file such as <stdio.h>.
+.IP "LC_ALL, LC_MESSAGES, and LANG"
+If LANG is defined, then
+.B Elvis
+will look for for its message translations in
+.IR $LANG/elvis.msg ,
+and only use just plain
+.I elvis.msg
+if it can't find
+.IR $LANG/elvis.msg .
+The LC_MESSAGES and LC_ALL environment variables work similarly, and
+take precedence over LANG.
+.IP LINES
+For the "termcap" user interface, this overrides the number of lines specified
+in the termcap/terminfo entry.
+.IP LOGNAME
+This stores your login name.
+It is used when reading via the FTP protocol, to choose the default
+login information.
+.IP OLDPWD
+This stores the name of the previous directory you were in.
+Its value is stored in the prevdir option, which is used for ~- substitution
+in file names.
+.IP PATH
+The usual search path for programs.
+.IP SESSIONPATH
+This is a list of directories where
+.B Elvis
+might be able to create the
+session file.
+.B Elvis
+uses the first writable directory from the list, and ignores
+all others.
+.IP "SHELL or COMSPEC"
+This is the name of your command-line interpreter.
+.B Elvis
+needs to know this so you can run programs from inside
+.BR Elvis .
+SHELL is used in Unix/Linux, and COMSPEC is used in MS-DOS.
+.IP TAGPATH
+This is a path for
+.I tags
+files, used by the :tag command.
+For Microsoft it is semicolon-delimited; for all others it is colon-delimited.
+Each entry in the path can be either a filename, or the name of a directory
+containing a file named
+.IR tags .
+.IP TERM
+For the termcap interface, this is the name of the terminal's termcap/terminfo
+entry.
+Also, if its value is "kvt" or ends with "-r" or "-rv", then the background
+option will be "light" by default; else it will be "dark".
+.IP TERMCAP
+For the termcap interface, this can either store the name of a termcap file
+or the actual contents of a termcap entry.
+.IP TMP
+This is where
+.B Elvis
+stores its temporary files other than session files.
+.IP WINDOWID
+.B Elvis
+uses this when choosing the default value of the background option.
+If the WINDOWID environment variable exists, then
+.B Elvis
+assumes it is running in an xterm-like terminal emulator, and
+those emulators usually have a light background.
+.IP "XENVIRONMENT, XFILESEARCHPATH, and XUSERFILESEARCHPATH"
+These are used by the "x11" user interface, when loading
+.BR Elvis '
+resources.
+.SH FILES
+.TP
+.I ~
+This is your home directory.
+Whenever
+.B Elvis
+sees a ~ at the start of a pathname,
+it replaces the ~ with the value of the "home" option.
+The "home" option is initialized from the HOME environment variable;
+if HOME is unset then some operating systems will set "home" to the
+the directory where the
+.B Elvis
+program resides.
+.TP
+.I lib
+In this man-page, "lib" is a placeholder for the name of a directory
+in which
+.BR Elvis '
+configuration files reside.
+The "elvispath" option's value is a list of directories that
+.B Elvis
+will
+check for each configuration file.
+.TP
+.I elvis*.ses
+These are the default names for sessions files.
+Session files store the contents of all edit buffers for a given
+edit session.
+You can instruct
+.B Elvis
+to use a specific session file via the
+.BI -f session
+command-line flag.
+Note that sessions specified via
+.BI -f session
+normally reside in the current directory, but when
+.B Elvis
+chooses its own session file name, it will place it in the
+first writable directory named in the SESSIONPATH environment variable.
+.TP
+.I tags
+This file stores the tags for the files in a directory.
+It is used by the :tag command, among others.
+.TP
+.I lib/elvis.ini
+This file contains EX commands which are executed whenever
+.B Elvis
+starts up.
+.B Elvis
+searches through the ELVISPATH for the file.
+.TP
+.IR ~/.exrc ", " ~/.elvisrc ", or " ~\eelvis.rc
+The \fI.exrc\fR or \fI.elvisrc\fR (for UNIX) or \fIelvis.rc\fR (for non-UNIX)
+file in your home directory will generally be executed as a series of
+EX commands,
+unless the EXINIT environment variable is defined.
+This behavior isn't built into
+.B Elvis
+though; it is handled by the standard \fIelvis.ini\fR file.
+.TP
+.IR .exrc ", " .elvisrc ", or " elvis.rc
+The \fI.exrc\fR or \fI.elvisrc\fR (for UNIX) or \fIelvis.rc\fR (for non-UNIX) file in the
+current directory is interpreted as a series of EX commands,
+but only if the \fBexrc\fR option has been set.
+This behavior isn't built into
+.BR Elvis ;
+it is handled by the standard \fIelvis.ini\fR file.
+.TP
+.I lib/elvis.brf
+This file contains EX commands which are executed
+.BR B efore
+.BR R eading
+a
+.BR F ile.
+Typically this is used to distinguish a binary file from a text file
+by examining the file name extension of the file.
+The "readeol" option is then set accordingly.
+.TP
+.I lib/elvis.arf
+This file contains EX commands which are executed
+.BR A fter
+.BR R eading
+a
+.BR F ile.
+If the current directory doesn't contain an \fIelvis.arf\fR file, then
+.B Elvis
+searches through the ELVISPATH for the file.
+Typically, this is used to set the \fBbufdisplay\fR option for a buffer,
+based on the file name extension of the file.
+.TP
+.I lib/elvis.bwf
+This file contains EX commands which are executed
+.BR B efore
+.BR W riting
+a
+.BR F ile.
+Typically,
+.I lib/elvis.bwf
+is used to perform an RCS "checkout" command before writing a file.
+.TP
+.I lib/elvis.lat
+This contains a series of ":digraph" commands which set up the digraph
+table appropriately for the ISO Latin-1 symbol set.
+The
+.I lib/elvis.ini
+file executes this script during initialization,
+except under OS/2, MS-DOS, or text-mode Win32.
+.TP
+.I lib/elvis.pc8
+This contains a series of ":digraph" commands which set up the digraph
+table appropriately for the PC-8 symbol set.
+This is the normal symbol set for MS-DOS, OS/2, and text-mode Win32
+(although the graphical Win32 uses
+.IR lib/elvis.lat ).
+The
+.I lib/elvis.ini
+file executes this script during initialization under MS-DOS.
+.TP
+.I lib/elvis.msg
+This file's data is used for mapping the
+.BR Elvis '
+terse error messages into verbose messages.
+.TP
+.I lib/elvistrs.msg
+.B Elvis
+doesn't use this file directly;
+it is simply meant to serve as a resource from which you can extract
+the terse form of one of elvis' messages;
+you can then add the terse form and your own custom verbose form to the
+.I lib/elvis.msg
+file.
+.TP
+.I lib/elvis.syn
+This file controls how
+.BR Elvis '
+"syntax" display mode highlights the text
+for a given language.
+.TP
+.I lib/elvis.x11
+This file contains a series of ex command.
+This file is sourced by
+.I lib/elvis.ini
+if
+.B Elvis
+is using its X11 user interface.
+It configures up the toolbar and default colors.
+.TP
+.I lib/elvis.ali
+This contains a set of aliases.
+If your copy of
+.B Elvis
+is configured to support aliases (i.e., if it isn't
+the MS-DOS version) then these aliases will be loaded automatically.
+They are partly intended to serve as examples of what aliases can do
+and how to write them,
+but mostly these aliases are intended to be truly useful.
+To see a list of the aliases, give the command ":alias".
+.TP
+.I lib/elvis*.html
+These files contain the online documentation.
+.TP
+.I lib/*.man
+These contain the man pages -- shorter summaries of the programs,
+with descriptions of the command-line flags.
+.TP
+.IR guix11/*.xpm " and " guix11/elvis.xbm
+These contain icon images for use with X-windows.
+The "elvis.xbm" image is a 2-color bitmap, and it is compiled into
+.BR Elvis .
+The other files, such as "elvis.xpm," contain color images.
+The "insticon.sh" shell script (which is invoked as part of the "make install"
+operation) tries to copy these into appropriate directories.
+.SH "SEE ALSO"
+.BR ex (1),
+.BR vi (1),
+.BR ctags (1)
+.PP
+You should also view the on-line documentation, via ":help".
+.SH AUTHOR
+Steve Kirkendall
+.br
+kirkenda@cs.pdx.edu

@@ -1,0 +1,682 @@
+<html><head>
+<title>Elvis-2.2_0 Tags</title>
+</head><body>
+
+<h1>14. Tags</h1>
+
+Tags provide a fast way to locate specific points in a collection of files.
+This is done by storing a list of tag names, and their corresponding
+locations, in a file named "tags".
+This is particularly handy for programmers who are working on large projects.
+
+<p><strong>NOTE:</strong>
+The tags described here are entirely different from the "tags" used for
+marking up text in the <a href="elvisdm.html#html">html</a> display mode.
+It is merely an unfortunate coincidence that the same term has traditionally
+been used for two different things.
+To the best of my knowledge, Elvis is the first project to use both the
+symbol-indexing tags described here, and the mark-up "tags" used in HTML.
+
+<p>Traditionally, each tag has three attributes: its name (generally the
+name of a function, or some other symbol from your program), the name of
+the source code file in which that function is defined, and the address
+of its line within that file.
+The tag name is used for selecting a particular tag.
+
+<p>Elvis supports a more sophisticated model.
+The extensions are intended to allow Elvis to handle C++, and similar languages,
+which allow different functions to have the same name.
+Since tag names are derived from function names, the tag name alone isn't
+sufficient to select a single tag.
+Elvis permits tags to have other attributes, which help it select the
+correct tag.
+
+<p>All of this is described in more detail below, in the following sections:
+<menu>
+<li><a href="#FILE">14.1 The tags file</a>
+<li><a href="#CTAGS">14.2 Creating a tags file</a>
+<li><a href="#REF">14.3 Reading the tags file</a>
+<li><a href="#ELVIS">14.4 Using tags with Elvis</a>
+<li><a href="#TAGPATH">14.5 The TAGPATH</a>
+<li><a href="#ENHANCED">14.6 Enhanced tags</a>
+<li><a href="#HINTS">14.5 Restrictions and hints</a>
+<li><a href="#HISTORY">14.6 History</a>
+<li><a href="#BROWSE">14.7 Browsing</a>
+<li><a href="#TAGPRG">14.8 The tagprg option</a>
+</menu>
+
+<h2><a href="#FILE"></a>14.1 The tags file</h2>
+
+Tags are stored in a file named "tags".
+It is a plain ASCII text file.
+Each line of the file contains the attributes of a single tag.
+A tab character is used to delimit the attributes.
+The traditional tags file contains three attributes for each tag.
+
+<p>The first attribute is the tag's name.
+It is typically the name of a function, variable,  or data type -- a name that you could
+guess by looking at the source code of your project.
+Traditionally, this attribute has been the sole means for selecting a tag,
+so tag names should ideally be unique.
+The lines of the tags file are sorted by this attribute.
+
+<p>The second attribute is the name of source code file in which the
+corresponding function (or whatever) is defined.
+If it isn't an absolute file name (relative to the root directory)
+then it should be relative to the directory where the tags file resides
+-- which isn't necessarily the current working directory.
+
+<p>The third attribute is the address of the line within that file,
+where the function (or whatever) is defined.
+This address can either be a line number, or a
+<a href="elvisopt.html#magic">nomagic</a> style of
+<a href="elvisre.html">regular expression.</a>
+If it is a regular expression, it must be bound by '/' or '?' characters,
+and it may contain tab characters.
+Typically, the entire source line is encoded as a regular expression by
+inserting "/^" onto the front, appending "$/" onto the end, and inserting
+a backslash character before each / or \ character within the line.
+
+<p>Elvis actually supports a superset of this format
+(by permitting extra attributes)
+but we'll start with the basics.
+
+<h2><a name="CTAGS"></a>14.2 Creating a tags file</h2>
+
+Usually the tags file is created automatically by a program such as
+<a href="ctags.man">ctags</a>.
+It reads a collection of C or C++ source files, and generates tags for
+each global function.
+It can also generate tags for global types and variables, or for
+static instances of any of these.
+
+<p>You will usually invoke <em>ctags</em> on all source files in the current
+directory via a command similar to this:
+<pre>
+ctags *.c *.h</pre>
+
+<p>The <em>ctags</em> program can also generate other types of output.
+Be sure to look at its <a href="ctags.man">manual page</a> to see the
+options.
+
+<h2><a name="REF"></a>14.3 Reading the tags file</h2>
+
+Tags exist mostly for use with Elvis, but for the sake of simplicity we'll
+start with the <a href="ref.man">ref</a> program.
+
+<p><em>ref</em> selects tags just like Elvis, and then displays information
+about them.
+The simplest way to use it is to pass it the name of the tag you're interested
+in.
+The following example would display the definition of the "main" function:
+<pre>
+ref main</pre>
+
+<p>There are some other options.
+One of the most useful is <kbd>-a</kbd> which instructs <em>ref</em> to
+display all selected tags.
+(Without <kbd>-a</kbd> it just displays one of the selected tags.)
+For example, if your current directory contains many programs, each with its
+own "main" function, then this would display the headers for all of them:
+<pre>
+ref -a main</pre>
+
+<p>You can also use <em>ref</em> to generate an HTML document listing all tags,
+or just the ones that match some criteria.
+Here's an example which lists all tags as an HTML document:
+<pre>
+ref -ha &gt;tags.html</pre>
+
+<p><em>ref</em> uses the same syntax for restrictions and sorting hints
+as Elvis' <a href="elvisex.html#tag">:tag</a> command.
+This syntax will be described <a href="#HINTS">later.</a>
+You should check the <a href="ref.man">manual page</a> for a list of options.
+
+<h2><a name="ELVIS-2.2_0</a>14.4 Using tags with Elvis</h2>
+
+When starting Elvis, you can use the <kbd>-t</kbd><var>tagname</var> flag to
+start with the cursor at the definition point of a given function in your
+program's source code.
+It automatically performs the following steps:
+<ol>
+<li>Scan the tags file for a tag named <var>tagname</var>.
+<li>Load the file indicated by the tag's second attribute.
+<li>Search for the line indicated by the tag's third attribute.
+<li>Within that line, search for the tag name.
+<li>Move the cursor there.
+</ol>
+
+<p>Once Elvis is running, there are many commands available which deal with
+tags.
+The most essential is <a href="elvisex.html#tag">:tag <var>tagname</var></a>.
+It does all the same steps as the <kbd>-t</kbd><var>tagname</var> command-line
+flag, plus it saves the cursor's original position on a stack.
+Later, you can use <a href="elvisex.html#pop">:pop</a> to bring the cursor
+back to its original position.
+(There's also a <a href="elvisex.html#push">:push</a> command which saves
+the cursor position but does not perform a tag search.)
+
+<p>When Elvis is in <a href="elvisvi.html">visual command mode,</a> you can
+move the cursor onto a word and hit <a href="elvisvi.html#^CBRA">^]</a> to
+perform a <code>:tag</code> search on that current word, or
+<a href="elvisvi.html#^T">^T</a> to perform a <code>:pop</code> command.
+
+<p>If you have a mouse, then you can use the left button to double-click on a
+word in the text, to have Elvis perform a <code>:tag</code> search on that word.
+Double-clicking the right button anywhere in the text will perform a
+<code>:pop</code> command.
+
+<p>The uppercase <a href="elvisvi.html#K">K</a> command runs program on the
+word at the cursor position.
+The program is chosen by setting the
+<a href="elvisopt.html#keywordprg">keywordprg</a> option.
+By default, it runs the <a href="ref.man">ref</a> program, so the word's
+definition is displayed temporarily at the bottom of the screen.
+
+<h2><a name="TAGPATH"></a>14.5 The TAGPATH</h2>
+
+You can have tags files in several directories, and configure
+<a href="ref.man">ref</a> and Elvis to search the appropriate ones
+by setting the TAGPATH environment variable.
+The value of TAGPATH is a list of directories or tags files,
+delimited by either a ':' character (for UNIX)
+or a ';' character (for most other operating systems, including Microsoft's).
+
+<p>In a typical large project, you will have some directories which contain
+library functions, and some which contain the code for specific programs.
+With this arrangement, you would set TAGPATH to search the current directory
+followed by each of the library directories.
+Something like this...
+<pre>
+setenv TAGPATH=tags:/usr/src/libproj/tags:/usr/src/libio/tags</pre>
+<p>The exact syntax depends on your command interpreter.
+And of course the exact directory names will depend on your project.
+
+<p>When your current directory is one which contains the source code for
+some program, and you do a search for (as an example) "showitem", Elvis
+would look for it first in that program's tags file, and if it isn't
+found there then it'll look in each library's tags files until it does
+find it.
+The <code>ref</code> program searches the same way.
+
+<p>Actually, Elvis uses an option named <a href="elvisopt.html">tags</a>
+to store the search path.
+The default value of that option is taken from the TAGPATH environment variable,
+though.
+If you don't set TAGPATH (or the <code>tags</code> option),
+then Elvis will search only in the current directory.
+
+<p>The default path for <code>ref</code> is a little more sophisticated.
+That's because <code>ref</code> is intended to be general reference utility for
+all library functions, while Elvis' tags facility is mostly intended for
+navigating through the source code of a single program.
+
+<p>Note to system administrators:
+<code>ref</code> can be <em>so</em> handy that I suggest you make a tags file for
+the functions in your system's standard libraries.
+If licensing restrictions prevent you from making the library source code
+available to all users, then you should use <a href="ctags.man">ctags -r</a>
+to generate a "refs" file.
+If you don't have access to the library source code yourself, then perhaps
+you can make something useful from the lint libraries.
+
+<h2><a name="ENHANCED"></a>14.6 Enhanced tags</h2>
+
+The C++ programming language supports "overloading,"
+which means that different functions can have the same name.
+Since tag names are derived from function names, different tags will have
+the same name.
+This creates a problem because the tag name has traditionally been the only
+way to select a tag, so you could easily get the wrong one.
+Elvis' implementation of tags has some extra features to solve this problem.
+
+<p>There are two tactics for solving the problem.
+The first tactic is to be more selective; i.e., use information other than
+just the tag name to select tags.
+This definitely helps, but it is an absolute impossibility to resolve all
+such ambiguities prior to run-time, so we also need a second tactic:
+collect all possible tags into a list, and use heuristics or explicit hints
+from the user to sort the list so the most likely alternative is tried first,
+the second most likely if the first was rejected, and so on down the list.
+Elvis uses both tactics.
+
+<p>In the tags file, Elvis permits tags to have extra attributes.
+Each attribute has a name and a value.
+The first three fields are named <strong>tagname, tagfile</strong> and
+<strong>tagaddress.</strong>
+Those names are implicit; the names don't appear in the tags file, only the
+values do.
+
+<p>If a tag has any extra attributes, they will be appended to the tag line.
+In order to allow the original vi/ex to read tags files which have additional
+attributes, a semicolon-doublequote character pair is appended to the
+tagaddress, before the first extra attribute.
+Due to an undocumented quirk of the original vi/ex,
+this will cause vi/ex to ignore the remainder of the line.
+The extra attributes will not adversely affect the behavior of the original vi/ex.
+
+<p>The extra attributes have explicit names.
+In the tags file, the extra attributes are generally given in the form
+<kbd>&lt;TAB&gt;</kbd><var>name</var><kbd>:</kbd><var>value</var>.
+Different tags may have different extra attributes; many will have no
+extra attributes at all.
+The attributes may appear in a different sequence for each tag.
+
+<p>In a single tags file, Elvis supports up to 10 distinct attribute names
+-- the 3 implicit names for the standard fields, plus up to 7 explicit
+names for extra attributes.
+(This is a limitation of Elvis, not the enhanced tag format.)
+
+<p>The name can be any series of letters or digits.
+Lowercase letters are preferred.
+
+<p>The value can contain any character except NUL.
+Any backslash, tab, or newline characters should be stored as
+<kbd>\\</kbd>, <kbd>\t</kbd>, or <kbd>\n</kbd>, respectively.
+
+<p>If an extra attribute has a value but no name or colon, then the name is
+understood to be "kind".
+
+<p>The extra attributes are intended to describe the contexts in which the
+corresponding program symbol can appear.
+Typically the name is a type of lexical scope,
+and the value is the name of that scope;
+e.g., "function:init" for a tag which is only defined inside the init() function.
+Elvis can use these as hints to figure out which tags might make sense in
+the current context, and ignore those that don't.
+Although the extra attributes have no preset names,
+the following names are recommended:
+<dl>
+<dt>kind
+<dd>The value is a single letter which indicates the lexical type of the tag.
+It can be "f" for a function, "v" for a variable, and so on.
+
+<p>Note that since the default attribute name is <strong>kind</strong>,
+a solitary letter can denote the tag's type
+(e.g, "<strong>f</strong>" for a function).
+
+<dt>file
+<dd>For tags which are "static", i.e., local to the file.
+The value should be the name of the file.
+
+<p>If the value is given as an empty string (just "<strong>file:</strong>"),
+then it is understood to be the same as the <strong>tagfile</strong> field;
+this special case was added partly for the sake of compactness, and partly
+to provide an easy way handle <code>tags</code> files that aren't in the
+current directory.
+The value of the <strong>tagfile</strong> field always relative to the
+directory in which the tags file itself resides.
+
+<dt>function
+<dd>For local variables.
+The value is the name of function in which they're defined.
+
+<dt>struct
+<dd>For fields in a struct.
+The value is the name of the struct.
+If it has no name (not even a typedef) then
+<strong>struct:struct</strong> is better than nothing.
+
+<dt>enum
+<dd>For values in an enum data type.
+The value is the name of the enum type.
+If it has no name (not even a typedef) then
+<strong>enum:enum</strong> is better than nothing.
+
+<dt>class
+<dd>For member functions and variables.
+The value is the name of the class.
+
+<dt>scope
+<dd>Intended mostly for class member functions.
+It will usually be "private" for private members,
+or omitted for public members,
+so users can restrict tag searches to only public members.
+
+<dt>arity
+<dd>For functions.  The number of arguments.
+
+</dl>
+
+<p>The <a href="ctags.man">ctags</a> program has been hacked slightly to
+support some of these, but not all.
+Its new <kbd>-h</kbd> flag enables generation of the extra hint attributes;
+if you invoke <strong>ctags</strong> without any flags, then <kbd>-h</kbd>
+is one of the flags that it uses by default.
+For example, the usual command for generating tags for all source files
+in the current directory is...
+<pre>
+ctags *.c *.cpp *.h</pre>
+
+<p>The current hacked-up <code>ctags</code> distributed with <code>elvis</code>
+will only generate <strong>file</strong> and <strong>class</strong> hints,
+and even <strong>class</strong> isn't as effective as one might hope.
+
+<p>Some pseudo-tags may be inserted at the top of the tags file,
+to describe the characteristics of that particular tags file.
+These tags all begin with a "!_" so that even if the tags are sorted,
+the pseudo-tags will always appear at the top of the file.
+The pseudo-tags all use the old tags format, so they can be parsed (and then
+ignored) by older tag reading programs.
+<pre>
+!_TAG_FILE_FORMAT       2       /supported features/
+!_TAG_FILE_SORTED       1       /0=unsorted, 1=sorted/
+</pre>
+The <code>!_TAG_FILE_FORMAT</code> pseudo-tag's <strong>tagfile</strong>
+field is 2 for new-style tags, or 1 for old-style tags.
+The <code>!_TAG_FILE_SORTED</code> pseudo-tag's <strong>tagfile</strong>
+field is 1 if sorted, or 0 if unsorted.
+The <strong>tagaddress</strong> field is used simply as a comment in both tags.
+If these tags are missing from a tags file, then the file is assumed to be
+in the new format (which is still backwards compatible with the old format),
+and sorted.  If a tags file is unsorted then it <em>must</em> contain a
+<code>!_TAG_FILE_SORTED</code> field indicating that.
+
+<p>These may be followed by more pseudo-tags describing the <code>ctags</code>
+program itself.
+Elvis' version of <code>ctags</code> produces the following information:
+<pre>
+!_TAG_PROGRAM_AUTHOR    Steve Kirkendall        /kirkenda@cs.pdx.edu/
+!_TAG_PROGRAM_NAME      Elvis Ctags     //
+!_TAG_PROGRAM_URL       ftp://ftp.cs.pdx.edu/pub/elvis/README.html  //
+!_TAG_PROGRAM_VERSION   2.2     //
+</pre>
+
+<p>The new tags file format also addresses another limitation of the old format:
+the old format allows fields to be delimited with any whitespace.
+This is a problem because space characters are becoming more common in
+file names these days, so we occasionally need to put spaces into the
+<strong>tagfile</strong> field.
+To support this, the new format dictates that fields must be delimited by a single
+tab character, <em>not spaces</em>.
+This shouldn't cause any backward compatibility problems because traditionally
+<code>ctags</code> has always used tab as the delimiter.
+
+<p>Also, the interpretation of the <strong>tagaddress</strong> field has
+been refined.
+Traditionally, it has been defined as either a line number or a
+<a href="elvisopt.html#magic">nomagic</a>
+<a href="elvisre.html">regular expression</a>,
+but it has actually been implemented in vi/ex to support <em>any</em> ex command
+there.
+Supporting any command could produce a security hole, so the new format
+only supports addresses.
+It supports more complex addresses though, because they can be useful
+in some circumstances.
+For example, the tag line for a "<code>val</code>" field in a struct
+named "<code>item_s</code>" could look like...
+<pre>
+val     file.h  /^struct item_s {$/;/^  int val;$/   struct:item_s
+</pre>
+... which would allow the editor to skip past any "int&nbsp;val;" definitions
+in other structs, to find the correct "int&nbsp;val;" in the <code>item_s</code>
+struct.
+
+<p>This form of tags file is also supported by Darren Hiebert's
+<a href="http://fly.hiwaay.net/~darren/ctags.html">Exuberant ctags</a> and by
+<a href="ftp://ftp.oce.nl/pub/misc/vim">Vim</a>, in addition to Elvis.
+
+<p>If you ever need to convert a new-style tags file back to the old style,
+you can do so via the <a href="ref.man">ref</a> utility.
+Run it like this:
+<pre>
+	ref -ta &gt;oldtags</pre>
+
+<h2><a name="HINTS"></a>14.5 Restrictions and hints</h2>
+
+The syntax of the <a href="elvisex.html#tag">:tag</a> command has been
+extended.
+Previously you could only supply a single <strong>tagname</strong> value
+to search for.
+Now you can supply multiple acceptable values for any attribute, and control
+what happens when a given tag lacks a requested attribute.
+
+<p>The arguments of the <code>:tag</code> command are now
+whitespace-delimited expressions of the following forms, to define a set
+of restrictions that possible tags must meet to be selected:
+<dl>
+<dt><var>name</var>:<var>value</var>
+<dd>Reject tags which have an attribute named "name",
+but that attribute's value isn't in the list of acceptable values.
+E.g., "file:foo.c" accepts global tags, or tags which are static to the
+file "foo.c", but rejects tags which are static to other files.
+
+<dt><var>name</var>:=<var>value</var>
+<dd>Reject tags which have an attribute named "name" attribute,
+but that attribute's value isn't in the list of acceptable values.
+Also reject tags which don't have a "name" attribute.
+E.g., "class:=Foo" only accepts tags which have class "Foo".
+
+<dt><var>name</var>:/<var>value</var>
+<dd>Like <var>name</var>:<var>value</var> except that when a tag has no
+attribute named <var>name</var> then the <strong>tagaddress</strong>
+attribute's value is required to contain <var>value</var> as a substring.
+"class:/Foo" would find tags in class "Foo"
+PLUS global tags whose address mentions "Foo"
+-- probably friends of the Foo class.
+
+<dt><var>value</var>
+<dd>Short for <strong>tagname</strong>:<var>value</var>.
+
+</dl>
+
+<p>The parser also allows you to add some sorting hints to the command line.
+These hints are added to the history that Elvis uses to guess
+which overloaded tag to list first.
+
+<dl>
+
+<dt><var>name</var>:+<var>value</var>
+<dd>If a tag has an attribute with the given name and value, then
+cause it to appear near the beginning of the sorted list.
+I.e., tags with this name and value are more likely to be the intended tag,
+but you can't be certain.
+
+<dt><var>name</var>:-<var>value</var>
+<dd>If a tag has an attribute with the given name and value, then
+cause it to appear near the end of the sorted list.
+I.e., tags with this name and value are less likely to be the intended tag,
+but you can't be certain.
+
+</dl>
+
+<p>All of these restriction expressions and the sorting hint expressions
+allow you to give multiple acceptable values.
+You can either give each value in a separate expression,
+or give a comma-delimited list of values to a single expression.
+
+<p>A null value string matches anything.
+So "struct:=" would accept any tag with a "struct" attribute,
+and reject those without it.
+This would be handy when you're trying to do tag lookup for a word which
+follows a '.' character --
+you know it is a field name, but you don't know which struct type.
+
+<p>The <code>:tag</code> command automatically adds a
+<strong>file</strong>:<var>filename</var> restriction
+(where <var>filename</var> is the name of the file being edited in the
+current window)
+to any tag search you request.
+This causes it to ignore tags which are static to other files.
+The <a href="elvisex.html#browse">:browse</a> command doesn't do that.
+See the <a href="#BROWSE">Browsing</a> section, below.
+
+<h2><a name="HISTORY"></a>14.6 History</h2>
+
+The sorting hints are persistent.
+They aren't forgotten immediately after a tag search;
+a hint from one search will influence the sorting order for following searches.
+The degree of influence is weighted, so more recent hints will have
+more influence than older hints.
+Eventually, each hint's weighting factor drops to zero, and the hint is
+forgotten only then.
+The history uses two lists of name/value pairs: one for storing recent
+successes, and one for recent failures.
+
+<p>While searching for a tag, Elvis builds a list of tags which matched the
+restrictions.
+That list is sorted primarily by the <strong>tagname</strong> attribute's
+value, but when multiple tags have the same name, Elvis looks for the
+attributes of those tags in the lists of successes and failures, and uses
+the weights of any matches to compute the likelyhood that a particular
+tag is the one that the user really wants.
+The more likely tags are inserted into the list before any less likely tags
+with the same name.
+
+<p>Expressions of the form <var>name</var>:+<var>value</var> add a name/value
+pair to the success list, and expressions of the form
+<var>name</var>:-<var>value</var> add a name/value to the failure list.
+Name/value pairs are also added automatically in the following circumstances:
+<ul>
+<li>If you perform a tag search on the same name twice in a row, then Elvis
+assumes you're rejecting the first tag that it found.
+The attributes of that tag are added to the failure list.
+<li>If you perform a tag search on a different name, then Elvis
+assumes that the previous tag must have been the right one, so its attributes
+are added to the success list.
+</ul>
+
+<p>It should be stressed that the tag history has no effect on which tags are
+selected from the tags file.
+It only affects the order in which they're presented, if more than one tag
+meets your restrictions.
+
+<h2><a name="BROWSE"></a>14.7 Browsing</h2>
+
+The result of any tag search is always a list of matching tags.
+The <code>:tag</code> command keeps this list hidden, and moves the cursor to
+the single most likely member of that list.
+This is not always the best way to select a tag.
+
+<p>Elvis has a <a href="elvisex.html#browse">:browse</a> command which
+performs a tag search, and then builds an HTML document from the list.
+The document shows all tags which matched your search criteria; the
+current window will then switch to this document.
+There is also a <a href="elvisex.html#sbrowse">:sbrowse</a> command
+which displays the same document in a new window.
+
+<p>The arguments to <code>:browse</code> differ from <code>:tag</code> in the
+following ways:
+<ul>
+<li><code>:browse</code> does <strong>not</strong> automatically add any
+restrictions.
+(<code>:tag</code> adds <strong>file</strong>:<var>filename</var> to each search.)
+<li>If you invoke <code>:browse</code> with no arguments, Elvis will
+assume you wanted <strong>tagfile</strong>:<var>filename</var>,
+where <var>filename</var> is the name of the file being edited in the
+current window.
+<li>If you invoke <code>:browse</code> with a single argument, Elvis first
+tries to interpret it as a restriction or sorting hint in the normal way.
+But if that search yields no tags, Elvis may retry the search using your
+argument as a file name (<strong>tagfile</strong>:<var>argument</var>), or
+as a class name (<strong>class</strong>:/<var>argument</var>).
+</ul>
+
+<p>By default, <code>:browse</code> only searches through the "tags" file
+in the current directory.  When invoked as <code>:browse!</code> (with a "!"
+suffix) it collects matching tags from all "tags" files as specified by the
+<a href="elvisopt.html#tags">tags</a> option.
+
+<p>Here are some examples of <code>:browse</code> commands.
+<dl>
+<dt><code>:browse term</code>
+<dd>Show all tags named "term"
+<dt><code>:browse</code>
+<dd>Show all tags defined in the current file.
+<dt><code>:browse foo.c</code>
+<dd>Show all tags defined in the file "foo.c".
+<dt><code>:browse tagname:=</code>
+<dd>Show all tags which have a <strong>tagname</strong> attribute.
+Since all tags have a <strong>tagname</strong> attribute, this shows
+every tag in the tags file.
+<dt><code>:browse class:/DbItem</code>
+<dd>Show all tags in the DbItem class, or friend functions of that class.
+It may also include some non-friend functions which merely use DbItem,
+but there's no easy way to avoid that.
+<dt><code>:browse DbItem</code>
+<dd>If there is a tag named DbItem, then show it.
+Otherwise this is the same as <code>:browse class:/DbItem</code>
+</dl>
+<p>Each matching tag in the generated document has a hypertext link to the
+point in your source where the corresponding symbol is defined.
+By following the hypertext link, you can go directly to the appropriate
+point in your source code.
+As usual, the tag stack can be used to <code>:pop</code> back to the same browser
+document, from which you may then proceed to a different tag, or <code>:pop</code>
+back one more level to wherever the cursor was located before you gave the
+<code>:browse</code> command.
+
+<p><a name="elvis.bro"></a>
+If you wish, you can define your own format for the browser document.
+Elvis searches through the <a href="elvisopt.html#elvispath">elvispath</a>
+for a file named "elvis.bro".
+If found, then blank lines in it will be used to delimit it into three
+sections:
+<ul>
+<li>Everything before the first blank line is the header.
+It is copied into the start of each browser document.
+$1 is replaced by the command line arguments,
+and $2 is replaced by the number of matching tags found.
+This is a straight-forward text substitution, not an evaluation like
+the following section...
+<li>Everything between the first blank line and the last blank line is
+repeated for each tag.
+For each tag, it is evaluated using the
+<a href="elvisexp.html#SIMPLER">simpler syntax,</a> with
+$1 being replaced by the <strong>tagname,</strong>
+$2 by the <strong>tagfile,</strong>
+$3 by the line text extracted from the <strong>tagaddress,</strong> and
+$4 by a URL combining the <strong>tagfile</strong>
+and <strong>tagaddress</strong> attributes.
+You can also use parentheses to enclose more complex expressions.
+<li>Everything after the last blank line is the trailer.
+It it copied into the browser document literally.
+</ul>
+
+<p>The <a href="ref.man">ref -ha <var>restrictions...</var></a> program
+generates a similar HTML document.
+It always interprets its arguments as restrictions, and the format of
+the HTML document can't be reconfigured.
+Those are the only differences.
+
+<h2><a name="TAGPRG"></a>14.8 The tagprg option</h2>
+
+As an alternative to Elvis' "restrictions" method for finding tags,
+you can set the <a href="elvisopt.html#tagprg">tagprg</a> option to a
+shell command line which locates the tags.
+
+<p>When you give a <a href="elvisex.html#tag">:tag</a> command,
+Elvis evaluates the <code>tagprg</code> option's value using the
+<a href="elvisexp.html#SIMPLER">simpler expression syntax.</a>
+Any instance of <strong>$1</strong> in the value will be replaced with the
+command-line arguments.  Also, any text inside parentheses will be evaluated;
+this gives you a way to access other options' values, so you can do things
+like pass the value of the <a href="elvisopt.html">tags</a> option to the
+program so it knows which tags files to search through.
+
+<p>The resulting string is then executed, and its output is parsed as though
+it was a tags file.  All of the tags that it outputs are considered to be
+matches, since using <code>tagprg</code> disables the use of restrictions.
+
+<p>Elvis builds a list of the matches, and sorts them using the same history
+mechanism that is uses with restrictions.  However, the "name:+value" and
+"name:-value" sorting hints are not detected in the arguments.
+
+<p>Once the list has been built, Elvis moves the cursor to the first match.
+You can step through all matches in the list by hitting
+<a href="elvisvi.html#^cbra">^]</a> or by giving the
+<a href="elvisex.html#tag">:ta</a> command with no arguments, as usual.
+
+<p>Note that the program's output should be in the standard tags file format.
+At a minimum, this means "tagname TAB filename TAB address".
+If you want to use a function searching program that uses a different format,
+you'll need to pipe its output through a custom-made filter that converts
+its output to the standard tags format.
+
+<p>One common technique is to use the <a href="elvisex.html#local">:local</a>
+command in an <a href="elvistip.html#ALIAS">alias</a>, to set
+<code>tagprg</code> temporarily for a single search.
+The <a href="elvistip.html#text">:text</a> alias in
+<code>lib/elvis.ali</code> is an example of this.
+
+</body></html>

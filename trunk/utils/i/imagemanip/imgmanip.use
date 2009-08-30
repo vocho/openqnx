@@ -1,0 +1,54 @@
+%C - Manipulate image files
+%C is a general purpose utility used to convert one layout of
+raw binary file into another.  Its primary purpose is to convert boot
+image files into images suitable for flash chips, but has many other uses.
+
+Usage: %C [options]
+
+Input File Options:
+ -i inputfile       Input image file
+ -p char            Input pseudo-file which only contains pad character
+
+Output File Options:
+ -o outputfile      Output image file
+ -d                 Output pseudo-file which discards all output
+
+File Control Options (-m & -c apply to ALL subsequent input/output files, not just next):
+ -m maxsize         Sets maximum in/out size to <maxsize> bytes
+                      -m0 means no size limit (default)
+ -c count           Sets num bytes read/written before cycling to next in/out
+                      -c0 means exhaust current file before cycling (default)
+ -e number          Endian: # bytes (1,2,4,8) to swap during read/write
+                      -e1 means do not perform endian swapping (default)
+
+ Sizes are of the form <n>[K|M|G] to specify <n> bytes, kilobytes, megabytes,
+ or gigabytes.  Use [bits] after any to specify in bits instead of bytes.
+
+General Options:
+ -v                 Verbose mode; prints warnings of unconsumed data
+ -vv                Extra verbose: reports capacities and consumption
+ -vvv               Super verbose; prints all arguments
+
+Examples:
+
+ # Split 16MB image file into two 8MB files
+ %C -i whole16mb.img -m 8M -o first8mb.img -o second8mb.img
+
+ # Combine above two half flash images back into one
+ %C -i first8mb.img -i second8mb.img -o whole16mb.img
+
+ # Split 16MB image into two 8MB files, the first supplying the low 16-bits
+ # and the second the high 16-bits for a 32-bit bus
+ %C -i whole16mb.img -m 8M -c 16bits -o low16bits.img -o high16bits.img
+
+ # Combine above two low/high flash images back into one
+ %C -c 16bits -i low16bits.img -i high16bits.img -o whole16mb.img
+
+ # Pad file to 4 megabits with FF characters
+ %C -i input.img -p 0xFF -m 4Mbits -o output.img
+
+ # Pad a text file to 256 bytes, interleaving zeros to convert ANSI to Unicode
+ %C -c 1 -i readme.ansi -p 0 -m 256 -o readme.unicode
+
+ # Extract the middle 32K in big endian format from a 96K little-endian file
+ %C -i le96k.bin -m 32K -d -e4 -o be32k.bin -d

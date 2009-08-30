@@ -1,0 +1,33 @@
+# This file overrides configure determined values.
+# In case of cross-compilation, some host capabilities 
+# can not be checked. 
+# This file overrdies them.
+# 
+#
+
+#  QNX cross compiled binary.
+#
+#  undef GETTIMEOFDAY_CLOBBERS_LOCALTIME
+gl_cv_func_gettimeofday_clobber=no
+#  undef CHOWN_FAILS_TO_HONOR_ID_OF_NEGATIVE_ONE 1
+ac_cv_func_chown_works=yes
+#  define D_INO_IN_DIRENT 1
+gl_cv_struct_dirent_d_ino=yes
+#  define HAVE_CHOWN
+ac_cv_func_chown_works=yes
+#  define HAVE_UTIME_NULL = 1
+ac_cv_func_utime_null=yes
+#  define HAVE_WORKING_UTIMES 1
+gl_cv_func_working_utimes=yes
+#  define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
+ac_cv_func_lstat_dereferences_slashed_symlink=yes
+#  define HAVE_MALLOC
+ac_cv_func_malloc_0_nonnull=yes
+#  undef malloc
+gl_cv_func_malloc_0_nonnull=1
+#  undef CLOSEDIR_VOID
+ac_cv_func_closedir_void=no
+#  define HAVE_FNMATCH
+ac_cv_func_fnmatch_works=yes
+#  define HAVE_MMAP
+ac_cv_func_mmap_fixed_mapped=yes

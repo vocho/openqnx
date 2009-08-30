@@ -1,0 +1,63 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: Rewritten incremental backup support (2006-05-08)
+# missed initialization of all struct directory members in make_directory,
+# which lead to random core dumps.
+# Reported by Sergey Myasnikov <tigra@sw.ru>.  This testcase uses original
+# script provided by him.
+# References: <1148669592.5127.81.camel@tigra.sw.ru>
+#             http://lists.gnu.org/archive/html/bug-tar/2006-05/msg00038.html
+
+AT_SETUP([proper icontents initialization])
+AT_KEYWORDS([incremental incr04 icontents])
+
+m4_define([NAME_PREFIX],[a/b/one_31_chars_long_file_name_])
+
+AT_TAR_CHECK([
+AT_TAR_MKHIER(a/b)
+awk 'BEGIN {
+  for (i=1;i<=142;i++)
+    printf("NAME_PREFIX[%03d]\n", i);
+  }' < /dev/null | genfile --files-from -
+
+echo "Initial dump"
+tar cvf a0.tar -g a.sna a
+mv a/b a/c
+echo "Incremental dump"
+tar cvf a1.tar -g a.sna a
+],
+[0],
+[Initial dump
+a/
+a/b/
+m4_for(I,1,142,1,[NAME_PREFIX[]m4_if(m4_len(I),1,00,m4_len(I),2,0)I
+])dnl
+Incremental dump
+a/
+a/c/
+],
+[tar: a/b: Directory is new
+tar: a/c: Directory has been renamed from `a/b'
+],[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of incr04.at

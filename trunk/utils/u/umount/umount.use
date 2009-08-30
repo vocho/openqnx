@@ -1,0 +1,6 @@
+%C [-v] [-f] path [path ...]
+
+Where:
+    path - The root mountpoint to be unmounted
+    -f   - Forces an unmount 
+    -v   - Add verbosity

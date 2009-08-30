@@ -1,0 +1,252 @@
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: invalid backreference number
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: empty (sub)expression
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr regex error: empty (sub)expression
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+expr regex error: invalid backreference number
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr regex error: invalid backreference number
+Retval = 2
+expr regex error: empty (sub)expression
+Retval = 2
+expr regex error: empty (sub)expression
+Retval = 2
+expr regex error: empty (sub)expression
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 0
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+expr regex error: parentheses not balanced
+Retval = 2
+expr regex error: parentheses not balanced
+Retval = 2
+expr regex error: parentheses not balanced
+Retval = 2
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+expr error: invalid syntax
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+Retval = 0
+Retval = 0
+Retval = 0
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+expr error: invalid syntax
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 0
+Retval = 1
+expr regex error: parentheses not balanced
+Retval = 2
+Retval = 1
+Retval = 0
+Retval = 1
+Retval = 1
+expr regex error: invalid backreference number
+Retval = 2
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1
+Retval = 1

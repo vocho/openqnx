@@ -1,0 +1,21 @@
+#
+# arm/util.ah
+#
+#  Copyright by QNX Software Systems Limited 2001. All rights reserved.
+#
+.ifndef ARM_UTIL_AH_INCLUDED
+.set ARM_UTIL_AH_INCLUDE,1
+
+.macro routine_start name, flags
+	.if ((&flags) \(&) 0x1) <> 0
+		.globl &name
+	.endif
+	&name:
+.endm
+
+.macro routine_end name
+@	.size &name,.-(&name)
+@	.type &name,@function
+.endm
+
+.endif

@@ -1,0 +1,687 @@
+/*
+ * Copyright 1996 John D. Polstra.
+ * Copyright 1996 Matt Thomas <matt@3am-software.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *      This product includes software developed by John Polstra.
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * Copyright (c) 1983 Regents of the University of California.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+#include <sys/cdefs.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include "ldd.h"
+
+static void*
+xmemcpy(void *dst, const void *src, size_t nbytes) {
+    char            *d = dst;
+    const char      *s = src;
+
+    while(nbytes--) {
+        *d++ = *s++;
+    }
+    return dst;
+}
+
+static void*
+xmemset(void *s, int c, size_t n) {
+    char                *p = s;
+
+    while(n--) {
+        *p++ = c;
+    }
+    return s;
+}
+
+static int
+xstrcmp( const char *s1, const char *s2 ) {
+    unsigned char   c1;
+    unsigned char   c2;
+    int             diff;
+
+    for( ;; ) {
+        c1 = *s1;
+        c2 = *s2;
+        diff = c1 - c2;
+        if( diff != 0 ) return( diff );
+        if( c1 == '\0' ) return( 0 );
+        ++s1;
+        ++s2;
+    }
+}
+
+static size_t
+xstrlen(const char *str) {
+    const char *is;
+
+    for (is = str; *is != '\0'; is++)
+        ; /* do nothing */
+    return (is - str);
+}
+
+
+
+#define	SZ_LONG		0x01
+#define	SZ_UNSIGNED	0x02
+#define SZ_SIZE_T	0x04
+
+/*
+ * Non-mallocing printf, for use by malloc and rtld itself.
+ * This avoids putting in most of stdio.
+ *
+ * deals withs formats %x, %p, %s, and %d.
+ */
+static size_t
+xvsnprintf(char *buf, size_t buflen, const char *fmt, va_list ap)
+{
+	char *bp = buf;
+	char *const ep = buf + buflen - 4;
+	int size, prec;
+
+	while (*fmt != '\0' && bp < ep) {
+		switch (*fmt) {
+		case '\\':{
+			if (fmt[1] != '\0')
+				*bp++ = *++fmt;
+			continue;
+		}
+		case '%':{
+			size = 0;
+			prec = -1;
+	rflag:		switch (fmt[1]) {
+			case '*':
+				prec = va_arg(ap, int);
+				/* FALLTHROUGH */
+			case '.':
+				fmt++;
+				goto rflag;
+			case 'l':
+				size |= SZ_LONG;
+				fmt++;
+				goto rflag;
+			case 'z':
+				size |= SZ_SIZE_T;
+				fmt++;
+				goto rflag;
+			case 'u':
+				size |= SZ_UNSIGNED;
+				/* FALLTHROUGH */
+			case 'd':{
+				long sval;
+				unsigned long uval;
+				char digits[sizeof(int) * 3], *dp = digits;
+#define	SARG() \
+(size & SZ_LONG ? va_arg(ap, long) : \
+((size & SZ_SIZE_T ? va_arg(ap, size_t) : \
+va_arg(ap, int))))
+#define	UARG() \
+(size & SZ_LONG ? va_arg(ap, unsigned long) : \
+((size & SZ_SIZE_T ? va_arg(ap, size_t) : \
+va_arg(ap, unsigned int))))
+#define	ARG()	(size & SZ_UNSIGNED ? UARG() : SARG())
+
+				if (fmt[1] == 'd') {
+					sval = ARG();
+					if (sval < 0) {
+						if ((sval << 1) == 0) {
+							/*
+							 * We can't flip the
+							 * sign of this since
+							 * it can't be
+							 * represented as a
+							 * positive number in
+							 * two complement,
+							 * handle the first
+							 * digit. After that,
+							 * it can be flipped
+							 * since it is now not
+							 * 2^(n-1).
+							 */
+							*dp++ = '0'-(sval % 10);
+							sval /= 10;
+						}
+						*bp++ = '-';
+						uval = -sval;
+					} else {
+						uval = sval;
+					}
+				} else {
+					uval = ARG();
+				}
+				do {
+					*dp++ = '0' + (uval % 10);
+					uval /= 10;
+				} while (uval != 0);
+				do {
+					*bp++ = *--dp;
+				} while (dp != digits && bp < ep);
+				fmt += 2;
+				break;
+			}
+			case 'x':
+			case 'p':{
+				unsigned long val = va_arg(ap, unsigned long);
+				unsigned long mask = ~(~0UL >> 4);
+				int bits = sizeof(val) * 8 - 4;
+				const char hexdigits[] = "0123456789abcdef";
+				if (fmt[1] == 'p') {
+					*bp++ = '0';
+					*bp++ = 'x';
+				}
+				/* handle the border case */
+				if (val == 0) {
+					*bp++ = '0';
+					fmt += 2;
+					break;
+				}
+				/* suppress 0s */
+				while ((val & mask) == 0)
+					bits -= 4, mask >>= 4;
+
+				/* emit the hex digits */
+				while (bits >= 0 && bp < ep) {
+					*bp++ = hexdigits[(val & mask) >> bits];
+					bits -= 4, mask >>= 4;
+				}
+				fmt += 2;
+				break;
+			}
+			case 's':{
+				const char *str = va_arg(ap, const char *);
+				int len;
+
+				if (str == NULL)
+					str = "(null)";
+
+				if (prec < 0)
+					len = xstrlen(str);
+				else
+					len = prec;
+				if (ep - bp < len)
+					len = ep - bp;
+				xmemcpy(bp, str, len);
+				bp += len;
+				fmt += 2;
+				break;
+			}
+			case 'c':{
+				int c = va_arg(ap, int);
+				*bp++ = (char)c;
+				fmt += 2;
+				break;
+			}
+			default:
+				*bp++ = *fmt;
+				break;
+			}
+			break;
+		}
+		default:
+			*bp++ = *fmt++;
+			break;
+		}
+	}
+
+	*bp = '\0';
+	return bp - buf;
+}
+
+static void
+xvprintf(const char *fmt, va_list ap)
+{
+	char buf[256];
+
+	(void) write(STDERR_FILENO, buf, xvsnprintf(buf, sizeof(buf), fmt, ap));
+}
+
+static void
+xprintf(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	xvprintf(fmt, ap);
+
+	va_end(ap);
+}
+
+static void
+xsnprintf(char *buf, size_t buflen, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	xvsnprintf(buf, buflen, fmt, ap);
+
+	va_end(ap);
+}
+
+static const char *
+xstrerror(int error)
+{
+
+	if (error >= sys_nerr || error < 0) {
+		static char buf[128];
+		xsnprintf(buf, sizeof(buf), "Unknown error: %d", error);
+		return buf;
+	}
+	return sys_errlist[error];
+}
+
+static void LDD_C_USEAGE_ATTRIBUTE
+xerrx(int eval, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	xvprintf(fmt, ap);
+	va_end(ap);
+	(void) write(STDERR_FILENO, "\n", 1);
+
+	exit(eval);
+}
+
+static void
+xerr(int eval, const char *fmt, ...)
+{
+	int saved_errno = errno;
+	va_list ap;
+
+	va_start(ap, fmt);
+	xvprintf(fmt, ap);
+	va_end(ap);
+
+	xprintf(": %s\n", xstrerror(saved_errno));
+	exit(eval);
+}
+
+static void
+xwarn(const char *fmt, ...)
+{
+	int saved_errno = errno;
+	va_list ap;
+
+	va_start(ap, fmt);
+	xvprintf(fmt, ap);
+	va_end(ap);
+
+	xprintf(": %s\n", xstrerror(saved_errno));
+	errno = saved_errno;
+}
+
+static void
+xwarnx(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	xvprintf(fmt, ap);
+	va_end(ap);
+	(void) write(STDERR_FILENO, "\n", 1);
+}
+
+/*
+ * malloc.c (Caltech) 2/21/82
+ * Chris Kingsley, kingsley@cit-20.
+ *
+ * This is a very fast storage allocator.  It allocates blocks of a small
+ * number of different sizes, and keeps free lists of each size.  Blocks that
+ * don't exactly fit are passed up to the next larger size.  In this
+ * implementation, the available sizes are 2^n-4 (or 2^n-10) bytes long.
+ * This is designed for use in a virtual memory environment.
+ */
+
+
+/*
+ * Pre-allocate mmap'ed pages
+ */
+#define LDD_PAGESIZE	__PAGESIZE
+#define	NPOOLPAGES	(32*1024/LDD_PAGESIZE)
+
+static caddr_t		pagepool_start, pagepool_end;
+
+/*
+ * The overhead on a block is at least 4 bytes.  When free, this space
+ * contains a pointer to the next free block, and the bottom two bits must
+ * be zero.  When in use, the first byte is set to MAGIC, and the second
+ * byte is the size index.  The remaining bytes are for alignment.
+ * If range checking is enabled then a second word holds the size of the
+ * requested block, less 1, rounded up to a multiple of sizeof(RMAGIC).
+ * The order of elements is critical: ov_magic must overlay the low order
+ * bits of ov_next, and ov_magic can not be a valid ov_next bit pattern.
+ */
+union	overhead {
+	union	overhead *ov_next;	/* when free */
+	struct {
+		u_char	ovu_magic;	/* magic number */
+		u_char	ovu_index;	/* bucket # */
+	} ovu;
+#define	ov_magic	ovu.ovu_magic
+#define	ov_index	ovu.ovu_index
+#define	ov_rmagic	ovu.ovu_rmagic
+#define	ov_size		ovu.ovu_size
+};
+
+#define	MAGIC		0xef		/* magic # on accounting info */
+
+/*
+ * nextf[i] is the pointer to the next free block of size 2^(i+3).  The
+ * smallest allocatable block is 8 bytes.  The overhead information
+ * precedes the data area returned to the user.
+ */
+#define	NBUCKETS 30
+static	union overhead *nextf[NBUCKETS];
+static	pthread_mutex_t	ldd_xmalloc_mux = PTHREAD_MUTEX_INITIALIZER;
+#define ldd_xmalloc_lock()	if(pthread_mutex_lock(&ldd_xmalloc_mux) != EOK) \
+	{ xwarn("Mutex lock failed %d\n", __LINE__); }
+#define ldd_xmalloc_unlock()	if(pthread_mutex_unlock(&ldd_xmalloc_mux) != EOK) \
+	{ xwarn("Mutex unlock failed %d\n", __LINE__); }
+
+
+/* assumes the free block/bucket list is already locked */	
+static int
+morepages(int n) {
+	int	offset;
+
+	if (pagepool_end - pagepool_start > LDD_PAGESIZE) {
+		caddr_t	addr = (caddr_t)
+			(((long)pagepool_start + LDD_PAGESIZE - 1) & ~(LDD_PAGESIZE - 1));
+		if (ldd_munmap(addr, pagepool_end - addr) != 0)
+			xwarn("morepages: munmap %p", addr);
+	}
+
+	offset = (long)pagepool_start - ((long)pagepool_start & ~(LDD_PAGESIZE - 1));
+
+	if ((pagepool_start = ldd_mmap(0, n * LDD_PAGESIZE,
+			PROT_READ|PROT_WRITE,
+			MAP_ANON|MAP_PRIVATE, -1, 0)) == (caddr_t)-1) {
+		xwarn("Cannot map %d pages of anonymous memory",n);
+		return 0;
+	}
+	pagepool_end = pagepool_start + n * LDD_PAGESIZE;
+	pagepool_start += offset;
+
+	return n;
+}
+
+/*
+ * Allocate more memory to the indicated bucket.
+ * Assumes the block list is already locked
+ */
+static void
+morecore(int bucket) {
+  	register union overhead *op;
+	register int sz;		/* size of desired block */
+  	int amt;			/* amount to allocate */
+  	int nblks;			/* how many blocks we get */
+
+	/*
+	 * sbrk_size <= 0 only for big, FLUFFY, requests (about
+	 * 2^30 bytes on a VAX, I think) or for a negative arg.
+	 */
+	sz = 1 << (bucket + 3);
+	if (sz <= 0)
+		return;
+	if (sz < LDD_PAGESIZE) {
+		amt = LDD_PAGESIZE;
+  		nblks = amt / sz;
+	} else {
+		amt = sz + LDD_PAGESIZE;
+		nblks = 1;
+	}
+	if (amt > pagepool_end - pagepool_start)
+		if (morepages(amt/LDD_PAGESIZE + NPOOLPAGES) == 0)
+			return;
+	op = (union overhead *)pagepool_start;
+	pagepool_start += amt;
+
+	/*
+	 * Add new memory allocated to that on
+	 * free list for this hash bucket.
+	 */
+  	nextf[bucket] = op;
+  	while (--nblks > 0) {
+		op->ov_next = (union overhead *)((caddr_t)op + sz);
+		op = (union overhead *)((caddr_t)op + sz);
+  	}
+}
+
+static void *
+imalloc(size_t nbytes) {
+	static unsigned first_time = 1;
+	static	int pagebucket;			/* page size bucket */
+  	register union overhead *op;
+  	register int bucket;
+	register long n;
+	register unsigned amt;
+
+	/*
+	 * First time malloc is called, setup page size and
+	 * align break pointer so all data will be page aligned.
+	 */
+	ldd_xmalloc_lock();
+
+	if (first_time) {
+		first_time = 0;
+		n = LDD_PAGESIZE;
+		if (morepages(NPOOLPAGES) == 0)
+			return NULL;
+		op = (union overhead *)(pagepool_start);
+  		n = n - sizeof (*op) - (((char *)op - (char *)NULL) & (n - 1));
+		if (n < 0)
+			n += LDD_PAGESIZE;
+  		if (n) {
+			pagepool_start += n;
+		}
+		bucket = 0;
+		amt = sizeof(union overhead);
+		while (LDD_PAGESIZE > amt) {
+			amt <<= 1;
+			bucket++;
+		}
+		pagebucket = bucket;
+	}
+	/*
+	 * Convert amount of memory requested into closest block size
+	 * stored in hash buckets which satisfies request.
+	 * Account for space used per block for accounting.
+	 */
+	if (nbytes <= (n = LDD_PAGESIZE - sizeof (*op))) {
+		if (sizeof(union overhead) & (sizeof(union overhead) - 1)) {
+		    amt = sizeof(union overhead) * 2;
+		    bucket = 1;
+		} else {
+		    amt = sizeof(union overhead); /* size of first bucket */
+		    bucket = 0;
+		}
+		n = -(sizeof (*op));
+	} else {
+		amt = LDD_PAGESIZE;
+		bucket = pagebucket;
+	}
+	while (nbytes > amt + n) {
+		amt <<= 1;
+		if (amt == 0)
+			return (NULL);
+		bucket++;
+	}
+	/*
+	 * If nothing in hash bucket right now,
+	 * request more memory from the system.
+	 */
+  	if ((op = nextf[bucket]) == NULL) {
+  		morecore(bucket);
+  		if ((op = nextf[bucket]) == NULL) {
+  			return (NULL);
+		}
+	}
+	/* remove from linked list */
+  	nextf[bucket] = op->ov_next;
+	ldd_xmalloc_unlock();
+
+	op->ov_magic = MAGIC;
+	op->ov_index = bucket;
+  	return ((char *)(op + 1));
+}
+
+static void
+xfree(void* cp) {
+  	register int size;
+	register union overhead *op;
+
+  	if (cp == NULL)
+  		return;
+	op = (union overhead *)((caddr_t)cp - sizeof (union overhead));
+	if(op->ov_magic != MAGIC) {
+		xwarnx("\r\nAttempt to free a block not allocated: %p\r\n", cp);
+		return;
+	}
+	ldd_xmalloc_lock();
+  	size = op->ov_index;
+	op->ov_next = nextf[size];	/* also clobbers ov_magic */
+  	nextf[size] = op;
+	ldd_xmalloc_unlock();
+}
+
+static void *
+irealloc(void *cp, size_t nbytes) {
+  	register u_int onb;
+	register int i;
+	union overhead *op;
+  	char *res;
+
+  	if (cp == NULL)
+  		return (imalloc(nbytes));
+
+	op = (union overhead *)((caddr_t)cp - sizeof (union overhead));
+	if (op->ov_magic != MAGIC) {
+		static const char *err_str =
+		    "memory corruption or double free in realloc\n";
+		extern const char *__progname;
+	        write(STDERR_FILENO, __progname, xstrlen(__progname));
+		write(STDERR_FILENO, err_str, xstrlen(err_str));
+		abort();
+	}
+
+	i = op->ov_index;
+	onb = 1 << (i + 3);
+	if (onb < LDD_PAGESIZE)
+		onb -= sizeof (*op);
+	else
+		onb += LDD_PAGESIZE - sizeof (*op);
+	/* avoid the copy if same size block */
+	if (i) {
+		i = 1 << (i + 2);
+		if (i < LDD_PAGESIZE)
+			i -= sizeof (*op);
+		else
+			i += LDD_PAGESIZE - sizeof (*op);
+	}
+	if (nbytes <= onb && nbytes > i) {
+		return(cp);
+	}
+
+  	if ((res = imalloc(nbytes)) == NULL)
+  		return (NULL);
+
+	xmemcpy(res, cp, (nbytes < onb) ? nbytes : onb);
+	xfree(cp);
+  	return (res);
+}
+
+
+static void *
+xmalloc(size_t size) {
+	void *p = imalloc(size);
+
+	if (p == NULL)
+		xerr(1, "%s", xstrerror(errno));
+	return p;
+}
+
+static void * LDD_C_USEAGE_ATTRIBUTE
+xcalloc(size_t size) {
+	return xmemset(xmalloc(size), 0, size);
+}
+
+static void * LDD_C_USEAGE_ATTRIBUTE
+xrealloc(void *p, size_t size) {
+	p = irealloc(p, size);
+
+	if (p == NULL)
+		xerr(1, "%s", xstrerror(errno));
+	return p;
+}
+
+static char *
+xstrdup(const char *str) {
+	size_t len;
+	char *copy;
+
+	len = xstrlen(str) + 1;
+	copy = xmalloc(len);
+	xmemcpy(copy, str, len);
+	return (copy);
+}
+

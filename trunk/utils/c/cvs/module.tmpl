@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<module name="cvs">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent></RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="cvs" generated="true">
+			<location basedir="{os}-{cpu}-{o|endian}/src" os="nto" isa="{cpu}" runtime="true">
+				cvs
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="cvs" generated="true">
+			<location basedir="{os}-{cpu}-{o|endian}/src" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				cvs
+			</location>
+		</component>
+		</package>
+
+	</contents>
+
+</module>

@@ -1,0 +1,60 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: The size field of a volume header was ignored when listing,
+# but taken into account when extracting. Thus it was possible to hide
+# some files within the archive, placing them after a volume header and
+# manually modifying its size field. Test tarball kindly provided by Tomas.
+# Reported by: Thomas <metaf4@users.askja.de>
+# References: <4462E13A.3080008@users.askja.de>,
+#             <44639C4C.5050401@users.askja.de>
+
+AT_SETUP([volume header size])
+AT_KEYWORDS([volume volsize])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+AT_TARBALL_PREREQ([abc.tar],[540f196ceddcad9e7bd2f2d7533d0474])
+
+echo Short Listing
+tar tf $TEST_DATA_DIR/abc.tar
+echo Verbose Listing
+tar tfv $TEST_DATA_DIR/abc.tar
+echo Extracted directory
+tar xf $TEST_DATA_DIR/abc.tar
+find abc|sort
+],
+[0],
+[Short Listing
+abc/not-a-file.gif
+abc/CCC
+Verbose Listing
+V--------- 0/0            1536 2006-05-09 01:07 abc/not-a-file.gif--Volume Header--
+-rw-r--r-- tom/users         0 2006-04-22 22:52 abc/CCC
+Extracted directory
+abc
+abc/CCC
+])
+
+AT_CLEANUP
+
+# End of volsize.at
+
+

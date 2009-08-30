@@ -1,0 +1,25 @@
+check_version 1 0 mig4nto
+
+add_cpu x86
+
+set_description "Migration Library"
+if check_class include/lib lib default; then
+	add_co_cpu_endian lib/mig4nto
+	add_co_tree lib/mig4nto/public
+fi
+
+set_description "Migration Process Manager"
+if check_class include/services procmgr default; then
+	add_co_local services/mig4nto
+	add_co_cpu_endian services/mig4nto/mig4nto-procmgr o
+	add_co_tree services/mig4nto/mig4nto-procmgr/public services/mig4nto/mig4nto-procmgr/config
+fi
+
+set_description "Migration utilities"
+if check_class @include/utils utils default; then
+	. include/utils m
+	add_co_os_cpu_endian utils/m/mig4nto o
+fi
+
+set_description "QNX4 to QNX5 Migration"
+

@@ -1,0 +1,414 @@
+/*
+Copyright 2001, QNX Software Systems Ltd. All Rights Reserved
+ 
+This source code has been published by QNX Software Systems Ltd. (QSSL).
+However, any use, reproduction, modification, distribution or transfer of
+this software, or any software which includes or is based upon any of this
+code, is only permitted under the terms of the QNX Realtime Plaform End User
+License Agreement (see licensing.qnx.com for details) or as otherwise
+expressly authorized by a written license agreement from QSSL. For more
+information, please email licensing@qnx.com.
+*/
+/* 
+ * This is the CPU-specific file for the dynamic loader
+ * for MIPS.
+ */
+
+extern struct syspage_entry *_syspage_ptr;
+extern struct cpupage_entry *_cpupage_ptr;
+extern void *__SysCpupageGet(int index);
+extern void *__SysCpupageSet(int index, int value);
+
+/* 
+ * This is the _start_ function, the entry point into the program
+ * when linked with the shared lib.
+ */
+
+void _start_(void);
+	__asm__ (".globl \t _start_\n"
+			"\t.set noreorder\n" 
+			"\t_start_:\n" 
+			"0:\t .cpload $31\n"  // Get GP
+			"\tmove \t $16,$2\n"
+			"\tmove \t $17,$29\n"
+			"\tmove \t $18,$31\n"
+			"\tmove \t $4,$29\n"  // Set up arg of ldd to be initial stack
+			"\taddiu \t $29,-16\n" // Space for the arg (frame)
+			"\tbal \t ldd\n" 	  // We have to do a direct jump	
+			"\tnop \n"
+			"\tmove \t $25,$2\n"
+			"\tmove \t $2,$16\n"
+			"\tmove \t $29,$17\n"
+			"\tmove \t $31,$18\n"  // Reset bottom frame to NULL
+			"\tla   \t $2,_do_exit_fini\n"
+			"\tjalr \t $25\n"
+			"\tnop \n"
+			"\tla \t $25,exit\n"
+			"\tjr \t $25\n"        // Should never get here
+			"\tnop \n"
+			"\t.type \t _start_,@function\n"
+			"\t.size \t _start_,.-_start_\n"
+		);
+				
+
+/* This is the bind function used for lazy binding */
+
+void bind_func(void){ } //Placeholder for now
+
+/* This function finds the value of GP for the executable, and sets
+ * $28 with it. We need this because we may sometimes jump to stubs
+ * in the executable in the late stages of the dynamic resolving.
+ */
+
+static void set_gp(struct object *obj){
+        const Elf32_Sym    	*sym;
+		char 				name[4];
+		uint32_t			gp;
+		unsigned long		h;
+
+		name[0] = '_';	// Avoid any relocations
+		name[1] = 'g';
+		name[2] = 'p';
+		name[3] = 0x00;
+		h = hash(name);
+		if((sym = hashed_lookup(name,h,obj)) != NULL){
+			gp = RELOC(obj, sym->st_value);
+			__asm__ volatile ("move $28,%0" : : "r"(gp) );
+		}
+}	
+
+static void unknown_symbol(const char *name)
+{
+	ldd_write(STDERR_FILENO, "unknown symbol: ", 16);
+	ldd_write(STDERR_FILENO, name, ldd_strlen(name));
+	ldd_write(STDERR_FILENO, "\n", 1);
+}
+
+/* 
+ * This is the function used to resolve the relocations.
+ * 
+ * For the MIPS, we have to worry about three things:
+ * - Relocate all local GOT entries
+ * - Relocate the global GOT entries
+ * - Relocate the MIPS_REL32 relocations
+ */
+
+/* Decode the MIPS-specific entries in the DT vector */
+#define DT_MIPS(x)	(x - DT_LOPROC)
+
+/* Relocate all local GOT entries */
+
+static void relocate_local_got(struct object *obj) {
+	unsigned long 	dynamic[50];
+	unsigned 	i, n;
+	uint32_t	*got = obj->got;
+
+	vector_decode(dynamic,sizeof dynamic/sizeof *dynamic,
+			obj->dynamic, DT_LOPROC);
+
+	n = dynamic[DT_MIPS(DT_MIPS_LOCAL_GOTNO)];
+	if(n == -1) {
+		return;
+	}
+
+	/* Relocate local GOT entries. Entry 0 is reserved for the
+	 * dynamic linker lazy bind adress, entry 1 for the object adress. 
+	 * Entry 2 on the MIPS is a regular GOT entry, not the lazy bind
+	 * function!
+	 */
+	got[0] = (uintptr_t) bind_func;
+	got[1] = (uintptr_t) obj;
+	i = 2;
+	while (i < n) {
+		got[i] = RELOC(obj, got[i]);
+		i++;
+	}
+
+}
+
+/*
+ * This relocates all global GOT entries on the MIPS. This makes
+ * up the bulk of MIPS relocations.
+ */
+static int relocate_global_got(struct objlist *ol, int mode) {
+	uint32_t				*got = ol->object->got;
+	struct object			*obj = ol->object;
+	const list_head_t		*this = ol->root;
+	struct objlist			o;
+	struct object			*tobj;
+	const Elf32_Sym			*sym;
+	const Elf32_Sym			*tsym;
+	const char				*name;
+	unsigned long			dynamic[50];
+	unsigned				g, i, n;
+	int						ret = 0;
+
+	if (obj->flags & OBJFLAG_SYMBOLIC) {
+		o.object = obj;
+		list_append(this, &o);
+	}
+
+	/*
+	 * This is needed, because GP is not set yet for the exec, but we may
+	 * need it later.
+	 */
+	if(obj->flags & OBJFLAG_EXECUTABLE){
+		set_gp(obj);
+	}
+		
+
+	vector_decode(dynamic,sizeof dynamic/sizeof *dynamic,
+			obj->dynamic, DT_LOPROC);
+
+	/* Number of local GOT entries */
+	n = dynamic[DT_MIPS(DT_MIPS_LOCAL_GOTNO)];
+	sym = obj->symbols;
+	got += n; /* Skip n to get to global entries */
+
+	if (((g = dynamic[DT_MIPS(DT_MIPS_GOTSYM)]) != -1) && 
+	    ((i = dynamic[DT_MIPS(DT_MIPS_SYMTABNO)]) != -1)) {
+		sym += g;
+		i -= g;
+
+		while (i--) {
+
+			name = obj->strings + sym->st_name;
+
+			if(sym->st_shndx == SHN_UNDEF || sym->st_shndx == SHN_COMMON) {
+
+				/* This is global undef'ed symbols. Need to look them up */
+             	if (tsym = lookup_global(name, this, obj,
+ 	               	0, &tobj)) {
+  	 		           	*got = RELOC(tobj, tsym->st_value);
+
+				} else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) {
+  	 		           	*got = 0;
+				} else {
+					unknown_symbol( name );
+					ret = -1;
+				}
+
+			} else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC) {
+
+             	if (tsym = lookup_global(name, this, 0, 0, &tobj)) {
+
+  	 		           	*got = RELOC(tobj, tsym->st_value);
+
+				} else if (!(obj->flags & OBJFLAG_RELSDONE)) {
+					*got = RELOC(obj, *got);
+				}
+
+			} else if ((ELF32_ST_TYPE(sym->st_info) == STT_SECTION) &&
+				!(obj->flags & OBJFLAG_RELSDONE)) {		
+
+				if(sym->st_other == 0) {
+					*got = RELOC(obj, *got);
+				}
+
+			} else if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) {
+
+             	if (tsym = lookup_global(name, this, 0,
+ 	               	0, &tobj)) {
+  	 		           	*got = RELOC(tobj, tsym->st_value);
+
+				} else {
+						*got = RELOC(obj,sym->st_value);
+				}
+
+			} else if (!(obj->flags & OBJFLAG_RELSDONE)) {
+
+				*got = RELOC(obj, *got);
+
+			}
+			got++;
+			sym++;	
+		}
+	} else {
+		return -1;
+	}
+
+	if (obj->flags & OBJFLAG_SYMBOLIC) {
+		list_delete(&o);
+	}
+
+	return ret;
+}
+
+/*
+ * And this processes the relocation table. Note
+ * the addition of R_MIPS_QNX_COPY relocs here.
+ */
+static int resolve_rels(const Elf32_Rel *rel, int nrel, struct objlist *ol, int mode) {
+		struct object				*obj = ol->object;
+		const list_head_t			*this = ol->root;
+		struct objlist				o;
+		const char					*name;
+		struct object				*tobj;
+		const Elf32_Sym				*sym;
+		int							ret = 0;
+	
+        /*
+         * if this is a DT_SYMBOLIC object, then make sure it gets searched
+         * first, by temporarily placing it at the head of the objlist
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                o.object = obj;
+                list_append(this, &o);
+        }
+
+        while (nrel--) {
+
+			const Elf32_Sym 	*tsym;
+			int 				rtype;
+			unsigned long 		*dst = RELOCP(obj, rel->r_offset);
+
+			sym = &obj->symbols[ELF32_R_SYM(rel->r_info)];
+			name = obj->strings + sym->st_name;
+			rtype = ELF32_R_TYPE(rel->r_info);
+	      	if (rtype == R_MIPS_NONE) {
+				/* Nothing to do... */
+                rel++;
+                continue;
+            }
+
+ 			/*
+ 			 * We only need to worry about R_MIPS_REL32 and 
+			 * R_MIPS_QNX_COPY relocs here.
+ 			 */
+			if (rtype == R_MIPS_REL32) {
+
+				if ((ELF32_ST_BIND(sym->st_info) == STB_LOCAL) &&
+					(ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE ||
+				 	ELF32_ST_TYPE(sym->st_info) == STT_SECTION)) {
+
+					if (!(obj->flags & OBJFLAG_RELSDONE)){
+						*dst = RELOC(obj, *dst);	
+					}
+
+	          	} else if ((tsym = lookup_global(name, this, 0,
+	                0, &tobj)) || (ELF32_ST_BIND(sym->st_info) == STB_WEAK)) {
+
+	           		uintptr_t       val = tsym ? RELOC(tobj, tsym->st_value) : 0;
+
+	               	*dst += (unsigned) RELOFFSET((obj->flags & OBJFLAG_REVERSED),(val));
+
+	           	} else if(obj->flags & OBJFLAG_RELSDONE) {
+						unknown_symbol( name );
+						ret = -1;
+	           	}
+
+			} else if (rtype == R_MIPS_QNX_COPY) {
+
+				tsym = lookup_global(name, this, obj, 0, &tobj);
+
+				if (tsym) {
+					xmemcpy(dst, RELOCP(tobj, tsym->st_value), 
+						tsym->st_size < sym->st_size ?
+						tsym->st_size : sym->st_size);
+				} else if(obj->flags & OBJFLAG_RELSDONE) {
+					unknown_symbol( name );
+					ret = -1;
+				}
+
+	       	} else {
+				error("unknown relocation type", 0);
+	       	}
+            rel++;
+		}
+
+
+        /*
+         * if the object was previously placed at the list head, remove it
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                list_delete(&o);
+        }
+        return ret;
+}
+
+static void __set_cpupages(void) {
+	/*
+	 * Should now be safe to call CpuSyspageGet to setup syspage...
+	 * This is needed because the rest of ldd may call fn. which need these.
+	 */
+	_cpupage_ptr = __SysCpupageGet(CPUPAGE_ADDR);
+	_syspage_ptr = __SysCpupageGet(CPUPAGE_SYSPAGE);
+
+	return;
+}
+
+#define TEXT_PTR(p,obj) \
+	((unsigned)(p) >= (obj)->text_addr) && ((unsigned)(p) < ((obj)->text_addr + (obj)->text_size))
+
+#define DATA_PTR(p,obj) \
+	((unsigned)(p) >= ((obj)->text_addr + (obj)->data_offset)) && ((unsigned)(p) < ((obj)->text_addr + (obj)->data_offset + (obj)->data_size))
+
+
+/* 
+   This is because for some strange reason, the MIPS stuff instead
+   of having the DT_DEBUG record in the dynamic section point to &_r_debug,
+   they have a DT_MIPS_RLDMAP record point to rldmap, which then points
+   to &_r_debug
+
+   Our not to question why, I guess!
+
+   */
+static void _mips_set_rldmap(struct object *obj) {
+
+	struct {
+		unsigned long		key;
+		union {
+			void 				*val;
+			void				**pval;
+		} d;
+	}					*s = (void *)obj->dynamic;
+
+	while ((s->key!= DT_MIPS_RLD_MAP && s->key != DT_DEBUG) && s++->key); 
+	if(s->key == DT_MIPS_RLD_MAP) {
+		if ( DATA_PTR( s->d.pval, obj ) ) {
+			*s->d.pval = (void *)&_r_debug;
+		}
+	}
+}
+
+static int resolve(const list_head_t *this, int mode) {
+	unsigned long		vec[50];
+	struct objlist		*o;
+	int					ret = 0;
+
+	list_backward(this, o) {
+		struct object		*obj = o->object;
+
+		if ( obj->flags & OBJFLAG_EXECUTABLE ) {
+			_mips_set_rldmap( obj );
+		}
+		vector_decode(vec, sizeof vec / sizeof *vec, obj->dynamic, 0);
+		if ( vec[DT_MIPS_REL32_VERSION] != -1 ) {
+			obj->flags |= OBJFLAG_NEW_RELOCS;
+		}
+		if (!(obj->flags & OBJFLAG_RESOLVED)) {
+			if(relocate_global_got(o, mode)) {
+				ret = -1;
+			}
+			if (vec[DT_REL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_REL]),
+						vec[DT_RELSZ] / sizeof(Elf32_Rel), o, RTLD_NOW)) {
+					ret = -1;
+				}
+			}
+			if (vec[DT_JMPREL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_JMPREL]),
+					vec[DT_PLTRELSZ] / sizeof(Elf32_Rel), o, mode)) {
+					ret = -1;
+				}
+			}
+		}
+		/* The internal relative relocs are done, don't do them again. */
+		obj->flags |= (OBJFLAG_RELSDONE | OBJFLAG_RESOLVED);
+	}
+	__set_cpupages();
+
+	return ret;
+}

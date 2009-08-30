@@ -1,0 +1,167 @@
+1c1
+< expr error: invalid syntax
+---
+> expr: syntax error
+3c3
+< expr error: invalid syntax
+---
+> expr: syntax error
+5c5
+< expr error: invalid syntax
+---
+> expr: syntax error
+7c7
+< expr error: invalid syntax
+---
+> expr: syntax error
+9c9
+< expr error: invalid syntax
+---
+> expr: syntax error
+11c11
+< expr error: invalid syntax
+---
+> expr: syntax error
+13c13
+< expr error: invalid syntax
+---
+> expr: syntax error
+15c15
+< expr error: invalid syntax
+---
+> expr: syntax error
+17c17
+< expr error: invalid syntax
+---
+> expr: syntax error
+19c19
+< expr error: invalid syntax
+---
+> expr: syntax error
+21c21
+< expr error: invalid syntax
+---
+> expr: syntax error
+23c23
+< expr error: invalid syntax
+---
+> expr: syntax error
+25c25
+< expr error: invalid syntax
+---
+> expr: syntax error
+27c27
+< expr error: invalid syntax
+---
+> expr: syntax error
+29c29
+< expr error: invalid syntax
+---
+> expr: non-numeric argument
+31c31
+< expr error: invalid syntax
+---
+> expr: syntax error
+33c33
+< expr error: invalid syntax
+---
+> expr: syntax error
+35c35
+< expr error: invalid syntax
+---
+> expr: syntax error
+37c37
+< expr error: invalid syntax
+---
+> expr: syntax error
+39c39
+< expr error: invalid syntax
+---
+> expr: syntax error
+41c41
+< expr error: invalid syntax
+---
+> expr: syntax error
+43c43
+< expr error: invalid syntax
+---
+> expr: syntax error
+45c45
+< expr error: invalid syntax
+---
+> expr: syntax error
+47c47
+< expr error: invalid syntax
+---
+> expr: syntax error
+49c49
+< expr error: invalid syntax
+---
+> expr: syntax error
+51c51
+< expr error: invalid syntax
+---
+> expr: syntax error
+53c53
+< expr error: invalid syntax
+---
+> expr: syntax error
+55,56d54
+< expr error: invalid syntax
+< Retval = 2
+58c56
+< expr error: invalid syntax
+---
+> expr: syntax error
+61c59
+< expr error: invalid syntax
+---
+> expr: syntax error
+63c61
+< expr error: invalid syntax
+---
+> expr: syntax error
+65c63
+< expr error: invalid syntax
+---
+> expr: syntax error
+67c65
+< expr error: invalid syntax
+---
+> expr: syntax error
+69c67
+< expr error: invalid syntax
+---
+> expr: syntax error
+71c69
+< expr error: invalid syntax
+---
+> expr: syntax error
+73c71
+< expr error: invalid syntax
+---
+> expr: syntax error
+76c74
+< expr error: invalid syntax
+---
+> expr: syntax error
+78c76
+< expr error: invalid syntax
+---
+> expr: syntax error
+80c78
+< expr error: invalid syntax
+---
+> expr: syntax error
+82c80
+< expr error: invalid syntax
+---
+> expr: syntax error
+84c82
+< expr error: invalid syntax
+---
+> expr: syntax error
+86c84
+< expr error: invalid syntax
+---
+> expr: syntax error

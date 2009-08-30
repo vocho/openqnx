@@ -1,0 +1,14 @@
+%C - System logger
+
+%C	-f severity -l fname[,size] -s size -v
+
+Options:
+ -f severity      Filter logged events based upon their severity (default: 7)
+                  0-highest severity  7-lowest severity
+ -l fname[,size]  Log events, filtered according to -f option, to this file. 
+                  If size option specified (in kilobytes), alternate between two files, 
+                  fname0 and fname1, as the files reach the specified size. 
+ -s size          Size of in-memory log buffer in K
+ -v               Be verbose
+ -c               Open logfile with O_SYNC to forcibly commit logged events
+                  to disk.

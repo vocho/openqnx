@@ -1,0 +1,126 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: Handling of cyclic renames in incremental archives.
+
+AT_SETUP([cyclic renames])
+AT_KEYWORDS([incremental rename rename03 cyclic-rename])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+
+mkdir foo
+genfile --file foo/file1
+genfile --file foo/file2
+
+mkdir foo/a
+genfile --file foo/a/filea
+
+mkdir foo/b
+genfile --file foo/b/fileb
+
+mkdir foo/c
+genfile --file foo/c/filec
+
+echo "First dump"
+echo "First dump">&2
+tar -g incr -cf arch.1 -v foo 2>tmperr
+sort tmperr >&2
+
+# Shuffle directories:
+(cd foo
+mv a $$
+mv c a
+mv b c
+mv $$ b)
+
+echo "Second dump"
+echo "Second dump" >&2
+tar -g incr -cf arch.2 -v foo 2>tmperr
+sort tmperr >&2
+
+tar xfg arch.1 /dev/null 
+
+echo "Begin directory listing 1"
+find foo | sort 
+echo "End directory listing 1"
+
+tar xfgv arch.2 /dev/null
+echo Begin directory listing 2
+find foo | sort
+echo End directory listing 2
+],
+[0],
+[First dump
+foo/
+foo/a/
+foo/b/
+foo/c/
+foo/file1
+foo/file2
+foo/a/filea
+foo/b/fileb
+foo/c/filec
+Second dump
+foo/
+foo/a/
+foo/b/
+foo/c/
+Begin directory listing 1
+foo
+foo/a
+foo/a/filea
+foo/b
+foo/b/fileb
+foo/c
+foo/c/filec
+foo/file1
+foo/file2
+End directory listing 1
+foo/
+foo/a/
+foo/b/
+foo/c/
+Begin directory listing 2
+foo
+foo/a
+foo/a/filec
+foo/b
+foo/b/filea
+foo/c
+foo/c/fileb
+foo/file1
+foo/file2
+End directory listing 2
+],
+[First dump
+tar: foo/a: Directory is new
+tar: foo/b: Directory is new
+tar: foo/c: Directory is new
+Second dump
+tar: foo/a: Directory has been renamed from `foo/c'
+tar: foo/b: Directory has been renamed from `foo/a'
+tar: foo/c: Directory has been renamed from `foo/b'
+],
+[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of rename03.at

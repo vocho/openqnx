@@ -1,0 +1,56 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([storing sparse files > 8G])
+AT_KEYWORDS([sparse sparse03])
+
+# Tar 1.15.1 incorrectly computed sparse member size if the extended
+# PAX header contained size keyword.
+# References: <87vf46nb36.fsf@penguin.cs.ucla.edu>
+# http://lists.gnu.org/archive/html/bug-tar/2005-06/msg00040.html
+
+AT_TAR_CHECK([
+genfile --length 1000 --file begin
+genfile --length 1000 --file end
+genfile --sparse --file sparsefile --block-size 512 8G A || AT_SKIP_TEST
+tar -c -f archive --sparse begin sparsefile end || exit 1
+echo separator
+
+tar tfv archive
+echo separator
+mkdir directory
+tar Cxf directory archive
+genfile --stat=name,size sparsefile
+cmp sparsefile directory/sparsefile
+],
+[0],
+[stdout],
+[],[],[],[posix])
+
+RE_CHECK([stdout],
+[separator
+-rw-r--r-- [^ ][^ ]*  *1000 [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9] begin
+-rw-r--r-- [^ ][^ ]*  *8589935104 [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9] sparsefile
+-rw-r--r-- [^ ][^ ]*  *1000 [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9] end
+separator
+sparsefile 8589935104
+])
+
+AT_CLEANUP

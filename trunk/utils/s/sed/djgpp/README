@@ -1,0 +1,92 @@
+This directory holds files required to build GNU Sed for
+MS-DOS/MS-Windows using DJGPP tools.
+
+1.  Prerequisites
+    =============
+
+    To configure and build GNU Sed, you will need to install the
+    following:
+
+      - The basic DJGPP development environment (gcc, Binutils, and
+        djdevNNN.zip, where NNN is the version number);
+
+      - A port of GNU Bash (make sure you have sh.exe as a ``symlink''
+        to bash.exe);
+
+      - A port of GNU Make version 3.75 or later;
+
+      - Auxiliary packages: GNU Fileutils, Textutils, Grep, and
+        Diffutils;
+
+      - A port of Sed.
+
+    All of the above should be available from the DJGPP sites on
+    SimTel.NET mirrors, in the v2gnu directory.
+
+2.  Bootstrapping Sed
+    =================
+
+    If you cannot get hold of a working Sed, you can use the
+    bootstrap.bat batch file to build a temporary version, suitable
+    for running the configure script and the Makefiles it creates.
+    bootstrap.bat requires only the compiler, the linker, and the C
+    library.  Once bootstrap.bat finishes, install the produced
+    sed.exe somewhere along your PATH, build a production version like
+    explained below, and install it instead of the temporary one.
+
+
+3.  Configuring
+    ===========
+
+    To configure Sed for DJGPP, run the config.bat batch file from the
+    top directory, like this:
+
+		djgpp\config
+
+    If you are building Sed from another directory, supply the Sed
+    source directory as an argument to config.bat:
+
+		d:\src\sed-3.01\djgpp\config d:/src/sed-3.01
+
+    (Note the forward slashes: you MUST use them, or configuration
+    process might fail.)
+
+    config.bat will set some variables, update several files, then run
+    the configure script via Bash, and create config.h header and
+    Makefile's in various subdirectories.
+
+
+4.  Compiling
+    =========
+
+    To compile, just type "make [Enter]".  This builds the Sed
+    executable.
+
+
+5.  Testing
+    =======
+
+    This distribution has a test suite.  To run the tests, type
+    "make check CMP='diff -c'".  This requires a Diff program (from
+    Diffutils, see above).  All tests should succeed.
+
+
+6.  Installation
+    ============
+
+    To install, copy sed.exe to some directory along your PATH.  Then
+    copy the Info docs file doc/sed.info into your Info directory and
+    run the install-info program to update your info/DIR file:
+
+	install-info --info-dir=%DJDIR%/info %DJDIR%/info/sed.info
+
+    (Replace %DJDIR% with the full path to the root of your DJGPP
+    installation tree.)
+
+    Alternatively, you could say "make install" and have Make do the
+    entire installation routine for you.
+
+
+    Enjoy,
+
+				   Eli Zaretskii <eliz@is.elta.co.il>

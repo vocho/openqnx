@@ -1,0 +1,55 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description:
+# Check if restore from incremental backups does not choke on dangling
+# symlinks.
+# References: <20050821163500.2772914828A@blake.inputplus.co.uk>
+# http://lists.gnu.org/archive/html/bug-tar/2005-08/msg00023.html
+
+AT_SETUP([restore broken symlinks from incremental])
+AT_KEYWORDS([incremental incr01])
+
+AT_TAR_CHECK([
+mkdir directory
+$as_ln_s foo directory/bar
+
+tar -cf archive.0 -g db directory
+rm directory/bar
+tar -cf archive.1 -g db directory
+
+mv directory orig
+
+tar xvfg archive.0 /dev/null
+echo separator
+tar xvfg archive.1 /dev/null
+],
+[0],
+[directory/
+directory/bar
+separator
+directory/
+tar: Deleting `directory/bar'
+],
+[],[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+

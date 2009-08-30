@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<module name="info-zip">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability>
+			<os name="nto"><cpu isa="x86"></cpu></os>
+			<os name="win32"><cpu isa="x86"></cpu></os>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="info-zip" generated="true">
+			<location basedir="zip/{os}-{cpu}-o" runtime="true">zip</location>
+			<location basedir="zip/{os}-{cpu}-o" runtime="true">zipcloak</location>
+			<location basedir="zip/{os}-{cpu}-o" runtime="true">zipnote</location>
+			<location basedir="zip/{os}-{cpu}-o" runtime="true">zipsplit</location>
+
+			<location basedir="unzip/{os}-{cpu}-o" runtime="true">unzip</location>
+			<location basedir="unzip/{os}-{cpu}-o" runtime="true">funzip</location>
+			<location basedir="unzip/{os}-{cpu}-o" runtime="true">unzipsfx</location>
+
+		</component>
+		<component id="info-zip-script" generated="false">
+			<location basedir="unzip/unix" type="install">/usr/bin</location>
+			<location basedir="unzip/unix" runtime="true">zipgrep</location>
+		</component>
+		</package>
+	</contents>
+</module>

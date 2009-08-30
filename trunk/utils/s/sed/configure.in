@@ -1,0 +1,108 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(sed/sed.c)
+AM_CONFIG_HEADER(config.h:config_h.in)
+AC_PREREQ(2.12)dnl (not tested with anything older)
+AM_INIT_AUTOMAKE(sed, 3.02)
+AC_PROG_CC
+AC_PROG_RANLIB
+
+dnl Solaris 2.6 needs special compilation flags to support large files
+dnl (i.e. files larger than 2 GB).
+dnl This code frament taken from the configure.in file from patch-2.5.
+dnl Hopefully someday it will be handled directly by autoconf
+dnl without having to include this mess here.
+# If available, prefer support for large files unless the user specified
+# one of the CPPFLAGS, LDFLAGS, or LIBS variables.
+AC_MSG_CHECKING(whether large file support needs explicit enabling)
+ac_getconfs=''
+ac_result=yes
+ac_set=''
+ac_shellvars='CPPFLAGS LDFLAGS LIBS'
+for ac_shellvar in $ac_shellvars; do
+  case $ac_shellvar in
+  CPPFLAGS) ac_lfsvar=LFS_CFLAGS ;;
+  *) ac_lfsvar=LFS_$ac_shellvar ;;
+  esac
+  eval test '"${'$ac_shellvar'+set}"' = set && ac_set=$ac_shellvar
+  (getconf $ac_lfsvar) >/dev/null 2>&1 || { ac_result=no; break; }
+  ac_getconf=`getconf $ac_lfsvar`
+  ac_getconfs=$ac_getconfs$ac_getconf
+  eval ac_test_$ac_shellvar=\$ac_getconf
+done
+case "$ac_result$ac_getconfs" in
+yes) ac_result=no ;;
+esac
+case "$ac_result$ac_set" in
+yes?*) ac_result="yes, but $ac_set is already set, so use its settings"
+esac
+AC_MSG_RESULT($ac_result)
+case $ac_result in
+yes)
+  for ac_shellvar in $ac_shellvars; do
+    eval $ac_shellvar=\$ac_test_$ac_shellvar
+  done ;;
+esac
+
+AC_MINIX
+AC_AIX
+AC_CHECK_LIB(cposix,strerror)
+
+AC_STDC_HEADERS
+AC_CHECK_HEADERS(string.h stdlib.h limits.h unistd.h memory.h sys/types.h)
+AC_C_CONST
+AC_TYPE_SIZE_T
+
+AC_MSG_CHECKING(which regex library to use)
+ac_regex_lib=lib/regex.o
+AC_ARG_WITH(regex,
+   [  --with-regex=REGEX-LIB  specify an alternative regex implementation],
+   [case "$withval" in yes|no) ;; *) ac_regex_lib="$withval" ;; esac])
+case "$ac_regex_lib" in
+  lib/regex.o) LIBOBJS="$LIBOBJS regex.o" ;;
+  ""|no) ;;
+  *) LIBS="$LIBS $ac_regex_lib" ;;
+esac
+case "$ac_regex_lib" in
+  "") AC_MSG_RESULT(using system's regex) ;;
+  *)  AC_MSG_RESULT(using $ac_regex_lib)  ;;
+esac
+
+case " $LIBOBJS " in
+  *\ regex.o\ *)
+    ac_cv_func_regnexec=yes
+    ac_cv_func_regexec=yes
+    cat >> confdefs.h <<\EOF
+#define HAVE_REGNEXEC 1
+#define HAVE_REGEXEC 1
+EOF
+    AC_DEFINE(USE_REGEX_GNU_H)
+    ;;
+  *)
+    AC_CHECK_HEADERS(regex.h)
+    case "$ac_cv_header_regex_h" in
+      yes) ;;
+      *)
+	AC_MSG_ERROR(dnl
+<regex.h> header is required for use with non-default regex implementation)
+	;;
+    esac
+    AC_CHECK_FUNCS(regnexec regexec)
+    ;;
+esac
+case "$ac_cv_func_regnexec $ac_cv_func_regexec" in
+  *yes*) ;;
+  *) AC_MSG_ERROR(at least one of regexec() or regnexec() must be supported) ;;
+esac
+
+AC_FUNC_ALLOCA
+AC_FUNC_MMAP
+AC_FUNC_VPRINTF
+
+AC_REPLACE_FUNCS(memchr memcmp memmove strerror)
+AC_CHECK_FUNCS(isatty  bcopy bzero isascii memcpy)
+
+AC_ARG_PROGRAM
+AC_OUTPUT(Makefile djgpp/Makefile doc/Makefile dnl
+lib/Makefile sed/Makefile testsuite/Makefile
+dnl testsuite/version.good:testsuite/version.gin dnl
+)

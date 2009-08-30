@@ -1,0 +1,10 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="*/*/libmq.so" pinfo="$"/>
+			<QPG:Add file="*/*/libmqS.a" pinfo="$"/>
+			<QPG:Add file="*/*/libmq.a" pinfo="$"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

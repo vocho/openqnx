@@ -1,0 +1,770 @@
+  abstimer Use timer_settime(CLOCK_REALTIME, TIMER_ABSTIME, ...) instead.
+M abstimer Use timer_settime(CLOCK_REALTIME, TIMER_ABSTIME, ...) instead.
+  _asctime Use asctime_r() instead.
+M _asctime Use asctime_r() instead.
+  _bcalloc Use calloc() instead. Neutrino does not support segment based functions.
+M _bcalloc Use calloc() instead. Neutrino does not support segment based functions.
+  _beginthread Use pthread_create(). Note that a thread in QNX 4 is really just a separate process that shares the data segment of its parent whereas a thread in Neutrino is really within the same process as its parent and shares a great deal more.
+M _beginthread Use pthread_create(). Note that a thread in QNX 4 is really just a separate process that shares the data segment of its parent whereas a thread in Neutrino is really within the same process as its parent and shares a great deal more.
+  _bexpand Neutrino does not support segment based functions. The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+M _bexpand Neutrino does not support segment based functions. The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+  _bfree Neutrino does not support segment based functions. Use free() instead.
+M _bfree Neutrino does not support segment based functions. Use free() instead.
+  _bfreeseg Neutrino does not support segment based functions. Use free() instead.
+M _bfreeseg Neutrino does not support segment based functions. Use free() instead.
+  _bgetcmd Use _cmdname() instead.
+M _bgetcmd Use _cmdname() instead.
+  _bheapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _bheapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _bheapmin NO LONGER SUPPORTED
+M _bheapmin NO LONGER SUPPORTED
+  _bheapseg NO LONGER SUPPORTED
+M _bheapseg NO LONGER SUPPORTED
+  _bheapset See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _bheapset See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _bheapshrink NO LONGER SUPPORTED
+M _bheapshrink NO LONGER SUPPORTED
+  _bheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+M _bheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+  block_read Use readblock() instead as follows: readblock(filedes, 512, block - 1, nblock, buf). Note that the block number has been changed from 1-based to 0-based.
+M block_read A cover function is provided in the migration library. Note that the block number has been changed from 1-based to 0-based.
+  block_write Use writeblock() instead as follows: writeblock(filedes, 512, block - 1, nblocks, buf). Note that the block number has been changed from 1-based to 0-based. A cover function is provided in the migration library. The QNX 4 block_write(), when applied to a regular file, would never grow it; the writeblock() function may cause a regular file to be extended if writing occurs beyond the end-of-file.
+M block_write A cover function is provided in the migration library. Note that the block number has been changed from 1-based to 0-based. The QNX 4 block_write(), when applied to a regular file, would never grow it; the writeblock() function may cause a regular file to be extended if writing occurs beyond the end-of-file.  Note that the cover function in the migration library calls writeblock().
+  _bmalloc Neutrino does not support segment based functions. Use malloc() instead.
+M _bmalloc Neutrino does not support segment based functions. Use malloc() instead.
+  _bmsize See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling _msize(), _musize() and DH_ULEN().
+M _bmsize See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling _msize(), _musize() and DH_ULEN().
+  _bprintf Use snprintf() instead.
+M _bprintf Use snprintf() instead.
+  _brealloc Neutrino does not support segment based functions. Use realloc() instead.
+M _brealloc Neutrino does not support segment based functions. Use realloc() instead.
+  _CA_PCI_BIOS_Present Use pci_present() instead.
+M _CA_PCI_BIOS_Present Use pci_present() instead.
+  _CA_PCI_Find_Class Use find_class() instead.
+M _CA_PCI_Find_Class Use find_class() instead.
+  _CA_PCI_Find_Device Use pci_find_device() instead.
+M _CA_PCI_Find_Device Use pci_find_device() instead.
+  _CA_PCI_Generate_Special_Cycle NO LONGER SUPPORTED
+M _CA_PCI_Generate_Special_Cycle NO LONGER SUPPORTED
+  _CA_PCI_Read_Config_Byte Use pci_read_config8() instead.
+M _CA_PCI_Read_Config_Byte Use pci_read_config8() instead.
+  _CA_PCI_Read_Config_DWord Use pci_read_config32() instead.
+M _CA_PCI_Read_Config_DWord Use pci_read_config32() instead.
+  _CA_PCI_Read_Config_Word Use pci_read_confg16() instead.
+M _CA_PCI_Read_Config_Word Use pci_read_confg16() instead.
+  _CA_PCI_Write_Config_Byte Use pci_write_config8() instead.
+M _CA_PCI_Write_Config_Byte Use pci_write_config8() instead.
+  _CA_PCI_Write_Config_DWord Use pci_write_config32() instead.
+M _CA_PCI_Write_Config_DWord Use pci_write_config32() instead.
+  _CA_PCI_Write_Config_Word Use pci_write_config16() instead.
+M _CA_PCI_Write_Config_Word Use pci_write_config16() instead.
+  cgets Set /dev/tty as standard output and call gets().
+M cgets Set /dev/tty as standard output and call gets().
+  _clear87 NO LONGER SUPPORTED
+M _clear87 NO LONGER SUPPORTED
+  clock_setres Replaced with ClockPeriod().
+M clock_setres Replaced with ClockPeriod().
+  console_active NO LONGER SUPPORTED
+M console_active NO LONGER SUPPORTED
+  console_arm NO LONGER SUPPORTED
+M console_arm NO LONGER SUPPORTED
+  console_close NO LONGER SUPPORTED
+M console_close NO LONGER SUPPORTED
+  console_ctrl NO LONGER SUPPORTED
+M console_ctrl NO LONGER SUPPORTED
+  console_info Use tcgetsize() for the number of rows and columns. The remainder is no longer supported.
+M console_info Use tcgetsize() for the number of rows and columns. The remainder is no longer supported.
+  console_open NO LONGER SUPPORTED
+M console_open NO LONGER SUPPORTED
+  console_protocol NO LONGER SUPPORTED
+M console_protocol NO LONGER SUPPORTED
+  console_read NO LONGER SUPPORTED
+M console_read NO LONGER SUPPORTED
+  console_size Use tcgetsize() for the number of rows and columns. You cannot set the size.
+M console_size Use tcgetsize() for the number of rows and columns. You cannot set the size.
+  console_state NO LONGER SUPPORTED
+M console_state NO LONGER SUPPORTED
+  console_write NO LONGER SUPPORTED
+M console_write NO LONGER SUPPORTED
+  _control87 See fpstatus.h.
+M _control87 See fpstatus.h.
+  cprintf Set /dev/tty as standard output and call printf().
+M cprintf Set /dev/tty as standard output and call printf().
+  cputs Do fputs() to /dev/tty instead.
+M cputs Do fputs() to /dev/tty instead.
+  Creceive Use MsgReceive() preceeded immediately by: event.sigev_notify = SIGEV_UNBLOCK; TimerTimeout(CLOCK_REALTIME, _NTO_TIMEOUT_RECEIVE, &event, NULL, NULL );
+M Creceive Use MsgReceive() preceeded immediately by: event.sigev_notify = SIGEV_UNBLOCK; TimerTimeout(CLOCK_REALTIME, _NTO_TIMEOUT_RECEIVE, &event, NULL, NULL );
+  Creceivemx Use MsgReceivev() preceeded immediately by: event.sigev_notify = SIGEV_UNBLOCK; TimerTimeout(CLOCK_REALTIME, _NTO_TIMEOUT_RECEIVE, &event, NULL, NULL );
+M Creceivemx Use MsgReceivev() preceeded immediately by: event.sigev_notify = SIGEV_UNBLOCK; TimerTimeout(CLOCK_REALTIME, _NTO_TIMEOUT_RECEIVE, &event, NULL, NULL );
+  crypt The Neutrino version is a Unix-compatible version. For the QNX 4 version, use qnx_crypt().
+M crypt The Neutrino version is a Unix-compatible version. For the QNX 4 version, use qnx_crypt().
+  cscanf Set /dev/tty as standard input and call scanf().
+M cscanf Set /dev/tty as standard input and call scanf().
+  _ctime Use ctime_r() instead.
+M _ctime Use ctime_r() instead.
+  cuserid geteuid() User ID Number followed by getpwent() to find the User Name.
+M cuserid geteuid() User ID Number followed by getpwent() to find the User Name.
+  dev_arm See ionotify().  Not all event types are supported. For _DEV_EVENT_HANGUP consider set up a controlling terminal and handle SIGHUP. For _DEV_EVENT_WINCH, consider using SIGWINCH.
+M dev_arm A cover function is provided in the migration libary that covers _DEV_EVENT_INPUT, _DEV_EVENT_OUTPUT, _DEV_EVENT_EXRDY, and _DEV_EVENT_DRAIN.
+  dev_fdinfo You can't get all of the information but bits and pieces can be gotten from elsewhere.
+M dev_fdinfo You can't get all of the information but bits and pieces can be gotten from elsewhere.
+  dev_info You can't get all of the information but bits and pieces can be gotten from elsewhere.
+M dev_info A cover functions is provided in the migration library.
+  dev_insert_chars Use tcinject() instead.
+M dev_insert_chars A cover function is provided in the migration library.
+  dev_ischars Use tcischars() instead.
+M dev_ischars A cover function is provided in the migration library.
+  dev_mode Use tcgetattr() and tcsetattr() instead.
+M dev_mode A cover function is provided in the migration library.
+  dev_osize NO LONGER SUPPORTED
+M dev_osize NO LONGER SUPPORTED
+  dev_read Some of this can be implemented using readcond() and ionotify(). readcond() can handle the cases where proxy == 0.  ionotify() in conjunction with pulses (signals are even easier) can handle the cases where proxy != 0 and min, time and timeout are all 0.  For equivalent functionality to min, time and timeout combined with a pulse or signal for notification, create a separate thread that requests pulse notification using ionotify(). Set up another pulse notification for the timeout. Then go into a MsgReceive() loop with with a TimerTimeout() call before the MsgReceive() call for the interbyte time.  Deliver a pulse or set a signal when the min, time or timeout condition is satisfied.
+M dev_read A cover function is provided in the migration library. Note that it does not handle the proxy and armed parameters.
+  dev_readex The devctl() function with DCMD_CHR_GETOBAND can be used in place of this for getting out-of-band data from resource managers that support it. As of this writing, only devc-* resource managers do.
+M dev_readex A cover function is provided in the migration library.
+  dev_size Use tcgetsize() and tcsetsize() instead.
+M dev_size A cover function is provided in the migration library.
+  dev_state There is no equivalent way of directly setting these states. For _DEV_EVENT_INPUT use devctl() with DCMD_CHR_ISCHARS. For _DEV_EVENT_DRAIN use devctl() with DCMD_CHR_OSCHARS. For _DEV_EVENT_OUTPUT there is currently no way of determining this as there is no way of determining the size of the output buffer. For _DEV_EVENT_EXRDY use devctl() with DCMD_CHR_GETOBAND.  Note that doing so will clear the out-of-band data in the case of devc-* drivers.
+M dev_state A cover function is provided in the migration library.
+  _disable Use InterruptLock() instead.
+M _disable Use InterruptLock() instead.
+  disk_get_entry Use devctl() with the DCMD_CAM_DEVINFO command. See sys/dcmd_cam.h and sys/cam_device.h.
+M disk_get_entry A cover function is provided in the migration library but the it may be beter to use the direct devctl()s that build this, as they are more useful and have better field definitions (eg "cylinders" in Neutrino is 32bit, but only 16 in QNX 4 and large EIDE disks have already wrapped this due to geometry translation).
+  disk_space Use statvfs() instead.
+M disk_space A cover function is provided in the migration library but it may be better to switch directly to statvfs() as this has additional fields that may be useful (such as the block size, the mount flags, etc).
+  ecvt Use sprintf() instead.
+M ecvt Use sprintf() instead.
+  _ecvt Use sprintf() instead.
+M _ecvt Use sprintf() instead.
+  _enable Use InterruptUnlock() instead.
+M _enable Use InterruptUnlock() instead.
+  _endthread Use pthread_exit() instead.
+M _endthread Use pthread_exit() instead.
+  _expand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+M _expand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+  _fcalloc Use calloc() instead.
+M _fcalloc Use calloc() instead.
+  fcvt Use sprintf() instead.
+M fcvt Use sprintf() instead.
+  _fcvt Use sprintf() instead.
+M _fcvt Use sprintf() instead.
+  _fexpand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+M _fexpand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+  _ffree Use free() instead.
+M _ffree Use free() instead.
+  _fheapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _fheapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _fheapgrow NO LONGER SUPPORTED
+M _fheapgrow NO LONGER SUPPORTED
+  _fheapmin NO LONGER SUPPORTED
+M _fheapmin NO LONGER SUPPORTED
+  _fheapset See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _fheapset See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _fheapshrink NO LONGER SUPPORTED
+M _fheapshrink NO LONGER SUPPORTED
+  _fheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+M _fheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+  filelength This could be done with: fstat(fd, &st); return(S_ISBLK(st.st_mode) ? st.st_nblocks * st.st_blocksize : st.st_size);. A little more may be needed for 64-bit support.
+M filelength This could be done with: fstat(fd, &st); return(S_ISBLK(st.st_mode) ? st.st_nblocks * st.st_blocksize : st.st_size);. A little more may be needed for 64-bit support.
+  _fmalloc Use malloc() instead.
+M _fmalloc Use malloc() instead.
+  _fmemccpy Use memccpy() instead.
+M _fmemccpy Use memccpy() instead.
+  _fmemchr Use memchr() instead.
+M _fmemchr Use memchr() instead.
+  _fmemcmp Use memcmp() instead.
+M _fmemcmp Use memcmp() instead.
+  _fmemcpy Use memcpy() instead.
+M _fmemcpy Use memcpy() instead.
+  _fmemicmp Use memicmp() instead.
+M _fmemicmp Use memicmp() instead.
+  _fmemmove Use memmove() instead.
+M _fmemmove Use memmove() instead.
+  _fmemset Use memset() instead.
+M _fmemset Use memset() instead.
+  _fmsize See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling _msize(), _musize() and DH_ULEN().
+M _fmsize See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling _msize(), _musize() and DH_ULEN().
+  FP_OFF NO LONGER SUPPORTED
+M FP_OFF NO LONGER SUPPORTED
+  _fpreset NO LONGER SUPPORTED
+M _fpreset NO LONGER SUPPORTED
+  _frealloc Use realloc() instead.
+M _frealloc Use realloc() instead.
+  _freect NO LONGER SUPPORTED
+M _freect NO LONGER SUPPORTED
+  FP_SEG NO LONGER SUPPORTED
+M FP_SEG NO LONGER SUPPORTED
+  _fsopen Use sopen() which returns a file descriptor then use fdopen() to associate a stream with it.
+M _fsopen Use sopen() which returns a file descriptor then use fdopen() to associate a stream with it.
+  _fstrcat Use strcat() instead.
+M _fstrcat Use strcat() instead.
+  _fstrchr Use strchr() instead.
+M _fstrchr Use strchr() instead.
+  _fstrcmp Use strcmp() instead.
+M _fstrcmp Use strcmp() instead.
+  _fstrcpy Use strcpy() instead.
+M _fstrcpy Use strcpy() instead.
+  _fstrcspn Use strcspn() instead.
+M _fstrcspn Use strcspn() instead.
+  _fstrdup Use strdup() instead.
+M _fstrdup Use strdup() instead.
+  _fstricmp Use strcmp() instead.
+M _fstricmp Use strcmp() instead.
+  _fstrlen Use strlen() instead.
+M _fstrlen Use strlen() instead.
+  _fstrlwr Use strlwr() instead.
+M _fstrlwr Use strlwr() instead.
+  _fstrncat Use strncat() instead.
+M _fstrncat Use strncat() instead.
+  _fstrncmp Use strncmp() instead.
+M _fstrncmp Use strncmp() instead.
+  _fstrncpy Use strncpy() instead.
+M _fstrncpy Use strncpy() instead.
+  _fstrnicmp Use strnicmp() instead.
+M _fstrnicmp Use strnicmp() instead.
+  _fstrnset Use strnset() instead.
+M _fstrnset Use strnset() instead.
+  _fstrpbrk Use strpbrk() instead.
+M _fstrpbrk Use strpbrk() instead.
+  _fstrrchr Use strrchr() instead.
+M _fstrrchr Use strrchr() instead.
+  _fstrrev Use strrev() instead.
+M _fstrrev Use strrev() instead.
+  _fstrset Use strset() instead.
+M _fstrset Use strset() instead.
+  _fstrspn Use strspn() instead.
+M _fstrspn Use strspn() instead.
+  _fstrstr Use strstr() instead.
+M _fstrstr Use strstr() instead.
+  _fstrtok Use strtok() instead.
+M _fstrtok Use strtok() instead.
+  _fstrupr Use strupr() instead.
+M _fstrupr Use strupr() instead.
+  fsys_fdinfo NO LONGER SUPPORTED
+M fsys_fdinfo NO LONGER SUPPORTED
+  fsys_fstat NO LONGER SUPPORTED - Information is not provided from the file system (because Neutrino io-blk does not give referential treatment to any particular disk format).
+M fsys_fstat NO LONGER SUPPORTED - Information is not provided from the file system (because Neutrino io-blk does not give referential treatment to any particular disk format).
+  fsys_get_mount_dev The devctl() command, DCMD_FSYS_MOUNTED_ON, can be sent to get this information but it must be sent as part of a combine message. See the source for fsys_get_mount_dev() in the migration library for code for doing this.
+M fsys_get_mount_dev A cover function is provided in the migration library.
+  fsys_get_mount_pt The devctl() command, DCMD_FSYS_MOUNTED_BY, can be sent to get this information but it must be sent as part of a combine message. See the source for fsys_get_mount_pt() in the migration library for code for doing this.
+M fsys_get_mount_pt A cover function is provided in the migration library.
+  fsys_stat NO LONGER SUPPORTED - Information is not provided from the file system (because Neutrino io-blk does not give preferential treatment to any particular disk format).
+M fsys_stat NO LONGER SUPPORTED - Information is not provided from the file system (because Neutrino io-blk does not give preferential treatment to any particular disk format).
+  gcvt Consider using sprintf() instead.
+M gcvt Consider using sprintf() instead.
+  _gcvt Consider using sprintf() instead.
+M _gcvt Consider using sprintf() instead.
+  getch Do a read() with echo off.
+M getch Do a read() with echo off.
+  getche Use getchar() or getc() instead combined with putchar() or putc().
+M getche Use getchar() or getc() instead combined with putchar() or putc().
+  getcmd Use _getcmd() instead.
+M getcmd Use _getcmd() instead.
+  getnid QNX Neutrino does not use network ids (nids) as QNX 4 does.  Instead, nodes on a network are named. To get the name of the node that the caller is on call netmgr_ndtostr() with the nd parameter set to ND_LOCAL_NODE.
+M getnid The migration library has a getnid() function that returns whatever was passed to mig4nto-procmgr via the -n option.
+  gettimer Use timer_gettime() instead.
+M gettimer Use timer_gettime() instead.
+  getwd getwd() requires a preallocated buffer whereas getcwd() will allocate one if it is passed NULL for the buffer. getcwd() also has a size parameter. For portability, use getcwd() instead of getwd().
+M getwd getwd() requires a preallocated buffer whereas getcwd() will allocate one if it is passed NULL for the buffer. getcwd() also has a size parameter. For portability, use getcwd() instead of getwd().
+  _gmtime Use gmtime_r() instead.
+M _gmtime Use gmtime_r() instead.
+  halloc Use calloc() instead.
+M halloc Use calloc() instead.
+  _heapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _heapchk See the malloc_g library described in the technotes book of the documentation.  Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _heapenable NO LONGER SUPPORTED
+M _heapenable NO LONGER SUPPORTED
+  _heapgrow NO LONGER SUPPORTED
+M _heapgrow NO LONGER SUPPORTED
+  _heapmin NO LONGER SUPPORTED
+M _heapmin NO LONGER SUPPORTED
+  _heapset See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _heapset See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _heapshrink NO LONGER SUPPORTED
+M _heapshrink NO LONGER SUPPORTED
+  _heapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+M _heapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+  hfree Use free() instead.
+M hfree Use free() instead.
+  ioctl Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+M ioctl Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+  inp Use inp8() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M inp Use inp8() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  inpd Use inp32() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M inpd Use inp32() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  inpw Use inp16() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M inpw Use inp16() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  __isascii Use isascii() instead.
+M __isascii Use isascii() instead.
+  __iscsym Replace with an expression using isalpha(), isdigit() and testing for the underscore character.
+M __iscsym Replace with an expression using isalpha(), isdigit() and testing for the underscore character.
+  __iscsymf Replace with an expression using isalpha() and testing for the underscore character.
+M __iscsymf Replace with an expression using isalpha() and testing for the underscore character.
+  _itoa Use itoa() instead.
+M _itoa Use itoa() instead.
+  kbhit Use tcischars() instead.
+M kbhit Use tcischars() instead.
+  lfind NO LONGER SUPPORTED
+M lfind NO LONGER SUPPORTED
+  _localtime Use localtime_r() instead.
+M _localtime Use localtime_r() instead.
+  lock Use fcntl() with F_SETLK instead.
+M lock Use fcntl() with F_SETLK instead.
+  locking Use tell() and fcntl() with F_SETLK instead.
+M locking Use tell() and fcntl() with F_SETLK instead.
+  _locking Use tell() and fcntl() with F_SETLK instead.
+M _locking Use tell() and fcntl() with F_SETLK instead.
+  log2 NO LONGER SUPPORTED
+M log2 NO LONGER SUPPORTED
+  _lrotl NO LONGER SUPPORTED
+M _lrotl NO LONGER SUPPORTED
+  _lrotr NO LONGER SUPPORTED
+M _lrotr NO LONGER SUPPORTED
+  lsearch NO LONGER SUPPORTED
+M lsearch NO LONGER SUPPORTED
+  _ltoa Use ltoa() instead.
+M _ltoa Use ltoa() instead.
+  _makepath NO LONGER SUPPORTED
+M _makepath NO LONGER SUPPORTED
+  __max NO LONGER SUPPORTED
+M __max NO LONGER SUPPORTED
+  _memavl NO LONGER SUPPORTED
+M _memavl NO LONGER SUPPORTED
+  _memicmp Use memicmp() instead.
+M _memicmp Use memicmp() instead.
+  _memmax NO LONGER SUPPORTED
+M _memmax NO LONGER SUPPORTED
+  __min NO LONGER SUPPORTED
+M __min NO LONGER SUPPORTED
+  MK_FP NO LONGER SUPPORTED
+M MK_FP NO LONGER SUPPORTED
+  mktimer Use timer_create() instead.
+M mktimer Use timer_create() instead.
+  mount This is supported but its parameters have changed.
+M mount This is supported but its parameters have changed.
+  mouse_close NO LONGER SUPPORTED
+M mouse_close NO LONGER SUPPORTED
+  mouse_flush NO LONGER SUPPORTED
+M mouse_flush NO LONGER SUPPORTED
+  mouse_open NO LONGER SUPPORTED
+M mouse_open NO LONGER SUPPORTED
+  mouse_param NO LONGER SUPPORTED
+M mouse_param NO LONGER SUPPORTED
+  mouse_read NO LONGER SUPPORTED
+M mouse_read NO LONGER SUPPORTED
+  movedata Use memcpy() instead.
+M movedata Use memcpy() instead.
+  _msize See the malloc_g library described in the technotes book of the documentation. Specifically look at calling _msize(), _musize() and DH_ULEN().
+M _msize See the malloc_g library described in the technotes book of the documentation. Specifically look at calling _msize(), _musize() and DH_ULEN().
+  _ncalloc Use calloc() instead.
+M _ncalloc Use calloc() instead.
+  _nexpand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+M _nexpand The realloc() function can be used in place of this but beware that realloc() will move your memory block to a new address if needed but _expand() will fail rather than move your memory block to a new address.
+  _nfree Use free() instead.
+M _nfree Use free() instead.
+  _nheapchk See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _nheapchk See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _nheapgrow NO LONGER SUPPORTED
+M _nheapgrow NO LONGER SUPPORTED
+  _nheapmin NO LONGER SUPPORTED
+M _nheapmin NO LONGER SUPPORTED
+  _nheapset See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+M _nheapset See the malloc_g library described in the technotes book of the documentation. Specifically look at calling mallopt() with MALLOC_VERIFY for getting similar functionality.
+  _nheapshrink NO LONGER SUPPORTED
+M _nheapshrink NO LONGER SUPPORTED
+  _nheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+M _nheapwalk See the malloc_g library described in the technotes book of the documentation for heap analysis features.
+  _nmalloc Use malloc() instead.
+M _nmalloc Use malloc() instead.
+  _nmsize See the malloc_g library described in the technotes book of the documentation. Specifically look at calling _msize(), _musize() and DH_ULEN().
+M _nmsize See the malloc_g library described in the technotes book of the documentation. Specifically look at calling _msize(), _musize() and DH_ULEN().
+  nosound NO LONGER SUPPORTED
+M nosound NO LONGER SUPPORTED
+  _nrealloc Use realloc() instead.
+M _nrealloc Use realloc() instead.
+  onexit Use atexit() instead.
+M onexit Use atexit() instead.
+  outp Use out8() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M outp Use out8() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  outpd Use out32() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M outpd Use out32() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  outpw Use out16() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+M outpw Use out16() instead. Note that mmap_device_io() should be called before calling the port I/O functions.
+  print_usage NO LONGER SUPPORTED
+M print_usage NO LONGER SUPPORTED
+  putch Set /dev/tty as standard input and call putchar() or simply open /dev/tty and use putc().
+M putch Set /dev/tty as standard input and call putchar() or simply open /dev/tty and use putc().
+  qnx_adj_time Use ClockAdjust() instead.
+M qnx_adj_time Use ClockAdjust() instead.
+  qnx_device_attach Use rsrcdbmgr_devno_attach() instead.
+M qnx_device_attach Use rsrcdbmgr_devno_attach() instead.
+  qnx_device_detach Use rsrcdbmgr_devno_dettach() instead.
+M qnx_device_detach Use rsrcdbmgr_devno_dettach() instead.
+  qnx_display_hex NO LONGER SUPPORTED
+M qnx_display_hex NO LONGER SUPPORTED
+  qnx_display_msg NO LONGER SUPPORTED
+M qnx_display_msg NO LONGER SUPPORTED
+  qnx_fd_attach NO LONGER SUPPORTED - The resource manager library removes the need for this.
+M qnx_fd_attach NO LONGER SUPPORTED - The resource manager library removes the need for this.
+  qnx_fd_detach NO LONGER SUPPORTED - The resource manager library removes the need for this.
+M qnx_fd_detach NO LONGER SUPPORTED - The resource manager library removes the need for this.
+  qnx_fd_query Not as of this writing. There may be something later.
+M qnx_fd_query Not as of this writing. There may be something later.
+  qnx_fullpath Use realpath() followed by a call to netmgr_ndtostr() to get the node name.
+M qnx_fullpath Use realpath() followed by a call to netmgr_ndtostr() to get the node name.
+  qnx_getclock There is currently no way of getting the time from another node of the natice QNX network. Use clock_gettime() to get the time on the local node.
+M qnx_getclock There is currently no way of getting the time from another node of the natice QNX network. Use clock_gettime() to get the time on the local node.
+  qnx_getids See the section in the migration guide on getting process information.
+M qnx_getids See the section in the migration guide on getting process information.
+  qnx_hint_attach Use InterruptAttach() or InterruptAttachEvent() instead.
+M qnx_hint_attach A cover function is provided in the migration library.
+  qnx_hint_detach Use InterruptDetach()
+M qnx_hint_detach A cover function is provided in the migration library.
+  qnx_hint_mask Use InterruptMask() and InterruptUnmask()
+M qnx_hint_mask Use InterruptMask() and InterruptUnmask()
+  qnx_hint_query NO LONGER SUPPORTED
+M qnx_hint_query NO LONGER SUPPORTED
+  qnx_ioctl Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+M qnx_ioctl Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+  qnx_ioctlmx Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+M qnx_ioctlmx Use devctl() instead. For the dcmds to use with QSSL supplied resource managers see sys/dcmd_*.h.
+  qnx_name_attach If you are using QNX Neutrino 2.1 or later then use name_attach() or write resource managers instead. If you are using QNX Neutrino 2.0 or earlier then consider writing a resource manager instead.  The migration guide also lists some other methods for the sender to find the receiver.
+M qnx_name_attach A cover function is provided in the migration library.
+  qnx_name_detach If you are replacing qnx_name_attach() with name_attach() then use name_detach().
+M qnx_name_detach A cover function is provided in the migration library.
+  qnx_name_locate If you are using QNX Neutrino 2.1 or later then use name_open() or write resource managers instead. If you are using QNX Neutrino 2.0 or earlier then consider writing a resource manager instead.  The migration guide also lists some other methods for the sender to find the receiver.
+M qnx_name_locate A cover function is provided in the migration library.
+  qnx_name_locators NO LONGER SUPPORTED
+M qnx_name_locators NO LONGER SUPPORTED
+  qnx_name_nodes NO LONGER SUPPORTED
+M qnx_name_nodes NO LONGER SUPPORTED
+  qnx_name_query Names registered via name_attach() (QNX Neutrino 2.1 or later) appear in /dev/name/local and /dev/name/global.
+M qnx_name_query The migration library has a qnx_name_query() function for querying the names registered using the qnx_name_attach() migration library function.
+  qnx_net_alive Find out the name of your network directory by calling netmgr_ndtostr() with ND_LOCAL_NODE for the nd parameter. Then walk through the network directory using readdir().  The nodes listed as those that are up.
+M qnx_net_alive Find out the name of your network directory by calling netmgr_ndtostr() with ND_LOCAL_NODE for the nd parameter. Then walk through the network directory using readdir().  The nodes listed as those that are up.
+  qnx_nidtostr Use netmgr_ndtostr() instead.
+M qnx_nidtostr Use netmgr_ndtostr() instead.
+  qnx_osinfo See the section in the migration guide on getting system information.
+M qnx_osinfo A cover function is provided in the migration library.
+  qnx_osstat QNX Neutrino does not have as many hard limits as QNX 4 but instead keeps allocating memory until it runs out. Some limits can be found out by calling sysconf().
+M qnx_osstat QNX Neutrino does not have as many hard limits as QNX 4 but instead keeps allocating memory until it runs out. Some limits can be found out by calling sysconf().
+  qnx_pflags See the section in the migration guide on process flags.
+M qnx_pflags See the section in the migration guide on process flags.
+  qnx_prefix_attach If you were using this function just to put a name in the prefix table so that other processes could find yours then use name_attach() (QNX Neutrino 2.1 or later) instead. If you were using this function in an I/O manager that handled _IO_* messages then you need to convert to the resource manager library. If you were using this function to create an alias then use pathmgr_symlink() instead.
+M qnx_prefix_attach If you were using this function just to put a name in the prefix table so that other processes could find yours then use name_attach() (QNX Neutrino 2.1 or later) instead. If you were using this function in an I/O manager that handled _IO_* messages then you need to convert to the resource manager library. If you were using this function to create an alias then use pathmgr_symlink() instead.
+  qnx_prefix_detach If you are using name_attach() to register a name (QNX Neutrino 2.1 or later) then use name_detach() to detach it. If you are writing a resource manager and had attached the name via resmgr_attach() then use resmgr_detach() to detach it.If you wanted to remove a symlink created using pathmgr_symlink() then use pathmgr_unlink() or unlink() instead.
+M qnx_prefix_detach If you are using name_attach() to register a name (QNX Neutrino 2.1 or later) then use name_detach() to detach it. If you are writing a resource manager and had attached the name via resmgr_attach() then use resmgr_detach() to detach it.If you wanted to remove a symlink created using pathmgr_symlink() then use pathmgr_unlink() or unlink() instead.
+  qnx_prefix_getroot NO LONGER SUPPORTED - QNX Neutrino does not have the concept of a network root.
+M qnx_prefix_getroot NO LONGER SUPPORTED - QNX Neutrino does not have the concept of a network root.
+  qnx_prefix_query For the names that are associated with a resource manager you can walk through the directory structure under /proc/mount. The numbers shown refer to a resource manager and are nd,pid,chid,handle,type where the type is one of the _FTYPE_* macros in sys/ftype.h. Names that are the equivalent of replacements (or aliases) are not visible in QNX Neutrino.
+M qnx_prefix_query For the names that are associated with a resource manager you can walk through the directory structure under /proc/mount. The numbers shown refer to a resource manager and are nd,pid,chid,handle,type where the type is one of the _FTYPE_* macros in sys/ftype.h. Names that are the equivalent of replacements (or aliases) are not visible in QNX Neutrino.
+  qnx_prefix_setroot NO LONGER SUPPORTED - QNX Neutrino does not have the concept of a network root.
+M qnx_prefix_setroot NO LONGER SUPPORTED - QNX Neutrino does not have the concept of a network root.
+  qnx_proxy_attach Consider replacing proxies with QNX Neutrino pulses.
+M qnx_proxy_attach A cover function is provided in the migration library.
+  qnx_proxy_detach If not using the migration library and you are replacing qnx_proxy_attach() with QNX Neutrino pulses then the connection for delivering the pulse may need to be detached.
+M qnx_proxy_detach A cover function is provided in the migration library.
+  qnx_proxy_rem_attach Consider replacing proxies with QNX Neutrino pulses.
+M qnx_proxy_rem_attach Consider replacing proxies with QNX Neutrino pulses.
+  qnx_proxy_rem_detach If you are replacing qnx_proxy_rem_attach() with QNX Neutrino pulses then the connection for delivering the pulse may need to be detached.
+M qnx_proxy_rem_detach If you are replacing qnx_proxy_rem_attach() with QNX Neutrino pulses then the connection for delivering the pulse may need to be detached.
+  qnx_psinfo See the section in the migration guide on getting system information.
+M qnx_psinfo A cover function is provided in the migration library.
+  qnx_scheduler There is currently no way to do this across the network.  Use sched_setscheduler() for the local case.
+M qnx_scheduler There is currently no way to do this across the network.  Use sched_setscheduler() for the local case.
+  qnx_segment_alloc NO LONGER SUPPORTED - See shm_open(), ftruncate() and mmap() in the Library Reference manual.
+M qnx_segment_alloc NO LONGER SUPPORTED - See shm_open(), ftruncate() and mmap() in the Library Reference manual.
+  qnx_segment_alloc_flags NO LONGER SUPPORTED - See shm_open(), ftruncate() and mmap() in the Library Reference manual.
+M qnx_segment_alloc_flags NO LONGER SUPPORTED - See shm_open(), ftruncate() and mmap() in the Library Reference manual.
+  qnx_segment_arm NO LONGER SUPPORTED
+M qnx_segment_arm NO LONGER SUPPORTED
+  qnx_segment_flags NO LONGER SUPPORTED - See mmap() in the Library Reference manual.
+M qnx_segment_flags NO LONGER SUPPORTED - See mmap() in the Library Reference manual.
+  qnx_segment_free NO LONGER SUPPORTED - See munmap() and shm_inlink() in the Library Reference manual.
+M qnx_segment_free NO LONGER SUPPORTED - See munmap() and shm_inlink() in the Library Reference manual.
+  qnx_segment_get NO LONGER SUPPORTED
+M qnx_segment_get NO LONGER SUPPORTED
+  qnx_segment_huge NO LONGER SUPPORTED
+M qnx_segment_huge NO LONGER SUPPORTED
+  qnx_segment_index NO LONGER SUPPORTED
+M qnx_segment_index NO LONGER SUPPORTED
+  qnx_segment_info NO LONGER SUPPORTED - Use mem_offset() for getting a physical address.  Note that mem_offset() may be called posix_mem_offset() byt the time you read this.
+M qnx_segment_info NO LONGER SUPPORTED - Use mem_offset() for getting a physical address.  Note that mem_offset() may be called posix_mem_offset() byt the time you read this.
+  qnx_segment_overlay NO LONGER SUPPORTED - See mmap_device_memory() or mmap() in the Library Reference manual.
+M qnx_segment_overlay NO LONGER SUPPORTED - See mmap_device_memory() or mmap() in the Library Reference manual.
+  qnx_segment_overlay_flags NO LONGER SUPPORTED - See mmap_device_memory() or mmap() in the Library Reference manual.
+M qnx_segment_overlay_flags NO LONGER SUPPORTED - See mmap_device_memory() or mmap() in the Library Reference manual.
+  qnx_segment_put NO LONGER SUPPORTED
+M qnx_segment_put NO LONGER SUPPORTED
+  qnx_segment_raw_alloc Create a shared memory object and use shmctl() to both set its size and to create it as contiguous. If the process dies then as long as you don't do shm_unlink() the memory will still be set aside. mem_offset() case be used to get the physical address. Note that mem_offset() may be called posix_mem_offset() byt the time you read this.
+M qnx_segment_raw_alloc Create a shared memory object and use shmctl() to both set its size and to create it as contiguous. If the process dies then as long as you don't do shm_unlink() the memory will still be set aside. mem_offset() case be used to get the physical address. Note that mem_offset() may be called posix_mem_offset() byt the time you read this.
+  qnx_segment_raw_free To return memory allocated as detailed above under qnx_segment_raw_alloc(), close() the file descriptor, munmap() the memory and call shm_unlink(). There is no equivalent function for adding memory that wasn't reported by the BIOS.  However, this sort of thing can be done using the -M option to startup-* or from startup code using add_mem().
+M qnx_segment_raw_free To return memory allocated as detailed above under qnx_segment_raw_alloc(), close() the file descriptor, munmap() the memory and call shm_unlink(). There is no equivalent function for adding memory that wasn't reported by the BIOS.  However, this sort of thing can be done using the -M option to startup-* or from startup code using add_mem().
+  qnx_segment_realloc You can grow shared memory at anytime. You can only shrink it to 0 bytes and only when no other process has it mapped. Shrinking it to other sizes may be implemented in a furture implementation.
+M qnx_segment_realloc You can grow shared memory at anytime. You can only shrink it to 0 bytes and only when no other process has it mapped. Shrinking it to other sizes may be implemented in a furture implementation.
+  qnx_setclock There is currently no way to do this across the network.  Use clock_settime() for the local case.
+M qnx_setclock There is currently no way to do this across the network.  Use clock_settime() for the local case.
+  qnx_setids NO LONGER SUPPORTED
+M qnx_setids NO LONGER SUPPORTED
+  qnx_sflags The equivalent of most of these flags can be obtained.  See the source for qnx_osinfo() in the migration library for how.
+M qnx_sflags The equivalent of most of these flags can be obtained.  See the source for qnx_osinfo() in the migration library for how.
+  qnx_sid_query NO LONGER SUPPORTED
+M qnx_sid_query NO LONGER SUPPORTED
+  qnx_spawn Use the spawn*() family of functions or spawn(). See the section on process creation in the migration guide for more on this.
+M qnx_spawn A cover function is provided in the migration library.
+  qnx_strtonid Use netmgt_nd2str() instead.
+M qnx_strtonid Use netmgt_nd2str() instead.
+  qnx_sync Use sync() possibly along with with fdatasync() or fsync().  Note that these will not sync a filesystem on another node of the network.
+M qnx_sync Use sync() possibly along with with fdatasync() or fsync().  Note that these will not sync a filesystem on another node of the network.
+  qnx_ticksize Use ClockPeriod() instead.  It behaves like qnx_ticksize() with the _TICKSIZE_CLOSEST flag.
+M qnx_ticksize Use ClockPeriod() instead.  It behaves like qnx_ticksize() with the _TICKSIZE_CLOSEST flag.
+  qnx_trace_close NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_close NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_trace_info NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_info NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_trace_open NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_open NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_trace_read NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_read NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_trace_severity NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_severity NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_trace_trigger NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+M qnx_trace_trigger NO LONGER SUPPORTED - Consider using syslog() for logging instead.
+  qnx_umask There is no way to set the umask of another process. umask() can be use to set the umask for the caller.
+M qnx_umask There is no way to set the umask of another process. umask() can be use to set the umask for the caller.
+  qnx_vc_attach Use ConnectAttach() instead.
+M qnx_vc_attach Use ConnectAttach() instead.
+  qnx_vc_detach Use ConnectDetach() instead.
+M qnx_vc_detach Use ConnectDetach() instead.
+  qnx_vc_name_attach This is the equivalent of doing open() or name_open() of a name that is registered by a process on another node via resmgr_attach() or name_attach() respectively.
+M qnx_vc_name_attach This is the equivalent of doing open() or name_open() of a name that is registered by a process on another node via resmgr_attach() or name_attach() respectively.
+  qnx_vc_poll_parm NO LONGER SUPPORTED - See the various documentation about the QNX Neutrino native networking for similar options.
+M qnx_vc_poll_parm NO LONGER SUPPORTED - See the various documentation about the QNX Neutrino native networking for similar options.
+  Readmsg Use MsgRead() instead.  Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Readmsg A cover function is provided in the migration library.
+  Readmsgmx Use MsgReadv() instead.  Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Readmsgmx A cover function is provided in the migration library.
+  Receive Use MsgReceive() instead.  Note that this takes a channel id returned from ChannelCreate() instead of a process id. See the migration guide as a starting place for more information on this.
+M Receive A cover function is provided in the migration library.
+  Receivemx Use MsgReceivev() instead.  Note that this takes a channel id returned from ChannelCreate() instead of a process id. See the migration guide as a starting place for more information on this.
+M Receivemx A cover function is provided in the migration library.
+  Relay NO LONGER SUPPORTED
+M Relay NO LONGER SUPPORTED
+  reltimer Use timer_settime(CLOCK_REALTIME, 0, ...) instead.
+M reltimer Use timer_settime(CLOCK_REALTIME, 0, ...) instead.
+  Reply Use MsgReply() instead.  Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Reply A cover function is provided in the migration library.
+  Replymx Use MsgReplyv() instead. Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Replymx A cover function is provided in the migration library.
+  rmtimer Use timer_delete() instead.
+M rmtimer Use timer_delete() instead.
+  _rotl NO LONGER SUPPORTED
+M _rotl NO LONGER SUPPORTED
+  _rotr NO LONGER SUPPORTED
+M _rotr NO LONGER SUPPORTED
+  _searchenv Use searchenv() instead. Note that searchenv() doesn't search in the current directory unless it's specified in the given environment variable.
+M _searchenv Use searchenv() instead. Note that searchenv() doesn't search in the current directory unless it's specified in the given environment variable.
+  segread NO LONGER SUPPORTED
+M segread NO LONGER SUPPORTED
+  Send Use MsgSend() instead. Note that this takes a connection id (coid) instead of a process id. This coid can be obtained from open() (a coid is a file descriptor) or ConnectAttach(..., _NTO_SIDE_CHANNEL, ...). See the migration guide as a starting place for more information on this.
+M Send A cover function is provided in the migration library.
+  Sendfd Use MsgSend() instead. Note that this takes a file descriptor (which is also a connection id in QNX Neutrino). See the migration guide as a starting place for more information on this.
+M Sendfd Use MsgSend() instead. Note that this takes a file descriptor (which is also a connection id in QNX Neutrino). See the migration guide as a starting place for more information on this.
+  Sendfdmx Use MsgSendv() instead. Note that this takes a file descriptor (which is also a connection id in QNX Neutrino). See the migration guide as a starting place for more information on this.
+M Sendfdmx Use MsgSendv() instead. Note that this takes a file descriptor (which is also a connection id in QNX Neutrino). See the migration guide as a starting place for more information on this.
+  Sendmx Use MsgSendv() instead. Note that this takes a connection id (coid) instead of a process id. This coid can be obtained from open() (a coid is a file descriptor) or ConnectAttach(..., _NTO_SIDE_CHANNEL, ...). See the migration guide as a starting place for more information on this.
+M Sendmx A cover function is provided in the migration library.
+  _setmx Replaced by SETIOV() for use with the QNX Neutrino Msg*() functions.
+M _setmx A _setmx() macro is provided in the migration library header file.
+  set_new_handler This is available in the C++ library that is available as free software to QNX Neutrino 2.1.
+M set_new_handler This is available in the C++ library that is available as free software to QNX Neutrino 2.1.
+  _set_new_handler This is available in the C++ library that is available as free software to QNX Neutrino 2.1.
+M _set_new_handler This is available in the C++ library that is available as free software to QNX Neutrino 2.1.
+  sound NO LONGER SUPPORTED
+M sound NO LONGER SUPPORTED
+  _splitpath NO LONGER SUPPORTED
+M _splitpath NO LONGER SUPPORTED
+  _splitpath2 NO LONGER SUPPORTED
+M _splitpath2 NO LONGER SUPPORTED
+  stackavail Use __stackavail() instead.
+M stackavail Use __stackavail() instead.
+  _status87 NO LONGER SUPPORTED
+M _status87 NO LONGER SUPPORTED
+  _strdate Use time(), localtime(), gmtime() and strftime() instead.
+M _strdate Use time(), localtime(), gmtime() and strftime() instead.
+  _strdup Use strdup() instead.
+M _strdup Use strdup() instead.
+  _stricmp Use stricmp() instead.
+M _stricmp Use stricmp() instead.
+  _strlwr Use strlwr() instead.
+M _strlwr Use strlwr() instead.
+  _strnicmp Use strnicmp() instead.
+M _strnicmp Use strnicmp() instead.
+  _strrev Use strrev() instead.
+M _strrev Use strrev() instead.
+  _strtime Use time(), localtime(), gmtime() and strftime() instead.
+M _strtime Use time(), localtime(), gmtime() and strftime() instead.
+  _strupr Use strupr() instead.
+M _strupr Use strupr() instead.
+  tcsetct There is no function for this. However, the first tty opened without O_NOCTTY after a call to setsid() that does not already have a controlling process will cause the calling process to be the controlling process for this tty.
+M tcsetct There is no function for this. However, the first tty opened without O_NOCTTY after a call to setsid() that does not already have a controlling process will cause the calling process to be the controlling process for this tty.
+  term_attr_type NO LONGER SUPPORTED - Use ncurses instead.
+M term_attr_type NO LONGER SUPPORTED - Use ncurses instead.
+  term_axis NO LONGER SUPPORTED - Use ncurses instead.
+M term_axis NO LONGER SUPPORTED - Use ncurses instead.
+  term_bar NO LONGER SUPPORTED - Use ncurses instead.
+M term_bar NO LONGER SUPPORTED - Use ncurses instead.
+  term_box NO LONGER SUPPORTED - Use ncurses instead.
+M term_box NO LONGER SUPPORTED - Use ncurses instead.
+  term_box_fill NO LONGER SUPPORTED - Use ncurses instead.
+M term_box_fill NO LONGER SUPPORTED - Use ncurses instead.
+  term_box_off NO LONGER SUPPORTED - Use ncurses instead.
+M term_box_off NO LONGER SUPPORTED - Use ncurses instead.
+  term_box_on NO LONGER SUPPORTED - Use ncurses instead.
+M term_box_on NO LONGER SUPPORTED - Use ncurses instead.
+  term_clear NO LONGER SUPPORTED - Use ncurses instead.
+M term_clear NO LONGER SUPPORTED - Use ncurses instead.
+  term_color NO LONGER SUPPORTED - Use ncurses instead.
+M term_color NO LONGER SUPPORTED - Use ncurses instead.
+  term_cur NO LONGER SUPPORTED - Use ncurses instead.
+M term_cur NO LONGER SUPPORTED - Use ncurses instead.
+  term_delete_char NO LONGER SUPPORTED - Use ncurses instead.
+M term_delete_char NO LONGER SUPPORTED - Use ncurses instead.
+  term_delete_line NO LONGER SUPPORTED - Use ncurses instead.
+M term_delete_line NO LONGER SUPPORTED - Use ncurses instead.
+  term_down NO LONGER SUPPORTED - Use ncurses instead.
+M term_down NO LONGER SUPPORTED - Use ncurses instead.
+  term_field NO LONGER SUPPORTED - Use ncurses instead.
+M term_field NO LONGER SUPPORTED - Use ncurses instead.
+  term_fill NO LONGER SUPPORTED - Use ncurses instead.
+M term_fill NO LONGER SUPPORTED - Use ncurses instead.
+  term_flush NO LONGER SUPPORTED - Use ncurses instead.
+M term_flush NO LONGER SUPPORTED - Use ncurses instead.
+  term_get_line NO LONGER SUPPORTED - Use ncurses instead.
+M term_get_line NO LONGER SUPPORTED - Use ncurses instead.
+  term_home NO LONGER SUPPORTED - Use ncurses instead.
+M term_home NO LONGER SUPPORTED - Use ncurses instead.
+  term_init NO LONGER SUPPORTED - Use ncurses instead.
+M term_init NO LONGER SUPPORTED - Use ncurses instead.
+  term_insert_char NO LONGER SUPPORTED - Use ncurses instead.
+M term_insert_char NO LONGER SUPPORTED - Use ncurses instead.
+  term_insert_line NO LONGER SUPPORTED - Use ncurses instead.
+M term_insert_line NO LONGER SUPPORTED - Use ncurses instead.
+  term_insert_off NO LONGER SUPPORTED - Use ncurses instead.
+M term_insert_off NO LONGER SUPPORTED - Use ncurses instead.
+  term_insert_on NO LONGER SUPPORTED - Use ncurses instead.
+M term_insert_on NO LONGER SUPPORTED - Use ncurses instead.
+  term_key NO LONGER SUPPORTED - Use ncurses instead.
+M term_key NO LONGER SUPPORTED - Use ncurses instead.
+  term_left NO LONGER SUPPORTED - Use ncurses instead.
+M term_left NO LONGER SUPPORTED - Use ncurses instead.
+  term_lmenu NO LONGER SUPPORTED - Use ncurses instead.
+M term_lmenu NO LONGER SUPPORTED - Use ncurses instead.
+  term_load NO LONGER SUPPORTED - Use ncurses instead.
+M term_load NO LONGER SUPPORTED - Use ncurses instead.
+  term_menu NO LONGER SUPPORTED - Use ncurses instead.
+M term_menu NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_default NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_default NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_flags NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_flags NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_handler NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_handler NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_hide NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_hide NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_move NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_move NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_off NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_off NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_on NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_on NO LONGER SUPPORTED - Use ncurses instead.
+  term_mouse_process NO LONGER SUPPORTED - Use ncurses instead.
+M term_mouse_process NO LONGER SUPPORTED - Use ncurses instead.
+  term_printf NO LONGER SUPPORTED - Use ncurses instead.
+M term_printf NO LONGER SUPPORTED - Use ncurses instead.
+  term_receive NO LONGER SUPPORTED - Use ncurses instead.
+M term_receive NO LONGER SUPPORTED - Use ncurses instead.
+  term_relearn_size NO LONGER SUPPORTED - Use ncurses instead.
+M term_relearn_size NO LONGER SUPPORTED - Use ncurses instead.
+  term_resize_off NO LONGER SUPPORTED - Use ncurses instead.
+M term_resize_off NO LONGER SUPPORTED - Use ncurses instead.
+  term_resize_on NO LONGER SUPPORTED - Use ncurses instead.
+M term_resize_on NO LONGER SUPPORTED - Use ncurses instead.
+  term_restore NO LONGER SUPPORTED - Use ncurses instead.
+M term_restore NO LONGER SUPPORTED - Use ncurses instead.
+  term_restore_image NO LONGER SUPPORTED - Use ncurses instead.
+M term_restore_image NO LONGER SUPPORTED - Use ncurses instead.
+  term_right NO LONGER SUPPORTED - Use ncurses instead.
+M term_right NO LONGER SUPPORTED - Use ncurses instead.
+  term_save_image NO LONGER SUPPORTED - Use ncurses instead.
+M term_save_image NO LONGER SUPPORTED - Use ncurses instead.
+  term_scroll_down NO LONGER SUPPORTED - Use ncurses instead.
+M term_scroll_down NO LONGER SUPPORTED - Use ncurses instead.
+  term_scroll_up NO LONGER SUPPORTED - Use ncurses instead.
+M term_scroll_up NO LONGER SUPPORTED - Use ncurses instead.
+  term_setup NO LONGER SUPPORTED - Use ncurses instead.
+M term_setup NO LONGER SUPPORTED - Use ncurses instead.
+  term_type NO LONGER SUPPORTED - Use ncurses instead.
+M term_type NO LONGER SUPPORTED - Use ncurses instead.
+  term_unkey NO LONGER SUPPORTED - Use ncurses instead.
+M term_unkey NO LONGER SUPPORTED - Use ncurses instead.
+  term_up NO LONGER SUPPORTED - Use ncurses instead.
+M term_up NO LONGER SUPPORTED - Use ncurses instead.
+  term_video_off NO LONGER SUPPORTED - Use ncurses instead.
+M term_video_off NO LONGER SUPPORTED - Use ncurses instead.
+  term_video_on NO LONGER SUPPORTED - Use ncurses instead.
+M term_video_on NO LONGER SUPPORTED - Use ncurses instead.
+  term_window_scan NO LONGER SUPPORTED - Use ncurses instead.
+M term_window_scan NO LONGER SUPPORTED - Use ncurses instead.
+  tfork QNX Neutrino has true POSIX threads. See the pthread_*() functions and specifically pthread_create() as a starting point.
+M tfork QNX Neutrino has true POSIX threads. See the pthread_*() functions and specifically pthread_create() as a starting point.
+  timer_create The QNX 4 version was based on a draft standard.  In Neutrino the timer id is returned through the third parameter and the sigevent structure is filled in differently.
+M timer_create The QNX 4 version was based on a draft standard.  In Neutrino the timer id is returned through the third parameter and the sigevent structure is filled in differently.
+  _tolower Use tolower() instead.
+M _tolower Use tolower() instead.
+  _toupper Use toupper() instead.
+M _toupper Use toupper() instead.
+  Trace0 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace0 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace0b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace0b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace1 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace1 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace2 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace2 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace2b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace2b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace3 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace3 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace4 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace4 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace4b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace4b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace5 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace5 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace5b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace5b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace6 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace6 NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trace6b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+M Trace6b NO LONGER SUPPORTED - Consider using syslog() for logging instead. Note that syslog() cannot be called from within an interrupt handler.
+  Trigger Proxies have been replaced by QNX Neutrino pulses. See the section on this in the migration guide.
+M Trigger The migration library provides a Trigger() function that works identically to the QNX 4 one but is slower if the triggerer is in a different process than that which the proxy is attached to.  See the Trigger() function in the migration guide for more on this.
+  umount This is supported but it now has an unused flags parameters.
+M umount This is supported but it now has an unused flags parameters.
+  ungetch Use ungetc() instead.
+M ungetch Use ungetc() instead.
+  unlock Use fcntl() with F_SETLK instead.
+M unlock Use fcntl() with F_SETLK instead.
+  _vbprintf Use vsnprintf() instead.
+M _vbprintf Use vsnprintf() instead.
+  vcprintf Set /dev/tty as standard output and call vprintf().
+M vcprintf Set /dev/tty as standard output and call vprintf().
+  vcscanf Set /dev/tty as standard output and call vscanf().
+M vcscanf Set /dev/tty as standard output and call vscanf().
+  Writemsg Use MsgWrite() instead. Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Writemsg A cover function is provided in the migration library.
+  Writemsgmx Use MsgWritev() instead. Note that this takes the receive id returned from MsgReceive() instead of a process id. See the migration guide as a starting place for more information on this.
+M Writemsgmx A cover function is provided in the migration library.
+  Yield Use sched_yield() instead.
+M Yield A cover function is provided in the migration library.

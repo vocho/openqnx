@@ -1,0 +1,652 @@
+if [ $# != 1 ] ; then
+    echo "Usage: ksh-prog Bugs ksh-prog" 1>&2
+    exit 1
+fi
+THIS_KSH=$1
+shift
+
+echo 'The following tests are known to fail:
+	39'
+
+tbase=bug-t$$
+tfile=/tmp/$tbase
+sfile=/tmp/bug-s$$
+
+#   1. Everywhere
+#   	lex array code has problems....
+#   		$ echo blah[
+#   		missing ]
+#   		$
+#   	Different view of same bug:
+#   		$ n=blah echo "hi[ $n ]"
+#   		hi[ $n ]
+#   		$
+n=blah
+x=$(echo hi[ $n ]=1)
+if [ "$x" = 'hi[ $n ]=1' ] ; then
+	echo 'Bug 1 present (echo "hi[ $n ] " prints hi[ $n ]).'
+fi
+unset n x
+
+#
+#   2. Everywhere
+#   	When PATH is set before running a command, the new path is not used
+#   	in doing the path search
+#   		$ echo echo hi > /tmp/q ; chmod a+rx /tmp/q
+#   		$ PATH=/tmp q
+#   		q: not found
+#   		$
+#   	in comexec() the two lines
+#   		while (*vp != NULL)
+#   			(void) typeset(*vp++, xxx, 0);
+#   	need to be moved out of the switch to before findcom() is called - I
+#   	don't know what this will break.
+cat > $tfile << 'EOF'
+#!/bin/sh
+echo hi
+exit 0
+EOF
+chmod a+rx $tfile
+PATH=/tmp $tbase > /dev/null 2>&1
+if [ $? != 0 ] ; then
+	echo "Bug 2 present: local assignments to PATH don't effect PATH search"
+fi
+rm -f $tfile
+
+#
+#   3. Sun OS 4.0.x (This seems to be a problem with sun's PENDIN not being done
+#      properly)
+#   	sleep 5^J ls^J ls^J ls		[only first ls runs]
+#   	vi ... ZZ (while waiting type)	[some of the input gets eaten]
+#      [not present in SunOS 4.1.x]
+echo "  [No automatic test for bug 3 - interactive]"
+
+#
+#   4. (fixed)
+#
+echo "  [Don't know what bug 4 was]"
+
+#
+#   5. Everywhere
+#   	File name completion (^X,*) does not mesh well with cd and
+#   	symbolic links.  cd does path simplification wrt $PWD before
+#   	doing the actual chdir(), while file name completion does
+#   	not do the simplification. E.g., you are in directory A
+#   	which has a symbolic link to directory B, you create a file
+#   	called foobar and you then cd to the symlink to B, and type
+#   		$ echo ../foo^X
+#   	and the shell beeps at you.  Would be more consistent to
+#   	do the completion after simplifing the `$PWD/..'.
+echo "  [No automatic test for bug 5 - interactive]"
+
+#
+#   6. Everywhere
+#   	Parsing of $(..) expressions is non-optimal.  It is
+#   	impossible to have any parentheses inside the expression.
+#   	I.e.,
+#   		$ ksh -c 'echo $(echo \( )'
+#   		no closing quote
+#   		$ ksh -c 'echo $(echo "(" )'
+#   		no closing quote
+#   		$
+#   	The solution is to hack the parsing clode in lex.c, the
+#   	question is how to hack it: should any parentheses be
+#   	escaped by a backslash, or should recursive parsing be done
+#   	(so quotes could also be used to hide hem).  The former is
+#   	easier, the later better...
+cat > $tfile << 'EOF'
+    echo $(echo \()
+EOF
+out=`$THIS_KSH $tfile 2>&1`
+if [ "X$out" != 'X(' ] ; then
+	echo 'Bug 6 present: can'\''t quote ( inside $(..) escapes'
+fi
+rm -f $tfile
+
+#
+#   7. (fixed)
+#
+echo "  [Don't know what bug 7 was]"
+
+#
+#   8. Everywhere - NOT A BUG - this is what at&t ksh does
+#   	Strange typset -x behaviour in functions.  The following function
+#   	does not set the environment variable BLAH outside the function:
+#   		function blah
+#   		{
+#   			typeset -x BLAH=foobar
+#   		}
+#   	This function does work:
+#   		function blah
+#   		{ BLAH=foobar; export BLAH
+#   		}
+echo '  [Bug 8 was bogus]'
+
+#
+#   9. (fixed)  Fix is to make sure Volatile is not defined to nothing
+#   	       (see defines in sh.h)
+#   	Continue in a for loop does not work right:
+#   		for i in a b c ; do
+#   			if [ $i = b ] ; then
+#   				continue
+#   			fi
+#   			echo $i
+#   		done
+#   	Prints a forever...
+first=yes
+for i in a b c ; do
+	if [ $i = b ] ; then
+		if [ $first = no ] ; then
+			echo 'Bug 9 present: continue in for loop broken'
+			break	# hope break isn't broken too :-)
+		fi
+		first=no
+		continue
+	fi
+done
+
+#
+#   10. Everywhere
+#   	The following:
+#   		set -- `false`
+#   		echo $?
+#   	shoud not print 0. (according to /bin/sh, at&t ksh, and the
+#   	getopt(1) man page - not according to POSIX)
+set -- `false`
+if [ $? != 1 ] ; then
+	echo 'Bug 10 present: set exit code overrides exit code of command subst'
+fi
+
+#
+#   11. Some places (sun4s but not mips)
+#   	The following:
+#   		x=/foo/bar/blah
+#   		echo ${x##*/}
+#   	should echo blah but on some machines echos /foo/bar/blah.
+x=/foo/bar/blah
+if [ ${x##*/} != blah ] ; then
+	echo 'Bug 11 present: ${x##*/} doesn'\''t work'
+fi
+unset x
+
+#
+#   12. Everywhere:
+#	Both of the following echos produce the same output under sh/ksh.att:
+#   		#!/bin/sh
+#   		x="foo	bar"
+#   		echo "`echo \"$x\"`"
+#   		echo "`echo "$x"`"
+#	pdksh produces different output for the former (foo instead of foo\tbar)
+x="foo	bar"
+if [ "X`echo \"$x\"`" != "Xfoo	bar" ] ; then
+	echo 'Bug 12 present: quotes inside `` sequences different from sh'
+fi
+unset x
+
+#
+#   13. Everywhere
+#   	The following command hangs forever:
+#   		$ (: ; cat /etc/termcap) | sleep 2
+#   	This is because the shell forks a shell to run the (..) command
+#   	and this shell has the pipe open.  When the sleep dies, the cat
+#   	doesn't get a SIGPIPE 'cause a process (ie, the second shell)
+#   	still has the pipe open.
+trap 'echo "Bug 13 present: pipes not closed properly"; trap 2' 2
+echo "  [If this hangs for more than a second, hit ^C]"
+(: ; cat /etc/termcap) | sleep 1
+trap 2
+echo "  [relax, no bug 13]"
+
+
+#
+#   14. Everywhere
+#   	The command
+#   		$ (foobar) 2> /dev/null
+#   	generates no output under /bin/sh, but pdksh produces the error
+#   		foobar: not found
+#   	Also, the command
+#   		$ foobar 2> /dev/null
+#   	generates an error under /bin/sh and pdksh, but at&t ksh produces
+#   	no error (redirected to /dev/null).
+cat > $tfile << 'EOF'
+    (you/should/not/see/this/error/1) 2> /dev/null
+    you/should/not/see/this/error/2 2> /dev/null
+EOF
+if $THIS_KSH $tfile 2>&1 | grep you/should > /dev/null; then
+    echo "Bug 14 present: shell 'command not found' error not redirected"
+fi
+rm -f $tfile
+
+#
+#   15. Everywhere
+#   	The command
+#   		$ whence foobar
+#   	generates a blank line under pdksh and sets the exit status to 0.
+#   	at&t ksh generates no output and sets the exit status to 1.  Also,
+#   	the command
+#   		$ whence foobar cat
+#   	generates no output under at&t ksh (pdksh generates a blank line
+#   	and /bin/cat).
+echo "  [Note that there are three bug 15 tests: 15a, 15b, 15c]"
+cat > $tfile << 'EOF'
+    whence does/not/exist > /dev/null
+    echo $?
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ "$out" != 1 ] ; then
+	echo 'Bug 15a present: exit status of whence wrong'
+fi
+rm -f $tfile
+x=$(whence does/not/exist | wc -l)
+case $x in
+*0*) ;;
+*)	echo 'Bug 15b present: whence produces blank lines'
+esac
+x=$(whence does/not/exist cat | wc -l)
+case $x in
+*2*) 	echo 'Bug 15c present: whence continues after error'
+esac
+unset x
+
+#
+#   16. Everywhere
+#   	${var%%expr} seems to be broken in many places.  On the mips
+#   	the commands
+#   		$ read line < /etc/passwd
+#   		$ echo $line
+#   		root:0:1:...
+#   		$ echo ${line%%:*}
+#   		root
+#   		$ echo $line
+#   		root
+#   		$
+#   	change the value of line.  On sun4s & pas, the echo ${line%%:*} doesn't
+#   	work.  Haven't checked elsewhere...
+read x < /etc/passwd
+y=$x
+echo ${x%%:*} > /dev/null
+if [ "$x" != "$y" ] ; then
+	echo 'Bug 16 present: ${..%%..} trashes variables'
+fi
+unset x y
+
+#
+#   17. Everywhere
+#   	The command
+#   		. /foo/bar
+#   	should set the exit status to non-zero (sh and at&t ksh do).
+#	XXX doting a non existant file is a fatal error for a script
+cat > $tfile << 'EOF'
+    (. does/not/exist)
+    echo $?
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ "$out" != 1 ] ; then
+	echo 'Bug 17 present: exit status of . wrong'
+fi
+rm -f $tfile
+
+#
+#   18. Everywhere
+#   	In vi mode ^X (and *) can dump core:
+#   		$ ab[cd^XMemory fault (core dumped)
+echo "  [No automatic test for bug 18 - interactive]"
+
+#
+#   19. Everywhere
+#   	Both of the following echos should produce the same thing, but don't:
+#   		$ x=foo/bar
+#   		$ echo ${x%/*}
+#   		foo
+#   		$ echo "${x%/*}"
+#   		foo/bar
+x=foo/bar
+if [ "${x%/*}" != foo ] ; then
+	echo 'Bug 19 present: ${..%..} in double quotes broken'
+fi
+unset x
+
+#
+#   20. (same as 18)
+#
+
+#
+#   21. Everywhere
+#   	backslash does not work as expected in case labels:
+#   	$ x='-x'
+#   	$ case $x in
+#   	-\?) echo hi
+#   	esac
+#   	hi
+#   	$ x='-?'
+#   	$ case $x in
+#   	-\\?) echo hi
+#   	esac
+#   	hi
+#   	$
+case -x in
+-\?)	echo 'Bug 21 present: backslashes do not work in case patterns'
+esac
+
+#
+#   22. Quoting backquotes inside backquotes doesn't work:
+#   	$ echo `echo hi \`echo there\` folks`
+#       asks for more info.  sh and at&t ksh both echo
+#   	hi there folks
+cat > $tfile << 'EOF'
+    echo `echo hi \`echo there\` folks`
+EOF
+out=`$THIS_KSH $tfile 2>&1`
+if [ "$out" != 'hi there folks' ] ; then
+	echo 'Bug 22 present: quoting backquotes inside backquotes broken'
+fi
+rm -f $tfile
+
+#
+#   23. )) is not treated `correctly':
+#   	$ (echo hi ; (echo there ; echo folks))
+#   	missing ((
+#   	$
+#       instead of (as sh and ksh.att)
+#   	$ (echo hi ; (echo there ; echo folks))
+#   	hi
+#   	there
+#   	folks
+#   	$
+cat > $tfile << 'EOF'
+    ( : ; ( : ; echo hi))
+EOF
+out=`$THIS_KSH $tfile 2>&1`
+if [ "$out" != 'hi' ] ; then
+	echo 'Bug 23 present: )) always assumed to be end of (( )) expr'
+fi
+rm -f $tfile
+
+
+#
+#   24. strangeness with file name completion involving symlinks to nowhere
+#   	$ mkdir foo foo/bar
+#   	$ ln -s /stuff/junk foo/bar/xx
+#   	$ echo foo/*/xx 
+#	(beep)
+#   	$
+echo "  [No automatic test for bug 24 - interactive]"
+
+#
+#   25. Check reading stdin in a while loop.  The read should only read
+#	a single line, not a whole stdio buffer; the cat should get
+#	the rest.
+#
+(echo a; echo b) | while read x ; do
+	    [ "$x" = b ] && echo 'Bug 25 present (read reads too much from pipe).'
+	    cat > /dev/null
+	done
+
+#
+#   26a. Check reading stdin in a while loop.  The read should read both
+#	lines, not just the first.
+#
+cat > $tfile << 'EOF'
+    a
+    b
+EOF
+cat > $sfile << 'EOF'
+    a=
+    while [ "$a" != xxx ] ; do
+	last=$x
+	read x
+	cat /dev/null | sed 's/x/y/'
+	a=x$a
+    done
+    if [ "$last" != b ] ; then
+	echo 'Bug 26 present (reading in a while loop broken).'
+    fi
+EOF
+$THIS_KSH $sfile < $tfile
+rm -f $tfile $sfile
+
+#
+#   26b Check reading stdin in a while loop.  The read should read both
+#	lines, not just the first.  This differs from 26 in that lines
+#	are placed against the margin.
+#
+cat > $tfile << 'EOF'
+ab
+cd
+EOF
+cat > $sfile << 'EOF'
+    a=
+    while [ "$a" != xxx ] ; do
+	last=$x
+	read x
+	cat /dev/null | sed 's/x/y/'
+	a=x$a
+    done
+    if [ "$last" != cd ] ; then
+	echo "Bug 26b present (last line should be cd was $last.)"
+    fi
+EOF
+$THIS_KSH $sfile < $tfile
+rm -f $tfile $sfile
+
+#
+#   27. Everywhere
+#   	The command
+#   		. /does/not/exist
+#	should cause a script to exit.
+cat > $tfile << 'EOF'
+    . does/not/exist
+    echo hi
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ "$out" = hi ] ; then
+	echo "Bug 27 present: .'ing a non-existant file doesn't kill script"
+fi
+rm -f $tfile
+
+
+#
+#   28. Everywhere
+#   	variable assignements not detected well
+#
+cat > $tfile << 'EOF'
+    a.x=1 echo hi
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ "$out" = hi ] ; then
+	echo "Bug 28 present: strange chars allowed in variables"
+fi
+rm -f $tfile
+
+#
+#   29. Everywhere
+#   	alias expansion different from real ksh
+#
+cat > $tfile << 'EOF'
+    alias a='for ' b='i in'
+    a b hi ; do echo $i ; done
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ "$out" != hi ] ; then
+	echo "Bug 29 present: keyword in alias with trailing space doesn't work"
+fi
+rm -f $tfile
+
+
+#
+#   30. Everywhere
+#   	strange characters allowed inside ${...}
+#
+cat > $tfile << 'EOF'
+    echo ${a{b}}
+EOF
+out=`$THIS_KSH $tfile 2> /dev/null`
+if [ $? = 0 ] ; then
+	echo 'Bug 30 present: strange chars allowed inside ${..}'
+fi
+rm -f $tfile
+
+
+#
+#   31. Everywhere
+#   	Does read handle partial lines correctly
+#
+cat > $tfile << 'EOF'
+a A Aa
+b B Bb
+EOF
+print -n 'c' >> $tfile
+cat > $sfile << 'EOF'
+    a=
+    ret=
+    while [ "$a" != xxx ] ; do
+	read x y z
+	ret=$?
+	a=x$a
+    done
+    if [ "$x" != c ] ; then
+	    echo 'Bug 31a present: read throws away partial lines'
+    fi
+    if [ "$ret" != 1 ] ; then
+	    echo 'Bug 31b present: read does not return eof for partial lines'
+    fi
+EOF
+$THIS_KSH $sfile < $tfile 2> /dev/null
+rm -f $sfile $tfile
+
+
+#
+#   32. Everywhere
+#   	Does read set variables to null at eof?
+#
+cat > $tfile << 'EOF'
+a A Aa
+b B Bb
+EOF
+cat > $sfile << 'EOF'
+    a=
+    while [ "$a" != xxx ] ; do
+	read x y z
+	a=x$a
+    done
+    if [ -n "$x$y$z" ] ; then
+	echo "Bug 32 present: read does not set variables to null at eof"
+    fi
+EOF
+$THIS_KSH $sfile < $tfile
+rm -f $sfile $tfile
+
+
+#
+#   33. Everywhere
+#   	Does umask print a leading 0 when umask is 3 digits?
+#
+cat > $sfile << 'EOF'
+umask 222
+umask
+EOF
+out=`$THIS_KSH $sfile`
+if [ X"$out" = X222 ] ; then
+	echo "Bug 33 present: umask doesn't always start with 0"
+fi
+rm -f $sfile 
+
+
+#
+#   34. Everywhere
+#   	Does umask print a umask of 0 sanely?
+#
+cat > $sfile << 'EOF'
+umask 0
+umask
+EOF
+out=`$THIS_KSH $sfile`
+if [ X"$out" = X00 ] ; then
+	echo "Bug 34 present: umask prints 0 as \`$out'"
+fi
+rm -f $sfile 
+
+#
+#   35. Everywhere
+#	  Tempory files used for here-docs in functions get trashed after
+#	  the function is parsed (before it is executed)
+#
+cat > $sfile << 'EOF'
+	f1() {
+		cat <<- EOF
+			F1
+		EOF
+		f2() {
+			cat <<- EOF
+				F2
+			EOF
+		}
+	}
+	f1
+	f2
+	unset -f f1
+	f2
+EOF
+out=`$THIS_KSH $sfile 2>&1`
+expected='F1
+F2
+F2'
+if [ X"$out" != X"$expected" ] ; then
+	echo "Bug 35 present: here documents in functions don't work"
+fi
+rm -f $sfile 
+
+#
+#   36. Everywhere (test from <sjg@void.zen.oz.au>)
+#	  Command substitution breaks reading in while loop
+#
+cat > $sfile << 'EOF'
+    (echo abcdef; echo; echo 123) | 
+    while read line
+    do
+      # the following line breaks it
+      c=`echo $line | wc -c`
+      echo $c
+    done
+      
+EOF
+out=`$THIS_KSH $sfile 2>&1`
+expect='7
+1
+4'
+if [ X"$out" != X"$expect" ] ; then
+	echo "Bug 36 present: reading broken by command substitution in while loops"
+fi
+rm -f $sfile 
+
+#
+#   37. Machines with broken times() (reported by <sjg@void.zen.oz.au>)
+#	  time does not report correct real time
+#
+out=`$THIS_KSH -c 'time sleep 1' 2>&1 | awk '
+	     /^[ 	]*0*\.0*s?[ 	][ 	]*real/ { print "bad" }
+	     /^[	 ]*real[	 ][	 ]*0*\.0*s?([ 	]|$)/ { print "bad" }'`
+if [ -n "$out" ] ; then
+	echo "Bug 37 present: time does not report real-time correctly"
+fi
+
+#
+#   38. set -e doesn't ignore exit codes for if/while/until/&&/||/!.
+#
+out=`$THIS_KSH -e -c '
+		    if false; then echo hi ; fi
+		    false || true
+		    false && true
+		    while false; do echo hi; done 
+		    echo ok' 2>&1`
+if [ X"$out" != Xok ] ; then
+	echo "Bug 38 present: set -e exits when it shouldn't"
+fi
+
+#
+#   39. set -e: errors in command substitutions aren't ignored
+#
+out=`$THIS_KSH -e -c 'if test X\`false; echo hi\` = Xhi; then echo ok ; fi' 2>&1`
+if [ X"$out" != Xok ] ; then
+	echo "Bug 39 present: set -e: errors in command substitutions not ignored"
+fi

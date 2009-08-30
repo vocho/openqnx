@@ -1,0 +1,81 @@
+#ifndef __PROTOTYPES_INCLUDED
+#define __PROTOTYPES_INCLUDED
+
+#include "sys/types.h"
+#include "main.h"
+
+extern int qnx_create_path_to(signed char *);
+extern unsigned short int compute_crc_16(short int ,signed char *);
+extern void clear_crc_16(void);
+extern unsigned short int next_crc_16(unsigned short int );
+extern unsigned short int get_crc_16(void);
+//extern int main(int ,char **);
+extern long odtond(unsigned short int *);
+extern void ndtood(long ,unsigned short int *);
+//extern void main(int ,signed char **);
+extern void send_files(int ,signed char **);
+extern int read_mdm(int ,int ,unsigned char *);
+extern void writelog(signed char *,int ,signed char *);
+extern void write_mdm(unsigned int ,void *);
+extern void putmsg(signed char *,... );
+extern void puterr(signed char *,... );
+extern void Puterr(signed char *,... );
+extern void wait_ticks(int );
+extern int abort_check(void);
+extern int make_file_name(signed char *,signed char *);
+extern void dump(signed char *,int ,unsigned char *);
+extern void flush_in(void);
+extern void proto_ungetc(unsigned char );
+extern char *fgetln(signed char *,int ,struct __iobuf *);
+extern void raw(int );
+extern void receive_files(int ,signed char **);
+extern int rcv(void);
+extern int rcv_piece(unsigned char );
+extern int save_segment(void);
+extern int ack(unsigned char ,unsigned char ,unsigned char ,unsigned char *);
+extern int open_file(void);
+extern void date_stamp(void);
+extern void save_data(int );
+extern void delete_file(void);
+extern void close_fd(void);
+extern void stat_to_dir_entry(struct stat *,struct old_dir_entry *);
+extern mode_t compute_mode(unsigned char ,unsigned char ,unsigned char );
+extern int extra_option(signed char *);
+extern void init_mdm(void);
+extern void multi_send_check(void);
+extern void done(int );
+extern void final_init(void);
+extern int snd(signed char *);
+extern void seg_bfr_init(void);
+extern void put_remote(signed char *,... );
+extern int send_segments(int );
+extern int send_segment(int ,int );
+extern int wait_ack(void);
+extern void cancel(void);
+
+
+#ifdef TEST
+/* for test program only */
+extern long compute_crc_32(int ,char *);
+extern void clear_crc_32(void);
+extern long next_crc_32(unsigned int );
+extern long get_crc_32(void);
+extern unsigned int compute_crc_ccitt(int ,char *);
+extern void clear_crc_ccitt(void);
+extern unsigned int next_crc_ccitt(unsigned int );
+extern unsigned int get_crc_ccitt(void);
+extern unsigned int get_crc_sdlc(void);
+extern int compute_crc_sdlc(int ,char *);
+extern unsigned int next_crc_sdlc(int );
+extern void clear_crc_sdlc(void);
+extern unsigned int next_crc_z(int );
+extern unsigned int compute_crc_z(int ,char *);
+extern void clear_crc_z(void);
+extern unsigned int get_crc_z(void);
+extern int bit_crc(char *,int ,unsigned int );
+extern int bit_crc2(char *,int ,unsigned int );
+extern int compute(int ,char *);
+extern int clear(void);
+#endif
+
+#endif //ifndef __PROTOTYPES_INCLUDED

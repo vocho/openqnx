@@ -1,0 +1,12 @@
+%-elfdiff
+%C - test that ELF binaries are functionally identical (QNX)
+
+%C	[-vq] [-S<section>] <file 1> <file 2>
+
+Options:
+ -v		Be Extra Verbose
+ -q		Be Quiet
+ -S<section>	Compare <section> as well (multiple -S options may be used)
+		default: -SQNX_usage -SQNX_PhAB
+ -n		Ignore default sections
+ -h		Handle unsorted .rel.dyn sections.

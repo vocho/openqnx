@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<module name="textto">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="guitargets"/>
+		<availability ref="ostargets"/>
+		<availability supported="false">
+			<os name="linux">
+				<cpu isa="x86"/>
+			</os>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="textto" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				textto
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="textto_target" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				textto
+			</location>
+		</component>
+		</package>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+		<part build="true" location="lib/util"/>
+	</requires>
+
+</module>

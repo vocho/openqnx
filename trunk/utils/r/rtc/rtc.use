@@ -1,0 +1,30 @@
+%C	[-l] [-r rate] [-s] [-S seconds] <clock_type> <clock_options>
+Options:
+ -l         Hardware clock is in local time (instead of UTC).
+ -r rate    Rate at which to adjust the time if within 60 sec. (default 100)
+ -s         Set clock to current OS time.
+ -S seconds Maximum number of seconds difference between current
+            time and new time before jam loading rather than
+            slowly adjusting (see -r to adjust convergence speed). (default 60)
+ -b         Base address for real time clock hardware.
+Where:
+    <clock_type> is the type of clock hardware. Normally "hw" would
+	be specified to allow rtc to determine the type of clock automatically.
+	Type "rtc" to get a list of acceptable <clock_type> names.
+	
+    <clock_options> are options specific to the clock type:
+    Type                    Options
+    m41t00                  I2C device name (e.g. /dev/i2c0)
+
+Note:
+    -l affects the time in both reading and writing, except
+       when the time is being read from clock type 'net', in which
+       case it has no effect.
+    -s in conjunction with a net clock type will cause the
+       date on the specified node to be changed to the current OS
+       time of the node on which this command is executed.
+    -r rate at which to slow down or speed up the clock until
+       it catches up. The rate is turned into a percentage of the
+       form 1/rate. The default rate of 100 is 1 percent (1/100).
+
+

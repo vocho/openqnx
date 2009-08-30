@@ -1,0 +1,7 @@
+%C - display logged in users
+
+Usage:
+
+%C [<file>]      Print list of all logged in users. If <file> is not 
+                  specified, /var/log/utmp is used.
+%C am I          Print the terminals you are logged into.

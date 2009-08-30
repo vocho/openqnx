@@ -1,0 +1,10 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add file="nto-*/sed/sed" pinfo="$"/>
+         <QPG:Add file="doc/sed.info" install="/usr/info/"/>
+         <QPG:Add file="doc/sed.1" install="/usr/man/man1/"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

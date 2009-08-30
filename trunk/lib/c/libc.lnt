@@ -1,0 +1,55 @@
+//
+// FlexeLint Configuration (common)
+//
+//     @@@ FIXME: documentation
+//
+
+//
+// DEFINES
+//
+
+//
+// FLEXELINT FLAGS
+//
+
+//
+// FLEXELINT MISCELLANEOUS OPTIONS
+//
+
+//
+// FLEXELINT AUTHOR OPTIONS
+//
+
+//
+// FLEXELINT STRONG TYPES
+//
+
+//
+// FLEXELINT SEMANTIC OPTIONS
+//
+
+//
+// FLEXELINT INHIBITION OPTIONS
+//
+
+// global suppressions
+
+-e611						// permit fn ptr as obj ptr
+
+// miscellaneous suppressions
+
+-emacro(578,CORE_CACHE_DEQ)	// permit hiding (harmless)
+
+//
+// IGNORED RETURN VALUE SUPPRESSIONS (MESSAGE 534)
+//
+
+-esym(534,_Fbuff)
+-esym(534,_LDscale)
+-esym(534,_iofunc_llist_unlock)
+-esym(534,_iofunc_llist_unlock)
+-esym(534,_resmgr_handle)
+-esym(534,_resmgr_link_free)
+-esym(534,_sleepon_unlock)
+-esym(534,donecore)
+-esym(534,dynamic_decode)

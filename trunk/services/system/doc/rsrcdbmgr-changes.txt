@@ -1,0 +1,181 @@
+Resource Database
+-----------------
+TF ADDED 02/10/2001:
+	You must use the RSRCDBMGR_FLAG_NAME field when you
+	are specifying a name to use as a resource otherwise
+	it will assume the historical enumerated types.  There
+	is a limitation that within a single call to the resource
+	database you must use either all names or all enumerated
+	types (ie mixing and matching will produce an unspecified
+	behaviour).  
+
+Overview
+--------
+
+The resource database is a system wide information database 
+which tracks resource usage.  The database is seeded with
+information at start-up (from hwinfo and friends) and through 
+various specialty programs (seedres).  The information in
+the database concerns things such as: physical memory addresses,
+i/o addresses, irq lines, DMA channels etc.  The database allows
+programs to make requests for resource and be granted access to
+use these resources.  This is an advisory system only, meaning
+that if a process asks for interrupt 5, is denied access to that 
+interrupt, it _can_ still go and use interrupt 5.  Client which
+play by the rules however should request their resources as
+they need them and behave differently if the request can not
+be honoured.
+
+In the past the resource types were enumerated values, found
+in <sys/rsrcdbmgr.h> as the enum _rsrc_types.  Resources were
+created/destroyed using the rsrc_alloc_t structure:
+
+typedef struct _rsrc_alloc {
+        _Uint64t        start;    /* Start of resource range */
+        _Uint64t        end;      /* End of resource range */
+        _Uint32t        flags;    /* Resource type | Resource flags */
+        const char *name;	  /* Name of resource class (NULL) */
+} rsrc_alloc_t;
+
+and attached/detached using the rsrc_request_t structure:
+
+typedef struct _rsrc_request {
+        _Uint64t        length;         /* Length of resource desired */
+        _Uint64t        align;          /* Alignment of resource desired */
+        _Uint64t        start;          /* Start of resource range */
+        _Uint64t        end;            /* End of resource range */
+        _Uint32t        flags;          /* Resource type | Resource flags */
+        _Uint32t        zero[2];        /* Reserved */
+        const char *name;               /* Name of resource class (NULL) */
+} rsrc_request_t;
+
+Using enumerated types made and did not lend itself
+well to providing sub-class functionality (ie fast vs slow
+memory).  The name field was unused in the current documented
+version and was meant for future expansion.
+
+In order to enhance and extend the functionality of the resource
+database the enumerated types are now deprecated in favour of
+the string based access.  Resources are created and stored as
+a tree.  For example where a previous request may have been made
+for RSRCDBMGR_MEMORY, it would now be made using the string 
+"memory". (TODO: A mapping function)  What is now possible using
+a string based classification system is to allocate a resource 
+with multiple sub-classifications.  For example if we had several
+different classes of memory:
+"memory"
+"memory/fast"
+"memory/fast/expensive"
+
+As a resource classification narrows (ie memory->fast->fast & 
+expensive) it is less likely that an allocation will come from 
+that area unless it was expressly requested.  This scheme
+is much more powerful then the simple "reservation" policy which
+was in place with the previous enumerated types.  
+
+API Review/Changes
+------------------
+
+The same functionality in terms of creation of a 
+resource must be available.  The existing system
+allows the following in a creation of a resource:
+
+class      -> Required
+start      -> Required
+end        -> Required
+reserve    -> Optional (reserve a block for exact use)
+detach     -> Optional (block not released on process death)
+
+The new system should expand these options to provide 
+the caller with the ability to mark a resource as being 
+in a certain hierarchy based class.  For example 
+
+memory = slow + fast = 0x0000 - 0xFFFF
+ -> slow 0x0000 - 0x00FF
+ -> fast 0x0100 - 0xFFFF
+
+This will be done using a traditional path based
+allocation string of "memory/fast" and "memory/slow".
+
+The API for creating and deleting resources is 
+currently as follows:
+
+int rsrcdbmgr_create(rsrc_alloc_t *item, int count);
+int rsrcdbmgr_destroy(rsrc_alloc_t *item, int count);
+
+The rsrc_alloc_t structure will now include a name field
+where the string for the resource can be placed.  This replaces
+4 bytes of padding which were previously unused.  Doing 
+this allows us to maintain backward compatability without
+changing the API.
+
+The "name" fields will be structured like pathnames
+with "/" being the delimiter between the levels in
+the hierarcy.  The support for the existing nameless
+calls would be through a library change which would 
+map calls with no name into their corresponding root
+level type: RSRCDBMGR_MEMORY -> "memory"
+
+The existing system allows the querying and acquisition
+of resources using the following options:
+
+class      -> Required
+length	   -> Required
+range      -> Optional
+alignment  -> Optional
+direction  -> Optional 
+scattered  -> Optional (Choose best from multiple ranges)
+
+through the API calls
+
+int rsrcdbmgr_attach(rsrc_request_t *request, int count);
+int rsrcdbmgr_detach(rsrc_request_t *request, int count);
+
+With these new classes a query can additionally specify
+a name such as "memory/fast" and be constrained to that
+class in it search for the best resource.  The structure
+for the rsrcdbmgr_attach() and rsrcdbmgr_detach() calls
+also have room for this additional string pointer so no
+structure or API change will be required.
+
+The sub-classes are not required to be unique and may
+overlap.  A request to use the resource of a certain
+class will constrain the search to only use the resource
+of that class and of any of its children.  It will of
+course continue to favour the least specific category 
+of resource.
+
+For example if we have an allocation of:
+
+memory/fast				= 0x0000 - 0x00FF
+memory/fast/expensive	- 0x1000 - 0x10FF
+memory/fast/replacable	- 0x000F - 0x0FFF
+
+This would imply the following search criteria:
+
+Ask for      -> Search this range
+----------------------------------------------
+memory		 -> 0x0000 - 0x10FF (3 blocks joined to one)
+memory/fast  -> 0x0000 - 0x000F Favoured area
+             -> 0x0010 - 0x10FF Alternate area
+memory/fast/expensive  -> 0x1000 - 0x10FF
+memory/fast/replacable -> 0x000F - 0x0FFF
+
+
+How am I affected
+-----------------
+
+This will result in a few new things to be done before
+we make the new scheme widely available.
+
+QA:  These features, using the string based resources
+     mixed and matched with the old enumerated API needs
+	 to be tested.  There is a new, more powerful query
+	 API which should be used and replaces the older queries.
+
+Docs: Once the QA testing is done the rsrcdbmgr_attach/detach
+      rsrcdbmgr_create/destroy docs will have to be updated to
+	  include the string translations of the enumerated types
+	  and to include the new structure member.  A small blurb
+	  explaining the resource hierarchy might also be desirable.
+

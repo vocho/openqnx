@@ -1,0 +1,39 @@
+.LP
+The band allocator is configured by a mapping table of size to
+descriptor.
+The mapping table has indices [1..__nbandmap] which generate an
+index into the table __Bands[].
+An non-null entry in __Bands[] provides a particular band (size)
+which is worked upon by band_get() and band_rlse().
+The is table effectively creates a set of allocation bands from which
+memory is allocated.
+Mapping an entry to index zero (null pointer) is useful for crafting
+allocators for specific sized entries; or for use in a general allocator.
+For example, a program may allocate many blocks of size 32 and 192, but
+few between.  A reasonable configuration may be to have allocators for the
+ranges 28..32 and 188..192, and handle the remainder with a more general
+(slower) allocator.
+.LP
+There is a program (gentab.awk) which converts a set of size,N pairs into
+a configuration table used by malloc().
+The necessary declarations are in 'malloc-config.h'.
+.LP
+There are a few compile time switches to the allocator.
+The standard NDEBUG disables assertions within the allocator.
+Non-standard STATISTICS enables statistics to be kept within the
+Band structure.
+All programs which reference the size an Band type must be compiled
+with the same STATISTICS flag.
+The experimental HINTLO tries to keep a hint in the allocation blocks
+at the lowest address.
+Otherwise the hint is kept at the last active block.
+The jury is hung.
+.LP
+The allocator notices two errors: an attempt to return a wrong sized
+element; and attempts to return something that doesn't belong.
+The former should never happen, as malloc() checks the size; however
+other uses may not.
+The latter may occur when something is released twice; or someone
+releases garbage.
+Since free() returns void; there should be another mechanism to inform
+the user of errors.

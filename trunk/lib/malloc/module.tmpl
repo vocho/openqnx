@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<module name="malloc">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="SharedObj" generated="true">
+			<kind type="library"/>
+			<location basedir="{cpu}/so{.:endian}" runtime="true">libmalloc.so</location>
+			<location basedir="{cpu}/so.g{.:endian}" runtime="true">libmalloc.so</location>
+			<link runtime="true" isa="{cpu}" byteorder="{endian}" src="malloc_g/libmalloc.so" dst="/usr/lib/libmalloc_g.so" tos="nto"/>
+		</component>
+
+		<component id="SharedArchive" generated="true">
+			<kind type="library"/>
+			<location basedir="{cpu}/so{.:endian}" runtime="false">libmallocS.a</location>
+			<location basedir="{cpu}/so.g{.:endian}" runtime="false">libmallocS.a</location>
+			<link runtime="false" isa="{cpu}" byteorder="{endian}" src="malloc_g/libmallocS.a" dst="/usr/lib/libmalloc_gS.a" tos="nto"/>
+		</component>
+
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/system"/>
+		<part build="true" location="lib/elf"/>
+	</requires>
+
+</module>

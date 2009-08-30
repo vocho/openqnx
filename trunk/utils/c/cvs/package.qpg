@@ -1,0 +1,12 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto-*/src/cvs" pinfo="$"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="solaris-*/src/cvs" pinfo="$"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="linux-*/src/cvs" pinfo="$"/>
+         <!-- Currently we use cygwins cvs.exe-->
+         <!--QPG:Add hos="win32" type="file" file="win32-*/src/cvs.exe" pinfo="cvs.pinfo"/-->
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

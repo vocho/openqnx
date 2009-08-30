@@ -1,0 +1,30 @@
+From mc@whoever.com  Sun Jul 23 17:06:38 2000
+Date: Sun, 23 Jul 2000 07:23:49 +0100
+Subject: Re: gawk-3.0.5 results on BeOS
+From: Martin C Brown <mc@whoever.com>
+To: Aharon Robbins <arnold@skeeve.com>, <haible@ilog.fr>
+
+Arnold/Bruno,
+
+> This is a known BeOS problem.  I am cc'ing the BeOS port person.
+> Sorry I don't have a fix.
+
+This problem is directly related to the FOPEN_MAX/OPEN_MAX parameter used in
+the stdio library by the BeOS. It seems that the BeOS strictly enforces this
+number to the point that opening the 128th file causes all previously opened
+files (except stdin/out/err) to be closed - hence the bad number.
+
+I've tried this outside of gawk and the same thing happens, so it's not a
+gawk problem.
+
+I've spent the past few days trying to find a suitable workaround, but it's
+obviously difficult trying to patch a kernel from the outside :))
+
+I'll be reporting this as a bug to Be shortly.
+
+MC
+
+-- 
+Martin 'MC' Brown, mc@mcslp.com        http://www.mcwords.com
+Writer, Author, Consultant
+'Life is pain, anyone who says differently is selling something'

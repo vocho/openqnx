@@ -1,0 +1,934 @@
+<html>
+<head>
+<title>Elvis-2.2_0 How To</title>
+</head>
+<body>
+<h1>C. How to...</h1>
+This is a collection of "How to" topics, each with short discussion.
+The following categories of topics are available:
+<ul>
+<li><a href="#Initialization">Initialization</a>
+- Change the default behavior of Elvis
+<li><a href="#WordCompletion">Word Completion</a>
+- Alter word completion via the <kbd>Tab</kbd> key
+<li><a href="#Whitespace">Whitespace</a>
+- The relationship between tabs and spaces
+<li><a href="#Buffers">Buffers</a>
+- Cut buffers and edit buffers
+<li><a href="#X-Windows">X-Windows</a>
+- The "x11" user interface
+<li><a href="#Windows95/98/NT">Windows95/98/NT</a>
+- The "windows" user interface
+<li><a href="#Miscellany">Miscellany</a>
+- Things that didn't fit anywhere else
+<li><a href="#Contacts">Contacts</a>
+- How to contact the authors
+</ul>
+
+<p>If you're using Elvis to view this file, you can search for a topic
+simply by using the <a href="elvisvi.html#slash">/</a> command.
+To limit the search to topic lines only, begin the regular expression
+with "^&lt;dt&gt;.*".
+For example you could search for "spaces" in a topic line via the following:
+
+<pre>
+	/^&lt;dt&gt;.*spaces</pre>
+
+<p>Sometimes there are multiple topics that use the same word or phrase.
+If the first one that it finds isn't the one you want, then you can use
+the <a href="elvisvi.html#n">n</a> command to find the next one.
+
+<p>In addition, the <a href="elvisses.html#elvis.ali">lib/elvis.ali</a> script
+distributed with Elvis contains a <a href="elvistip.html#howto">:howto</a>
+alias which loads this file and searches for a given topic.
+The aliases from <a href="elvisses.html#elvis.ali">lib/elvis.ali</a> are
+loaded automatically, so you should be able to display any topic in a
+a separate window via a command such as this:
+
+<pre>
+	:howto spaces</pre>
+
+<h2>C.1 <a name="Initialization">Initialization</a></h2>
+<dl>
+
+<dt><strong>Initialization <!-- initialization initialize --> for each file</strong>
+<dd>The <a href="elvisses.html#elvis.arf">lib/elvis.arf</a> file is executed
+after a file has been read;
+you can put file initialization commands there.
+
+<p>Alternatively, you could use the <a href="elvisex.html#autocmd">:au</a>
+command, with an event such as <a href="elvistip.html#BufRead">BufRead</a>.
+
+<dt><strong><!-- force a file to use store set --> Store an explicit display mode inside a file</strong>
+<dd>The simplest way is to enable modelines by setting the
+<a href="elvisopt.html#modeline">modeline</a> option, and then
+add a modeline to the file which sets the
+<a href="elvisopt.html#bufdisplay">bufdisplay</a> option to the desired
+display mode.
+For example, if you have a <strong>lex</strong>(1) source file with the
+extension ".l", and you want it to be highlighted as C code, then you
+could add the following line to the end of the file:
+<pre>
+	/* ex:set bufdisplay="syntax c": */</pre>
+<p>Alternatively, you could modify the
+<a href="elvisses.html#elvis.arf">elvis.arf</a> script to detect
+your type of file, and set the <code>bufdisplay</code> option appropriately.
+For example, adding the following line into <code>elvis.arf</code> would
+cause any file that looks like a patch to be displayed using "syntax cdiff"
+<pre>
+	1s/---\|***/set bufdisplay="syntax cdiff"/g</pre>
+<p>If you don't want to modify <code>elvis.arf</code>, you could achieve
+a similar effect via the <a href="elvistip.html#BufReadPost">BufReadPost</a>
+autocmd event.
+
+<dt><strong>Make file initialization be language-sensitive</strong>
+<dd>If the filename extension indicates the file's language, and the language
+is described in the <a href="elvisdm.html#elvis.syn">lib/elvis.syn</a> file,
+then you can use the <code>knownsyntax()</code> function to check the
+language, like this:
+
+<pre>
+	:if knownsyntax(filename) == "perl"
+	:then set ccprg="perl -c ($1?$1:$2) 2&gt;&amp;1 | perlerr"</pre>
+
+<p>(The <code>perlerr</code> Perl script converts perl's error messages
+into a form that Elvis can parse.
+It is given in the <a href="elvistip.html#perlerr">Tips</a> chapter.)
+
+<p>You could also use the <code>dirext()</code> function to check the filename
+extension directly, instead of <code>knownsyntax()</code>;
+it doesn't depend on the <a href="elvisdm.html#elvis.syn">lib/elvis.syn</a> file.
+As a last resort, you might consider using the <code>x</code> flag of
+the <a href="elvisex.html#substitute">:s</a> command.
+
+<dt><strong>Change <!-- change set --> the default <!-- initial startup --> settings <!-- configuration colors options macros --></strong>
+<dd>Before the first buffer is loaded or the first window is created,
+and buffer/window options you set will be used as the defaults for
+the buffers/windows that are created later.
+In other words, although setting a buffer-specific option like 
+<a href="elvisopt.html#equalprg">equalprg</a> or a window-specific option
+like <a href="elvisopt.html#ruler">ruler</a> interactively
+will only affect that buffer or window, setting the same option in the
+<a href="elvisses.html#elvis.ini">lib/elvis.ini</a> or <code>~/.exrc</code>
+file changes the default for all buffers/windows.
+
+<p>However, the <a href="elvisses.html#elvis.brf">lib/elvis.brf</a> and
+<a href="elvisses.html#elvis.arf">lib/elvis.arf</a> files typically
+change some of those options, so the defaults might not be used very long
+before they're changed.
+
+<dt><strong>Have a separate ~/.exrc <!-- elvis.rc --> and ~/.elvisrc file under Unix</strong>
+<dd>This is easy.
+The <a href="elvisses.html#elvis.ini">lib/elvis.ini</a> file controls this,
+and the default version does it in a very convenient way:
+It looks first for <code>.elvisrc</code> and runs it if it exists;
+else it looks for <code>.exrc</code> and runs that.
+
+<p>If you want Elvis to run both of them, then add the following line
+to your <code>.elvisrc</code> file:
+
+<pre>
+	:source ~/.exrc</pre>
+
+<dt><strong>Display <!--display show see use start syntax mode for disable --> HTML <!--html source--> files in "syntax" mode by default <!-- initially --></strong>
+<dd>In previous versions of Elvis, this was tricky
+because Elvis' online manual is written in HTML
+and you certainly want it to be formatted normally.
+Also, if you download an HTML file from the web (using Elvis as a browser)
+then you probably want it to be formatted via the "html" display mode.
+So you only want to change the behavior of local, non-Elvis HTML files.
+
+<p>Now Elvis has a <a href="elvisopt.html#prefersyntax">prefersyntax</a>
+option, which makes this pretty easy.
+Just run "<code>:set prefersyntax=writable</code>".
+
+<dt><strong>Save <!--save store use configure --> the current settings <!--options configuration source--> as the <!--permanent initial load time--> defaults <!--default value values settings--></strong>
+<dd>Run <a href="elvisex.html#mkexrc">:mkexrc</a>.
+
+<dt><strong>Mix <!-- mix blend combine save use both custom hand made --> hand-coded settings <!-- options macros aliases configuration --> with the <!-- automatic generated --> :mkexrc-generated commands</strong>
+<dd> You can use <a href="elvisex.html#mkexrc">:mkexrc</a> to save settings
+and also have a separate file containing hand-coded commands.
+Hand-coded settings could be useful, for example, if you want to use
+<a href="elvisex.html#if">:if</a> to define aliases or options differently,
+depending on which user interface you're using.
+<p>
+The <a href="elvisex.html#mkexrc">:mkexrc</a> command always completely
+overwrites whatever file it writes to.
+Because of this, you must save your hand-coded initialization commands
+in a separate file.
+In the following example, we'll store the hand-coded commands in ~/.elvisrc
+and allow :mkexrc to store the automatically generated commands in ~/.elvismkexrc.
+<ol>
+<li>Run "<code>elvis ~/.elvisrc</code>".  This starts Elvis, loads your
+    settings, and then starts editing the ~/.elvisrc file.
+<li>Give Elvis the command "<code>:mkexrc ~/.elvismkexrc</code>".
+    This will change the <a href="elvisopt.html#mkexrcfile">mkexrcfile</a>
+    option to ~/.elvismkexrc, and then write your current settings out
+    to that file.
+    The settings will include "<code>set mkexrcfile=~/.elvismkexrc</code>",
+    so when you load those settings again later, ~/.elvismkexrc will become
+    the default file used by the <a href="elvisex.html#mkexrc">:mkexrc</a>
+    command.
+<li>Delete all of the settings from ~/.elvisrc, and replace them with a
+    single "<code>source ~/.elvismkexrc</code>" command line.
+    This way, when Elvis runs the ~/.elvisrc script during startup, it'll
+    automatically run the commands in ~/.elvismkexrc too.
+<li>Append any other hand-coded initialization steps after the above
+    <a href="elvisex.html#source">:source</a> command.
+</ol>
+
+</dl>
+
+<h2>C.2 <a name="WordCompletion">Word Completion</a></h2>
+<dl>
+<dt><strong>Disable <!-- complete --> word <!-- name --> completion on the ex command line</strong>
+<dd>You need to set the <a href="elvisopt.html#inputtab">inputtab</a> option
+for the <code>(Elvis&nbsp;ex&nbsp;history)</code> buffer to "tab".
+You can do that via the following command:
+
+<pre>
+	:(Elvis ex history)set inputtab=tab</pre>
+
+<dt><strong>Disable <!-- complete --> identifier <!-- name --> completion on the regular expression prompt line</strong>
+<dd>This is similar to word completion on the ex command line.
+To disable it, you need to set the <a href="elvisopt.html#inputtab">inputtab</a>
+option for the <code>(Elvis&nbsp;regexp&nbsp;history)</code> buffer, like this:
+
+<pre>
+	:(Elvis regexp history)set inputtab=tab</pre>
+
+<dt><strong>Enable <!-- complete --> identifier <!-- tag name --> completion in normal edit buffers</strong>
+<dd>Set the buffer's <a href="elvisopt.html#inputtab">inputtab</a> option
+to "identifier".
+To make this the default, set it in the <code>.exrc</code> file
+(or <code>elvis.rc</code> for non-Unix systems).
+The command is:
+
+<pre>
+	:set inputtab=identifier</pre>
+
+<p>After that, each time you hit the &lt;<kbd>Tab</kbd>&gt; key Elvis will
+search through the tags file for any matching tags,
+and add as many characters as possible.
+If it completes the entire tag name, it does <em>not</em> append a space or
+other character, which is a little different from other types of name
+completion.
+Also, in the <a href="elvisdm.html#syntax">syntax</a> display mode it will
+not attempt completion if the partial word happens to be a complete
+<a href="elvisdm.html#keyword">keyword</a>
+or "<a href="elvisdm.html#other">other</a>" word.
+</dl>
+
+<h2>C.3 <a name="Whitespace">Whitespace</a></h2>
+<dl>
+
+<dt><strong>Use <!--space tab tabs--> spaces instead of tabs<!--tab--></strong>
+<dd>In the traditional vi, the only way to use spaces instead of
+tabs was to set the <a href="elvisopt.html#tabstop">tabstop</a> option to
+the largest possible value, and then <a href="elvisex.html#map">:map</a> ^I 
+to ^T.
+This made existing tabbed files look bad, and it didn't work well for tabs
+embedded in a line (instead of just in the line's indentation whitespace).
+Elvis has a better way.
+
+<p>In Elvis, you can set the <a href="elvisopt.html#inputtab">inputtab</a>
+option to "spaces" to make the <kbd>&lt;Tab&gt;</kbd> key insert the
+appropriate number of spaces into a line.
+This works even if the cursor isn't in the line's indentation whitespace.
+
+<p>In addition, the <a href="elvisopt.html#autotab">autotab</a> option
+controls the shifting commands (the <a href="elvisex.html#LT">:&lt;</a> and
+<a href="elvisex.html#GT">:&gt;</a> commands in ex, and the
+<a href="elvisvi.html#lt">&lt;</a> and <a href="elvisvi.html#gt">&gt;</a>
+operators in visual mode).
+To make those commands use only spaces, <em>autotab</em> should be off.
+
+<pre>
+	:set inputtab=spaces noautotab</pre>
+
+<p>To convert existing files to use only spaces, you should use an external
+program such as "<code>col&nbsp;-bx</code>" under Unix.
+Alternatively, you can use Elvis to change the indentation
+(but not tabs elsewhere in a line)
+to use only spaces by shifting the entire file right, and then left again
+while the <a href="elvisopt.html#autotab">noautotab</a> setting is in effect.
+
+<dt><strong>Change <!-- change reduce --> the tabstops<!--tabstop tab stop indentation shiftwidth shiftwidth--></strong>
+<dd>Many people don't like the fact that the <kbd>&lt;Tab&gt;</kbd> key
+indents text by 8 columns.
+That's so wide that it quickly pushes the writer's source code off the
+right edge of the screen.
+
+<p>However, you almost certainly do <em>not</em> want to change the
+<a href="elvisopt.html#tabstop">tabstop</a> option because most other
+software, and most printers and terminals, also assume that tabs are 8
+characters wide.
+If you edit files with <code>tabstop</code> set to 4 or 5, then your
+files will look very strange when viewed with anything other than Elvis,
+or by anyone other than you.
+So leave <code>tabstop=8</code>.
+
+<p>Instead, set the <a href="elvisex.html#shiftwidth">shiftwidth</a>
+option to the desired indentation amount, and either get in the habit
+of typing ^T to increase indentation, or <a href="elvisex.html#map">:map!</a>
+the <kbd>&lt;Tab&gt;</kbd> key to ^T in input mode.
+
+<pre>
+	:set shiftwidth=5
+	:map! ^V^I ^V^T</pre>
+
+<p>Note that when you're typing in the above <code>:map</code> command,
+you'll need to type an extra <kbd>^V</kbd> before each <kbd>^V</kbd>
+or <kbd>^T</kbd>.
+
+<p>Also, this map has the unfortunate side-effect of making the
+<kbd>&lt;Tab&gt;</kbd> increase indentation even if the cursor is somewhere
+later in the line (unless you type ^V before it).
+This is one good reason to skip the map, and get in the habit of using
+<kbd>^T</kbd> to increase indentation.
+The <a href="elvisopt.html#autotab">autotab</a> option helps here, too.
+</dl>
+
+<h2>C.4 <a name="Buffers">Buffers</a></h2>
+<dl>
+<dt><strong>Switch <!-- switch goto --> to a different buffer in the same window</strong>
+<dd>This is easier that you might think.
+On an ex command line, if you give an address but no command then Elvis
+will move the cursor to there.
+So to switch buffers all you need to do is give an address that's in
+a different buffer.
+In Elvis, you do this by giving the buffer's name (or number) in parentheses
+(and the closing parenthesis is optional).
+For example, to switch to buffer #1 all you need to do is...
+
+<pre>
+	:(#1</pre>
+
+<p>Or you can switch to "main.c" like this:
+
+<pre>
+	:(main.c</pre>
+
+<p>Of course, the buffer must exist before you can switch to it.
+Another thing to keep in mind is, switching buffers doesn't necessarily
+force you to save the old buffer first.
+Any changes you made to the old buffer are <em>not</em> lost -- you can
+switch back to the original buffer again if you wish.
+
+<dt><strong>Display <!-- show --> an edit buffer (or cut buffer) in a separate window</strong>
+<dd>This is similar to switching edit buffers (the previous topic).
+The main difference is that instead of giving no command, you should give
+the <a href="elvisex.html#split">:split</a> command.
+In this context, the closing parenthesis is <em>required</em>.
+
+<pre>
+	:(#1)split</pre>
+
+<p>Or, create a window showing the "main.c" buffer:
+
+<pre>
+	:(main.c)split</pre>
+
+<dt><strong>Edit a cut buffer</strong>
+<dd>Editing a cut buffer can be handy when you're trying to fix a
+defective macro.
+This is possible in Elvis, because Elvis uses an ordinary edit buffer to
+store the contents of a cut buffer.
+The names of the cut buffers are of the form
+<code>(Elvis cut buffer <var>X</var>)</code>, where <var>X</var> is the name
+of the cut buffer (a single letter or digit).
+Consequently, you could create a window showing cut buffer <code>"a</code>
+like this:
+
+<pre>
+	:(Elvis cut buffer a)split</pre>
+
+<p>Of course, the <code>"a</code> cut buffer must exist for this to work.
+
+<p>Since the name is so long, Elvis supports a special short-hand notation
+for cut buffer names.
+In parentheses, if the first character is " and the remainder of the buffer
+name is a single letter, then Elvis uses the buffer which contains that
+cut buffer's contents.
+The following command also creates a window showing the <code>"a</code>
+cut buffer:
+
+<pre>
+	:("a)sp</pre>
+
+<p>Elvis doesn't store "undo" versions for cut buffers, and
+you can't yank a buffer into itself.
+Other than that, editing should be pretty normal.
+The type of data in the buffer (characters, lines, or rectangle) is
+stored in an option named <a href="elvisopt.html#putstyle">putstyle</a>.
+
+<dt><strong>Free <!-- free delete discard --> an edit buffer</strong>
+<dd>Elvis has no command for discarding old edit buffers.
+Under some circumstances it will free them automatically, if they aren't 
+being used.
+It rarely matters, though.
+</dl>
+
+<h2>C.5 <a name="X-Windows">X-Windows</a></h2>
+<dl>
+<dt><strong>Run <!--run elvis--> Elvis in an xterm instead of creating a new window</strong>
+<dd>You can force Elvis to use the termcap interface by adding a
+<code>-Gtermcap</code> flag.
+If you do this often, you may wish to create a shell script, alias, or shell
+function which runs Elvis with <code>-Gtermcap</code>.
+Here's an example of shell script:
+<pre>
+	#!/bin/sh
+	exec elvis -Gtermcap "$@"</pre>
+
+<p>If you <em>never</em> want to use the "x11" user interface, then you should
+probably reconfigure Elvis to leave it out.
+This will make Elvis considerably smaller.
+To do this, go into the directory where Elvis' source code resides and
+execute the following shell commands:
+<pre>
+	make clean
+	configure --with-x=no
+	make</pre>
+
+<dt><strong>Run <!--start run invoke put add--> Elvis <!--elvis in on to--> from a [Start]<!--start kde KDE gnome wm root window manager--> menu <!--button icon--></strong>
+<dd>The only tricky thing about this is, Elvis implements both the
+text &amp; graphic interfaces in the same executable.
+When Elvis is invoked from something other than an xterm (or equivalent)
+it runs in text mode be default.
+(This was done because most Linux distributions set the DISPLAY environment
+variable even if you're logged in on a text console.
+Elvis used to start in graphic mode on some other virtual console, which
+was very confusing.
+By checking whether it was started from an xterm, Elvis can avoid that problem.)
+
+<p>The solution is to add an explicit <code>-Gx11</code> command line flag
+when it is invoked from a window manager's menu.
+
+<dt><strong>Make the text <!--turn off non-blinking--> cursor more visible under X11<!-- x11 --></strong>
+<dd>For a notebook computer, the normal blinking cursor may be hard to see.
+You can make it stop blinking by adding the following command to your
+<code>.exrc</code> file:
+
+<pre>
+	:set blinktime=0</pre>
+
+<dt><strong>Indicate when Elvis<!--elvis--> owns <!-- has posesses --> the current X11<!-- x11 --> selection</strong>
+<dd>The cursor can be configured to have a special color whenever Elvis
+owns the current selection.
+To do this, use the <a href="elvisex.html#color">:color</a> command to
+set both the foreground and background color of the cursor.
+The "background" color will be used when Elvis owns the selection, and
+the "foreground" color will be used otherwise.
+Here's an example which turns the cursor green when Elvis owns the
+selection:
+
+<pre>
+	:color cursor red on green</pre>
+
+<dt><strong>Change <!-- change reduce smaller different --> the default font size <!-- X11 x11 --></strong>
+<dd>In your <code>.exrc</code> file, you can set the
+<a href="elvisopt.html#font">font</a>,
+<a href="elvisopt.html#boldfont">boldfont</a>, and
+<a href="elvisopt.html#italicfont">italicfont</a> options to anything you want.
+(Fixed-pitch only!)
+These settings will override the defaults.
+If you set only the <code>font</code> and leave the others unset,
+then Elvis will derive the others from the normal font.
+<pre>
+	:set font=7x14</pre>
+
+<p>If you just want to use a smaller size of the Courier font, you can use
+the <a href="elvistip.html#courier">:courier</a> alias.
+It takes a single parameter: the point size of the font to use.
+The default font is 18-point Courier, and most systems also have 12-, 14-, and
+24-point Courier fonts which work well.
+<pre>
+	:courier 14</pre>
+
+<dt><strong>Set<!--set change define use--> a <!--variable-->font for the toolbar buttons.</strong>
+<dd>By default, the X11 toolbar uses a font named "variable" which is usually
+an alias to a small, readable, variable-pitch font.
+If your X server has no font named "variable" then you must configure Elvis
+to use a different font.
+You may also simply prefer a different font.
+
+<p>The simplest way to change the font is to pass Elvis a
+<code>-fc</code>&nbsp;<var>fontname</var> parameter.
+I suggest you use that to experiment with the available fonts, to find
+one you like.
+(You can use the standard <code>xlsfonts</code> program to list the available
+fonts.)
+
+<p>To make the change permanent, you can either set the
+<a href="elvisopt.html#controlfont">controlfont</a> option in your ~/.exrc file,
+or you can set the <a href="elvisgui.html#x11.resources">elvis.control.font</a>
+resource in your ~/.Xdefaults file.
+
+<dt><strong>Run<!--run execute fork spawn--> a program<!--process--> from within Elvis,<!--elvis--> in parallel, under X11</strong>
+<dd>The tricky part here is that Elvis tries to read the program's stdout
+and stderr, so the output can be displayed in Elvis' window.
+To do that, Elvis would have to wait until after all text has been read
+from stdout/stderr... but you don't want Elvis to wait!
+So to run in parallel, you must redirect the program's stdout/stderr to
+/dev/null, like this:
+<pre>
+	:!xeyes &gt;/dev/null 2&gt;&amp;1 &amp;</pre>
+
+<p>If you want to write data out to the program (<code>:w !program</code>)
+then it becomes even more complex.
+This is because pipes can only contain a finite amount of data, so when
+Elvis is redirecting stdin as well as stdout/stderr, it uses a temporary
+file for stdin.
+Elvis deletes that file as soon as the program returns -- which, for a program
+run in parallel, happens immediately even though the program hasn't had a chance
+to read the data from that file yet.
+The solution is to write the data into a temporary file sequentially, and
+then start a parallel command line which runs the program and then deletes
+the temporary file, like this:
+<pre>
+	:w !cat &gt;$$; (xv $$; rm $$) &gt;/dev/null 2&gt;&amp;1 &amp;</pre>
+
+<p>Yes, that's nasty.
+I plan to clean that up some day, by making Elvis smart enough to avoid
+reading stdout/stderr when the command line ends with a '&amp;' character.
+
+<dt><strong>Run<!--run fork execute spawn--> an interactive program under X11</strong>
+<dd>Sadly, this can't be done with Elvis' "x11" user interface
+because Elvis' windows don't have a built-in terminal emulator.
+This is expected to be added for Elvis 2.3, but that doesn't help you
+<em>now</em>.
+
+<p>However, by using the "termcap" interface inside an xterm,
+you should be able to run interactive programs such as "crypt" or "pgp"
+exactly as you can under vi.
+In an xterm (or any other terminal emulator), just run
+"<code>elvis&nbsp;-Gtermcap</code>" instead of plain "<code>elvis</code>".
+
+<dt><strong><a name="scrollwheel">Configure<!--configure set up make--> XFree86 to use a mouse's scroll <!--mouse--> wheel</a></strong>
+<dd>Elvis expects the scroll wheel to act like mouse buttons 4 and 5.
+To make XFree86 present scroll wheel events this way, your XF86Config file's "Pointer" section
+should contain `<code>Buttons&nbsp;5</code>' and `<code>ZAxisMapping&nbsp;4&nbsp;5</code>'.
+Also, for serial mice you may need to specify
+`<code>Protocol&nbsp;"Intellimouse"</code>';
+for PS/2 mice, try<br>`<code>Protocol&nbsp;"IMPS/2"</code>'.
+
+<p>The Rxvt terminal emulator and most Gtk/Gnome programs will also support
+the scroll wheel when it is configured this way.
+In addition, many other programs can be configured to support it by specifying
+the appropriate translations in their app-defaults.
+For example, Netscape can be configured to respond to the scroll wheel by
+inserting the following lines into the
+<code>Netscape*drawingArea.translations</code> resource string:
+
+<pre>
+    &lt;Btn4Down&gt;:    LineUp()            \
+                   LineUp()            \
+                   LineUp()            \
+                   LineUp()            \
+                   LineUp()            \n\
+    &lt;Btn5Down&gt;:    LineDown()          \
+                   LineDown()          \
+                   LineDown()          \
+                   LineDown()          \
+                   LineDown()          \n\</pre>
+
+<p>There is also a program named "imwheel" which can be configured to translate
+wheel motions into <kbd>&lt;PgUP&gt;</kbd> and <kbd>&lt;PgDn&gt;</kbd>
+keystrokes (or other keys) for specific applications.
+
+</dl>
+
+<h2>C.6 <a name="Windows95/98/NT">Windows95/98/NT</a></h2>
+<dl>
+<dt><strong>Set<!--set change define--> the initial<!--current--> working directory</strong>
+<dd>Create a shortcut to WinElvis, and then edit the shortcut's properties.
+The "Start in" property gives the program's initial working directory.
+
+<dt><strong>Change<!--set change define--> the <!--current--> working directory each time a file is loaded</strong>
+<dd>First, let me say that I don't recommend this because the real vi doesn't
+behave like this, so it is likely to confuse some people.
+
+<p>But it you really want to do this, then you should add the following line
+to the end of your <a href="elvisses.html#elvis.arf">lib/elvis.arf</a> file:
+<pre>
+	try cd (dirdir(filename))</pre>
+
+<dt><strong>Select<!--select mark highlight--> whole lines in WinElvis<!--windows winelvis elvis Elvis--></strong>
+<dd>To select whole lines in WinElvis, move the mouse pointer to the window's
+left margin.
+The mouse pointer should change shape when you're in the margin.
+Click the left mouse button there to begin marking lines;
+hold the button as you move the mouse to the other end of the range of lines
+and then release it.
+
+<dt><strong>Select<!--select mark highlight--> a rectangular <!--rectangle block column--> area <!--region--> in WinElvis<!--windows winelvis elvis Elvis--></strong>
+<dd>There are two ways to do this.
+The first is by using the <kbd>right</kbd> mouse button;
+the other is by holding down the <kbd>&lt;Alt&gt;</kbd> key as you use the
+<kbd>left</kbd> mouse button.
+
+<dt><strong><a name="prn"></a>Assign <!--assign associate change use set up configure--> a <!--parallel--> printer port <!--prn: lpt0: lpt1: lpt9:--> to <!--with--> a Windows print queue</strong>
+<dd>Windows98 has no PRN: device for sending raw printer data to a printer;
+all printing must go through the normal Windows print queue.
+That's fine if you're using the "windows" <a href="elvisopt.html#lptype">lptype</a>,
+but if you want to use one of the other printer types such as "ps", "ps2",
+or "hp", then you need to jump through a few hoops.
+
+<p>Although there is no PRN: device, Windows98 does allow you to associate
+an LPT<var>n</var>: device with a print queue, via mechanism called
+"capturing a printer port".
+I suggest you configure your computer's default print queue to capture LPT9:,
+and the set Elvis' <a href="elvisopt.html#lpout">lpout</a> option to "LPT9".
+The steps for capturing the printer port are:
+<ol>
+<li>From Windows' "Start" button, select "Settings"-&gt;"Printers".
+<li>Right-click on your default printer, and select "Properties".
+<li>In the properties dialog, go to the "Details" tab.
+<li>Click "Capture Printer Port...".
+<li>In the capture dialog, set the "Device" to "LPT9".  Leave the "Path"
+field empty.  The "Reconnect at logon" checkbox should have a checkmark
+so you don't need to repeat this every time you start Windows.
+<li>Click "OK" to exit the capture dialog.
+<li>Click "OK" to exit the properties dialog.
+</ol>
+<p>After that, you just need to set up Elvis.  Give Elvis the command
+"<code>:set lpout=lpt9</code>", and then "<code>:mkexrc</code>".
+You're done!
+
+<dt><strong>Associate<!-- associate make windows Windows win32 use --> file types <!-- of files --> with WinElvis<!--winelvis elvis Elvis under windows win32 to open files by clicking from in a directory window--></strong>
+<dd>To make Windows use WinElvis as the default editor of a given type file,
+you must associate the Elvis action with the file type.
+(The file type is determined by the filename's extension.)
+To create this association, perform the following steps:
+<ol>
+<li>Open a directory window.  Any directory will work; it doesn't necessarily
+have to be the one containing the new type of file.
+<li>Select the "View-&gt;Folder Options..." menu item.  This should bring up
+a dialog window.
+<li>In the dialog window, select the "File types" tab.
+<li>Hopefully the file type already exists in the "Registered file types" list.
+The list is sorted by extension, which is a little unfortunate since the
+extensions are normally hidden.  If you can't find the file type in the list,
+then use the "New Type..." button to add it; but if you can find it, then
+highlight it and click the "Edit..." button.  Either way, this should bring
+up a dialog which contains a (possibly empty) list if "Actions" for that file
+type.
+<li>Click the "New..." button, below the "Actions" list.  This will bring
+up yet another dialog.
+<li>In the "New Action" dialog's "Action" field, put the text "Open with Elvis".
+<li>In the "Application used to perform action" field, you need to put the
+full pathname of WinElvis in double-quotes (use the "Browse..." button for this), with a
+space and a double-quoted "%1" appended to indicate how the filename is
+passed into Elvis.
+For example, if WinElvis is located in C:\usr\bin, then this field should
+look like this:
+<pre>
+	"C:\usr\bin\WinElvis.exe" "%1"</pre>
+<li>The "Use DDE" box should be unchecked.
+<li>Press the "New Action" dialog's "OK" button.  This should return you to
+the "New File Type" or "Edit File Type" dialog.
+<li>The "Open with Elvis" action should now appear in the "Actions" list.
+Highlight it, and then click "Set Default" to make it be the default action.
+The default action is displayed in boldface in that list.
+<li>Click the "OK" button to close the "New File Type" or "Edit File Type"
+dialog.
+<li>If you want to add any more file types, then go back to step 4.
+Otherwise, click the "OK" button to close the "Folder Options" dialog.
+</ol>
+<p>That should be all that is required.
+Double-clicking on files of that type will now cause WinElvis to open that file,
+and if you right-click on the file you'll see "Open with Elvis" as one of
+the options.
+</dl>
+
+<h2>C.7 <a name="Miscellany">Miscellany</a></h2>
+<dl>
+<dt><strong>Test <!-- test check look --> for certain text within a file</strong>
+<dd>This is sometimes handy in scripts and aliases.
+For example, the <a href="elvisses.html#elvis.arf">elvis.arf</a> script
+uses this to detect mode lines and the "hash pling" header on other
+types of scripts, such as shell scripts which start with
+"<code>#!/bin/sh</code>".
+
+<p>One nice trick is to use the <code>x</code> flag of Elvis'
+<a href="elvisex.html#substitute">:s</a> command.
+It not only detects text, but can incorporate that text into the commands.
+For example, to compute the total of all numbers in all lines, you could...
+
+<pre>
+	:set t=0
+	:%s/\&lt;[[:digit:]]\+\&gt;/let t = t + &amp;/gx
+	:set t?</pre>
+
+<p>Note that this series of commands does not affect the edit buffer.
+The <code>x</code> flag prevents the substitution from taking place;
+the replacement text is executed instead.
+
+<p>You can also use the <a href="elvisex.html#try">:try</a> command
+to run a search command, and then use <a href="elvisex.html#then">:then</a>
+and <a href="elvisex.html#else">:else</a> to act differently depending on
+whether the search succeeded or not.
+
+<pre>
+	:try /Yow!
+	:then echo Zippy was here
+	:else echo Where in the world is Zippy the Pinhead?</pre>
+
+<p>You can also use the <code>current("word")</code> and <code>line()</code>
+<a href="elvisexp.html#FUNCTIONS">functions</a> to fetch the word at the cursor
+location, or a whole line, respectively.
+
+<pre>
+	:let w=current("word")
+	:let l=line(1)</pre>
+
+<dt><strong>Find the <!-- option's --> short name (or group name) of an option</strong>
+<dd>Finding the long name of an option is easy, thanks to
+<a href="elvisex.html#Tab">name completion</a>.
+To find the short name of an option, or the name of its group, run the
+<a href="elvisex.html#set">:set!</a> command (with a <code>!</code>) and
+the long option name, followed by a <code>?</code> character.
+(For non-Boolean options, the <code>?</code> is optional.)
+
+<pre>
+	:set! wrapmargin?</pre>
+
+<p>This will produce output like "win.wm=0", indicating that the short name
+is "wm", the group name is "win" (so each window has its own margin), and
+the value is 0.
+
+<dt><strong>Recover <!--recover--> files <!--edit buffers changes--> after a crash</strong>
+<dd>This is described in the <a href="elvisses.html#RECOVER">Sessions</a>
+chapter of the manual.
+Briefly, run "<code>elvis -r</code>" to start a new Elvis process on the
+old session file, and then use the <a href="elvisex.html#buffer">:buffer</a>
+command to list the buffers.
+You can then use other commands to save those buffers; for example, to
+save a buffer named "main.c" into a file named "main.c.recovered", you
+would give this command:
+<pre>
+	:(main.c)w&nbsp;main.c.recovered</pre>
+
+<dt><strong>Recognize <!--recognize parse handle understand read perl--> error messages <!--errors-->with an unusual<!--perl weird other different--> format <!--style--></strong>
+<dd>Elvis' <a href="elvisex.html#make">:make</a> and
+<a href="elvisex.html#cc">:cc</a> commands assume that all error messages have
+a format that resembles that of <strong>gcc</strong>:
+A file name and line number appear at the beginning of the line (possibly with
+some punctuation or the word "line" mixed in), an optional "error" or "warning"
+code, and then the description of the error to finish the line.  Elvis is
+very good at parsing messages that use formats which resemble this, but
+there is no explicit way to make Elvis parse any other format.
+
+<p>However, it is usually possible to construct a little "filter" program to
+convert other error message formats into one that Elvis can recognize.
+The <a href="elvistip.html">Tips chapter</a> has an example of how to make
+Elvis handle <a href="elvistip.html#perlerr">PERL's error messages</a>.
+
+<dt><strong>Input<!--input type enter key--> non-ASCII<!--non-ascii accented foreign international--> characters<!--letters--></strong>
+<dd>Elvis supports several ways to enter non-ASCII characters:
+<ul>
+<li>If your keyboard driver supports entry of non-ASCII characters, then that
+method should work in Elvis.
+However, "dead keys" have been reported to cause trouble.
+<li>Digraphs combine two ASCII characters to form a single non-ASCII character.
+See the <a href="elvisex.html#digraph">:digraph</a> command,
+<a href="elvisopt.html#digraph">digraph</a> option, and the discussion in
+the <a href="elvisinp.html#DIG">Input Mode</a> chapter.
+Briefly, the secret is to type <kbd>&lt;Ctrl-K&gt;</kbd> and then the two
+ASCII characters that you want to combine,
+such as <kbd>&lt;Ctrl-K&gt;&lt;n&gt;&lt;~&gt;</kbd> for "&ntilde;".
+<li>You can type <kbd>&lt;Ctrl-X&gt;</kbd> followed by two hex characters to
+enter any byte into the edit buffer... provided you know the hex code for
+the character you want, of course.
+</ul>
+
+<p>If you're having trouble displaying non-ASCII characters, then you may want
+to look into the <a href="elvisopt.html#nonascii">nonascii</a> option.
+Also, on Unix systems you should verify that your terminal is configured
+correctly (8 bits, not 7 -- and the Latin-1 character set is installed).
+
+<dt><strong>Change <!--change use a different--> the default address range for a command</strong>
+<dd>This is sometimes desirable in an <a href="elvistip.html#ALIAS">alias</a>.
+For example the <a href="elvisex.html#write">:w</a> command writes all lines
+by default, but <a href="elvisex.html#substitute">:s</a> alters only one line
+by default.
+You may want to write a macro that uses both of them with the same default,
+or just one of them with a different default.
+
+<p>The most straightforward way to do this is to use the
+<strong>!(</strong><var>default</var><strong>)%</strong> notation.
+Specifically, <strong>!(.)%</strong> will make any command in an alias default
+to using just the current line, and <strong>!(%)%</strong> will make any
+command default to using all lines.
+
+<p>Here's a simple word-counting alias which uses this technique to count
+the words in all lines by default...
+<pre>
+	alias wcw {
+	 local w=0
+	 !(%)% s/\w\+/let w=w+1/gx
+	 calc w
+	}
+</pre>
+
+<dt><strong>Execute <!--execute iterate loop--> a particular command separately for each line in a <!--an address--> range <!-- loop looping--></strong>
+<dd>The <a href="elvisex.html#global">:g</a> command does this, but only for
+the lines which contain a given regular expression.
+You can trick it into executing the command for every line by making it look
+for something that every line has.
+Since every line has a beginning, you can use <strong>:g/^/</strong><var>command</var> to execute the command for every line.
+
+<p>Note that the <a href="elvisex.html#global">:g</a> command can be used with
+an address range.
+This is often convenient.
+
+<p>Here's an alias which uses this technique to search for the longest line
+(assuming all characters are of equal width -- no tabs or control characters)...
+<pre>
+	alias widest {
+	 local w=0 l
+	 !%g/^/ {
+	  if strlen(line()) &gt; w
+	  then let w = strlen(line())
+	  then let l = current("line")
+	 }
+	 calc "Line" l "is the longest, at" w "characters."
+	}
+</pre>
+
+<dt><strong>Execute <!--execute iterate loop--> a command for each line in a <!--an address--> particular type of region <!-- loop looping--></strong>
+<dd>This is similar to the above "Execute a command for each line in a range"
+topic.
+The only difference is, we want to add a test to see if the current line is
+part of the desired <a href="elvisex.html#REGION">region</a>.
+Here's an alias named "inregion" which does this:
+
+<pre>
+	alias inregion {
+	  normal mz
+	  !%g/^/ {
+	    if current("region") == "!1"
+	    then !2*
+	  }
+	  normal `z
+	}</pre>
+
+<p>And here's an example of how to use it.
+This example converts any lines in a "mixed" region to uppercase.
+<pre>
+	:inregion mixed s/.*/\U&amp;/</pre>
+<dt><strong>Convert <!--convert generate produce derive-->plain text to HTML <!--html--> source <!--input tagged text with tags--></strong>
+<dd>Other than the obvious (a long series of manual edit commands),
+there are two ways that you can convert text to HTML in Elvis.
+
+<p>The most straightforward method is to build an alias which performs a series
+of substitutions.
+The problem with this method is that it must be rewritten for each type of
+input text.
+Here's an example of a fairly simple alias that converts plain text to HTML.
+(There is a more powerful version of
+<a href="elvistip.html#makehtml">:makehtml</a> in the standard distribution's
+<a href="elvisses.html#elvis.ali">elvis.ali</a> file.)
+<pre>
+	alias makehtml {
+	 "Convert plain text to HTML
+	 local report=0
+	 "
+	 "Protect characters which are special to HTML
+	 try !(%)%s/&amp;/\&amp;amp;/g
+	 try !(%)%s/&lt;/\&amp;lt;/g
+	 try !(%)%s/&gt;/\&amp;gt;/g
+	 "
+	 "Convert blank lines to &lt;p&gt; tags
+	 try !(%)s/^$/&lt;p&gt;/
+	 "
+	 "If converting the whole file, then add &lt;html&gt;...&lt;/html&gt;
+	 if "!%" == ""
+	 then {
+	  $a &lt;/body&gt;&lt;/html&gt;
+	  1i &lt;html&gt;&lt;body&gt;
+	 }
+	}
+</pre>
+
+<p>The other way is simpler and more versatile, but it requires the use of
+an external file.
+It uses the <a href="elvisex.html#lpr">:lpr</a> command with
+<a href="elvisopt.html#lptype">lptype=html</a>.
+Since Elvis' print mechanism supports all of Elvis' display modes,
+you can use this technique to convert any type of text (or even a hex dump
+of a binary file) into HTML.
+The main disadvantage of this method is, the resulting HTML is rendered
+exactly as it looks on the screen -- so plain text basically just has
+&lt;pre&gt; and &lt;/pre&gt; wrapped around it, nothing else.
+
+<pre>
+	:set lptype=html lplines=0 nolpheader
+	:lp foo.html
+</pre>
+
+<dt><strong>Add <!--add insert--> new text around highlighted text, via a macro.</strong>
+<dd>The main trick is to use the visual <a href="elvisvi.html#c">c</a> command
+to change the highlighted text, and then use <kbd>^P</kbd> as part of the
+replacement text.
+While typing the replacement text, <kbd>^P</kbd> causes a copy of the original
+text to be inserted.
+So, for example, the following macro could be used to add HTML <strong>&lt;strong&gt;</strong>
+and <strong>&lt;/strong&gt; </strong>tags around the highlighted text.
+<pre>
+	:map select B c&lt;strong&gt;^P&lt;/strong&gt;^[
+</pre>
+(Note: When typing that :map command into Elvis, you'll need to type
+&lt;Ctrl-V&gt;&lt;Ctrl-P&gt; to get the <kbd>^P</kbd>, and
+&lt;Ctrl-V&gt;&lt;Esc&gt; to get the <kbd>^[</kbd> character.)
+<dd>
+
+<dt><strong>Display <!--display show--> the size <!--number of lines columns--> in a <!--resized-->window when it is resized<!--size changes resize--></strong>
+<dd>You can use the <a href="elvisex.html#autocmd">:au</a>
+<a href="elvistip.html#OptChanged">OptChanged</a> command to detect when the
+lines or columns options change, and display a message showing the new values.
+<pre>
+	:au OptChanged lines,columns message (columns)x(lines)</pre>
+</dl>
+
+<h2>C.8 <a name="Contacts">Contacts</a></h2>
+
+<dl>
+
+<dt><strong>Request <!--request get obtain receive-->technical support <!--help questions answers--></strong>
+<dd>The best way to get technical support is by posting a question on the
+<a href="news:comp.editors">comp.editors</a> newsgroup.
+Be sure to mention "Elvis" in the subject line, and try to include a succinct
+description of the problem there, too.
+In the body of the message, be sure to mention the version of Elvis you're
+using (as reported by "<code>elvis --version</code>"), and your operating system.
+
+<dt><strong>Inform <!--report tell complain inform--> the authors about <!--of--> a bug <!--bugs problems--></strong>
+<dd>Bugs should be reported via e-mail.
+You may not always receive prompt confirmation, but your bug reports are
+appreciated, and acted-upon.
+For OS-specific bugs, you should contact the person who ported Elvis to your
+operating system; the author's names and e-mail addresses are listed in the
+<a href="elvisos.html">Operating Systems</a> chapter.
+
+<p>For general bug reports, you should contact the primary author,
+Steve Kirkendall,
+at <a href="mailto:kirkenda@cs.pdx.edu">kirkenda@cs.pdx.edu</a>.
+
+<p>Either way, be sure to mention the version of Elvis you're using
+(as reported by "elvis --version"), and your operating system.
+
+<dt><strong>Suggest <!--suggest recommend request ask for add offer give--> a new feature</strong>
+<dd>Contact the authors as though you were reporting a bug.
+See above.
+
+<dt><strong>Get <!--get obtain find--> the latest <!--new newer newest most recent--> version <!--release--> of Elvis<!--elvis--></strong>
+<dd>See the "Information via the Web" section of the
+<a href="elvistip.html#URLS">Tips</a> chapter.
+It has links to various Elvis-related sites.
+
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+devc-ditto - Character Device Ditto Manager
+
+devc-ditto [-o bufsize] [-k] [path]
+
+Options:
+ -o bufsize     Specify the record buffer size (8192 bytes by default)
+ -k             Don't allow key injectition
+ path           The device to ditto
+
+Also:
+
+  mount -T clone [-o noinput | input] [path]
+
+This will tell the manager start manage "path" (the device).
+The option "noinput/input" is to disallow/allow key injecttion.
+The default is follow manager's setting (-k option).

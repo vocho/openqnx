@@ -1,0 +1,3 @@
+#!/bin/sh
+PATH=BINDIR:$PATH
+exec gzip -d "$@"

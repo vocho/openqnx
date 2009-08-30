@@ -1,0 +1,12 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="lpd/nto/*/*/lpd" pinfo="$.pinfo"/>
+			<QPG:Add file="lpr/nto/*/*/lpr" pinfo="$.pinfo" permissions="u+s"/>
+			<QPG:Add file="lprc/nto/*/*/lprc" pinfo="$.pinfo"/>
+			<QPG:Add file="lprq/nto/*/*/lprq" pinfo="$.pinfo" permissions="u+s"/>
+			<QPG:Add file="lprrm/nto/*/*/lprrm" pinfo="$.pinfo" permissions="u+s"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

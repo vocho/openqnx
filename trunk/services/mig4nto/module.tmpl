@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<module name="mig4nto">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="mig4nto" generated="true">
+			<location basedir="mig4nto-procmgr/x86/o" runtime="true">
+				mig4nto-procmgr
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="mig4nto-procmgr/public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+		<component id="config" generated="false">
+			<kind type="config"/>
+			<source available="true">
+				<location basedir="mig4nto-procmgr/config/usr/share/kits" runtime="false">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/system"/>
+		<part build="true" location="lib/mig4nto"/>
+	</requires>
+
+</module>

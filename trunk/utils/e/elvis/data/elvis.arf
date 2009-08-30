@@ -1,0 +1,82 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SAVE THE CURRENT STATE OF THE "saveregexp" OPTION
+local nosaveregexp
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TAKE A GUESS AT THE BUFFER'S PREFERRED DISPLAY MODE
+if !userprotocol
+then {
+ if knownsyntax(filename)
+ then set! bufdisplay=syntax
+ if os=="unix" && buflines >= 1
+ then {
+  try 1s/\V^#! *[^ ]*\/\([^ ]\+\).*/set! bufdisplay="syntax \1"/x
+  if bufdisplay<<11=="syntax perl"
+  then set! bufdisplay="syntax perl"
+  if bufdisplay<<12=="syntax tclsh"
+  then set! bufdisplay="syntax tcl"
+ }
+ if !newfile
+ then {
+  if readeol=="binary" && bufdisplay=="normal" && (partiallastline || !binary)
+  then set! bufdisplay=hex
+  switch tolower(dirext(filename))
+  case .man set! bufdisplay=man
+  case .tex set! bufdisplay=tex
+  case .htm
+  case .html
+  case .shtml
+  case .dhtml set! bufdisplay=html
+  if buflines >= 2 && bufdisplay=="hex"
+  then try 1,2s/\V^\s*<[HIThit!]/set! bufdisplay=html/x
+  if (filename<<5=="http:" || filename<<4=="ftp:") && strlen(dirext(filename))<4 && bd=="hex"
+  then set! bufdisplay=normal
+  if bufdisplay=="normal" && buflines >= 1
+  then try 1s/\V^From .*/set! bufdisplay="syntax email"/x
+  if dirdir(filename)=="/tmp" || dirdir(filename)=="/var/tmp"
+  then set! bufdisplay="syntax email"
+  if strlen(dirext(filename))==2 && isnumber(filename>>1) && buflines>=1
+  then try 1s/\V^\./set! bufdisplay=man/x
+ }
+ if bufdisplay=="html" && readonly
+ then set locked
+ if bufdisplay=="html"
+ then set nosmartargs
+ if readonly && (bufdisplay=="html" || bufdisplay=="man")
+ then try set nospell
+ """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ " Set the buffer's "initialsyntax" option, based on "prefersyntax"
+ if (bufdisplay=="html" || bufdisplay=="man" || bufdisplay=="tex")
+ then {
+  try {
+   switch prefersyntax
+   case always	 set isyn
+   case local	 let isyn = !readonly && dirdir(filename) == "."
+   case writable let isyn = !readonly
+   case never	 set noisyn
+  }
+ }
+ """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ " Some messages
+ if tolower(basename(program))!="elvis" && !ro && (bd=="html" || bd=="man" || bd="tex")
+ then message To toggle the display mode, hit ^Wd
+ if partiallastline && readeol!="binary"
+ then warning Partial last line
+}
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set mapmode to the bufdisplay, if appropriate
+switch bufdisplay
+case html
+case man
+case tex let! mapmode=bufdisplay
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Store the file's timestamp
+let timestamp = time(filename)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" EXECUTE MODELINES, IF "modeline" OPTION IS SET
+if modeline && buflines >= 1 && buflines <= modelines * 2
+then try %s/\V[ev][xi]:\(.*\):/\1/x
+if modeline && buflines > modelines * 2
+then {
+ eval try 1,(modelines)s/\V[ev][xi]:\\\(.*\\\):/\1/x
+ eval try (buflines - modelines + 1),(buflines)s/\\V[ev][xi]:\\\(.*\\\):/\1/x
+}

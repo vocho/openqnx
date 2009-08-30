@@ -1,0 +1,33 @@
+# @configure_input@                                     -*- shell-script -*-
+# Configurable variable values for tar test suite.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+PATH=@abs_builddir@:@abs_top_builddir@/src:@abs_top_srcdir@/build-aux:$top_srcdir:$srcdir:$PATH
+
+XFAILFILE=$abs_builddir/.badversion
+
+trap "test -r $XFAILFILE && cat $XFAILFILE; exit $?" 1 2 13 15
+
+TEST_DATA_URL=ftp://download.gnu.org.ua/pub/tests/tar
+if test -z "$TEST_DATA_DIR"; then
+  TEST_DATA_DIR=$abs_builddir
+fi
+
+STAR_DATA_URL=http://download.berlios.de/pub/star/testscripts
+if test -z "$STAR_TESTSCRIPTS"; then
+  STAR_TESTSCRIPTS=$TEST_DATA_DIR
+fi  
+
+# tarball_prereq file sum dir url
+tarball_prereq() {
+  if test -d "$3"; then	
+    if test -r $3/$1; then
+      :
+    elif test -n "$FULL_TEST"; then
+      wget -q --directory-prefix=$3 $4/$1
+    fi
+  fi  
+  echo "$2  $3/$1" | md5sum --status --check - >/dev/null 2>&1
+}
+
+

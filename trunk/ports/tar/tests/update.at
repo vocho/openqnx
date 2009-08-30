@@ -1,0 +1,50 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Check that tar --update does not add non-changed directories to the
+# archive.
+# References: <42AB0D28.6030706@mein-horde.de>
+#             by Martin Lohmeier <martin@mein-horde.de>
+#             on Sat, 11 Jun 2005 18:11:20 +0200
+
+AT_SETUP([update unchanged directories])
+AT_KEYWORDS([update])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+mkdir directory
+genfile --length 10240 --pattern zeros --file directory/file1
+genfile --length 10240 --pattern default --file directory/file2
+
+tar cf archive directory || exit 1
+echo separator
+tar uf archive directory || exit 1
+echo separator
+tar tf archive | sort || exit 1
+],
+[0],
+[separator
+separator
+directory/
+directory/file1
+directory/file2
+])
+
+AT_CLEANUP

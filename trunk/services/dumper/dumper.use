@@ -1,0 +1,16 @@
+%C - Elf Core Dumper (QNX Neutrino)
+
+%C [-p pid] [-d dump directory] [-n][-v][-m]
+    -d dump directory          Directory in which to place dumps.
+                               Default is home directory of user that started 
+                               process, or /tmp if none.
+    -m                         Suppress dumping of memory
+    -P                         Dump out physical memory mappings
+    -t                         Only dump the stack of the errant thread
+    -n                         Create sequential dump files.
+    -p pid                     Dump specific process, then exit.
+    -s size[G|M|K]             Set maximum core file size in bytes
+    -v                         Operate verbosely
+    -w                         Make core files world readable
+    -z num                     Core files are gzip'd, num is the compress level, must
+                               between 1 (fastest) and 9 (best compressed)

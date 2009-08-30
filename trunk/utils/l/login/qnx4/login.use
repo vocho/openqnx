@@ -1,0 +1,7 @@
+%C	[-f user] [-p] [-t timeout] [username]
+Where:
+ -f user    Force login of user 
+ -p         Preserve current environment variables. Default is to clear.
+ -t timeout Cancel login if no response within 'timeout' seconds.
+               0 disables timeout, default is 0.
+ username  A users' login name.

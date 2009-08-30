@@ -1,0 +1,9 @@
+#/bin/sh
+
+while expr $# > /dev/null
+do
+	echo $1
+	./addret.pl $1 > $1.ret
+	./$1.ret > $1.ret.o1 2>&1
+	shift
+done

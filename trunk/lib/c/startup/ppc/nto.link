@@ -1,0 +1,72 @@
+/*
+ * nto.link
+ *	Loader command script for Neutrino
+ *
+ */
+TARGET(elf32-powerpc)
+ENTRY(_start)
+PHDRS {
+	text	PT_LOAD;
+	data	PT_LOAD; 
+	note	PT_NOTE;
+}
+
+SECTIONS {
+	.text 0x48000000 : {
+		btext = .;
+		_btext = .;
+		*(.text)
+		*(.text_kernel)
+		etext = .;
+		_etext = .;
+	} :text 
+	.rodata : {
+		*(.rodata_mod_start)
+		module_list_start = .;	
+		*(.rodata_mod)
+		module_list_end = .;	
+		*(.rodata_mod_end)
+		*(.rodata*)
+	}
+	.sdata2 : {
+		_SDA2_BASE_ = . + 0x7ff0;
+		*(.sdata2)
+	} 
+	.data ALIGN(0x1000) : {
+		_data = .;
+		*(.data)
+		*(.eh_frame*)
+	} :data 
+	.ctors . : {
+		*(.ctors)
+	}
+	.got . : {
+		_got = .;
+		*(.got)
+		*(.got2)
+	}
+	.sdata . : {
+		_SDA_BASE_ = . + 0x7ff0;
+		_sdata = .;
+		*(.sdata)
+		edata = .;
+		_edata = .;
+	}
+	.sbss . : {
+		__bss_start = .;
+		_fbss = .;
+		*(.sbss) *(.scommon)
+	}
+	.bss . : {
+		*(.bss)
+		*(COMMON)
+		_end = .;
+		end = .;
+	}
+	.debug 0x0 : { *(.debug) }:NONE
+	.debug_srcinfo 0x0 : { *(.debug_srcinfo) }:NONE
+	.debug_aranges 0x0 : { *(.debug_aranges) }:NONE
+	.debug_pubnames 0x0 : { *(.debug_pubnames) }:NONE
+	.debug_sfnames 0x0 : { *(.debug_sfnames) }:NONE
+	.line 0x0 : { *(.line) }:NONE
+}

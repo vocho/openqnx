@@ -1,0 +1,203 @@
+
+
+
+PRINTCAP(5)		FILE FORMATS		PRINTCAP(5)
+
+
+
+NAME
+     printcap - printer capability data base
+
+SYNOPSIS
+     /etc/printcap
+
+DESCRIPTION
+     printcap is a simplified version of the termcap(5) data base
+     for  describing  printers.	The spooling system accesses the
+     printcap file every time it is used, allowing dynamic  addi-
+     tion  and deletion of printers.  Each entry in the data base
+     describes one printer.  This data base may	not  be  substi-
+     tuted  for, as is possible for termcap, because it may allow
+     accounting to be bypassed.
+
+     The default printer is normally lp, though	the  environment
+     variable  PRINTER may be used to override this.  Each spool-
+     ing utility supports a -Pprinter option to explicitly name a
+     destination printer.
+
+     Each entry in the printcap file describes a printer, and  is
+     a	line  consisting  of  a number of fields separated by `:'
+     characters.  The first entry  for	each  printer  gives  the
+     names  which  are	known  for  the printer, separated by `|'
+     characters.  The first name is conventionally a number.  The
+     second  name  given  is the most common abbreviation for the
+     printer, and the last name given should be a long name fully
+     identifying  the printer.	The second name should contain no
+     blanks; the last name may well contain blanks for	readabil-
+     ity.   Entries  may continue onto multiple lines by giving a
+     `\' as the last character of a line, and empty fields may be
+     included for readability.
+
+     Capabilities in printcap are all introduced by two-character
+     codes, and are of three types:
+
+     Boolean   Capabilities that indicate that	the  printer  has
+	       some particular feature.	Boolean capabilities are
+	       simply written between the `:' characters, and are
+	       indicated by the word `bool' in the type column of
+	       the capabilities table below.
+
+     Numeric   Capabilities  that  supply  information	such   as
+	       baud-rates,  number  of lines per page, and so on.
+	       Numeric capabilities are indicated by the word num
+	       in  the	type  column  of  the  capabilities table
+	       below.  Numeric	capabilities  are  given  by  the
+	       two-character  capability code followed by the `#'
+	       character, followed by  the  numeric  value.   The
+	       following  example is a numeric entry stating that
+	       this printer should run at 1200 baud:
+
+		     :br#1200:
+
+     String    Capabilities that give a	sequence  which  can  be
+	       used to perform particular printer operations such
+	       as cursor motion.  String valued capabilities  are
+	       indicated  by  the  word str in the type column of
+	       the capabilities table below.  String valued capa-
+	       bilities are given by the two-character capability
+	       code followed by an `=' sign  and  then	a  string
+	       ending at the next following `:'.  For example,
+
+		      :rp=spinwriter:
+
+	       is a sample entry stating that the remote  printer
+	       is named spinwriter.
+
+CAPABILITIES
+     Name Type Default		Description
+
+     af	str  NULL		name	of    accounting    file
+     br	num  none		if  lp  is  a tty, set the baud
+				  rate	(ioctl	call)
+     cf	str  NULL		cifplot	data	filter
+     df	str  NULL		TeX data  filter  (DVI  format)
+     du	str  0		  User	ID   of  user	`daemon'.
+     fc	num  0		  if   lp   is	a   tty,   clear
+				  flag			bits
+     ff	str  ``\f''		string   to	send	for	a
+				  form			feed
+     fo	bool false		print	a   form   feed    when
+				  device	 is	opened
+     fs	num  0		  like	`fc'	but   set    bits
+     gf	str  NULL		graph	data	filter
+				  (plot(3X)		format)
+     hl	bool false		print	the	burst	header
+				  page			last
+     ic	bool false		driver       supports	(non
+				  standard)   ioctl   to   indent
+				  printout
+     if	str  NULL		name	 of	  input/
+				  communication		filter
+				  (created	per	job)
+     lf	str  ``/dev/console''	error	logging    file   name
+     lo	str  ``lock''		name	of	lock	file
+     lp	str  ``/dev/lp''	device     name     to     open
+				  for			output
+     mc	num  0		  maximum    number   of   copies
+     ms	str  NULL		list	of  terminal   modes   to
+				  set		or	  clear
+     mx	num  1000		maximum    file    size     (in
+				  BUFSIZ		 blocks),
+				  zero	=		unlimited
+     nd	str  NULL		next	directory    for   list
+				  of	queues	(unimplemented)
+     nf	str  NULL		ditroff	data	filter
+				  (device   independent	troff)
+     of	str  NULL		name	of	output/banner
+				  filter      (created	once)
+     pc	num  200		price	per  foot  or	page  in
+				  hundredths	of	cents
+     pl	num  66		 page	length    (in	lines)
+     pw	num  132		page	width	(in   characters)
+     px	num  0		  page	width     in	pixels
+				  (horizontal)
+     py	num  0		  page	length    in	pixels
+				  (vertical)
+     rf	str  NULL		filter   for	printing  FORTRAN
+				  style	text	 files
+     rg	str  NULL		restricted	group.     Only
+				  members of group allowed access
+     rm	str  NULL		machine    name    for   remote
+				  printer
+     rp	str  ``lp''		remote  printer  name	argument
+     rs	bool false		restrict   remote   users    to
+				  those	with	local	accounts
+     rw	bool false		open	printer   device    read
+				  /write  instead  of  write-only
+     sb	bool false		short banner	(one  line  only)
+     sc	bool false		suppress     multiple	copies
+     sd	str  ``/var/spool/lpd'' spool			directory
+     sf	bool false		suppress	form	feeds
+     sh	bool false		suppress  printing   of   burst
+				  page			header
+     st	str  ``status''	 status	file	 name
+     tc	str  NULL		name	of   similar	printer;
+				  must	be	last
+     tf	str  NULL		troff	data	filter   (C/A/T
+				  phototypesetter)
+     tr	str  NULL		trailer    string    to   print
+				  when	queue	empties
+     vf	str  NULL		raster       image	filter
+     xc	num  0		  if   lp   is	a   tty,   clear
+				  local		mode	 bits
+     xs	num  0		  like `xc' but set bits
+
+     If the local line printer driver supports	indentation,  the
+     daemon must understand how to invoke it.
+
+     Note: the fs, fc, xs, and xc fields are  flag  masks  rather
+     than flag values.	Certain default device flags are set when
+     the device is opened by the line printer daemon if the  dev-
+     ice is connected to a terminal port.  The flags indicated in
+     the fc field are then cleared; the flags in the fs field are
+     then  set	(or vice-versa, depending on the order of fc#nnnn
+     and fs#nnnn in the /etc/printcap file).  The bits cleared by
+     the  fc  field  and  set  by  the	fs field are those in the
+     sg_flags field  of	the  sgtty  structure,	as  set  by  the
+     TIOCSETP  ioctl  call,  and the bits cleared by the xc field
+     and set by the xs field are those in the "local flags" word,
+     as	set  by the TIOCLSET ioctl call.  See ttcompat(4M) for a
+     description of these flags.  For example, to set exactly the
+     flags 06300 in the fs field, which specifies that the EVENP,
+     ODDP, and XTABS modes are to be set, and all other flags are
+     to be cleared, do:
+	  :fc#0177777:fs#06300:
+
+     The same process applies to the xc and xs fields.	Alterna-
+     tively,  the ms field can be used to specify modes to be set
+     and cleared.  These modes are specified as	stty(1V)  modes;
+     any  mode supported by stty may be specified, except for the
+     baud rate which must be specified with the br  field.   This
+     permits  modes not supported by the older terminal interface
+     described in ttcompat(4M) to be set or cleared. Thus, to set
+     the  terminal  port to which the printer is attached to even
+     parity, TAB expansion, no NEWLINE to RETURN/LINEFEED  trans-
+     lation, and RTS/CTS flow control enabled, do:
+	  :ms=evenp,-tabs,nl,crtscts:
+     On Sun386i systems, the tc field, as in the termcap(5) file,
+     must  appear last in the list of capabilities.  It is recom-
+     mended that each  type  of	printer  have	a  general  entry
+     describing	common	capabilities; then an individual printer
+     can be defined with its particular capabilities  plus  a  tc
+     field  that  points  to  the  general entry for that type of
+     printer.
+
+FILES
+     /etc/printcap
+
+SEE ALSO
+     lprq(1),  lpr(1),	lprrm(1),  termcap(5), lprc(8), lpd(8),
+     lpsrvr,  lp,  lpq,	lprm,	lpc
+
+     System and Network Administration
+

@@ -1,0 +1,605 @@
+This document attempts to describe, in excruciating detail, the steps
+someone has to go through in order to port Neutrino to a new CPU 
+architecture. People should add any extra notes or discoveries as they
+do a port.
+
+Note that not all steps have to done in the order given here. Lack of
+a three dimensional file requires me to list things in a certain order.
+
+
+==================
+General Guidelines
+==================
+
+When implementing source, you should always try to write the code in
+a manner that is OS and CPU independent. If it's not possible to do
+that, the next best thing is to implement a function level API that
+hids the difference. The main source code calls this function that
+will be re-implemented individually for each OS or CPU. The source code
+for the function will live in separate source files, lower down in the
+source hierarchy. If a functional interface is not appropriate for
+efficiency or other reasons, the next best thing is to use a function-like
+macro that's defined in a header file to hide the difference. *Only as
+a very last resort should a conditional compilation directive be placed
+in a source file*.
+
+When giving names to functions/variables/macros that are CPU/device
+dependent, always prefix the name with something that identifies the
+CPU/device that the symbol is for. For example, anything that is specific
+to an Intel x86 processor is always prefixed with with "x86" or "X86"
+as appropriate. This serves two purposes. First, it makes sure that we
+don't have any naming conflicts between CPU/device's. Second, it makes
+it obvious when the source code is CPU/device dependent. This prefix
+naming continues to lower levels as well. For example, if you're defining
+the bits on the ABC register of the XYZ processor, all the definitions
+should be prefixed with XYZ_ABC. Examples:
+
+	MIPS_SREG_BEV		- MIPS status register BEV bit
+	PPC_FPSCR_VE		- PPC floating point status/control reg VE bit
+	PPC403_BESR_DSES	- PPC 403 bus error syndrome register DSES bit
+	S2681_CSR_S1BAUD75	- Signetics 2681 serial chip clock select reg
+	
+Also, separate the definitions into appropriately named files. For example,
+all definitions about generic PPC CPU registers appear in <ppc/cpu.h>.
+Definitions specific to the PPC 403 chip appear in <ppc/403cpu.h>. Note that
+this is not a hard and fast rule. If there are only one or two additional
+registers/bits for a particular processor, it might be more efficient to 
+just include the definitions in the main file (but still using the more
+explicit prefix!). Use your own judgment on this.
+
+If you see something prefixed with "cpu_*", that's an indication that 
+the interface is CPU independant, but the actual implementation is CPU
+specific. For example, there's a function in the kernel called 
+"cpu_thread_priv" which is called whenever the user wants to make a thread
+privledged and able to control hardware. The function does whatever's
+required on the particular processor to make that happen.
+
+When you start adding CPU and variant directories to the source tree,
+don't commit any variant directories to the SVN repository before they're
+ready to be used. For example, don't check in any "so" variant directories
+before you're ready to make shared objects.
+
+When you add a #ifdef <cpu> chain to something, always terminate it 
+with a:
+		...
+	#else
+		#error CPU not supported
+	#endif
+	
+True, it means that the next guy might get errors when he first compiles
+something, but better to make him look at the code and decide what to
+do than let it silently go through and spend a day or so trying to figure
+out what's wrong. Taking this further, when you're implementing something,
+if you know that it won't work for some given condition and you can
+test for that condition, put in an #error report. For example, I once
+spent a week trying to make a startup program go, only to discover
+that memcpy() didn't work on little endian systems (it was an optimized
+version for big endian only).
+	
+Note that assembly files are given as *.S - this is not required.
+They could be "*.s" if they don't need to go through the C preprocessor
+first - it depends on how you decided to do things (specifically, the
+output format of mkasmoff).
+
+
+==============
+Initial Design
+==============
+
+Obtain all the manuals on the CPU that you can. In addition to the
+obvious one on the CPU architecture itself, you want to want to obtain
+any ABI documents that exist (a System V ABI processor supplement if it
+exists). From here, glean things like calling conventions of the compiler.
+
+Once you've soaked in the processor for a while, make basic decisions on
+things like kernel call sequences.
+
+
+==========
+Tool Chain
+==========
+
+Go to the (no longer hypothetical) tools group and make sure that they've
+created a compiler/assembler/linker toolchain for the CPU. It should
+use ELF for the object/executable format and (less important) DWARF for
+the debugging information.
+
+Make sure that the qcc compiler driver knows how to run the toolchain.
+
+Go to the utils/m/mkasmoff source tree and update the program with the
+ELF machine number for the processor so it knows what output format to
+use for *.def files for the CPU. Search for "EM_PPC" to find the
+switch that you need to add to. Note that you may have to add the machine
+number to the <sys/elf.h> file yourself. Make and install the updated
+mkasmoff program.
+
+Go to the utils/m/mkxfs/mkxfs source tree and update the parse_file_attr.c
+file to understand the ELF machine number. Search for "m==3," to find
+the location where more has to be added to the default_linker string.
+Make and install the updated mkxfs program.
+
+Go to the tools/mkfiles directory.
+
+Edit qconf-<hostOS>.mk. Add the appropriate  
+	CC_...
+	AS_...
+	LR_...
+	LD_...
+	AR_...
+	UM_...
+macro definitions. Initially the "LD_..." macro should create relocatable
+objects rather than final executables (for GNU ld, add the "-r" switch).
+This will change when you start supporting virtual memory.
+
+Implement the "nto_<cpu>.mk" file. 
+
+Install the updated support make files.
+
+=============
+Include files
+=============
+
+Add the lib/c/public/<cpu> directory to the repository. Populate it
+with at least the following files:
+
+inline.h
+	Contains inline functions to perform generally useful operations.
+		
+inout.h
+	Contains the in*() and out*() functions for the CPU.
+	
+platform.h
+	Defines the stdarg/vararg macros and types:
+		__NTO_va_list/__NTO_va_start_stdarg/__NTO_va_arg/__NTO_va_end
+		__NTO_va_alist/__NTO_va_dcl/__NTO_va_start_vararg
+	Defines __JMPBUFSIZE macro and __jmpbufalign type.
+	
+smpxchg.h
+	Defines the _smp_cmpxchg and _smp_xchg inline functions.
+	
+Add the hardware/startup/lib/public/<cpu> directory to the repository. 
+Populate it with at least the following files:
+		
+intr.h
+	Contains the logical interrupt numbers definitions for any 
+	interrupt controllers that are actually implemented by the CPU.
+
+priv.h
+	Contains inline function definitions that are only of use to startup,
+	kdebug and the kernel (things executing at the processor's highest
+	privledge level). There are no required definitions.
+	
+Additional files can be added as required. For example, there's a
+hardware/startup/lib/public/ppc/400intr.h which defines the logical 
+interrupt numbers for controllers on the PPC 400 series family.
+
+Perform the following command to identify #ifdef <cpu> chains in the
+main include files:
+
+	cd lib/c/public/include
+	find -name \*.h | xargs fgrep -l __PPC__
+		
+and add the new CPU to them. At the current time the list is:
+
+	ucontext.h
+	setjmp.h
+	sys/auxv.h
+	sys/mman.h
+	sys/platform.h
+	
+Do the same thing for lib/elf/public. Currently the list is:
+
+	sys/elf_nto.h
+	sys/elf.h
+	
+	
+=======================
+The C library (stage 1)
+=======================
+
+Edit the lib/c/inc/cpucfg.h file and add the cpu to the #ifdef chain.
+The following macros/inline functions need to be defined:
+
+in_interrupt()
+LIBC_TLS()
+CONDITION_CYCLES()
+
+The macro L2V_CHEAT should be defined or undefined depending on
+what the calling conventions are for vararg functions - check the 
+lib/c/inc/cvtl2v.h file for details.
+
+Add the <cpu> directories to all the sections *except* "watcom". Implement
+the following CPU specific files:
+
+	1/<cpu>/sigstub.S
+	1c/<cpu>/__my_thread_exit.S
+	ansi/<cpu>/_jmp.S
+	atomic/<cpu>/atomic_*
+	support/<cpu>/_CMain.c
+	support/<cpu>/__stackavail.c
+	startup/<cpu>/crt1.S
+	startup/<cpu>/crti.S
+	startup/<cpu>/crtn.S
+	unix/<cpu>/vfork.S
+
+Implement the kercalls/<cpu>/template file to add the CPU specific support 
+for generating the kernel call sequences.
+
+Be sure to add the appropriate svn:ignore property value to the kercalls/<cpu>
+directory and check it into subversion.
+
+Add the initial variant directory (one of "a", "a.be", or "a.le") to
+all the sections *except* "watcom" and "prof".
+
+Enable CPU specific support in the following files:
+
+	kercalls/ker_err.c
+	support/_init_libc.c
+
+Create stub support for the dynamic linker:
+
+	ldd/<cpu>/relocs.ci
+
+You can use the ldd/relocs.ci template as a starting point.
+This should not be needed until shared object support is implemented later.
+
+
+====================
+The kernel (stage 1)
+====================
+
+Add the <cpu> directory to the services/system/ker tree. Use the
+"addvariant -c" command to add the <cpu> and initial variant directory 
+(one of "o", "be", "le") to the services/system/proc tree.
+
+Add services/system/public/<cpu> to the tree and populate it with at 
+least the following files:
+
+context.h
+	Defines <cpu>_CPU_REGISTERS and <cpu>_FPU_REGISTERS typedefs.
+	
+cpu.h
+	Defines all CPU register definitions.
+	
+fault.h
+	Defines CPU specific fault codes.
+	
+neutrino.h
+	Defines the following inline functions:
+		__inline_InterruptEnable
+		__inline_InterruptDisable
+		__inline_InterruptLock
+		__inline_InterruptUnlock
+		__inline_DebugBreak
+		__inline_DebugKDBreak
+		__inline_DebugKDOutput
+		ClockCycles
+		
+syspage.h
+	Defines "struct <cpu>_syspage_entry" and "struct <cpu>_kernel_entry".
+	
+	
+Implement the services/system/public/kernel/cpu_<cpu>.h source file.
+
+Perform the following command to identify #ifdef <cpu> chains in the
+kernel public include files:
+
+	cd services/system/public
+	find -name \*.h | xargs fgrep -l __PPC__
+		
+and add the new CPU to them. At the current time the list is:
+
+	kernel/nto.h
+	kernel/proto.h
+	sys/syspage.h
+	
+At this time, a "make hinstall" in the various include trees should
+allow you to start compiling the libraries:
+
+	cd lib/c
+	make CPULIST=<cpu>
+
+Once this works, you can install initial variants of the library:
+
+	cd lib/c/lib/<cpu>/<variant>
+	make install
+
+Implement the following files in the services/system/ker/<cpu> directory:
+
+	_start.S
+	cpu_misc.c
+	hook_idle.S
+	hook_trace.S
+	init_cpu.c
+	kdebug.c
+	kercpu.h
+	kernel.S
+	nano_fpu.c
+	out_intr_mask.S
+	out_intr_unmask.S
+	out_trace_event.S
+	out_kd_request.S
+	(These last two may not be needed - check nano_kerdebug.c to see
+	 if info->debug_path and info->vaddr_to_paddr2 are still being filled 
+	 in or not)
+	out_vtop.S
+	out_kdebug_path.S
+	
+At this time (assuming you've done a "make install" in libc) you should
+be able to issue the following commands to create a standalone test kernel:
+
+	cd serivices/system/proc/<cpu>/<initial_variant>
+	make tnto
+
+Depending on how energetic you are, you may want to implement cpu_debug.c
+in the ker/<cpu> directory. Without it, you won't be able to do any process
+debugging (kernel debugging doesn't need it). If you don't do it now, 
+remember that it'll need to be implemented later.
+
+You can skimp on a couple of things at this time in kernel.S. E.g.: you
+probably don't have to implement floating point support. Make sure you
+mark the things that you're going to do later so when later comes they're
+easy to find. I use NYI (not yet implemented), Hao uses NIY (not implemented
+yet). Peter has TODO. Doesn't really matter as long as it's easily searched
+for.
+
+The startup
+===========
+
+At this point in time, you need a board and have to have figured out
+what the download mechanism and the image format for it is.
+
+Go to the hardware/startup/bootfile and add one of "<cpu>-o", "<cpu>-le",
+or "<cpu>-be" directories (the "<cpu>-o" form should only be used if there
+is no possibility that the CPU can run in both big and little endian
+modes (unlikely in any new design)). Create a bootfile *.t (straight
+text) or *.S (assembly source) for the board. Try to make it as generic
+as possible. (e.g if the board wants Motorola S records, create an
+"srec.t" or "srec.S" bootfile). If you're creating a *.S bootfile,
+you'll probably have to edit hardware/startup/bootfile/common.mk to
+add support for the processor. If the image format is something that
+we don't support, you'll need to go to the utils/m/mkxfs tree and
+create a new image filter (mkifsf_*) program. Do a "make install" to
+put the bootfile into the install hierarchy.
+
+Go to the hardware/startup/lib tree and add the <cpu> and
+initial variant (one of "a", "a.le", or "a.le") directories.
+
+Implement at least the following files in the <cpu> directory:
+	asmoff.c
+	callout.ah
+	cpu_debug.c
+	cpu_startnext.c
+	cpu_startup.c
+	cpu_startup.h
+	cpu_syspage_memory.c
+	cstart.S
+	elf_map.c
+	init_cpuinfo.c
+	init_hwinfo.c
+	init_intrinfo.c
+	init_mmu.c
+	init_qtime.c
+	map_callout_io.c
+	map_callout_mem.c
+	map_startup_io.c
+	map_startup_mem.c
+	rtc_time.c
+
+You'll also have to add some "callout_*.S" files, but the names of them
+will depend on exactly what hardware is on the board.
+
+Build the startup library for your cpu:
+
+	cd hardware/startup/lib
+	make CPULIST=<cpu>
+
+Now, go to the hardware/startup/boards directory and create a <boardname>
+directory. In it, you'll need a "main.c" and most likely "init_raminfo.c" 
+and "init_intrinfo.c" files. Typing "make" should get you a startup 
+program (assuming you've done a "make" in the startup library as well).
+
+Add a "build" file to the directory. This is an example build script that 
+will be copied to "/<cpudir>/boot/build/<boardname>.build". It should
+be copiously documented with what the logical interrupt numbers are for
+the boards, what drivers and what command lines should be used to invoke
+stuff to control any peripherals that are on the board.
+
+Create a simple build script in the build file, containing just the startup
+program and download it to the board. Debug until you get the startup program
+building and displaying a proper system page.
+
+At this point you can add the standalone kernel test
+("services/system/proc/<cpu>/<variant>/tnto") that was built earlier to 
+the build script and debug until it's running.
+
+
+The kernel debugger
+===================
+
+Once you have startup going and before you try to get the standalone
+kernel test running, you may want to try and get the kernel debugger
+operational (I would).
+
+Go to the (no longer hypothetical) tools group and make sure they've got
+a host debugger for the CPU (most likely gdb).
+
+Go to the lib/kdutil/ tree and add a <cpu> and initial variant 
+(one of "a", "a.le" or "a.be") directories.
+
+Implement (at least) the following files:
+	cpu_kdintl.h
+	cpu_get_cpunum.c
+	cpu_map.c
+and "make install".
+	
+Go to the services/kdebug/gdb tree (assuming the host debugger is gdb)
+and add a <cpu> and initial variant (one of "o", "le" or "be") directories.
+
+Implement the following files:
+	_start.S
+	cpu_init.c
+	kdbgcpu.c
+	kdbgcpu.h
+	mem.c
+	traps.S
+and "make install"
+
+
+The process manager (stage 1)
+=============================
+
+Once the standalone kernel test is running, the next stage is to get
+the process manager up in physical mode.
+
+Go to the services/system/memmgr tree and add the <cpu> directory.
+
+Implement the following files in cvs/services/system/proc/<cpu>:
+	cpudeps.h
+	special_init.c
+	
+Implement stub versions of the following files in 
+cvs/services/system/memmgr/<cpu>:
+	cpu_mm_internal.h
+	cpu_pa.c
+	cpu_vmm.c
+	vmm_init_mem.c
+	vmm_aspace.c
+	vmm_map_xfer.c
+Look at the "mm-cpu-specific" file in the same directory as this file
+for details on the functions and macros that need to be defined.
+	
+Type "make" in services/system/proc/<cpu>/<variant> and then create a 
+build file that just has startup, kdebug, procnto and a startup script 
+that just does a "display_msg" command.
+
+Once that's running, compile a "hello, world" style program. Include the 
+test program in the build file and get starting an external program going.
+
+
+A serial driver
+===============
+
+Once procnto can run a simple test program with the polled driver from
+startup (I'm assuming the output is coming out a serial port here), the 
+next step is usually to get a real device driver running. If you're lucky
+the serial device on the board is one that we've already implemented.
+In that case, go to lib/io-char, add the <cpu> and <variant> trees
+and type "make install". Then go to hardware/devc/<serialdevice>,
+add the <cpu> and <variant> trees to that, and type "make install" again.
+
+If the serial driver isn't one that we've supported yet, build the
+io-char library as before, then go to the hardware/devc directory
+and create a new driver.
+
+
+The process manager (stage 2)
+=============================
+
+Once you have a interrupt driven serial driver going and have run a few
+tests to prove that things seem to be working in physical mode, it's
+now time to get virtual memory going. 
+
+Go to services/system/memmgr/<cpu> and replace the stub
+implementions of the macros/functions described in "mm-cpu-specific"
+with real versions.
+
+Switch your build file back to a simple one that just does a "display_msg"
+in the startup script and change the "physical=" attribute to "virtual=".
+
+Once you have the "display_msg" working again, Update the "LD_..." macro
+in the tools/mkfiles/qconf-<hostOS>.mk file to create true executables
+rather than relocatable objects (basically, remove the "-r" switch).
+Recompile the "hello, world" test program with the new configuration and
+get it working again.
+
+Relink all the executables that you've built and make sure they still
+work.
+
+Get QA to compile and run their regression tests (make sure you tell them
+that shared objects aren't supported yet). Here's the list of utilities
+that QA needs compiled and operational in order to run the tests:
+
+	devc-ser???? (depends on board)
+	devc-pty
+	pipe
+	mqueue
+	stty
+	uname
+	pidin
+	ls
+	esh
+	cat
+	chmod
+	true
+	false
+	sleep
+	shutdown
+	rm
+	echo
+	gzip
+	rtc
+
+
+The C library (stage 2)
+=======================
+
+It's now time to support shared objects. Decide how they're to be 
+implemented on this CPU (follow the System V ABI if possible). 
+
+Implement the lib/c/ldd/<cpu>/relocs.ci file. You can find an
+initial template of it in lib/c/ldd/relocs.ci.
+
+Go through all the assembly files for the CPU in the library (not 
+forgetting "c/kercalls/<cpu>/template") and make sure that code is PIC,
+or conditionally compilable for PIC.	
+
+Add one of the "so", "so.be", "so.le" variants to all the sections
+except "startup", "watcom" and "prof". 
+
+Get the system loading libc.so.
+
+Get the system loading some other *.so.
+
+Tell QA to re-link/re-run their regression tests again.
+
+
+The C library (stage 3)
+=======================
+
+Add the lib/c/prof/<cpu>/<variants> trees.
+
+Implement the lib/c/prof/<cpu>/profile.h and 
+lib/c/startup/<cpu>/mcrt1.S files.
+
+Add optimized versions of versions of the string functions (esp. memcpy()).
+
+
+The kernel (stage 2)
+====================
+
+If you didn't implement services/system/ker/<cpu>/cpu_debug.c earlier, 
+now's the time.
+
+Implement all the stuff you skimped on in kernel.S (e.g. F.P. support).
+
+Implement optimized versions of nano_xfer_len.c, nano_xfer_msg.c, 
+nano_xfer_pulse.c, nano_xfer_cpy.c.
+
+
+Everything else
+===============
+
+Get the floating point emulator built.
+
+Make sure that all the managers under services have <cpu> and <variant>
+directories added to them and they get built.
+
+Make sure all the appropriate character devices under hardware/devc
+have <cpu> and <variant> directories added to them and they get built.
+
+Make sure that all the utilities are being built for the CPU (go into
+utils/* and make sure <cpu> and <variant> directories are present for
+all the appropriate things (which is *not* every utility in the tree)).
+
+Turn the board(s) over to other groups and let them create their stuff.

@@ -1,0 +1,44 @@
+Usage: mount [-abwruv] -t type [-o options] [special] mntpoint
+       mount [-abwruv] -T type [-o options] special [mntpoint]
+       mount [-abwruv] -e [-t|T type] [-o options] special [mntpoint]
+       mount 
+
+Where:
+       -a Mount all devices listed in the fstab file. If type provided, 
+          mount only those entries. This option is ignored if a special 
+          device or mountpoint is specified.
+       -b Ignore fstab file. 
+       -o Gives server-specific options
+       -r Mount read only 
+       -T Indicates the special device may not by a real device 
+          but rather a hint for the server.  The server will 
+          autocreate an appropriate mountpoint if mntpoint is 
+          not specified.
+       -t Indicates the mount request should only go to the server
+          who created/is responsible for the special device.  If 
+          the special device doesn't exist then this option behaves 
+          the same as -T.
+       -e Enumerate the device given by special
+       -u Mount for update (remount) 
+       -v Increases the verbosity
+       -w Mount read/write
+
+Note: Not all servers will support all the mount options 
+      (in particular remounting and enumerating).
+
+'special' is the name of the special device
+
+'type' may include (among others):
+      nfs, cd (for iso9660), qnx4, dos, ext2, flash, io-pkt
+
+Examples:
+    Enumerate the partition table:
+    % mount -e /dev/hd0 
+    Mount a QNX4 filesystem partition
+    % mount -t qnx4 /dev/hd0t77 /mnt/fs
+    Mount an NFS filesystem
+    % mount -T nfs 10.1.0.22:/home /mnt/home
+    Mount the QNET network protocol
+    % mount -T io-pkt /lib/dll/lsm-qnet.so
+    Mount an NFSv3 filesystem
+    % mount -T nfs -o ver3 10.1.0.22:/home /mnt/home

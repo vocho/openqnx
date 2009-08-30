@@ -1,0 +1,121 @@
+Some questions raised during the message pass meeting:
+------------------------------------------------------
+
+1. How do we indicate that a message pass is being done?
+	- set inkernel to zero, or have a message pass bit? (need one per CPU)
+	- add a message pass bit to the thp->flags field?
+	- add a STATE_MSGPASS to thp->state?
+
+2. What happens when something else attempts to manipulate the thread that's
+   doing a message pass (or having a message pass being done to it). E.g.
+   a SignalKill() call, somebody unmapping memory, etc.?
+
+3. How should we re-aquire the kernel after completing the message pass?
+
+4. Should we have multiple code paths to deal with messages of different
+   complexity? How do we decide how complex a message is?
+
+5. The numbers that spuri has generated are with the current memory manager
+   which allocates in physically contiguous chunks. Since the new memmgr
+   will page things in, how is the increased discontiguity going to affect
+   them?
+
+6. Should we create an message pass object to hold information currently
+   being kept in the thread_entry structure (possibly adding more info)?
+
+
+Two general design philosophies emerged from the discussions. One is to do 
+the message pass in the kernel, on the kernel stack similar to what we're
+doing now. The second is to 'push' one of the threads involved in the message
+pass back out to user mode and do the copying there. The first method
+has the advantage of speed. The second has the advantage of being much
+easier to handle multiple message transfers and also simplifies handling
+of preemptions over what we have now. In the end, a hybrid approach
+was deemed most worthwhile of further investigation.
+
+======================================================================
+
+Initial design proposal
+-----------------------
+
+When a message pass is done, the sender/receiver are removed from their
+channel queues and placed on a new message pass queue (head of new queue is
+kept in the channel structure). If a higher priority message pass is
+initiated, it will attempt to pull a new receiver thread and use that
+to do its message pass. Only if there are no receiver threads left will
+a higher priority message pass "steal" one of the in-progress message
+passes from the message pass queue.
+
+Messages are divided in two four levels of complexity
+
+	1. 1 iov part, less than 17 bytes in length (a current "short" message)
+	2. more than 5 iov parts
+	3. message length less than 256 bytes
+	4. everything else
+	
+All the numbers above will be modified as we tune the code. 
+
+Type 1 and 3 messages will be handled within the kernel itself. Only one 
+of these may be in progress at a time. Any preemptions during one these
+will completely restart the message pass.
+
+Type 2 and 4 messages will push information on to a user thread stack and 
+turn on a bit in thp->flags to indicate that it's doing a message pass. 
+The kernel will also modify the thread state in such a way that is capable 
+of executing code located in kernel/proc (similar to the way loader and 
+terminator threads are done). The thread's IP register will be pointed at 
+a kernel routine and then scheduled as normal. A new Ring0 call will be
+added for the code to "map in" more of the other thread's message addresses
+and terminate the message transfer.
+
+The routines and data structures will have to be carefully coded to
+allow as much sharing as possible between the kernel and user pass
+routines. 
+
+An issue raised is what happens if some other thread fiddles with
+a thread in the middle of a message pass. The current thinking is that
+such a thread will always call the force_ready() routine on the message
+pass thread and force_ready() can be augmented to notice that the message 
+pass bit is on in the flags field and react appropriately.
+
+The thinking is also that the memmgr map_addr (AKA map_xfer) call should
+be modified to take a passed in iov array and it should return another, 
+modified iov array with the addresses modified to be proper for accessing 
+the other thread's memory in the first thread's address space. The returned 
+iov doesn't have to be the same number of elements as the input iov. Possibly
+we might also want a flag bit added to say whether the output iov should
+be virtual or physical addresses - might be useful if we add support for
+doing the copy with DMA hardware at a later date.
+
+Peter thinks that we shouldn't create message pass objects that are 
+object_alloc()'d - he's worried about determinism. We sorta are creating
+something similar with what gets pushed onto the stack when doing a
+user message pass - a similar structure will have to be created for
+the kernel message pass (probably pushed on the kernel stack) to allowing 
+code sharing between to the two execution paths. I'm somewhat worried about 
+the amount of stack space this structure will take, since it's going have 
+to contain at least a partial register set.
+
+======================================================================
+
+Some side stuff
+---------------
+
+Some cache effect issues were also discussed at the meeting. Namely:
+right now, it's typically the thread that's about to block that does
+the copying in a message pass and should we try to change that so
+that the cache/TLB is hot for the newly readied thread. A similar issue
+is that our current message pass code tends to "bounce" the threads
+from CPU to CPU in an SMP system when we message pass. You'd like to
+keep the server on one CPU and the client on the other (except that
+means more bus snoop traffic as the client's cache data gets sent
+across to the server when it wakes up and looks at the message :-( ). 
+
+Also on a reply, who gets to run first: the client or the server?
+If it's the server, you'd expect it to quickly block on MsgReceive(),
+which would be a good thing, since it would be available for further
+client requests. On the other hand, letting the client run first would
+probably get more useful work done earlier. Maybe what we should do
+is look to see if there are other receive blocked threads on the channel
+and if so, let the client run. Only if there are no more receive blocked
+threads would the server go first.

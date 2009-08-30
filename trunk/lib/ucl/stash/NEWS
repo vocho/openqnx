@@ -1,0 +1,11 @@
+============================================================================
+User visible changes for UCL -- a real-time data compression library
+============================================================================
+
+Changes in 0.91 (19 Apr 2000)
+  * added test_overlap functions that test overlapping in-place
+    decompression without actually writing any decompressed data
+
+Changes in 0.90 (24 Feb 2000)
+  * first public release
+

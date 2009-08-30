@@ -1,0 +1,61 @@
+Changes to the PD ksh since last time:
+
+- clean up the option configuration stuff.  Options in config.h should
+  now just be #define'd or not, not #define'd to 1 if you want them
+  and 0 if you don't
+
+- ksh now uses the shell specified by the variable EXECSHELL to run
+  shell scripts.  If EXECSHELL is unset or null it defaults to
+  /bin/sh.  It does a path lookup on the value, so if you set it to
+  ``ksh'' the ksh will run all scripts that don't start with #!.  It
+  seems to run most sh scripts fine (now).  I'd be very interested to
+  hear your experiences if you try this out, as for my next trick I'd
+  like to make ksh just fork itself to run scripts, which would speed
+  things up, and allow exportable functions and aliases (like he real
+  ksh).  Just to assure you that it can do some hairy sh scripts, both
+  CC and coco work with ksh.
+
+  EXECSHELL won't work if the system's exec(2) call runs scripts...
+
+- the ``let'' builtin now evaluates null or unset vars to 0, as per
+  The Book
+
+- Various memory allocation/use problems were cleaned up.  Hopefully
+  you'll never see the ``freeing free object'' error again (if you've
+  ever seen it).
+
+- the ``test'' builtin is now much more tolerant in parsing its
+  arguments.  This was to make it like the /bin/sh test.
+
+- Temp files (for here documents or ``fc'') are now mode 0600
+
+- Some format strings in the tree printing routines got ``expanded''
+  into SCCS keywords, so the results of``type <function>'' were
+  gave you interesting things like the time I last checked in the
+  file.  This has been fixed.
+
+- ``unset -f'' now really does unset functions.
+
+- the ``trailing blank or tab in alias definition'' feature now works.
+
+- A bug in command completion was fixed.  Note command completion only
+  works on commands that have been hashed, so you want to ``set -h''
+  in your .kshrc, and you may wish to force hashing of some common
+  commands with the ``hash'' builtin.
+
+- ``echo $$ | cat'' now works as in /bin/sh
+
+Not new features, but newly discovered bugs:
+
+- Local functions don't work correctly.  This shouldn't be much
+  problem, since sh doesn't have them.
+
+- Here documents in functions don't work.  This is a problem with the
+  temp file allocation that requires more work to fix than I've gotten
+  around to doing.  So avoid things like:
+
+foo() {
+	cat <<- HereDoc
+This is a test
+HereDoc
+}

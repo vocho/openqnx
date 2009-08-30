@@ -1,0 +1,56 @@
+switch gui
+case windows
+case x11 {
+  color normal black on gray90
+  color argument like keyword green or dark green
+  color bottom like normal
+  color comment italic dark green or light green
+  color cursor blue on navyblue
+  color fixed gray35 or gray80
+  color function Red4 or pink
+  color guide white
+  color hexheading gray70
+  color hlsearch boxed
+  color keyword bold
+  color libt like keyword italic
+  color linenumber gray
+  color link like formatted underlined blue or light blue
+  color number Blue4 or light blue
+  color other like keyword
+  color prep bold Blue4 or light blue
+  color prepquote like string
+  color scroll like tool
+  color scrollbar like toolbar
+  color selection on tan
+  color spell on pink
+  color status like tool
+  color statusbar like toolbar
+  color string tan4 or tan1
+  color tool black on gray75
+  color toolbar white on gray40
+  color variable Gray15 or palegoldenrod
+}
+case vio
+case termcap {
+  color normal yellow or black
+  color char like string
+  color comment italic light green or green
+  color fixed white or gray
+  color function light cyan or cyan
+  color hexheading gray
+  color hlsearch bold
+  color keyword bold white or black
+  color libt like keyword
+  color linenumber gray
+  color link underlined blue or light cyan
+  color number light cyan or blue
+  color other like keyword
+  color prep bold magenta or blue
+  color prepquote like string
+  color regexp like string
+  color ruler blue or light cyan
+  color showmode green boxed
+  color spell red or light magenta
+  color string white or brown
+  color variable like normal
+}

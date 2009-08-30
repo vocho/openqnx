@@ -1,0 +1,112 @@
+The showmem Utility:
+
+Background:
+
+The current API for accessing process level memory map information is achieved 
+via the procfs MAPINFO devctl() defined in <sys/procfs.h>.  This API provides
+callers with the ability to query individual processes and extract from them
+their _virtual_ memory mapping information.  There is currently no API provided 
+for extracting _physical_ memory mapping information.  The information returned 
+about the process level memory mappings contains flags from <sys/mmap.h> that
+describe the mapping type.
+
+In order to piece together what the overally system memory usage looks like,
+it is necessary to use the provided information from the individual process
+level mappings and attempt to link them together using a set of heuristics.
+
+There is currently no simple overall mechanism to provide a cross process, 
+operating system, level view of how memory allocations relate to one another.
+
+The manner by which the memory mappings are interpreted is based on the flags
+on the mappings.  These mappings can be shown by increasing the verbosity 
+output (-vvv) or by creating a dump file (-d<filename>).
+
+
+The showmem Analysis Heuristics:
+
+The following heuristics are currently employed by the showmem tool to create
+a system level overview of the memory usage.  
+
+Memory State:
+ Since the mappings reported are virtual mappings, it is entirely possible that 
+the memory that is mapped into the process is not really present.  This is often 
+the case with demand loaded stack pages or stack guard pages.  These are not
+interesting to the showmem tool and are immediately discarded.
+
+Explanation			Flags
+- Mapping really exists		PG_HWMAPPED
+
+Memory Visibility:
+ There are two broad classifications of memory in a Neutrino system, shared and
+process private.  In order to provide a classification of how the system memory
+is being used, it is necessary to distinguish between these two uses and treat
+them quite differently.  Each instance of privately allocated memory should be 
+accounted for in the total memory usage of the system.  Shared memory mappings
+should only be counted once even if used multiple times, but cases where the 
+shared memory is used only by a single process are also of interest.
+
+Explanation			Flags
+- Memory is private		MAP_PRIVATE
+- Memory is shared		MAP_SHARED
+- Shared memory by one process  MAP_SHARED + no matching re-use on name/size/ino/dev
+
+NOTE: The current detection of unique shared memory is weak due to the
+non-reliable nature of the external shared memory information.  This 
+does not affect procnto's ability to properly re-use shared objects, but
+it affects the reporting tool's ability to discern between truly shared
+and simply doubly allocated blocks of memory.
+
+Mapping Type:
+ The intended use of a block of memory can also be loosly discerned from examining
+the mapping flags.  Using this information, mappings can be categorized to allow
+users to better understand how application components are contributing to the 
+overall system memory usage.
+
+Explanation			Flags
+- Thread Stack			MAP_STACK
+- Executable Code 		MAP_ELF && PROT_READ && PROT_EXEC
+- Executable Data 		MAP_ELF && PROT_WRITE
+- Generic Heap			MAP_PROVATEANON || (MAP_PRIVATE && MAP_ANON)
+- Other				Anything not mapping the above flags
+
+Mapping Origin:
+ Since memory maps, even those that are private, can originate from within one
+another (for example a secondary image filesystem that was loaded by a process
+that allocated the initial space using contiguous anonymous memory), a final
+classification is attempted to determine if the memory is in fact allocated 
+from system RAM.  This classification is different from the Memory State since
+this allocation really does exist, but it may be already accounted for in the
+memory allocation statistics of some other process.
+
+Explanation			Flags
+- Image Filesystem Origin	!MAP_SYSRAM && PG_HWMAPPED && MAP_PHYS
+- Not consuming RAM		!MAP_SYSRAM
+
+NOTE: The MAP_SYSRAM is only applied to process private allocations since on 
+shared objects the originating allocating process may no longer exist.  As
+such, it is not enought to simply sum up all of the MAP_SYSRAM mappings to
+determine the total memory usage of the system.
+
+
+Output Explanation:
+
+ Once all of the process memory blocks have been classified, then the totalling
+of the system memory is performed.  This activity attempts to summarize how the
+system memory is being used by providing a total system summary of the mappings
+and showing a detailed breakdown of how each process contributes to that summary.
+
+The report is broken down into two sections.  The process section shows the 
+memory that the process claims to be consuming.  When examined in detail (using
+the -D options), this display will show the breakdown of the code,data,stack,heap
+and libraries being used by the process.  It will show for each entry if it 
+contributes to the process accounting or if it does not, shown as a value in ()
+brackets.
+
+The shared section shows all of the objects that have been identified as shared
+by more than one process mapping.  In this case these entries should show up
+in the process listing as () values.  These entries should be counted a single
+time here. 
+
+The Total field in the output shows the line summary for the particular entry
+in question.  For "detail" lines it will not show any value so as to facilitate
+reporting using external tools such as excel or scripts such as cut/sort/sed/awk

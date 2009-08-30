@@ -1,0 +1,9 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/mig4nto" pinfo="$"/>
+         <QPG:Add type="file" file="mig4nto.tab" install="/etc/"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

@@ -1,0 +1,100 @@
+# This is a sample configuration file for GNU tar backup script.
+# See end of file for copying conditions
+
+# User name or email address of the administrator of backups. A report
+# will be sent to this address when the backup terminates
+ADMINISTRATOR="root@localhost"
+
+# (Optional) Path to tar binary.
+TAR=/bin/tar
+
+# (Optional) Path to rsh binary or its equivalent. You may wish to
+# set it to ssh as shown in the example below, to improve security.
+# In this case you will have to use public key authentication.
+RSH=/usr/local/bin/ssh
+
+# (Optional) Path to rsh binary on remote mashines. This will be
+# passed via --rsh-command option to the remote invocation of
+# tar
+RSH_COMMAND=/usr/local/bin/ssh
+
+# Name of temporary file to hold volume numbers.  This needs to be accessible
+# by all the machines which have filesystems to be dumped.
+VOLNO_FILE=/root/volume
+
+# Device to use for dumping.  It should be on the host
+# on which the dump scripts are run.
+TAPE_FILE=/dev/rmt0
+
+# Blocking factor to use for writing the dump.
+BLOCKING=124
+
+# List of file systems to be dumped. If prefixed with a HOST:
+# the filesystem is accessed on the given HOST, unless it
+# coincides with the local machine name.
+# If a file system starts with a slash, it is handled as a local
+# one.
+BACKUP_DIRS='remote1:/etc remote1:/var/spool/crontab'
+# Alternatively, you may leave this variable unassigned, and
+# keep the list of filesystems to be dumped in file
+# $SYSCONFDIR/backup/dirs, one filesystem per line. Empty
+# lines and shell comments are allowed in this file. The location
+# of this file may be overridden using DIRLIST variable, e.g.:
+# DIRLIST=/etc/my-backup/dirlist
+
+# List of individual files to be dumped.
+# These should be accesible from the machine on which the dump is run.
+BACKUP_FILES=''
+# This list may also be kept in file $SYSCONFDIR/backup/files, the
+# format of which is the same as described above. The location of
+# this file may be overridden by setting FILELIST variable:
+# FILELIST=/etc/my-backup/filelist
+
+# Name of 'exclude file list'. It is searched under $SYSCONFDIR/tar-backup
+# on remote machines
+XLIST=exclude_files
+
+# Default directory for storing incremental listings on remote
+# machines is $SYSCONFDIR/tar-backup. It can be overridden using
+# REMOTEBACKUPDIR variable
+
+# Default directory for storing backup logs is $SYSCONFDIR/backup/log.
+# It can also be overridden via LOGPATH variable.
+
+# Time to sleep between dumps of any two successive filesystems
+SLEEP_TIME=15
+
+# Script to be run when it's time to insert a new tape in for the next
+# volume.  Administrators may want to tailor this script for their site. 
+# If this variable isn't set, tar will use some default behavior which is
+# probably defined in the manual. 
+#DUMP_REMIND_SCRIPT='rsh apple-gunkies /home/gd2/dump/dump-remind'
+
+# Message to display on the terminal while waiting for dump time.  Usually
+# this will just be some literal text, preferably something more
+# entertaining than this.  The awk script here saves some redundant
+# repetition, but is not really all that desirable.
+SLEEP_MESSAGE="`awk '
+   BEGIN { 
+      for (i = 0; i < 30; i++)
+         print \"           \" \
+               \"D O    N O T   T O U C H   T H I S   T E R M I N A L !!!!!\"
+   }' /dev/null`"
+
+
+# Copyright (C) 2004 Free Software Foundation, Inc.
+
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.

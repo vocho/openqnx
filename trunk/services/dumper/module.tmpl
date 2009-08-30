@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<module name="dumper">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="dumper" generated="true">
+			<location basedir="{cpu}/{o|endian}" runtime="true">
+				dumper
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/elf"/>
+		<part build="false" location="services/system"/>
+		<part build="false" location="services/net/npm/qnet"/>
+		<part build="false" location="services/slogger"/>
+	</requires>
+
+</module>

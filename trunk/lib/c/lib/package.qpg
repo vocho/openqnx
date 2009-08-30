@@ -1,0 +1,37 @@
+<QPG:Generation>
+	<QPG:Options>
+		<QPG:Cleanup m1="yes"/>
+	</QPG:Options>
+	
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="*/so*/libc.so" pinfo="$"/>
+			<QPG:Add file="*/so*/libcS.a" pinfo="$"/>
+			<QPG:Add file="*/a/libc.a" pinfo="$"/>
+			<QPG:Add file="*/a.?e/libc.a" pinfo="$"/>
+			<QPG:Add component="dev" file="../startup/*/*/*.o" install="/lib/"/>
+			<QPG:Add component="dev" type="tree" file="../public/arm" install="/usr/include/arm/" target="arm" />
+			<QPG:Add component="dev" type="tree" file="../public/mips" install="/usr/include/mips/" target="mips" />
+			<QPG:Add component="dev" type="tree" file="../public/ppc" install="/usr/include/ppc/" target="ppc" />
+			<QPG:Add component="dev" type="tree" file="../public/sh" install="/usr/include/sh/" target="sh" />
+			<QPG:Add component="dev" type="tree" file="../public/x86" install="/usr/include/x86/" target="x86" />
+			<QPG:Add component="dev" type="tree" file="../public/sys" install="/usr/include/sys/" />
+			<QPG:Add component="dev" type="tree" file="../public/hw" install="/usr/include/hw/" />
+			<QPG:Add component="dev" file="../public/*.h" install="/usr/include/" />
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="x86" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="ppcbe" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="mipsle" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="mipsbe" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="shle" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/> 
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="armle" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" slib="slib" filetype="symlink" proc="armbe" file="ldqnx.so.2" linkto="../../lib/libc.so.2" install="/usr/lib/"/>
+			<QPG:Add component="default" file="../startup/ppc/nto.link" install="/lib/" proc="ppcbe"/>
+			<QPG:Add component="default" file="../startup/mips/nto.link" install="/lib/" proc="mipsle" handling="copy"/>
+			<QPG:Add component="default" file="../startup/mips/nto.link" install="/lib/" proc="mipsbe" handling="copy"/>
+			<QPG:Add component="default" file="../startup/sh/nto.link" install="/lib/" proc="shle"/>
+			<QPG:Add component="default" file="../startup/arm/nto.link" install="/lib/" proc="armle" handling="copy"/>
+			<QPG:Add component="default" file="../startup/arm/nto.link" install="/lib/" proc="armbe" handling="copy"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

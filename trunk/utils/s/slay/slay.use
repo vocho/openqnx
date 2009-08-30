@@ -1,0 +1,42 @@
+%C	[options]... process_name|process_ID...
+Options:
+ -#              Use signal # (numeric).
+ -f              Force (don't query just because there are multiple matches).
+ -h              Raise signal SIGSTOP (hold).
+ -m <name|pid>   Match only on name or pid (default is to match either)
+ -n <node>       Processes will be looked for on node <node>.
+ -P <prio>       Change priority to <prio>; optionally, can follow with
+                 changed scheduling policy (f|r|o). 
+ -p              Print process IDs (in decimal) to stdout, one process ID
+                 per line. No other actions will be performed - processes
+                 will not be slain.
+ -Q              Quiet.
+ -q              Query before signal. This will override -f.
+ -S              Don't kill processes if there are sons.
+ -s <sig>        Define signal to send.
+ -t <ttyname>    Process must be on tty 'ttyname'.
+ -u              Raise signal SIGCONT (unhold).
+ -v              Verbose.
+ -T <thread_id>  Thread ID.
+ -R <runmask>    Set CPU Affinity to <runmask>.  May be used multiple times to
+                 specify masks > 32 bits wide (32 bits per -R).  The lower 32
+                 bits (bits 31-0) are always taken from the first -R, bits
+                 63-32 from the second...  If used in conjuction with -C, the
+                 resultant mask is the bitwise or'ing of all -[CR] options.
+ -C <cpunum>     Set CPU Affinity to cpunum.  First CPU is 0.  If specified
+                 multiple times or in conjunction with -R, the resultant mask
+                 is the bitwise or'ing of all -[CR] options.
+ -i              When used in conjunction with -[CR], also set the inherit
+                 mask.
+Signals:
+ SIGNULL     SIGHUP      SIGINT      SIGQUIT     SIGILL      SIGTRAP
+ SIGIOT      SIGABRT     SIGEMT      SIGFPE      SIGKILL     SIGBUS
+ SIGSEGV     SIGSYS      SIGPIPE     SIGALRM     SIGTERM     SIGUSR1
+ SIGUSR2     SIGCHLD     SIGPWR      SIGWINCH    SIGURG      SIGPOLL
+ SIGSTOP     SIGCONT     SIGDEV
+Note:
+ Processes may be specified by name or PID, unless -m used to limit match.
+ Query becomes the default when multiple processes of the same name are found
+ unless -f is also specified.
+ The exit status is number processes successfully slayed.
+ A value of zero indicates failure to slay any process.

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<module name="mkasmoff">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<description>
+	        <short>Short Outline</short>
+	        <abstract>
+	                <![CDATA[Long Outline]]>
+	        </abstract>
+	</description>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true">
+			<component id="mkasmoff" generated="true">
+				<location basedir="{os}/{cpu}/o{.:endian}" runtime="true">
+					mkasmoff
+				</location>
+			</component>
+		</package>
+		<package name="header">
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<source available="true">
+					<location basedir="public" runtime="false" subdirs="true">
+						.
+					</location>
+				</source>
+			</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+	</requires>
+
+</module>

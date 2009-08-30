@@ -1,0 +1,5 @@
+Modifying this file will cause procnto to do a clean recompile for this CPU.
+You should put a comment in here as to the reason.
+
+PR 60403. Was checking for SSE1 capable processor for MFENCE, but we
+actually need SSE2 instructions.

@@ -1,0 +1,11 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/usemsg" pinfo="usemsg.pinfo"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="solaris/*/*/usemsg" pinfo="usemsg.pinfo"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="linux/*/*/usemsg" pinfo="usemsg.pinfo"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="win32/*/*/usemsg.exe" pinfo="usemsg.exe.pinfo"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

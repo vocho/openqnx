@@ -1,0 +1,27 @@
+#!/bin/sh
+# Fake a GNU style configure so we can make use of all the supporting
+# gear.
+
+case $TARGET_SYSNAME in
+nto)
+	cp ../unix/Makefile .
+	touch config.status
+	;;
+solaris)
+	cp ../unix/Makefile .
+	touch config.status
+	;;
+linux)
+	cp ../unix/Makefile .
+	touch config.status
+	;;
+win32)
+	cp ../win32/makefile.gcc ./Makefile
+	touch config.status
+	;;
+*)
+	echo "Don't have config for ${SYSNAME}"
+	exit 1
+	;;
+esac
+

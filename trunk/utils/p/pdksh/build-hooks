@@ -1,0 +1,82 @@
+# qnx_target_version default: 6.4.0
+# Can be overriden by VERSION_REL
+# If native compiled on neutrino, it will be determined
+# unless overriden by VERSION_REL environment variable.
+qnx_target_version=6.4.0
+
+if [ ! -z "${VERSION_REL}" ]; then
+	qnx_target_version=${VERSION_REL}
+#if target_version is 6.4.x then default to 6.4.0. We have the same
+#toolchain for 6.4.x.
+	case ${qnx_target_version} in
+	  6.4.*) qnx_target_version=6.4.0
+	  ;;
+	esac
+else
+	if test "${SYSNAME}" = "${TARGET_SYSNAME}"; then
+		qnx_target_version=$(uname -r)
+	fi
+fi
+
+SIFS=${IFS}
+IFS=-
+set -- ${PWD##*/}
+IFS=${SIFS}
+cpu_string=$2
+if [ "$cpu_string" = "x86" ]; then
+cpu_string=i386-pc
+elif [ "$cpu_string" = "ppc" ]; then
+cpu_string=powerpc-unknown
+else
+cpu_string=$cpu_string-unknown
+fi
+target=${cpu_string}-nto-qnx${qnx_target_version}
+
+
+# At this point build-cfg has determined CC for the build.
+# We want it exported so configure can pick it up
+# *** This is specific to this particular project; other projects may
+# define CPP differently and hence this might not be neccessary.
+if test "${SYSNAME}" != nto; then
+	export CPP="${make_CC} -E"
+	export CC="${make_CC}"
+fi
+
+function hook_preconfigure {
+	configure_opts="${configure_opts} --disable-vi --enable-history=simple --prefix=$INSTALL_ROOT_nto/${cpudir}"
+	if [ "${TARGET_SYSNAME}" = "nto" -a "${SYSNAME}" != "nto" ]; then
+	  # We want config.site only when cross compiling nto binary.
+	    export CONFIG_SITE="${PWD}/../nto-config.site"
+	    configure_opts="${configure_opts} --target=${target} --host=${target}"
+	fi
+}
+
+function hook_premake {
+	if [ ${SYSNAME} = linux ]; then
+	    # Make sure sort understands +2n option
+	    export _POSIX2_VERSION=199209
+	fi
+	if [ ${TARGET_SYSNAME} = nto ]; then
+	    make_CC="${make_CC} -D_FILE_OFFSET_BITS=64"
+	fi
+	strip_r_switch
+}
+
+function hook_postmake {
+	# On the ARM, mark the executable as needing 512K of stack since
+	# the default is smaller than normal due to cramped virtual space
+	if [ "${cpudir}" = "armle" -o "${cpudir}" = "armbe" ]; then
+		ldrel -L -S 512K ksh
+	fi
+}
+
+function hook_pinfo {
+	if [ ${TARGET_SYSNAME} = nto ]; then
+		loc="bin SYMLINK=sh";
+	elif [ ${TARGET_SYSNAME} = win32 ]; then
+		loc="usr/bin SYMLINK=sh.exe";
+	else
+		loc="usr/bin";
+	fi
+	gen_pinfo -e ksh ${loc} USE=../ksh.use DESCRIPTION="Public Domain Korn Shell" 
+}

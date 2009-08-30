@@ -1,0 +1,40 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([gtarfail])
+AT_KEYWORDS([star gtarfail])
+
+unset TAR_OPTIONS
+
+AT_CHECK([
+AT_STAR_PREREQ([gtarfail.tar],[bf7612e401aaa679edbb07ae1183811b])
+
+tar --utc -tvf $STAR_TESTSCRIPTS/gtarfail.tar
+],
+[0],
+[-rw-r--r-- jes/glone       518 2001-05-25 14:41 vedpowered.gif
+-rw-r--r-- jes/glone      6825 1997-04-29 00:19 cd.gif
+-rw-r--r-- jes/glone     33354 1999-06-22 12:17 DSCN0049c.JPG
+-rw-r--r-- jes/glone     86159 2001-06-05 18:16 Window1.jpg
+-rw-r--r-- jes/glone      1310 2001-05-25 13:05 vipower.gif
+-rw-rw-rw- jes/glone    148753 1998-09-15 13:08 billyboy.jpg
+])
+
+AT_CLEANUP

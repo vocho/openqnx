@@ -1,0 +1,68 @@
+This directory contains scripts for testing GNU tar using
+star "test archives". The archives themselves can be obtained
+from http://download.berlios.de/pub/star/testscripts.
+
+The tests are ignored unless environment variable STAR_TESTSCRIPTS
+is set and points to the directory where the test archives reside.
+Sample usage:
+
+	make STAR_TESTSCRIPTS=testdir check
+or	
+	make TESTS_ENVIRONMENT='STAR_TESTSCRIPTS=testdir' check
+
+The file `quicktest.sh' is a separate test. It is never executed
+within `make check' command, you will need to run it manually.
+Please, carefully read section `quicktest.sh' below before running
+it.
+	
+Following is a short description of the tests:
+
+* gtarfail.at and gtarfail2.at
+
+These tests require gtarfile.tar and gtarfile2.tar, respectively.
+These files are POSIX compliant tar archives that were not accepted
+by previous versions of GNU tar.
+
+* multi-fail.at
+
+Requires gnu-multi-fail-volume1.gtar and gnu-multi-fail-volume2.gtar.
+These are two parts of a multi-volume archive that previous versions
+of tar refused to read (at least, without -B option). 
+
+* ustar-big-2g.at
+
+Requires ustar-big-2g.tar.bz2. It is a tar archive containing a file with
+the largest size that a historic tar implementation is able to understand.
+
+* ustar-big-8g.at
+
+Requires ustar-big-8g.tar.bz2. This is a test for reading an archive containing
+files with the largest size that may be used with ustar (POSIX.1-1990)
+format.
+
+* pax-big-10g.at
+
+Requires pax-big-10g.tar.bz2. It tests handling pax (POSIX.1-2001) archves
+containing very large files (in this case -- 10 GB).
+
+* quicktest.sh
+
+This is a test for compliance to POSIX.1-1990 tar specification. It
+requires two files: ustar-all-quicktest.tar and quicktest.filelist,
+(they usually reside in star/tartest directory), and `tartest' program
+(also part of star distribution). The test must be run only with root
+privileges, so it is a good idea to test contents of
+ustar-all-quicktest.tar before running it.
+
+If `tartest' is not in your PATH, use TARTEST variable to specify its
+full file name. You may pass both STAR_TESTSCRIPTS and TARTEST
+variables as command line arguments to quicktest.sh, as shown in
+the example below:
+
+  ./quicktest.sh STAR_TESTSCRIPTS=testdir TARTEST=/path/to/tartest
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

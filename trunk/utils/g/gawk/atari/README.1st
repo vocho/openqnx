@@ -1,0 +1,6 @@
+Sun Nov 29 10:34:01 EST 1998
+
+The atari port is no longer supported.  In 3.1 this directory will
+be moved into a new `unsupported' directory.  If you have an atari,
+you are welcome to try and use the port here, but we no longer have
+the hardware to test gawk on.

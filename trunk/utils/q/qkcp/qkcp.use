@@ -1,0 +1,43 @@
+%C Quick Copy Utility
+
+This utility copies files or directory trees from one place to another using 
+the QNX direct-io method. It is intended to copy from CD/DVD/HD/UMASS drives
+to HD drives or shared memory. If the media does not support direct-io,
+the normal copy method (read/write) will be used.
+
+Syntax: qkcp [-v][-V][-W][-r][-c size][-f filename][-h shname][-X dll]
+             [-S shared memory device][-O offset] source destination
+
+Options:
+   -v                       Verbose
+   -V                       Extra verbose (print transfer statistics)
+   -W                       Wildly verbose (debug)
+   -r                       recovery (requires -f option), and also that
+                            the source is still the same  
+   -c size                  Checkpoint size (in Megabytes), default 128M
+   -f filename              Filename for checkpoint file
+   -h shname                Uses /dev/shmem/shname to write copy progress
+                            indication
+   -S shared memory device  Predefined shared memory device
+   -O offset                Offset inside shared memory device 
+   -X dll[:argument]        External DLL to process file names/data
+
+Appendix:
+
+Progress indication struct
+{
+        uint64_t        job_size;      
+        uint64_t        job_size_done;
+        uint32_t        job_files;
+        uint32_t        job_files_done;
+        uint64_t        job_time;      
+        uint64_t        job_time_left;
+        int             percent;
+        int             phase;
+        int             status;
+};
+
+External DLL API
+        int qkcp_init(const char *src, const char *dst, char *argument);
+        int qkcp_filename(const struct stat *st, char *name, int maxlen);
+        int qkcp_filedata(off64_t offset, void *data, int length);

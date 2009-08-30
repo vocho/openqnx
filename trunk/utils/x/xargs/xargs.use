@@ -1,0 +1,21 @@
+%C - construct argument list(s) and execute program (POSIX)
+
+%C	[-tv] [-n numargs] [-s size] [-i] [-P n] [command [argument...]]
+Options:
+ -n numargs    Maximum number of arguments to append to command line.
+ -s size       Maximum number of chars for complete command line.
+ -t            Trace (write each command line to stderr prior to execution).
+ -x            Terminate if the command line is too long when using numargs
+               (or the default number of) arguments.
+Where:
+ command       is the command to execute (echo if not specified).
+ argument      is a list of arguments to 'command' each time executed.
+
+QNX-specific Options
+ -i            Insert mode, use only one parameter per command line, 
+               replacing each instance of {} with that one parameter.
+ -P n          Up to n concurrent commands.
+ -v            Verbose mode; same as using -t switch
+
+Note: xargs does not use these environment variables:
+LANG, LC_ALL, LC_TYPE, LC_MESSAGES

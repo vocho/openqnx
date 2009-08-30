@@ -1,0 +1,2724 @@
+# Kinyarwanda translations for tar package.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# This file is distributed under the same license as the tar package.
+# Steve Murphy <murf@e-tools.com>, 2005.
+# Steve performed initial rough translation from compendium built from translations provided by the following translators:
+# Philibert Ndandali  <ndandali@yahoo.fr>, 2005.
+# Viateur MUGENZI <muvia1@yahoo.fr>, 2005.
+# Noëlla Mupole <s24211045@tuks.co.za>, 2005.
+# Carole Karema <karemacarole@hotmail.com>, 2005.
+# JEAN BAPTISTE NGENDAHAYO <ngenda_denis@yahoo.co.uk>, 2005.
+# Augustin KIBERWA  <akiberwa@yahoo.co.uk>, 2005.
+# Donatien NSENGIYUMVA <ndonatienuk@yahoo.co.uk>, 2005.
+# Antoine Bigirimana <antoine@e-tools.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tar 1.15.1\n"
+"Report-Msgid-Bugs-To: bug-tar@gnu.org\n"
+"POT-Creation-Date: 2007-06-08 11:19+0300\n"
+"PO-Revision-Date: 2005-04-04 10:55-0700\n"
+"Last-Translator: Steven Michael Murphy <murf@e-tools.com>\n"
+"Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/argmatch.c:134
+#, fuzzy, c-format
+msgid "invalid argument %s for %s"
+msgstr "Sibyo kugirango"
+
+#: lib/argmatch.c:135
+#, fuzzy, c-format
+msgid "ambiguous argument %s for %s"
+msgstr "kugirango"
+
+#: lib/argmatch.c:154
+#, fuzzy, c-format
+msgid "Valid arguments are:"
+msgstr "ingingo"
+
+#: lib/argp-help.c:148
+#, c-format
+msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
+msgstr ""
+
+#: lib/argp-help.c:221
+#, fuzzy, c-format
+msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
+msgstr ""
+"%.*Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: lib/argp-help.c:227
+#, fuzzy, c-format
+msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
+msgstr ""
+"%.*Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: lib/argp-help.c:236
+#, fuzzy, c-format
+msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
+msgstr ""
+"%.*Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: lib/argp-help.c:248
+#, fuzzy, c-format
+msgid "Garbage in ARGP_HELP_FMT: %s"
+msgstr "in"
+
+#: lib/argp-help.c:1247
+#, fuzzy
+msgid ""
+"Mandatory or optional arguments to long options are also mandatory or "
+"optional for any corresponding short options."
+msgstr ""
+"Cyangwa Bitari ngombwa ingingo Kuri Amahitamo Cyangwa Bitari ngombwa "
+"kugirango Amahitamo"
+
+#: lib/argp-help.c:1640
+msgid "Usage:"
+msgstr "Ikoresha:"
+
+#: lib/argp-help.c:1644
+#, fuzzy
+msgid "  or: "
+msgstr "Cyangwa"
+
+# padmin/source\rtsetup.src:RID_RTS_DEVICEPAGE.RID_RTS_DEVICE_PPDKEY_TXT.text
+#: lib/argp-help.c:1656
+#, fuzzy
+msgid " [OPTION...]"
+msgstr "[Ihitamo"
+
+#: lib/argp-help.c:1683
+#, fuzzy, c-format
+msgid "Try `%s --help' or `%s --usage' for more information.\n"
+msgstr "Cyangwa kugirango Birenzeho Ibisobanuro"
+
+#: lib/argp-help.c:1711 src/tar.c:1169
+#, fuzzy, c-format
+msgid "Report bugs to %s.\n"
+msgstr "Kuri"
+
+#: lib/argp-help.c:1930 lib/error.c:125
+#, fuzzy
+msgid "Unknown system error"
+msgstr "Sisitemu Ikosa"
+
+#: lib/argp-parse.c:82 src/tar.c:736
+#, fuzzy
+msgid "give this help list"
+msgstr "iyi Ifashayobora Urutonde"
+
+#: lib/argp-parse.c:83 src/tar.c:737
+#, fuzzy
+msgid "give a short usage message"
+msgstr "a Ikoresha: Ubutumwa"
+
+#: lib/argp-parse.c:84 src/tar.c:456 src/tar.c:458 src/tar.c:527
+#: tests/genfile.c:128
+#, fuzzy
+msgid "NAME"
+msgstr "Izina"
+
+#: lib/argp-parse.c:84
+msgid "set the program name"
+msgstr ""
+
+#: lib/argp-parse.c:85
+msgid "SECS"
+msgstr ""
+
+#: lib/argp-parse.c:86 src/tar.c:742
+msgid "hang for SECS seconds (default 3600)"
+msgstr ""
+
+#: lib/argp-parse.c:143 src/tar.c:738
+#, fuzzy
+msgid "print program version"
+msgstr "Porogaramu Verisiyo"
+
+#: lib/argp-parse.c:159
+#, c-format
+msgid "(PROGRAM ERROR) No version known!?"
+msgstr ""
+
+#: lib/argp-parse.c:612
+#, fuzzy, c-format
+msgid "%s: Too many arguments\n"
+msgstr "%s:Ihitamo"
+
+#: lib/argp-parse.c:755
+msgid "(PROGRAM ERROR) Option should have been recognized!?"
+msgstr ""
+
+#: lib/getopt.c:531 lib/getopt.c:547
+#, fuzzy, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s:Ihitamo ni"
+
+#: lib/getopt.c:580 lib/getopt.c:584
+#, fuzzy, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s:Ihitamo Kwemerera"
+
+#: lib/getopt.c:593 lib/getopt.c:598
+#, fuzzy, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s:Ihitamo Kwemerera"
+
+#: lib/getopt.c:641 lib/getopt.c:660 lib/getopt.c:976 lib/getopt.c:995
+#, fuzzy, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s:Ihitamo"
+
+#: lib/getopt.c:698 lib/getopt.c:701
+#, fuzzy, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s:Ihitamo"
+
+#: lib/getopt.c:709 lib/getopt.c:712
+#, fuzzy, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s:Ihitamo"
+
+#: lib/getopt.c:764 lib/getopt.c:767
+#, fuzzy, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr "%s:Ihitamo"
+
+#: lib/getopt.c:773 lib/getopt.c:776
+#, fuzzy, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s:Sibyo Ihitamo"
+
+#: lib/getopt.c:828 lib/getopt.c:844 lib/getopt.c:1048 lib/getopt.c:1066
+#, fuzzy, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s:Ihitamo"
+
+#: lib/getopt.c:897 lib/getopt.c:913
+#, fuzzy, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s:Ihitamo ni"
+
+#: lib/getopt.c:937 lib/getopt.c:955
+#, fuzzy, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s:Ihitamo Kwemerera"
+
+#: lib/human.c:477
+#, fuzzy
+msgid "block size"
+msgstr "Funga Ingano"
+
+#: lib/obstack.c:424 lib/obstack.c:426 lib/xalloc-die.c:35 src/extract.c:1377
+#, fuzzy
+msgid "memory exhausted"
+msgstr "Ububiko"
+
+#. TRANSLATORS: %s after `Cannot' is a function name, e.g. `Cannot open'.
+#. Directly translating this to another language will not work, first because
+#. %s itself is not translated.
+#. Translate it as `%s: Function %s failed'.
+#: lib/paxerror.c:58 lib/paxerror.c:71
+#, c-format
+msgid "%s: Cannot %s"
+msgstr ""
+
+#. TRANSLATORS: %s after `Cannot' is a function name, e.g. `Cannot open'.
+#. Directly translating this to another language will not work, first because
+#. %s itself is not translated.
+#. Translate it as `%s: Function %s failed'.
+#: lib/paxerror.c:84
+#, c-format
+msgid "%s: Warning: Cannot %s"
+msgstr ""
+
+#: lib/paxerror.c:93
+#, fuzzy, c-format
+msgid "%s: Cannot change mode to %s"
+msgstr "%s:Guhindura>> Ubwoko Kuri"
+
+#: lib/paxerror.c:101
+#, fuzzy, c-format
+msgid "%s: Cannot change ownership to uid %lu, gid %lu"
+msgstr "%s:Guhindura>> Kuri UID"
+
+#: lib/paxerror.c:127
+#, fuzzy, c-format
+msgid "%s: Cannot hard link to %s"
+msgstr "%s:Ikomeye Ihuza Kuri"
+
+#: lib/paxerror.c:179 lib/paxerror.c:211
+#, fuzzy, c-format
+msgid "%s: Read error at byte %s, while reading %lu byte"
+msgid_plural "%s: Read error at byte %s, while reading %lu bytes"
+msgstr[0] "%s:Ikosa ku Bayite Bayite"
+
+#: lib/paxerror.c:192
+#, fuzzy, c-format
+msgid "%s: Warning: Read error at byte %s, while reading %lu byte"
+msgid_plural "%s: Warning: Read error at byte %s, while reading %lu bytes"
+msgstr[0] "%s:Ikosa ku Bayite Bayite"
+
+#: lib/paxerror.c:259
+#, fuzzy, c-format
+msgid "%s: Cannot seek to %s"
+msgstr "%s:Kuri"
+
+#: lib/paxerror.c:275
+#, fuzzy, c-format
+msgid "%s: Warning: Cannot seek to %s"
+msgstr "%s:Kuri"
+
+#: lib/paxerror.c:284
+#, fuzzy, c-format
+msgid "%s: Cannot create symlink to %s"
+msgstr "%s:Kurema Kuri"
+
+#: lib/paxerror.c:349
+#, fuzzy, c-format
+msgid "%s: Wrote only %lu of %lu byte"
+msgid_plural "%s: Wrote only %lu of %lu bytes"
+msgstr[0] "%s:Bya Bayite"
+
+#: lib/paxnames.c:132
+#, fuzzy, c-format
+msgid "Removing leading `%s' from member names"
+msgstr "Nyobora Bivuye Amazina"
+
+#: lib/paxnames.c:133
+#, fuzzy, c-format
+msgid "Removing leading `%s' from hard link targets"
+msgstr "Nyobora Bivuye Ikomeye Ihuza"
+
+#: lib/paxnames.c:146
+#, fuzzy
+msgid "Substituting `.' for empty member name"
+msgstr "kugirango ubusa Izina:"
+
+#: lib/paxnames.c:147
+#, fuzzy
+msgid "Substituting `.' for empty hard link target"
+msgstr "kugirango ubusa Ikomeye Ihuza Intego"
+
+# basctl/source\basicide\basidesh.src:RID_IMGBTN_REMOVEWATCH.text
+#. TRANSLATORS:
+#. Get translations for open and closing quotation marks.
+#.
+#. The message catalog should translate "`" to a left
+#. quotation mark suitable for the locale, and similarly for
+#. "'".  If the catalog has no translation,
+#. locale_quoting_style quotes `like this', and
+#. clocale_quoting_style quotes "like this".
+#.
+#. For example, an American English Unicode locale should
+#. translate "`" to U+201C (LEFT DOUBLE QUOTATION MARK), and
+#. should translate "'" to U+201D (RIGHT DOUBLE QUOTATION
+#. MARK).  A British English Unicode locale should instead
+#. translate these to U+2018 (LEFT SINGLE QUOTATION MARK) and
+#. U+2019 (RIGHT SINGLE QUOTATION MARK), respectively.
+#.
+#. If you don't know what to put here, please see
+#. <http://en.wikipedia.org/wiki/Quotation_mark#Glyphs>
+#. and use glyphs suitable for your language.
+#: lib/quotearg.c:229
+#, fuzzy
+msgid "`"
+msgstr "`"
+
+#: lib/quotearg.c:230
+msgid "'"
+msgstr "'"
+
+#: lib/rpmatch.c:70
+msgid "^[yY]"
+msgstr ""
+
+#: lib/rpmatch.c:73
+msgid "^[nN]"
+msgstr ""
+
+#: lib/rtapelib.c:299
+#, fuzzy, c-format
+msgid "exec/tcp: Service not available"
+msgstr "OYA Bihari"
+
+#: lib/rtapelib.c:303
+#, c-format
+msgid "stdin"
+msgstr ""
+
+#: lib/rtapelib.c:306
+#, c-format
+msgid "stdout"
+msgstr ""
+
+#: lib/rtapelib.c:512
+#, fuzzy, c-format
+msgid "Cannot execute remote shell"
+msgstr "Gukora Igikonoshwa"
+
+#: rmt/rmt.c:142
+msgid "Input string too long"
+msgstr ""
+
+#: rmt/rmt.c:161
+msgid "Number syntax error"
+msgstr ""
+
+#: rmt/rmt.c:180
+msgid "rmtd: Cannot allocate buffer space\n"
+msgstr ""
+
+#: rmt/rmt.c:182
+#, fuzzy
+msgid "Cannot allocate buffer space"
+msgstr "Umwanya"
+
+#: rmt/rmt.c:304
+#, fuzzy, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "kugirango Birenzeho Ibisobanuro"
+
+#: rmt/rmt.c:308
+#, fuzzy, c-format
+msgid ""
+"Usage: %s [OPTION]\n"
+"Manipulate a tape drive, accepting commands from a remote process.\n"
+"\n"
+"  --version  Output version info.\n"
+"  --help     Output this help.\n"
+msgstr ""
+"a Porogaramu- shoboza Amabwiriza Bivuye a Verisiyo Verisiyo Ibisobanuro "
+"Ifashayobora iyi Ifashayobora"
+
+#: rmt/rmt.c:315
+#, fuzzy, c-format
+msgid ""
+"\n"
+"Report bugs to <%s>.\n"
+msgstr "Kuri"
+
+#: rmt/rmt.c:397
+#, fuzzy
+msgid "Seek offset error"
+msgstr "Nta- boneza Inyuma Bya Urutonde"
+
+#: rmt/rmt.c:406 rmt/rmt.c:547 rmt/rmt.c:557
+#, fuzzy
+msgid "Seek offset out of range"
+msgstr "Nta- boneza Inyuma Bya Urutonde"
+
+#: rmt/rmt.c:428
+#, fuzzy
+msgid "Seek direction out of range"
+msgstr "Icyerekezo Inyuma Bya Urutonde"
+
+#: rmt/rmt.c:472
+msgid "rmtd: Premature eof\n"
+msgstr ""
+
+#: rmt/rmt.c:474
+#, fuzzy
+msgid "Premature end of file"
+msgstr "Impera Bya IDOSIYE"
+
+#: rmt/rmt.c:672
+#, fuzzy
+msgid "Garbage command"
+msgstr "Komandi:"
+
+#: src/buffer.c:326 src/buffer.c:335
+#, fuzzy
+msgid "Total bytes written"
+msgstr "Bayite S"
+
+#: src/buffer.c:333 src/buffer.c:347
+msgid "Total bytes read"
+msgstr ""
+
+#: src/buffer.c:337
+#, fuzzy, c-format
+msgid "Total bytes deleted: %s\n"
+msgstr "Bayite S"
+
+#: src/buffer.c:426
+msgid "(pipe)"
+msgstr ""
+
+#: src/buffer.c:449
+#, fuzzy
+msgid "Invalid value for record_size"
+msgstr "Agaciro kugirango"
+
+#: src/buffer.c:452
+#, fuzzy
+msgid "No archive name given"
+msgstr "Izina:"
+
+#: src/buffer.c:496
+msgid "Cannot verify stdin/stdout archive"
+msgstr ""
+
+#: src/buffer.c:509
+#, fuzzy, c-format
+msgid "Archive is compressed. Use %s option"
+msgstr "ni Byegeranijwe Ihitamo"
+
+#: src/buffer.c:556 src/tar.c:2187
+#, fuzzy
+msgid "Cannot update compressed archives"
+msgstr "Kuvugurura Byegeranijwe Ubushyinguro"
+
+#. TRANSLATORS: This is a ``checkpoint of write operation'',
+#. *not* ``Writing a checkpoint''.
+#. E.g. in Spanish ``Punto de comprobaci@'on de escritura'',
+#. *not* ``Escribiendo un punto de comprobaci@'on''
+#: src/buffer.c:606
+#, c-format
+msgid "Write checkpoint %u"
+msgstr ""
+
+#. TRANSLATORS: This is a ``checkpoint of read operation'',
+#. *not* ``Reading a checkpoint''.
+#. E.g. in Spanish ``Punto de comprobaci@'on de lectura'',
+#. *not* ``Leyendo un punto de comprobaci@'on''
+#: src/buffer.c:612
+#, c-format
+msgid "Read checkpoint %u"
+msgstr ""
+
+#: src/buffer.c:664
+#, fuzzy
+msgid "At beginning of tape, quitting now"
+msgstr "Itangiriro Bya NONEAHA"
+
+#: src/buffer.c:670
+#, fuzzy
+msgid "Too many errors, quitting"
+msgstr "Amakosa"
+
+#: src/buffer.c:698
+#, fuzzy, c-format
+msgid "Unaligned block (%lu byte) in archive"
+msgid_plural "Unaligned block (%lu bytes) in archive"
+msgstr[0] "Funga Bayite in"
+
+#: src/buffer.c:718
+#, fuzzy, c-format
+msgid "Record size = %lu block"
+msgid_plural "Record size = %lu blocks"
+msgstr[0] "Ingano Funga"
+
+#: src/buffer.c:791
+#, fuzzy
+msgid "Cannot backspace archive file; it may be unreadable without -i"
+msgstr "Gusiba usubira inyuma IDOSIYE Gicurasi i"
+
+#: src/buffer.c:823
+#, fuzzy
+msgid "rmtlseek not stopped at a record boundary"
+msgstr "OYA Kyahagariswe ku a Icyabitswe"
+
+#: src/buffer.c:879
+#, fuzzy, c-format
+msgid "%s: contains invalid volume number"
+msgstr "%s:Kirimo Sibyo Igice Umubare"
+
+#: src/buffer.c:914
+#, fuzzy
+msgid "Volume number overflow"
+msgstr "Umubare Byarenze urugero"
+
+#: src/buffer.c:929
+#, fuzzy, c-format
+msgid "Prepare volume #%d for %s and hit return: "
+msgstr "Igice kugirango Na kanda Garuka"
+
+#: src/buffer.c:935
+#, fuzzy
+msgid "EOF where user reply was expected"
+msgstr "Ukoresha: Subiza Ikitezwe:"
+
+#: src/buffer.c:940 src/buffer.c:972
+#, fuzzy
+msgid "WARNING: Archive is incomplete"
+msgstr "ni"
+
+#: src/buffer.c:954
+#, fuzzy, c-format
+msgid ""
+" n name        Give a new file name for the next (and subsequent) volume(s)\n"
+" q             Abort tar\n"
+" y or newline  Continue operation\n"
+msgstr ""
+"N Izina: a Gishya IDOSIYE Izina: kugirango i Komeza>> Na Igice S Q a iyi"
+
+#: src/buffer.c:959
+#, c-format
+msgid " !             Spawn a subshell\n"
+msgstr ""
+
+#: src/buffer.c:960
+#, c-format
+msgid " ?             Print this list\n"
+msgstr ""
+
+#: src/buffer.c:967
+#, fuzzy
+msgid "No new volume; exiting.\n"
+msgstr "Gishya Igice"
+
+#: src/buffer.c:1000
+msgid "File name not specified. Try again.\n"
+msgstr ""
+
+#: src/buffer.c:1013
+#, c-format
+msgid "Invalid input. Type ? for help.\n"
+msgstr ""
+
+#: src/buffer.c:1064
+#, fuzzy, c-format
+msgid "%s command failed"
+msgstr "`%s'Komandi: Byanze"
+
+#: src/buffer.c:1126 src/delete.c:210 src/list.c:167 src/update.c:165
+#, fuzzy
+msgid "This does not look like a tar archive"
+msgstr "OYA nka a"
+
+#: src/buffer.c:1219
+#, fuzzy, c-format
+msgid "%s is possibly continued on this volume: header contains truncated name"
+msgstr "%sni OYA ku iyi Igice"
+
+#: src/buffer.c:1223
+#, fuzzy, c-format
+msgid "%s is not continued on this volume"
+msgstr "%sni OYA ku iyi Igice"
+
+#: src/buffer.c:1237
+#, fuzzy, c-format
+msgid "%s is the wrong size (%s != %s + %s)"
+msgstr "%sni i Ingano"
+
+#: src/buffer.c:1247
+#, fuzzy
+msgid "This volume is out of sequence"
+msgstr "Igice ni Inyuma Bya"
+
+#: src/buffer.c:1293
+#, fuzzy, c-format
+msgid "Archive not labeled to match %s"
+msgstr "OYA Kuri BIHUYE"
+
+#: src/buffer.c:1296
+#, fuzzy, c-format
+msgid "Volume %s does not match %s"
+msgstr "OYA BIHUYE"
+
+#: src/buffer.c:1392
+#, fuzzy, c-format
+msgid ""
+"%s: file name too long to be stored in a GNU multivolume header, truncated"
+msgstr "%s:IDOSIYE Izina: Kuri in a Umutwempangano"
+
+#: src/compare.c:96
+#, fuzzy, c-format
+msgid "Could only read %lu of %lu byte"
+msgid_plural "Could only read %lu of %lu bytes"
+msgstr[0] "Gusoma Bya Bayite"
+
+#: src/compare.c:106 src/compare.c:388
+msgid "Contents differ"
+msgstr ""
+
+#: src/compare.c:132 src/extract.c:790 src/incremen.c:1193 src/list.c:372
+#: src/list.c:1314
+#, fuzzy
+msgid "Unexpected EOF in archive"
+msgstr "in"
+
+#: src/compare.c:180 src/compare.c:196 src/compare.c:314 src/compare.c:412
+#, fuzzy
+msgid "File type differs"
+msgstr "Idosiye Ubwoko"
+
+#: src/compare.c:183 src/compare.c:203 src/compare.c:328
+msgid "Mode differs"
+msgstr ""
+
+#: src/compare.c:206
+msgid "Uid differs"
+msgstr ""
+
+#: src/compare.c:208
+msgid "Gid differs"
+msgstr ""
+
+#: src/compare.c:212
+#, fuzzy
+msgid "Mod time differs"
+msgstr "Igihe"
+
+#: src/compare.c:216 src/compare.c:420
+msgid "Size differs"
+msgstr ""
+
+#: src/compare.c:270
+#, fuzzy, c-format
+msgid "Not linked to %s"
+msgstr "Kuri"
+
+#: src/compare.c:293
+msgid "Symlink differs"
+msgstr ""
+
+#: src/compare.c:322
+#, fuzzy
+msgid "Device number differs"
+msgstr "Umubare"
+
+#: src/compare.c:462
+#, c-format
+msgid "Verify "
+msgstr ""
+
+#: src/compare.c:469
+#, fuzzy, c-format
+msgid "%s: Unknown file type `%c', diffed as normal file"
+msgstr "%s:IDOSIYE Ubwoko Nka Bisanzwe IDOSIYE"
+
+#: src/compare.c:524
+#, fuzzy
+msgid "Archive contains file names with leading prefixes removed."
+msgstr "Kirimo IDOSIYE Amazina Na: Nyobora Cyavanyweho"
+
+#: src/compare.c:526
+#, fuzzy
+msgid "Verification may fail to locate original files."
+msgstr "Gicurasi Kuri Umwimerere Idosiye"
+
+#: src/compare.c:596
+#, fuzzy, c-format
+msgid "VERIFY FAILURE: %d invalid header detected"
+msgid_plural "VERIFY FAILURE: %d invalid headers detected"
+msgstr[0] "Sibyo Umutwempangano"
+
+#: src/create.c:67
+#, fuzzy, c-format
+msgid "%s: contains a cache directory tag %s; %s"
+msgstr "%s:Kirimo a Ubwihisho bushyinguro Itagi: OYA"
+
+#: src/create.c:270
+#, fuzzy, c-format
+msgid "value %s out of %s range %s..%s; substituting %s"
+msgstr ""
+"Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: src/create.c:276
+#, fuzzy, c-format
+msgid "value %s out of %s range %s..%s"
+msgstr ""
+"Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: src/create.c:336
+#, fuzzy
+msgid "Generating negative octal headers"
+msgstr "Imitwe"
+
+#: src/create.c:622 src/create.c:685
+#, fuzzy, c-format
+msgid "%s: file name is too long (max %d); not dumped"
+msgstr "%s:IDOSIYE Izina: ni KININI OYA"
+
+#: src/create.c:632
+#, fuzzy, c-format
+msgid "%s: file name is too long (cannot be split); not dumped"
+msgstr "%s:IDOSIYE Izina: ni Gutandukanya OYA"
+
+#: src/create.c:659
+#, fuzzy, c-format
+msgid "%s: link name is too long; not dumped"
+msgstr "%s:Ihuza Izina: ni OYA"
+
+#: src/create.c:1075
+#, fuzzy, c-format
+msgid "%s: File shrank by %s byte; padding with zeros"
+msgid_plural "%s: File shrank by %s bytes; padding with zeros"
+msgstr[0] "%s:Idosiye ku Bayite Wuzuza: Na:"
+
+#: src/create.c:1176
+#, fuzzy, c-format
+msgid "%s: file is on a different filesystem; not dumped"
+msgstr "%s:IDOSIYE ni ku a OYA"
+
+#: src/create.c:1217 src/create.c:1228
+msgid "contents not dumped"
+msgstr ""
+
+#: src/create.c:1357
+#, fuzzy, c-format
+msgid "%s: Unknown file type; file ignored"
+msgstr "%s:IDOSIYE Ubwoko IDOSIYE"
+
+#: src/create.c:1458
+#, fuzzy, c-format
+msgid "Missing links to %s.\n"
+msgstr "amahuza Kuri"
+
+#: src/create.c:1529
+#, fuzzy, c-format
+msgid "%s: file is unchanged; not dumped"
+msgstr "%s:IDOSIYE ni OYA"
+
+#: src/create.c:1537
+#, fuzzy, c-format
+msgid "%s: file is the archive; not dumped"
+msgstr "%s:IDOSIYE ni i OYA"
+
+#: src/create.c:1567
+#, fuzzy, c-format
+msgid "%s: File removed before we read it"
+msgstr "%s:Idosiye Cyavanyweho Mbere Twebwe Gusoma"
+
+#: src/create.c:1585
+#, fuzzy
+msgid "directory not dumped"
+msgstr "%s:Kirimo a Ubwihisho bushyinguro Itagi: OYA"
+
+#: src/create.c:1654
+#, fuzzy, c-format
+msgid "%s: file changed as we read it"
+msgstr "%s:IDOSIYE Byahinduwe Nka Twebwe Gusoma"
+
+#: src/create.c:1733
+#, c-format
+msgid "%s: socket ignored"
+msgstr ""
+
+#: src/create.c:1738
+#, c-format
+msgid "%s: door ignored"
+msgstr ""
+
+#: src/delete.c:216 src/list.c:181 src/update.c:170
+#, fuzzy
+msgid "Skipping to next header"
+msgstr "Kuri Komeza>> Umutwempangano"
+
+#: src/delete.c:281
+#, fuzzy
+msgid "Deleting non-header from archive"
+msgstr "Umutwempangano Bivuye"
+
+#: src/extract.c:198
+#, fuzzy, c-format
+msgid "%s: implausibly old time stamp %s"
+msgstr "%s:ki/ bishaje Igihe"
+
+#: src/extract.c:215
+#, fuzzy, c-format
+msgid "%s: time stamp %s is %s s in the future"
+msgstr "%s:Igihe ni S in i"
+
+#: src/extract.c:395
+#, fuzzy, c-format
+msgid "%s: Unexpected inconsistency when making directory"
+msgstr "%s:Ryari: bushyinguro"
+
+#: src/extract.c:588
+#, fuzzy, c-format
+msgid "%s: Directory renamed before its status could be extracted"
+msgstr "%s:Mbere Imimerere"
+
+#: src/extract.c:724
+#, fuzzy
+msgid "Extracting contiguous files as regular files"
+msgstr "Idosiye Nka Ibisanzwe Idosiye"
+
+#: src/extract.c:1000
+#, fuzzy
+msgid "Attempting extraction of symbolic links as hard links"
+msgstr "Bya amahuza Nka Ikomeye amahuza"
+
+#: src/extract.c:1057
+#, c-format
+msgid "Reading %s\n"
+msgstr ""
+
+#: src/extract.c:1146
+#, fuzzy, c-format
+msgid "%s: Cannot extract -- file is continued from another volume"
+msgstr "%s:IDOSIYE ni Bivuye Igice"
+
+#: src/extract.c:1153 src/list.c:1081
+#, fuzzy
+msgid "Unexpected long name header"
+msgstr "in Amazina"
+
+#: src/extract.c:1159
+#, fuzzy, c-format
+msgid "%s: Unknown file type `%c', extracted as normal file"
+msgstr "%s:IDOSIYE Ubwoko Nka Bisanzwe IDOSIYE"
+
+#: src/extract.c:1184
+#, fuzzy, c-format
+msgid "Current %s is newer or same age"
+msgstr "ni"
+
+#: src/extract.c:1230
+#, fuzzy, c-format
+msgid "%s: Was unable to backup this file"
+msgstr "%s:Kuri Inyibutsa iyi IDOSIYE"
+
+#: src/extract.c:1358
+#, fuzzy, c-format
+msgid "Cannot rename %s to %s"
+msgstr "%s:Guhindura izina Kuri"
+
+#: src/extract.c:1370
+#, fuzzy, c-format
+msgid "Error is not recoverable: exiting now"
+msgstr "ni OYA NONEAHA"
+
+#: src/incremen.c:260 src/incremen.c:300
+#, fuzzy, c-format
+msgid "%s: Directory has been renamed from %s"
+msgstr "%s:ni Gishya"
+
+#: src/incremen.c:270
+#, c-format
+msgid "%s: Directory has been renamed"
+msgstr ""
+
+#: src/incremen.c:311
+#, fuzzy, c-format
+msgid "%s: Directory is new"
+msgstr "%s:ni Gishya"
+
+#: src/incremen.c:699 src/incremen.c:716
+#, fuzzy
+msgid "Invalid time stamp"
+msgstr "Igihe"
+
+#: src/incremen.c:755
+#, fuzzy
+msgid "Invalid modification time (seconds)"
+msgstr "Ubwoko ku Ihitamo"
+
+#: src/incremen.c:770
+msgid "Invalid modification time (nanoseconds)"
+msgstr ""
+
+#: src/incremen.c:790
+#, fuzzy
+msgid "Invalid device number"
+msgstr "APAREYE Umubare"
+
+#: src/incremen.c:805
+#, fuzzy
+msgid "Invalid inode number"
+msgstr "Umubare"
+
+#: src/incremen.c:856 src/incremen.c:893
+msgid "Field too long while reading snapshot file"
+msgstr ""
+
+#: src/incremen.c:863 src/incremen.c:901
+msgid "Read error in snapshot file"
+msgstr ""
+
+#: src/incremen.c:865 src/incremen.c:905 src/incremen.c:957
+#: src/incremen.c:1015
+#, fuzzy
+msgid "Unexpected EOF in snapshot file"
+msgstr "in"
+
+#: src/incremen.c:872 src/incremen.c:912
+msgid "Unexpected field value in snapshot file"
+msgstr ""
+
+#: src/incremen.c:1007
+msgid "Missing record terminator"
+msgstr ""
+
+#: src/incremen.c:1058 src/incremen.c:1061
+msgid "Bad incremental file format"
+msgstr ""
+
+#: src/incremen.c:1080
+#, c-format
+msgid "Unsupported incremental format version: %<PRIuMAX>"
+msgstr ""
+
+#: src/incremen.c:1233
+#, c-format
+msgid "Malformed dumpdir: expected '%c' but found %#3o"
+msgstr ""
+
+#: src/incremen.c:1243
+msgid "Malformed dumpdir: 'X' duplicated"
+msgstr ""
+
+#: src/incremen.c:1256
+msgid "Malformed dumpdir: empty name in 'R'"
+msgstr ""
+
+#: src/incremen.c:1269
+msgid "Malformed dumpdir: 'T' not preceeded by 'R'"
+msgstr ""
+
+#: src/incremen.c:1275
+msgid "Malformed dumpdir: empty name in 'T'"
+msgstr ""
+
+#: src/incremen.c:1295
+#, c-format
+msgid "Malformed dumpdir: expected '%c' but found end of data"
+msgstr ""
+
+#: src/incremen.c:1301
+msgid "Malformed dumpdir: 'X' never used"
+msgstr ""
+
+#: src/incremen.c:1344
+#, c-format
+msgid "Cannot create temporary directory using template %s"
+msgstr ""
+
+#: src/incremen.c:1392
+#, fuzzy, c-format
+msgid "%s: Not purging directory: unable to stat"
+msgstr "%s:bushyinguro Kuri"
+
+#: src/incremen.c:1405
+#, fuzzy, c-format
+msgid "%s: directory is on a different device: not purging"
+msgstr "%s:bushyinguro ni ku a APAREYE OYA"
+
+#: src/incremen.c:1413
+#, c-format
+msgid "%s: Deleting %s\n"
+msgstr ""
+
+#: src/incremen.c:1418
+#, fuzzy, c-format
+msgid "%s: Cannot remove"
+msgstr "%s:Gukuraho..."
+
+#: src/list.c:113
+#, c-format
+msgid "%s: Omitting"
+msgstr ""
+
+#: src/list.c:131
+#, fuzzy, c-format
+msgid "block %s: ** Block of NULs **\n"
+msgstr "Funga Bya"
+
+#: src/list.c:144
+#, fuzzy, c-format
+msgid "A lone zero block at %s"
+msgstr "A Zeru Funga ku"
+
+#: src/list.c:155
+#, fuzzy, c-format
+msgid "block %s: ** End of File **\n"
+msgstr "Funga Impera Bya Idosiye"
+
+#: src/list.c:178 src/list.c:1054 src/list.c:1282
+#, fuzzy, c-format
+msgid "block %s: "
+msgstr "Funga"
+
+#. TRANSLATORS: %s is type of the value (gid_t, uid_t, etc.)
+#: src/list.c:662
+#, fuzzy, c-format
+msgid "Blanks in header where numeric %s value expected"
+msgstr "in Umutwempangano Bikurikije umubare Agaciro Ikitezwe:"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:717
+#, fuzzy, c-format
+msgid "Archive octal value %.*s is out of %s range; assuming two's complement"
+msgstr "Agaciro S ni Inyuma Bya Urutonde"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:728
+#, fuzzy, c-format
+msgid "Archive octal value %.*s is out of %s range"
+msgstr "Agaciro S ni Inyuma Bya Urutonde"
+
+#: src/list.c:749
+#, fuzzy
+msgid "Archive contains obsolescent base-64 headers"
+msgstr "Kirimo SHINGIRO Imitwe"
+
+#: src/list.c:763
+#, fuzzy, c-format
+msgid "Archive signed base-64 string %s is out of %s range"
+msgstr "SHINGIRO Ikurikiranyanyuguti ni Inyuma Bya Urutonde"
+
+#: src/list.c:794
+#, fuzzy, c-format
+msgid "Archive base-256 value is out of %s range"
+msgstr "SHINGIRO Agaciro ni Inyuma Bya Urutonde"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:823
+#, fuzzy, c-format
+msgid "Archive contains %.*s where numeric %s value expected"
+msgstr "Kirimo S Bikurikije umubare Agaciro Ikitezwe:"
+
+#. TRANSLATORS: Second %s is type name (gid_t,uid_t,etc.)
+#: src/list.c:845
+#, fuzzy, c-format
+msgid "Archive value %s is out of %s range %s..%s"
+msgstr "Agaciro ni Inyuma Bya Urutonde"
+
+# sw/source\ui\wrtsh\wrtsh.src:STR_DDEERROR_LINK1.text
+#: src/list.c:1217
+#, fuzzy, c-format
+msgid " link to %s\n"
+msgstr "Guhuza na["
+
+#: src/list.c:1225
+#, fuzzy, c-format
+msgid " unknown file type %s\n"
+msgstr "Kitazwi IDOSIYE Ubwoko"
+
+#: src/list.c:1243
+#, c-format
+msgid "--Long Link--\n"
+msgstr ""
+
+#: src/list.c:1247
+#, c-format
+msgid "--Long Name--\n"
+msgstr ""
+
+#: src/list.c:1251
+#, c-format
+msgid "--Volume Header--\n"
+msgstr ""
+
+#: src/list.c:1259
+#, fuzzy, c-format
+msgid "--Continued at byte %s--\n"
+msgstr "--ku Bayite"
+
+#: src/list.c:1287
+#, fuzzy
+msgid "Creating directory:"
+msgstr "bushyinguro"
+
+#: src/misc.c:456
+#, fuzzy, c-format
+msgid "Renaming %s to %s\n"
+msgstr "Kuri"
+
+#: src/misc.c:465 src/misc.c:483
+#, fuzzy, c-format
+msgid "%s: Cannot rename to %s"
+msgstr "%s:Guhindura izina Kuri"
+
+#: src/misc.c:488
+#, fuzzy, c-format
+msgid "Renaming %s back to %s\n"
+msgstr "Inyuma Kuri"
+
+#: src/misc.c:615
+#, fuzzy
+msgid "Cannot save working directory"
+msgstr "Kubika bushyinguro"
+
+#: src/misc.c:621
+#, fuzzy
+msgid "Cannot change working directory"
+msgstr "Guhindura>> bushyinguro"
+
+#: src/misc.c:711
+msgid "child process"
+msgstr ""
+
+#: src/misc.c:720
+msgid "interprocess channel"
+msgstr ""
+
+#. TRANSLATORS: The following three msgids form a single sentence.
+#.
+#: src/names.c:599
+msgid "Pattern matching characters used in file names. Please,"
+msgstr ""
+
+#: src/names.c:601
+msgid "use --wildcards to enable pattern matching, or --no-wildcards to"
+msgstr ""
+
+#: src/names.c:603
+msgid "suppress this warning."
+msgstr ""
+
+#: src/names.c:618 src/names.c:636
+#, fuzzy, c-format
+msgid "%s: Not found in archive"
+msgstr "%s:Byabonetse in"
+
+#: src/names.c:621
+#, fuzzy, c-format
+msgid "%s: Required occurrence not found in archive"
+msgstr "%s:ukugaragara OYA Byabonetse in"
+
+#: src/tar.c:80
+#, fuzzy, c-format
+msgid "Options `-%s' and `-%s' both want standard input"
+msgstr "Na Byombi Bisanzwe Iyinjiza"
+
+#: src/tar.c:157
+#, fuzzy, c-format
+msgid "%s: Invalid archive format"
+msgstr "%s:Imiterere"
+
+#: src/tar.c:181
+#, fuzzy
+msgid "GNU features wanted on incompatible archive format"
+msgstr "Ibiranga ku Imiterere"
+
+#: src/tar.c:242
+#, c-format
+msgid ""
+"Unknown quoting style `%s'. Try `%s --quoting-style=help' to get a list."
+msgstr ""
+
+#: src/tar.c:329
+#, fuzzy
+msgid ""
+"GNU `tar' saves many files together into a single tape or disk archive, and "
+"can restore individual files from the archive.\n"
+"\n"
+"Examples:\n"
+"  tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.\n"
+"  tar -tvf archive.tar         # List all files in archive.tar verbosely.\n"
+"  tar -xf archive.tar          # Extract all files from archive.tar.\n"
+msgstr ""
+"Idosiye a UMWE Cyangwa Na Kugarura Idosiye Bivuye i Bivuye Idosiye Na Byose "
+"Idosiye in Byose Idosiye Bivuye Inyibutsa Ingereka ni Gushyiraho Na: "
+"Ingereka Cyangwa Verisiyo Igenzura Gicurasi Gushyiraho Na: Inyibutsa Cyangwa "
+"Uduciro T Iriho Imibare Ubwoko Iriho Imibare Iriho Imibare NIBA Iriho "
+"Imibare Ibyashyinguwe Byoroheje Nta narimwe Byoroheje Buri gihe Ubwoko "
+"Byoroheje"
+
+#: src/tar.c:338
+#, fuzzy
+msgid ""
+"The backup suffix is `~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.\n"
+"The version control may be set with --backup or VERSION_CONTROL, values "
+"are:\n"
+"\n"
+"  none, off       never make backups\n"
+"  t, numbered     make numbered backups\n"
+"  nil, existing   numbered if numbered backups exist, simple otherwise\n"
+"  never, simple   always make simple backups\n"
+msgstr ""
+"Idosiye a UMWE Cyangwa Na Kugarura Idosiye Bivuye i Bivuye Idosiye Na Byose "
+"Idosiye in Byose Idosiye Bivuye Inyibutsa Ingereka ni Gushyiraho Na: "
+"Ingereka Cyangwa Verisiyo Igenzura Gicurasi Gushyiraho Na: Inyibutsa Cyangwa "
+"Uduciro T Iriho Imibare Ubwoko Iriho Imibare Iriho Imibare NIBA Iriho "
+"Imibare Ibyashyinguwe Byoroheje Nta narimwe Byoroheje Buri gihe Ubwoko "
+"Byoroheje"
+
+#: src/tar.c:364
+#, fuzzy
+msgid "Main operation mode:"
+msgstr "Ubwoko"
+
+#: src/tar.c:367
+#, fuzzy
+msgid "list the contents of an archive"
+msgstr "Urutonde i Ibigize Bya"
+
+#: src/tar.c:369
+#, fuzzy
+msgid "extract files from an archive"
+msgstr "Idosiye Bivuye"
+
+#: src/tar.c:372
+#, fuzzy
+msgid "create a new archive"
+msgstr "Kurema a Gishya"
+
+#: src/tar.c:374
+#, fuzzy
+msgid "find differences between archive and file system"
+msgstr "Gushaka hagati Na IDOSIYE Sisitemu"
+
+#: src/tar.c:377
+#, fuzzy
+msgid "append files to the end of an archive"
+msgstr "Kongeraho... Idosiye Kuri i Impera Bya"
+
+#: src/tar.c:379
+#, fuzzy
+msgid "only append files newer than copy in archive"
+msgstr "Kongeraho... Idosiye Gukoporora in"
+
+#: src/tar.c:381
+#, fuzzy
+msgid "append tar files to an archive"
+msgstr "Kongeraho... Idosiye Kuri"
+
+#: src/tar.c:384
+#, fuzzy
+msgid "delete from the archive (not on mag tapes!)"
+msgstr "Gusiba Bivuye i OYA ku"
+
+#: src/tar.c:386
+msgid "test the archive volume label and exit"
+msgstr ""
+
+#: src/tar.c:391
+msgid "Operation modifiers:"
+msgstr ""
+
+#: src/tar.c:394
+#, fuzzy
+msgid "handle sparse files efficiently"
+msgstr "Idosiye"
+
+#: src/tar.c:395
+msgid "MAJOR[.MINOR]"
+msgstr ""
+
+#: src/tar.c:396
+msgid "set version of the sparse format to use (implies --sparse)"
+msgstr ""
+
+#: src/tar.c:398
+#, fuzzy
+msgid "handle old GNU-format incremental backup"
+msgstr "ki/ bishaje Imiterere Inyibutsa"
+
+#: src/tar.c:399 src/tar.c:530 src/tar.c:594 src/tar.c:598 src/tar.c:608
+#: src/tar.c:618 src/tar.c:621 src/tar.c:623 src/tar.c:698 tests/genfile.c:130
+#: tests/genfile.c:178 tests/genfile.c:182 tests/genfile.c:185
+msgid "FILE"
+msgstr "IDOSIYE"
+
+#: src/tar.c:400
+#, fuzzy
+msgid "handle new GNU-format incremental backup"
+msgstr "Gishya Imiterere Inyibutsa"
+
+#: src/tar.c:402
+#, fuzzy
+msgid "do not exit with nonzero on unreadable files"
+msgstr "OYA Gusohoka Na: ku Idosiye"
+
+#: src/tar.c:403 src/tar.c:525 src/tar.c:540 src/tar.c:651 tests/genfile.c:164
+#, fuzzy
+msgid "NUMBER"
+msgstr "Umubare"
+
+#: src/tar.c:404
+#, fuzzy
+msgid ""
+"process only the NUMBERth occurrence of each file in the archive; this "
+"option is valid only in conjunction with one of the subcommands --delete, --"
+"diff, --extract or --list and when a list of files is given either on the "
+"command line or via the -T option; NUMBER defaults to 1"
+msgstr ""
+"i ukugaragara Bya IDOSIYE in i Ihitamo ni Byemewe in Na: Bya i Gusiba "
+"Cyangwa Urutonde Na Ryari: a Urutonde Bya Idosiye ni ku i Komandi: Umurongo "
+"Cyangwa Biturutse Ihitamo Kuri 1."
+
+#: src/tar.c:410
+#, fuzzy
+msgid "archive is seekable"
+msgstr "ni"
+
+#: src/tar.c:415
+msgid "Overwrite control:"
+msgstr ""
+
+#: src/tar.c:418
+#, fuzzy
+msgid "attempt to verify the archive after writing it"
+msgstr "Kuri i Nyuma"
+
+#: src/tar.c:420
+#, fuzzy
+msgid "remove files after adding them to the archive"
+msgstr "Gukuraho... Idosiye Nyuma Wongera Kuri i"
+
+#: src/tar.c:422
+#, fuzzy
+msgid "don't replace existing files when extracting"
+msgstr "Gusimbura Idosiye Ryari:"
+
+#: src/tar.c:424
+#, fuzzy
+msgid "don't replace existing files that are newer than their archive copies"
+msgstr "Gusimbura Idosiye Amakopi"
+
+#: src/tar.c:426
+#, fuzzy
+msgid "overwrite existing files when extracting"
+msgstr "Guhindura Idosiye Ryari:"
+
+#: src/tar.c:428
+#, fuzzy
+msgid "remove each file prior to extracting over it"
+msgstr "Gukuraho... IDOSIYE Kuri KURI"
+
+#: src/tar.c:430
+#, fuzzy
+msgid "empty hierarchies prior to extracting directory"
+msgstr "ubusa Kuri bushyinguro"
+
+#: src/tar.c:432
+#, fuzzy
+msgid "preserve metadata of existing directories"
+msgstr "Bya ububiko bw'amaderese"
+
+#: src/tar.c:434
+#, fuzzy
+msgid "overwrite metadata of existing directories when extracting (default)"
+msgstr "Guhindura Idosiye Ryari:"
+
+#: src/tar.c:440
+msgid "Select output stream:"
+msgstr ""
+
+#: src/tar.c:443
+#, fuzzy
+msgid "extract files to standard output"
+msgstr "Idosiye Kuri Bisanzwe Ibisohoka"
+
+# padmin/source\rtsetup.src:RID_RTS_RTSDIALOG.RID_RTS_RTSDIALOG_TABCONTROL.RID_RTS_COMMANDPAGE.text
+#: src/tar.c:444 src/tar.c:503 src/tar.c:505 tests/genfile.c:161
+#: tests/genfile.c:188
+#, fuzzy
+msgid "COMMAND"
+msgstr "Icyo wifuza"
+
+#: src/tar.c:445
+#, fuzzy
+msgid "pipe extracted files to another program"
+msgstr "Idosiye Kuri Bisanzwe Ibisohoka"
+
+#: src/tar.c:447
+msgid "ignore exit codes of children"
+msgstr ""
+
+#: src/tar.c:449
+msgid "treat non-zero exit codes of children as error"
+msgstr ""
+
+#: src/tar.c:454
+#, fuzzy
+msgid "Handling of file attributes:"
+msgstr "Bya IDOSIYE Ibiranga"
+
+#: src/tar.c:457
+#, fuzzy
+msgid "force NAME as owner for added files"
+msgstr "Nka kugirango Kyongewe Idosiye"
+
+#: src/tar.c:459
+#, fuzzy
+msgid "force NAME as group for added files"
+msgstr "Nka Itsinda kugirango Kyongewe Idosiye"
+
+#: src/tar.c:460 src/tar.c:637
+msgid "DATE-OR-FILE"
+msgstr ""
+
+#: src/tar.c:461
+#, fuzzy
+msgid "set mtime for added files from DATE-OR-FILE"
+msgstr "Idosiye"
+
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Revision.Color.Change.text
+#: src/tar.c:462
+#, fuzzy
+msgid "CHANGES"
+msgstr "Amahinduka"
+
+#: src/tar.c:463
+#, fuzzy
+msgid "force (symbolic) mode CHANGES for added files"
+msgstr "Ubwoko kugirango Kyongewe Idosiye"
+
+#: src/tar.c:465
+msgid "METHOD"
+msgstr ""
+
+#: src/tar.c:466
+msgid ""
+"preserve access times on dumped files, either by restoring the times after "
+"reading (METHOD='replace'; default) or by not setting the times in the first "
+"place (METHOD='system')"
+msgstr ""
+
+#: src/tar.c:470
+#, fuzzy
+msgid "don't extract file modified time"
+msgstr "IDOSIYE Byahinduwe Igihe"
+
+#: src/tar.c:472
+#, fuzzy
+msgid "try extracting files with the same ownership"
+msgstr "Idosiye Na: i"
+
+#: src/tar.c:474
+#, fuzzy
+msgid "extract files as yourself"
+msgstr "Idosiye Nka"
+
+#: src/tar.c:476
+#, fuzzy
+msgid "always use numbers for user/group names"
+msgstr "Buri gihe Gukoresha Imibare kugirango Ukoresha: Itsinda Amazina"
+
+#: src/tar.c:478
+msgid "extract information about file permissions (default for superuser)"
+msgstr ""
+
+#: src/tar.c:482
+msgid ""
+"apply the user's umask when extracting permissions from the archive (default "
+"for ordinary users)"
+msgstr ""
+
+#: src/tar.c:484
+#, fuzzy
+msgid "sort names to extract to match archive"
+msgstr "Ishungura Amazina Kuri Kuri BIHUYE"
+
+#: src/tar.c:487
+#, fuzzy
+msgid "same as both -p and -s"
+msgstr "Nka Byombi P Na S"
+
+#: src/tar.c:489
+msgid ""
+"delay setting modification times and permissions of extracted directories "
+"until the end of extraction"
+msgstr ""
+
+#: src/tar.c:492
+msgid "cancel the effect of --delay-directory-restore option"
+msgstr ""
+
+#: src/tar.c:497
+#, fuzzy
+msgid "Device selection and switching:"
+msgstr "Ihitamo Na"
+
+#: src/tar.c:499
+msgid "ARCHIVE"
+msgstr ""
+
+#: src/tar.c:500
+#, fuzzy
+msgid "use archive file or device ARCHIVE"
+msgstr "Gukoresha IDOSIYE Cyangwa APAREYE"
+
+#: src/tar.c:502
+#, fuzzy
+msgid "archive file is local even if it has a colon"
+msgstr "IDOSIYE ni ATARIIGIHARWE NIBA a"
+
+#: src/tar.c:504
+#, fuzzy
+msgid "use given rmt COMMAND instead of rmt"
+msgstr "Gukoresha Bya"
+
+#: src/tar.c:506
+#, fuzzy
+msgid "use remote COMMAND instead of rsh"
+msgstr "Gukoresha Bya"
+
+#: src/tar.c:510
+#, fuzzy
+msgid "specify drive and density"
+msgstr "Porogaramu- shoboza Na"
+
+#: src/tar.c:524
+#, fuzzy
+msgid "create/list/extract multi-volume archive"
+msgstr "Kurema Urutonde Igice"
+
+#: src/tar.c:526
+#, fuzzy
+msgid "change tape after writing NUMBER x 1024 bytes"
+msgstr "Guhindura>> Nyuma X Bayite"
+
+#: src/tar.c:528
+#, fuzzy
+msgid "run script at end of each tape (implies -M)"
+msgstr "Gukoresha IYANDIKA ku Impera Bya"
+
+#: src/tar.c:531
+#, fuzzy
+msgid "use/update the volume number in FILE"
+msgstr "Gukoresha Kuvugurura i Igice Umubare in"
+
+#: src/tar.c:536
+msgid "Device blocking:"
+msgstr ""
+
+#: src/tar.c:538
+msgid "BLOCKS"
+msgstr ""
+
+#: src/tar.c:539
+#, fuzzy
+msgid "BLOCKS x 512 bytes per record"
+msgstr "X Bayite Icyabitswe"
+
+#: src/tar.c:541
+#, fuzzy
+msgid "NUMBER of bytes per record, multiple of 512"
+msgstr "Bayite Icyabitswe Igikubo Bya"
+
+#: src/tar.c:543
+#, fuzzy
+msgid "ignore zeroed blocks in archive (means EOF)"
+msgstr "Kwirengagiza in"
+
+#: src/tar.c:545
+#, fuzzy
+msgid "reblock as we read (for 4.2BSD pipes)"
+msgstr "Nka Twebwe Gusoma kugirango 4."
+
+#: src/tar.c:550
+#, fuzzy
+msgid "Archive format selection:"
+msgstr "Imiterere Ihitamo"
+
+#: src/tar.c:552 tests/genfile.c:151
+#, fuzzy
+msgid "FORMAT"
+msgstr "Imiterere"
+
+#: src/tar.c:553
+#, fuzzy
+msgid "create archive of the given format"
+msgstr "Kurema Bya i Imiterere"
+
+#: src/tar.c:555
+#, fuzzy
+msgid "FORMAT is one of the following:"
+msgstr "ni Bya i"
+
+#: src/tar.c:556
+#, fuzzy
+msgid "old V7 tar format"
+msgstr "ki/ bishaje Imiterere"
+
+#: src/tar.c:559
+#, fuzzy
+msgid "GNU format as per tar <= 1.12"
+msgstr "Imiterere Nka 1. 12"
+
+#: src/tar.c:561
+#, fuzzy
+msgid "GNU tar 1.13.x format"
+msgstr "1. X Imiterere"
+
+#: src/tar.c:563
+#, fuzzy
+msgid "POSIX 1003.1-1988 (ustar) format"
+msgstr "1. Imiterere"
+
+#: src/tar.c:565
+#, fuzzy
+msgid "POSIX 1003.1-2001 (pax) format"
+msgstr "1. Imiterere"
+
+#: src/tar.c:566
+#, fuzzy
+msgid "same as pax"
+msgstr "Nka"
+
+#: src/tar.c:569
+#, fuzzy
+msgid "same as --format=v7"
+msgstr "Nka Imiterere"
+
+#: src/tar.c:572
+#, fuzzy
+msgid "same as --format=posix"
+msgstr "Nka Imiterere"
+
+#: src/tar.c:573
+#, fuzzy
+msgid "keyword[[:]=value][,keyword[[:]=value]]..."
+msgstr "Ijambo- banze Agaciro Ijambo- banze Agaciro"
+
+#: src/tar.c:574
+#, fuzzy
+msgid "control pax keywords"
+msgstr "Igenzura Amagambo fatizo"
+
+#: src/tar.c:575
+msgid "TEXT"
+msgstr "UMWANDIKO"
+
+#: src/tar.c:576
+#, fuzzy
+msgid ""
+"create archive with volume name TEXT; at list/extract time, use TEXT as a "
+"globbing pattern for volume name"
+msgstr "Kurema Na: Igice Izina: Urutonde Igihe Gukoresha Nka a Ishusho"
+
+#: src/tar.c:578
+#, fuzzy
+msgid "filter the archive through bzip2"
+msgstr "Muyunguruzi... i Gihinguranya"
+
+#: src/tar.c:580
+#, fuzzy
+msgid "filter the archive through gzip"
+msgstr "Muyunguruzi... i Gihinguranya"
+
+#: src/tar.c:584
+#, fuzzy
+msgid "filter the archive through compress"
+msgstr "Muyunguruzi... i Gihinguranya Kwegeranya"
+
+#: src/tar.c:586
+msgid "PROG"
+msgstr ""
+
+#: src/tar.c:587
+#, fuzzy
+msgid "filter through PROG (must accept -d)"
+msgstr "Muyunguruzi... Gihinguranya Kwemera D"
+
+#: src/tar.c:592
+#, fuzzy
+msgid "Local file selection:"
+msgstr "IDOSIYE Ihitamo"
+
+#: src/tar.c:595
+msgid "add given FILE to the archive (useful if its name starts with a dash)"
+msgstr ""
+
+#: src/tar.c:596
+msgid "DIR"
+msgstr ""
+
+#: src/tar.c:597
+#, fuzzy
+msgid "change to directory DIR"
+msgstr "Guhindura>> Kuri bushyinguro"
+
+#: src/tar.c:599
+#, fuzzy
+msgid "get names to extract or create from FILE"
+msgstr "Kubona Amazina Kuri Cyangwa Kurema Bivuye IDOSIYE"
+
+#: src/tar.c:601
+#, fuzzy
+msgid "-T reads null-terminated names, disable -C"
+msgstr "-NTAGIHARI Amazina C"
+
+#: src/tar.c:603
+msgid "unquote filenames read with -T (default)"
+msgstr ""
+
+#: src/tar.c:605
+msgid "do not unquote filenames read with -T"
+msgstr ""
+
+# sc/source\ui\src\autofmt.src:RID_SCDLG_AUTOFORMAT.BTN_PATTERN.text
+#: src/tar.c:606 tests/genfile.c:134
+#, fuzzy
+msgid "PATTERN"
+msgstr "Ishusho"
+
+#: src/tar.c:607
+#, fuzzy
+msgid "exclude files, given as a PATTERN"
+msgstr "Idosiye Nka a"
+
+#: src/tar.c:609
+#, fuzzy
+msgid "exclude patterns listed in FILE"
+msgstr "in"
+
+#: src/tar.c:611
+#, fuzzy
+msgid ""
+"exclude contents of directories containing CACHEDIR.TAG, except for the tag "
+"file itself"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:614
+#, fuzzy
+msgid "exclude everything under directories containing CACHEDIR.TAG"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:617
+#, fuzzy
+msgid "exclude directories containing CACHEDIR.TAG"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:619
+#, fuzzy
+msgid "exclude contents of directories containing FILE, except for FILE itself"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:622
+#, fuzzy
+msgid "exclude everything under directories containing FILE"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:624
+#, fuzzy
+msgid "exclude directories containing FILE"
+msgstr "ububiko bw'amaderese a Ubwihisho Itagi:"
+
+#: src/tar.c:626
+#, fuzzy
+msgid "avoid descending automatically in directories"
+msgstr "Ubujyesi ku buryo bwikora in ububiko bw'amaderese"
+
+#: src/tar.c:628
+#, fuzzy
+msgid "stay in local file system when creating archive"
+msgstr "in IDOSIYE Sisitemu Ryari:"
+
+#: src/tar.c:630
+#, fuzzy
+msgid "recurse into directories (default)"
+msgstr "ububiko bw'amaderese Mburabuzi"
+
+#: src/tar.c:632
+#, fuzzy
+msgid "don't strip leading `/'s from file names"
+msgstr "Nyobora S Bivuye IDOSIYE Amazina"
+
+#: src/tar.c:634
+msgid "follow symlinks; archive and dump the files they point to"
+msgstr ""
+
+#: src/tar.c:635
+msgid "MEMBER-NAME"
+msgstr ""
+
+#: src/tar.c:636
+#, fuzzy
+msgid "begin at member MEMBER-NAME in the archive"
+msgstr "ku in i"
+
+#: src/tar.c:638
+#, fuzzy
+msgid "only store files newer than DATE-OR-FILE"
+msgstr "Idosiye"
+
+#: src/tar.c:640
+msgid "DATE"
+msgstr "ITARIKI"
+
+#: src/tar.c:641
+#, fuzzy
+msgid "compare date and time when data changed only"
+msgstr "Kugereranya# Itariki Na Igihe Ryari: Ibyatanzwe Byahinduwe"
+
+#: src/tar.c:642
+#, fuzzy
+msgid "CONTROL"
+msgstr "Igenzura"
+
+#: src/tar.c:643
+#, fuzzy
+msgid "backup before removal, choose version CONTROL"
+msgstr "Inyibutsa Mbere Guhitamo Verisiyo"
+
+# svx/source\options\optcolor.src:RID_SVXPAGE_COLORCONFIG.CT_COLORCONFIG.WN_SCROLL.FT_BASICSTRING.text
+#: src/tar.c:644 src/tar.c:715 src/tar.c:717 tests/genfile.c:167
+#, fuzzy
+msgid "STRING"
+msgstr "Ikurikiranyanyuguti"
+
+#: src/tar.c:645
+#, fuzzy
+msgid ""
+"backup before removal, override usual suffix ('~' unless overridden by "
+"environment variable SIMPLE_BACKUP_SUFFIX)"
+msgstr "Inyibutsa Mbere Ingereka ku IMPINDURAGACIRO"
+
+#: src/tar.c:650
+msgid "File name transformations:"
+msgstr ""
+
+#: src/tar.c:652
+#, fuzzy
+msgid "strip NUMBER leading components from file names on extraction"
+msgstr "Nyobora Bivuye IDOSIYE Amazina"
+
+#: src/tar.c:654
+msgid "EXPRESSION"
+msgstr ""
+
+#: src/tar.c:655
+msgid "use sed replace EXPRESSION to transform file names"
+msgstr ""
+
+#: src/tar.c:660
+msgid "File name matching options (affect both exclude and include patterns):"
+msgstr ""
+
+#: src/tar.c:663
+msgid "ignore case"
+msgstr ""
+
+#: src/tar.c:665
+#, fuzzy
+msgid "patterns match file name start"
+msgstr "BIHUYE IDOSIYE Izina: Gutangira"
+
+#: src/tar.c:667
+#, fuzzy
+msgid "patterns match after any `/' (default for exclusion)"
+msgstr "BIHUYE Nyuma Mburabuzi"
+
+#: src/tar.c:669
+#, fuzzy
+msgid "case sensitive matching (default)"
+msgstr "ni Mburabuzi"
+
+#: src/tar.c:671
+msgid "use wildcards (default for exclusion)"
+msgstr ""
+
+#: src/tar.c:673
+msgid "verbatim string matching"
+msgstr ""
+
+#: src/tar.c:675
+#, fuzzy
+msgid "wildcards do not match `/'"
+msgstr "Ishusho OYA BIHUYE"
+
+#: src/tar.c:677
+#, fuzzy
+msgid "wildcards match `/' (default for exclusion)"
+msgstr "Ishusho BIHUYE Mburabuzi"
+
+#: src/tar.c:682
+#, fuzzy
+msgid "Informative output:"
+msgstr "Ibisohoka"
+
+#: src/tar.c:685
+#, fuzzy
+msgid "verbosely list files processed"
+msgstr "Urutonde Idosiye"
+
+#: src/tar.c:686
+#, fuzzy
+msgid "[.]NUMBER"
+msgstr "Umubare"
+
+#: src/tar.c:687
+#, fuzzy
+msgid "display progress messages every NUMBERth record (default 10)"
+msgstr "Kugaragaza Aho bigeze Ubutumwa buri Icyabitswe"
+
+#: src/tar.c:690
+#, fuzzy
+msgid "print a message if not all links are dumped"
+msgstr "Gucapa a Ubutumwa NIBA OYA Byose amahuza"
+
+#: src/tar.c:691
+msgid "SIGNAL"
+msgstr ""
+
+#: src/tar.c:692
+msgid ""
+"print total bytes after processing the archive; with an argument - print "
+"total bytes when this SIGNAL is delivered; Allowed signals are: SIGHUP, "
+"SIGQUIT, SIGINT, SIGUSR1 and SIGUSR2; the names without SIG prefix are also "
+"accepted"
+msgstr ""
+
+#: src/tar.c:697
+#, fuzzy
+msgid "print file modification dates in UTC"
+msgstr "Gucapa IDOSIYE Amatariki in"
+
+#: src/tar.c:699
+#, fuzzy
+msgid "send verbose output to FILE"
+msgstr "Kohereza Ibisohoka Kuri"
+
+#: src/tar.c:701
+#, fuzzy
+msgid "show block number within archive with each message"
+msgstr "Garagaza Funga Umubare muri Na: Ubutumwa"
+
+#: src/tar.c:703
+#, fuzzy
+msgid "ask for confirmation for every action"
+msgstr "kugirango Iyemeza kugirango buri Igikorwa"
+
+#: src/tar.c:706
+#, fuzzy
+msgid "show tar defaults"
+msgstr "*Kuri"
+
+#: src/tar.c:708
+#, fuzzy
+msgid ""
+"when listing or extracting, list each directory that does not match search "
+"criteria"
+msgstr "Cyangwa Urutonde bushyinguro OYA BIHUYE Gushaka Ibigenderwaho"
+
+#: src/tar.c:710
+msgid "show file or archive names after transformation"
+msgstr ""
+
+#: src/tar.c:713
+msgid "STYLE"
+msgstr ""
+
+#: src/tar.c:714
+msgid "set name quoting style; see below for valid STYLE values"
+msgstr ""
+
+#: src/tar.c:716
+msgid "additionally quote characters from STRING"
+msgstr ""
+
+#: src/tar.c:718
+msgid "disable quoting for characters from STRING"
+msgstr ""
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Misc.Compatibility.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Misc.Compatibility.text
+#: src/tar.c:723
+#, fuzzy
+msgid "Compatibility options:"
+msgstr "Amahitamo y'ikorana."
+
+#: src/tar.c:726
+#, fuzzy
+msgid ""
+"when creating, same as --old-archive; when extracting, same as --no-same-"
+"owner"
+msgstr "Ryari: Nka ki/ bishaje Nka Oya"
+
+#: src/tar.c:731
+#, fuzzy
+msgid "Other options:"
+msgstr "Amahitamo"
+
+#: src/tar.c:734
+msgid "disable use of some potentially harmful options"
+msgstr ""
+
+#: src/tar.c:838
+#, fuzzy
+msgid "You may not specify more than one `-Acdtrux' option"
+msgstr "Gicurasi OYA Birenzeho Ihitamo"
+
+#: src/tar.c:848
+#, fuzzy
+msgid "Conflicting compression options"
+msgstr "igabanyangano Amahitamo"
+
+#: src/tar.c:904
+#, fuzzy, c-format
+msgid "Unknown signal name: %s"
+msgstr "Kitazwi IDOSIYE Ubwoko"
+
+#: src/tar.c:928
+#, fuzzy
+msgid "Date sample file not found"
+msgstr "IDOSIYE OYA Byabonetse"
+
+#: src/tar.c:936
+#, fuzzy, c-format
+msgid "Substituting %s for unknown date format %s"
+msgstr "kugirango Kitazwi Itariki Imiterere"
+
+#: src/tar.c:961
+#, fuzzy, c-format
+msgid "Option %s: Treating date `%s' as %s"
+msgstr "Itariki Nka"
+
+#: src/tar.c:1035
+#, fuzzy, c-format
+msgid "%s: file list already read"
+msgstr "%s:IDOSIYE ni i OYA"
+
+#: src/tar.c:1098
+#, c-format
+msgid "%s: file name read contains nul character"
+msgstr ""
+
+#: src/tar.c:1163
+msgid "Valid arguments for --quoting-style options are:"
+msgstr ""
+
+#: src/tar.c:1166
+#, fuzzy
+msgid ""
+"\n"
+"*This* tar defaults to:\n"
+msgstr "*Kuri"
+
+#: src/tar.c:1199
+#, fuzzy
+msgid "Invalid blocking factor"
+msgstr "Umubarwa"
+
+#: src/tar.c:1271
+#, fuzzy
+msgid "Warning: the -I option is not supported; perhaps you meant -j or -T?"
+msgstr "i Ihitamo ni OYA j Cyangwa"
+
+#: src/tar.c:1304
+#, fuzzy
+msgid "Invalid tape length"
+msgstr "Uburebure"
+
+#: src/tar.c:1336
+#, fuzzy
+msgid "More than one threshold date"
+msgstr "Itariki"
+
+#: src/tar.c:1391 src/tar.c:1394
+msgid "Invalid sparse version value"
+msgstr ""
+
+#: src/tar.c:1479
+msgid "--atime-preserve='system' is not supported on this platform"
+msgstr ""
+
+#: src/tar.c:1496
+msgid "--checkpoint value is not an integer"
+msgstr ""
+
+#: src/tar.c:1589
+#, fuzzy, c-format
+msgid "%s: Invalid group"
+msgstr "%s:Itsinda"
+
+#: src/tar.c:1596
+#, fuzzy
+msgid "Invalid mode given on option"
+msgstr "Ubwoko ku Ihitamo"
+
+#: src/tar.c:1649
+msgid "Invalid number"
+msgstr "Umubare utari wo"
+
+#: src/tar.c:1671
+msgid "Invalid owner"
+msgstr ""
+
+#: src/tar.c:1705
+#, fuzzy
+msgid "Invalid record size"
+msgstr "Icyabitswe Ingano"
+
+#: src/tar.c:1708
+#, fuzzy, c-format
+msgid "Record size must be a multiple of %d."
+msgstr "Ingano a Igikubo Bya"
+
+#: src/tar.c:1745
+#, fuzzy
+msgid "Invalid number of elements"
+msgstr "Umubare Bya Ibintu"
+
+#: src/tar.c:1765
+msgid "Only one --to-command option allowed"
+msgstr ""
+
+#: src/tar.c:1841
+#, c-format
+msgid "Malformed density argument: %s"
+msgstr ""
+
+#: src/tar.c:1867
+#, c-format
+msgid "Unknown density: `%c'"
+msgstr ""
+
+#: src/tar.c:1884
+#, fuzzy, c-format
+msgid "Options `-[0-7][lmh]' not supported by *this* tar"
+msgstr "0 7 OYA ku iyi"
+
+#: src/tar.c:1919
+#, fuzzy
+msgid "[FILE]..."
+msgstr "[Idosiye"
+
+#: src/tar.c:2022
+#, fuzzy, c-format
+msgid "Old option `%c' requires an argument."
+msgstr "Ihitamo"
+
+#: src/tar.c:2104
+#, fuzzy
+msgid "--occurrence is meaningless without a file list"
+msgstr "--ukugaragara ni a IDOSIYE Urutonde"
+
+#: src/tar.c:2110
+#, fuzzy
+msgid "--occurrence cannot be used in the requested operation mode"
+msgstr "--ukugaragara in i Ubwoko"
+
+#: src/tar.c:2140
+#, fuzzy
+msgid "Multiple archive files require `-M' option"
+msgstr "Idosiye Ihitamo"
+
+#: src/tar.c:2145
+#, fuzzy
+msgid "Cannot combine --listed-incremental with --newer"
+msgstr "Kuvanga Na:"
+
+#: src/tar.c:2162
+#, fuzzy, c-format
+msgid "%s: Volume label is too long (limit is %lu byte)"
+msgid_plural "%s: Volume label is too long (limit is %lu bytes)"
+msgstr[0] "%s:Akarango ni ni Bayite"
+
+#: src/tar.c:2175
+#, fuzzy
+msgid "Cannot verify multi-volume archives"
+msgstr "Igice Ubushyinguro"
+
+#: src/tar.c:2177
+#, fuzzy
+msgid "Cannot verify compressed archives"
+msgstr "Byegeranijwe Ubushyinguro"
+
+#: src/tar.c:2183
+#, fuzzy
+msgid "Cannot use multi-volume compressed archives"
+msgstr "Gukoresha Igice Byegeranijwe Ubushyinguro"
+
+#: src/tar.c:2189
+#, fuzzy
+msgid "Cannot concatenate compressed archives"
+msgstr "Kuvugurura Byegeranijwe Ubushyinguro"
+
+#: src/tar.c:2201
+#, fuzzy
+msgid "--pax-option can be used only on POSIX archives"
+msgstr "--Ihitamo ku Ubushyinguro"
+
+#: src/tar.c:2226
+#, fuzzy
+msgid "Cowardly refusing to create an empty archive"
+msgstr "Kuri Kurema ubusa"
+
+#: src/tar.c:2247
+#, fuzzy
+msgid "Options `-Aru' are incompatible with `-f -'"
+msgstr "Na: F"
+
+#: src/tar.c:2334
+#, fuzzy
+msgid "You must specify one of the `-Acdtrux' options"
+msgstr "Bya i Amahitamo"
+
+#: src/tar.c:2385
+#, fuzzy, c-format
+msgid "Error exit delayed from previous errors"
+msgstr "Gusohoka Bivuye Ibanjirije Amakosa"
+
+#: src/update.c:86
+#, fuzzy, c-format
+msgid "%s: File shrank by %s byte"
+msgid_plural "%s: File shrank by %s bytes"
+msgstr[0] "%s:Idosiye ku Bayite"
+
+#: src/xheader.c:158
+#, fuzzy, c-format
+msgid "Keyword %s is unknown or not yet implemented"
+msgstr "ni Kitazwi Cyangwa OYA"
+
+#: src/xheader.c:184
+#, c-format
+msgid "Pattern %s cannot be used"
+msgstr ""
+
+#: src/xheader.c:194
+#, c-format
+msgid "Keyword %s cannot be overridden"
+msgstr ""
+
+#: src/xheader.c:498
+#, fuzzy
+msgid "Malformed extended header: missing length"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:506
+msgid "Extended header length is out of allowed range"
+msgstr ""
+
+#: src/xheader.c:513
+#, fuzzy, c-format
+msgid "Extended header length %*s is out of range"
+msgstr "SHINGIRO Ikurikiranyanyuguti ni Inyuma Bya Urutonde"
+
+#: src/xheader.c:525
+#, fuzzy
+msgid "Malformed extended header: missing blank after length"
+msgstr "Byongerewe... Umutwempangano Ibuze Nyuma i Uburebure"
+
+#: src/xheader.c:533
+#, fuzzy
+msgid "Malformed extended header: missing equal sign"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:539
+#, fuzzy
+msgid "Malformed extended header: missing newline"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:576
+#, c-format
+msgid "Ignoring unknown extended header keyword `%s'"
+msgstr ""
+
+#: src/xheader.c:780
+#, c-format
+msgid "Generated keyword/value pair is too long (keyword=%s, length=%s)"
+msgstr ""
+
+#. TRANSLATORS: The first %s is the pax extended header keyword
+#. (atime, gid, etc.).
+#: src/xheader.c:812
+#, fuzzy, c-format
+msgid "Extended header %s=%s is out of range %s..%s"
+msgstr "Agaciro ni Inyuma Bya Urutonde"
+
+#: src/xheader.c:943 src/xheader.c:973 src/xheader.c:1287
+#, fuzzy, c-format
+msgid "Malformed extended header: invalid %s=%s"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:1240 src/xheader.c:1265 src/xheader.c:1315
+#, fuzzy, c-format
+msgid "Malformed extended header: excess %s=%s"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:1328
+#, fuzzy, c-format
+msgid "Malformed extended header: invalid %s: unexpected delimiter %c"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: src/xheader.c:1338
+#, fuzzy, c-format
+msgid "Malformed extended header: invalid %s: odd number of values"
+msgstr "Byongerewe... Umutwempangano Ibuze bingana IKIMENYETSO"
+
+#: tests/genfile.c:110
+msgid ""
+"genfile manipulates data files for GNU paxutils test suite.\n"
+"OPTIONS are:\n"
+msgstr ""
+
+#: tests/genfile.c:125
+#, fuzzy
+msgid "File creation options:"
+msgstr "Amahitamo"
+
+#: tests/genfile.c:126 tests/genfile.c:137
+msgid "SIZE"
+msgstr ""
+
+#: tests/genfile.c:127
+#, fuzzy
+msgid "Create file of the given SIZE"
+msgstr "Kurema Bya i Imiterere"
+
+#: tests/genfile.c:129
+#, fuzzy
+msgid "Write to file NAME, instead of standard output"
+msgstr "Idosiye Kuri Bisanzwe Ibisohoka"
+
+#: tests/genfile.c:131
+#, fuzzy
+msgid "Read file names from FILE"
+msgstr "Bayite Bivuye"
+
+#: tests/genfile.c:133
+#, fuzzy
+msgid "-T reads null-terminated names"
+msgstr "-NTAGIHARI Amazina C"
+
+#: tests/genfile.c:135
+msgid "Fill the file with the given PATTERN. PATTERN is 'default' or 'zeros'"
+msgstr ""
+
+#: tests/genfile.c:138
+msgid "Size of a block for sparse file"
+msgstr ""
+
+#: tests/genfile.c:140
+msgid "Generate sparse file. Rest of the command line gives the file map."
+msgstr ""
+
+#: tests/genfile.c:142
+msgid "OFFSET"
+msgstr ""
+
+#: tests/genfile.c:143
+#, fuzzy
+msgid "Seek to the given offset before writing data"
+msgstr "Kuri i Nyuma"
+
+#: tests/genfile.c:149
+msgid "File statistics options:"
+msgstr ""
+
+#: tests/genfile.c:152
+msgid "Print contents of struct stat for each given file. Default FORMAT is: "
+msgstr ""
+
+#: tests/genfile.c:159
+msgid "Synchronous execution options:"
+msgstr ""
+
+#: tests/genfile.c:162
+msgid ""
+"Execute given COMMAND. Useful with --checkpoint and one of --cut, --append, "
+"--touch"
+msgstr ""
+
+#: tests/genfile.c:165
+msgid "Perform given action (see below) upon reaching checkpoint NUMBER"
+msgstr ""
+
+#: tests/genfile.c:168
+msgid "Set date for next --touch option"
+msgstr ""
+
+#: tests/genfile.c:171
+msgid "Display executed checkpoints and exit status of COMMAND"
+msgstr ""
+
+#: tests/genfile.c:176
+msgid ""
+"Synchronous execution actions. These are executed when checkpoint number "
+"given by --checkpoint option is reached."
+msgstr ""
+
+#: tests/genfile.c:179
+msgid ""
+"Truncate FILE to the size specified by previous --length option (or 0, if it "
+"is not given)"
+msgstr ""
+
+#: tests/genfile.c:183
+msgid "Append SIZE bytes to FILE. SIZE is given by previous --length option."
+msgstr ""
+
+#: tests/genfile.c:186
+msgid "Update the access and modification times of FILE"
+msgstr ""
+
+# padmin/source\rtsetup.src:RID_RTS_RTSDIALOG.RID_RTS_RTSDIALOG_TABCONTROL.RID_RTS_COMMANDPAGE.text
+#: tests/genfile.c:189
+#, fuzzy
+msgid "Execute COMMAND"
+msgstr "Icyo wifuza"
+
+#: tests/genfile.c:239
+#, fuzzy, c-format
+msgid "Invalid size: %s"
+msgstr "Igihe"
+
+#: tests/genfile.c:244
+#, fuzzy, c-format
+msgid "Number out of allowed range: %s"
+msgstr "Umubare Inyuma Bya Urutonde"
+
+#: tests/genfile.c:247
+#, c-format
+msgid "Negative size: %s"
+msgstr ""
+
+#: tests/genfile.c:260 tests/genfile.c:559
+#, c-format
+msgid "stat(%s) failed"
+msgstr ""
+
+#: tests/genfile.c:354
+#, c-format
+msgid "Error parsing number near `%s'"
+msgstr ""
+
+#: tests/genfile.c:360
+#, fuzzy, c-format
+msgid "Unknown date format"
+msgstr "Sisitemu Ikosa"
+
+#: tests/genfile.c:383
+msgid "[ARGS...]"
+msgstr ""
+
+#: tests/genfile.c:420 tests/genfile.c:460 tests/genfile.c:513
+#: tests/genfile.c:663 tests/genfile.c:677
+#, c-format
+msgid "cannot open `%s'"
+msgstr ""
+
+#: tests/genfile.c:426
+#, fuzzy, c-format
+msgid "cannot seek: %s"
+msgstr "%s:Kuri"
+
+#: tests/genfile.c:443
+#, c-format
+msgid "file name contains null character"
+msgstr ""
+
+#: tests/genfile.c:508
+#, c-format
+msgid "cannot generate sparse files on standard output, use --file option"
+msgstr ""
+
+#: tests/genfile.c:586
+#, c-format
+msgid "incorrect mask (near `%s')"
+msgstr ""
+
+#: tests/genfile.c:592 tests/genfile.c:625
+#, fuzzy, c-format
+msgid "Unknown field `%s'"
+msgstr "Kitazwi IDOSIYE Ubwoko"
+
+#: tests/genfile.c:652
+#, fuzzy, c-format
+msgid "cannot set time on `%s'"
+msgstr "%s:Kuri"
+
+#: tests/genfile.c:806
+#, c-format
+msgid "Command exited successfully\n"
+msgstr ""
+
+#: tests/genfile.c:808
+#, c-format
+msgid "Command failed with status %d\n"
+msgstr ""
+
+#: tests/genfile.c:812
+#, c-format
+msgid "Command terminated on signal %d\n"
+msgstr ""
+
+#: tests/genfile.c:814
+#, c-format
+msgid "Command stopped on signal %d\n"
+msgstr ""
+
+#: tests/genfile.c:817
+#, c-format
+msgid "Command dumped core\n"
+msgstr ""
+
+#: tests/genfile.c:820
+#, c-format
+msgid "Command terminated\n"
+msgstr ""
+
+#: tests/genfile.c:852
+#, fuzzy, c-format
+msgid "--stat requires file names"
+msgstr "--IDOSIYE Amazina"
+
+#: tests/genfile.c:865
+#, c-format
+msgid "too many arguments"
+msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "This program comes with NO WARRANTY, to the extent permitted by law.\n"
+#~ "You may redistribute it under the terms of the GNU General Public "
+#~ "License;\n"
+#~ "see the file named COPYING for details."
+#~ msgstr ""
+#~ "Porogaramu Na: Kuri i Kwagura ku Gicurasi i Bya i i IDOSIYE kugirango "
+#~ "Birambuye"
+
+#, fuzzy
+#~ msgid "rmtd: Garbage command %c\n"
+#~ msgstr "Komandi:"
+
+#, fuzzy
+#~ msgid "WARNING: No volume header"
+#~ msgstr "Igice Umutwempangano"
+
+#, fuzzy
+#~ msgid "Visible long name error"
+#~ msgstr "Izina: Ikosa"
+
+#, fuzzy
+#~ msgid "Time stamp out of range"
+#~ msgstr "Inyuma Bya Urutonde"
+
+#, fuzzy
+#~ msgid "Device number out of range"
+#~ msgstr "Umubare Inyuma Bya Urutonde"
+
+#, fuzzy
+#~ msgid "Visible longname error"
+#~ msgstr "Ikosa"
+
+#, fuzzy
+#~ msgid "Renamed %s to %s"
+#~ msgstr "Kuri"
+
+#, fuzzy
+#~ msgid "%s: Cannot symlink to %s"
+#~ msgstr "%s:Kuri"
+
+#, fuzzy
+#~ msgid "Symlinked %s to %s"
+#~ msgstr "Kuri"
+
+#, fuzzy
+#~ msgid "Unknown demangling command %s"
+#~ msgstr "Komandi:"
+
+#, fuzzy
+#~ msgid "Missing file name after -C"
+#~ msgstr "IDOSIYE Izina: Nyuma C"
+
+#, fuzzy
+#~ msgid "don't change access times on dumped files"
+#~ msgstr "Guhindura>> Times ku Idosiye"
+
+#, fuzzy
+#~ msgid "extract permissions information"
+#~ msgstr "Uruhushya Ibisobanuro"
+
+#, fuzzy
+#~ msgid "do not extract permissions information"
+#~ msgstr "OYA Uruhushya Ibisobanuro"
+
+#, fuzzy
+#~ msgid "exclude patterns are plain strings"
+#~ msgstr "Byuzuye Ikurikiranyanyuguti"
+
+#, fuzzy
+#~ msgid "dump instead the files symlinks point to"
+#~ msgstr "i Idosiye Akadomo Kuri"
+
+#, fuzzy
+#~ msgid "same as -N"
+#~ msgstr "Nka"
+
+#, fuzzy
+#~ msgid "exclude patterns use wildcards (default)"
+#~ msgstr "Gukoresha Mburabuzi"
+
+#, fuzzy
+#~ msgid "print total bytes written while creating archive"
+#~ msgstr "Gucapa Igiteranyo Bayite"
+
+#, fuzzy
+#~ msgid "Print license and exit"
+#~ msgstr "Na Gusohoka"
+
+#, fuzzy
+#~ msgid ""
+#~ "Based on the work of John Gilmore and Jay Fenlason. See AUTHORS\n"
+#~ "for complete list of authors.\n"
+#~ msgstr "ku i Akazi Bya Na Byuzuye Urutonde Bya Abahanzi"
+
+#, fuzzy
+#~ msgid ""
+#~ "   GNU tar is free software; you can redistribute it and/or modify\n"
+#~ "   it under the terms of the GNU General Public License as published by\n"
+#~ "   the Free Software Foundation; either version 2 of the License, or\n"
+#~ "   (at your option) any later version.\n"
+#~ "\n"
+#~ "   GNU tar is distributed in the hope that it will be useful,\n"
+#~ "   but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+#~ "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+#~ "   GNU General Public License for more details.\n"
+#~ "\n"
+#~ "   You should have received a copy of the GNU General Public License\n"
+#~ "   along with GNU tar; if not, write to the Free Software\n"
+#~ "   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  "
+#~ "USA\n"
+#~ "\n"
+#~ msgstr ""
+#~ "ni Kigenga Na Cyangwa i Bya i Nka i Verisiyo 2. Bya i ku Ihitamo Verisiyo "
+#~ "ni in i ATARIIGIHARWE i Cyangwa A kugirango Birenzeho Birambuye BYAKIRIWE "
+#~ "a Gukoporora Bya i Na: NIBA OYA Kwandika Kuri i"
+
+#, fuzzy
+#~ msgid "Semantics of -l option will change in the future releases."
+#~ msgstr "Bya L Ihitamo Guhindura>> in i"
+
+#, fuzzy
+#~ msgid "Please use --one-file-system option instead."
+#~ msgstr "Gukoresha IDOSIYE Sisitemu Ihitamo"
+
+#, fuzzy
+#~ msgid "Warning: the -y option is not supported; perhaps you meant -j?"
+#~ msgstr "i Y Ihitamo ni OYA j"
+
+#, fuzzy
+#~ msgid "Error in writing to standard output"
+#~ msgstr "in Kuri Bisanzwe Ibisohoka"

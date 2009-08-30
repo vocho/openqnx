@@ -1,0 +1,235 @@
+@c This is part of the paxutils manual.
+@c Copyright (C) 2006 Free Software Foundation, Inc.
+@c This file is distributed under GFDL 1.1 or any later version
+@c published by the Free Software Foundation.
+
+@cindex sparse formats
+@cindex sparse versions
+The notion of sparse file, and the ways of handling it from the point
+of view of @GNUTAR{} user have been described in detail in
+@ref{sparse}.  This chapter describes the internal format @GNUTAR{}
+uses to store such files.
+
+The support for sparse files in @GNUTAR{} has a long history.  The
+earliest version featuring this support that I was able to find was 1.09,
+released in November, 1990.  The format introduced back then is called
+@dfn{old GNU} sparse format and in spite of the fact that its design
+contained many flaws, it was the only format @GNUTAR{} supported 
+until version 1.14 (May, 2004), which introduced initial support for
+sparse archives in @acronym{PAX} archives (@pxref{posix}).  This
+format was not free from design flows, either and it was subsequently
+improved in versions 1.15.2 (November, 2005) and 1.15.92 (June,
+2006). 
+
+In addition to GNU sparse format, @GNUTAR{} is able to read and
+extract sparse files archived by @command{star}.
+
+The following subsections describe each format in detail.
+
+@menu
+* Old GNU Format::
+* PAX 0::                PAX Format, Versions 0.0 and 0.1
+* PAX 1::                PAX Format, Version 1.0
+@end menu
+
+@node Old GNU Format
+@appendixsubsec Old GNU Format
+
+@cindex sparse formats, Old GNU
+@cindex Old GNU sparse format
+The format introduced some time around 1990 (v. 1.09).  It was
+designed on top of standard @code{ustar} headers in such an
+unfortunate way that some of its fields overwrote fields required by
+POSIX.
+
+An old GNU sparse header is designated by type @samp{S}
+(@code{GNUTYPE_SPARSE}) and has the following layout:
+
+@multitable @columnfractions 0.10 0.10 0.20 0.20 0.40
+@headitem Offset @tab Size @tab Name   @tab Data type   @tab Contents
+@item          0 @tab 345  @tab        @tab N/A         @tab Not used.
+@item        345 @tab  12  @tab atime  @tab Number      @tab @code{atime} of the file.
+@item        357 @tab  12  @tab ctime  @tab Number      @tab @code{ctime} of the file .
+@item        369 @tab  12  @tab offset @tab Number      @tab For
+multivolume archives: the offset of the start of this volume.
+@item        381 @tab   4  @tab        @tab N/A         @tab Not used.
+@item        385 @tab   1  @tab        @tab N/A         @tab Not used.
+@item        386 @tab  96  @tab sp     @tab @code{sparse_header} @tab (4 entries) File map.
+@item        482 @tab   1  @tab isextended @tab Bool        @tab @code{1} if an
+extension sparse header follows, @code{0} otherwise.
+@item        483 @tab  12  @tab realsize @tab Number      @tab Real size of the file.
+@end multitable
+
+Each of @code{sparse_header} object at offset 386 describes a single
+data chunk. It has the following structure: 
+
+@multitable @columnfractions 0.10 0.10 0.20 0.60
+@headitem Offset @tab Size @tab Data type   @tab Contents
+@item          0 @tab   12 @tab Number      @tab Offset of the
+beginning of the chunk.
+@item         12 @tab   12 @tab Number      @tab Size of the chunk.
+@end multitable
+
+If the member contains more than four chunks, the @code{isextended}
+field of the header has the value @code{1} and the main header is
+followed by one or more @dfn{extension headers}.  Each such header has
+the following structure:
+
+@multitable @columnfractions 0.10 0.10 0.20 0.20 0.40
+@headitem Offset @tab Size @tab Name   @tab Data type   @tab Contents
+@item          0 @tab   21 @tab sp     @tab @code{sparse_header} @tab
+(21 entires) File map.
+@item        504 @tab    1 @tab isextended @tab Bool    @tab @code{1} if an
+extension sparse header follows, or @code{0} otherwise.
+@end multitable
+
+A header with @code{isextended=0} ends the map.
+
+@node PAX 0
+@appendixsubsec PAX Format, Versions 0.0 and 0.1
+
+@cindex sparse formats, v.0.0
+There are two formats available in this branch.  The version @code{0.0}
+is the initial version of sparse format used by @command{tar}
+versions 1.14--1.15.1.  The sparse file map is kept in extended
+(@code{x}) PAX header variables:
+
+@table @code
+@vrindex GNU.sparse.size, extended header variable
+@item GNU.sparse.size
+Real size of the stored file
+
+@item GNU.sparse.numblocks
+@vrindex GNU.sparse.numblocks, extended header variable
+Number of blocks in the sparse map
+
+@item GNU.sparse.offset
+@vrindex GNU.sparse.offset, extended header variable
+Offset of the data block
+
+@item GNU.sparse.numbytes
+@vrindex GNU.sparse.numbytes, extended header variable
+Size of the data block
+@end table
+
+The latter two variables repeat for each data block, so the overall
+structure is like this:
+
+@smallexample
+@group
+GNU.sparse.size=@var{size}      
+GNU.sparse.numblocks=@var{numblocks} 
+repeat @var{numblocks} times
+  GNU.sparse.offset=@var{offset}    
+  GNU.sparse.numbytes=@var{numbytes}  
+end repeat
+@end group
+@end smallexample
+
+This format presented the following two problems:
+
+@enumerate 1
+@item
+Whereas the POSIX specification allows a variable to appear multiple
+times in a header, it requires that only the last occurrence be
+meaningful.  Thus, multiple occurrences of @code{GNU.sparse.offset} and
+@code{GNU.sparse.numbytes} are conflicting with the POSIX specs.
+
+@item
+Attempting to extract such archives using a third-party @command{tar}s
+results in extraction of sparse files in @emph{compressed form}.  If
+the @command{tar} implementation in question does not support POSIX
+format, it will also extract a file containing extension header
+attributes.  This file can be used to expand the file to its original
+state.  However, posix-aware @command{tar}s will usually ignore the
+unknown variables, which makes restoring the file more
+difficult.  @xref{extracting sparse v.0.x, Extraction of sparse
+members in v.0.0 format}, for the detailed description of how to
+restore such members using non-GNU @command{tar}s.
+@end enumerate
+
+@cindex sparse formats, v.0.1
+@GNUTAR{} 1.15.2 introduced sparse format version @code{0.1}, which
+attempted to solve these problems.  As its predecessor, this format
+stores sparse map in the extended POSIX header.  It retains
+@code{GNU.sparse.size} and @code{GNU.sparse.numblocks} variables, but
+instead of @code{GNU.sparse.offset}/@code{GNU.sparse.numbytes} pairs
+it uses a single variable:
+
+@table @code
+@item GNU.sparse.map
+@vrindex GNU.sparse.map, extended header variable
+Map of non-null data chunks.  It is a string consisting of
+comma-separated values "@var{offset},@var{size}[,@var{offset-1},@var{size-1}...]" 
+@end table
+
+To address the 2nd problem, the @code{name} field in @code{ustar}
+is replaced with a special name, constructed using the following pattern:
+
+@smallexample
+%d/GNUSparseFile.%p/%f
+@end smallexample
+
+@vrindex GNU.sparse.name, extended header variable
+The real name of the sparse file is stored in the variable
+@code{GNU.sparse.name}.  Thus, those @command{tar} implementations
+that are not aware of GNU extensions will at least extract the files
+into separate directories, giving the user a possibility to expand it
+afterwards.  @xref{extracting sparse v.0.x, Extraction of sparse
+members in v.0.1 format}, for the detailed description of how to
+restore such members using non-GNU @command{tar}s.
+
+The resulting @code{GNU.sparse.map} string can be @emph{very} long.
+Although POSIX does not impose any limit on the length of a @code{x}
+header variable, this possibly can confuse some tars.
+
+@node PAX 1
+@appendixsubsec PAX Format, Version 1.0
+
+@cindex sparse formats, v.1.0
+The version @code{1.0} of sparse format was introduced with @GNUTAR{}
+1.15.92.  Its main objective was to make the resulting file
+extractable with little effort even by non-posix aware @command{tar}
+implementations.  Starting from this version, the extended header
+preceding a sparse member always contains the following variables that
+identify the format being used:
+
+@table @code
+@item GNU.sparse.major
+@vrindex GNU.sparse.major, extended header variable
+Major version
+
+@item GNU.sparse.minor
+@vrindex GNU.sparse.minor, extended header variable
+Minor version
+@end table
+
+The @code{name} field in @code{ustar} header contains a special name,
+constructed using the following pattern:
+
+@smallexample
+%d/GNUSparseFile.%p/%f
+@end smallexample
+
+@vrindex GNU.sparse.name, extended header variable, in v.1.0
+@vrindex GNU.sparse.realsize, extended header variable
+The real name of the sparse file is stored in the variable
+@code{GNU.sparse.name}.  The real size of the file is stored in the
+variable @code{GNU.sparse.realsize}.
+
+The sparse map itself is stored in the file data block, preceding the actual
+file data.  It consists of a series of octal numbers of arbitrary length, delimited 
+by newlines. The map is padded with nulls to the nearest block boundary.
+
+The first number gives the number of entries in the map. Following are map entries,
+each one consisting of two numbers giving the offset and size of the
+data block it describes.
+
+The format is designed in such a way that non-posix aware tars and tars not
+supporting @code{GNU.sparse.*} keywords will extract each sparse file
+in its condensed form with the file map prepended and will place it
+into a separate directory.  Then, using a simple program it would be
+possible to expand the file to its original form even without @GNUTAR{}.
+@xref{Sparse Recovery}, for the detailed information on how to extract
+sparse members without @GNUTAR{}.
+ 

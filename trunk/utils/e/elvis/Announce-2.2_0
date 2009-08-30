@@ -1,0 +1,39 @@
+As of October 20, Elvis 2.2 is officially released.
+
+To learn about elvis, or download (source, Win32 binaries, or MS-DOS
+binaries) go to...
+
+	ftp://ftp.cs.pdx.edu/pub/elvis/README.html
+
+It's been a full four years since the version 2.1.4 was released so you
+should expect a lot of new features.  Here's a brief summary:
+
+* Elvis 2.2 is pretty
+  o The :color command has been greatly improved.
+  o Can use Xft for antialiased text (x11 only).
+  o You can use background images.  (x11 and windows only)
+  o You can load your own elvis icon.  (x11 and windows only)
+  o Themes are supported.  ":theme sand" is included.  Other themes are
+    available via ":e theme:".  (x11 and windows only)
+  o Good default colors are provided for all user interfaces.
+  o The Windows interface can use X11 color names.
+
+* Elvis 2.2 has many of Vim's feaures
+  o :autocmd
+  o Many g commands.
+  o Name completion.  Filenames, commands, options, etc.
+  o <key> notation in :map commands.
+  o You can load aliases and maps to emulate vim better with ":ru likevim".
+
+* Other stuff
+  o Built-in spell checker.  Context sensitive, and can suggest corrections.
+  o Folding.  Lets you hide parts of your text without deleting it.
+  o Region highlighting.
+  o User-definable URL protocols.
+
+* Still has the best features of 2.1
+  o "hex" display mode for editing binary files.
+  o "html", "man", and "tex" display modes, for previewing text.
+  o Online manual is written in HTML, and viewable with the "html" display
+    mode.  Look nice, and has many convenient links.
+

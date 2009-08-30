@@ -1,0 +1,28 @@
+%C      - remove ifdef'ed C/C++ lines
+
+%C [-l] [-t] [-c] [[-Dsym] [-Usym] [-iDsym] [-iUsym]]... [file]
+options:
+ -Dsym
+ -Usym  Specify which symbols to define or undefine respecively.
+        The lines inside those ifdefs will be copied to the output
+        or removed as appropriate.  The ifdef, ifndef, else, and
+        endif lines associated with sym will also be removed.  If
+        an ifdef X occurs nested inside another ifdef X, then the
+        inside ifdef is treated as if it were an unrecognized symbol.
+
+ -c     Cause operation to be complemented, i.e. the lines that would 
+        have been removed or blanked are retained and vice versa.
+
+ -l     Replace removed lines with blank lines instead of deleting them.
+
+ -t     Disables parsing for C/C++ comments and quotes, which is
+        useful for plain text.
+
+ -iDsym
+ -iUsym Ignore ifdefs.  Specifies which ifdef symbols to parse or
+        not to parse for quotes and comments inside respecitvely.
+        Parsing is default and -t overrides these options.
+Note:
+ At least one arg from [-D -U -iD -iU] is required.  Copies output
+ to stdout and will take its input from stdin if no file argument
+ is given.

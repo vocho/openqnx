@@ -1,0 +1,66 @@
+1,11c1,11
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+< expr regex error: invalid backreference number
+---
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+> expr: Invalid back reference
+17c17
+< expr regex error: invalid backreference number
+---
+> expr: Invalid back reference
+40c40
+< 0
+---
+> expr: Invalid range end
+43c43
+< expr regex error: invalid backreference number
+---
+> expr: Invalid back reference
+48c48
+< expr regex error: invalid backreference number
+---
+> expr: Invalid back reference
+89,91c89,91
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+---
+> expr: Invalid range end
+> expr: Unmatched [ or [^
+> expr: Unmatched [ or [^
+109,112c109,112
+< expr error: invalid syntax
+< expr regex error: parentheses not balanced
+< expr regex error: parentheses not balanced
+< expr regex error: parentheses not balanced
+---
+> expr: Trailing backslash
+> expr: Unmatched ( or \(
+> expr: Unmatched ( or \(
+> expr: Unmatched ( or \(
+169c169
+< expr regex error: parentheses not balanced
+---
+> expr: Unmatched ( or \(
+174c174
+< expr regex error: invalid backreference number
+---
+> expr: Invalid back reference

@@ -1,0 +1,14 @@
+PROG=freeze
+OBJS=bitio.o debug.o decode.o encode.o default.o freeze.o huf.o lz.o
+USAGEFILE=freeze.use
+
+include ../cmd.mk
+
+$(OBJS): freeze.h lz.h huf.h
+
+BITS=18
+CFLAGS=-DBITS=$(BITS) -Otax -w3 -zc
+
+nto/lz.o: lz.c
+	$(CCNTO) -DBITS=$(BITS) -Wc,"-otai -s -w3 -zc" -c -o nto/lz.o lz.c
+

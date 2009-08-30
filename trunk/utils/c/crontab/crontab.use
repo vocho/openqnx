@@ -1,0 +1,10 @@
+%C	- schedule periodic background work (POSIX)
+
+%C	[-d dir] [-e | -l | -r] [-u user] [file]
+Options:
+ -d	The location of the crontab directory
+ -e	Edit crontab
+ -l	List crontab
+ -r	Remove crontab
+ -u	Specify user/uid to act on
+ file	Read new crontab from file (default stdin)

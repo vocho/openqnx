@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<module name="ucl">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+		<availability ref="toolshosts"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true" isInternal="true">
+			<component id="Archive" generated="true">
+				<kind type="library"/>
+				<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+					libucl.a
+				</location>
+			</component>
+
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<source available="true">
+					<location basedir="public" runtime="false" subdirs="true">
+						.
+					</location>
+				</source>
+			</component>
+		</package>
+
+		<package>
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<source available="true">
+					<location basedir="public" runtime="false" subdirs="true">
+						.
+					</location>
+				</source>
+			</component>
+
+			<component id="Archive" generated="true">
+				<kind type="library"/>
+				<location basedir="nto/{cpu}/a{.:endian}.shared" os="nto" isa="{cpu}" byteorder="{endian}" runtime="false">
+					libuclS.a
+				</location>
+				<location basedir="nto/{cpu}/a{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="false">
+					libucl.a
+				</location>
+			</component>
+
+		</package>
+	</contents>
+
+</module>

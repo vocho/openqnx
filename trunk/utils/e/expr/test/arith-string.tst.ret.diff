@@ -1,0 +1,21 @@
+55,56d54
+< Retval = 3
+< Retval = 1
+58,59d55
+< Retval = 2
+< Retval = 3
+61a58,61
+> Retval = 2
+> Retval = 2
+> Retval = 1
+> Retval = 2
+75,76d74
+< Retval = 3
+< Retval = 0
+77a76,77
+> Retval = 0
+> Retval = 2
+79c79
+< Retval = 3
+---
+> Retval = 2

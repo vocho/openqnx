@@ -1,0 +1,25 @@
+confstr [option [value]]
+
+[option] is one of:
+	architecture
+	domain
+	hostname
+	hwprovider
+	hwserial
+	libpath
+	machine
+	path
+	release
+	resolve
+	srpc_domain
+	sysname
+	version
+
+if no option is given, the current value of all options will return;
+
+[value] is a string to set in, if no value is given, the current
+value of the option will return;
+
+If confstr is sym-linked to one of the options (ln -s confstr domain),
+it can be used to set/get that option value. (ie: "domain" to get domain,
+and "domain [mydomain]" to set domain)

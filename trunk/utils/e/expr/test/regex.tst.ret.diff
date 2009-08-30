@@ -1,0 +1,87 @@
+18d17
+< Retval = 2
+26d24
+< Retval = 2
+40a39,40
+> Retval = 1
+> Retval = 2
+49,51c49,51
+< Retval = 2
+< Retval = 2
+< Retval = 2
+---
+> Retval = 1
+> Retval = 1
+> Retval = 1
+56a57,58
+> Retval = 1
+> Retval = 1
+61,62d62
+< Retval = 0
+< Retval = 0
+75d74
+< Retval = 0
+77a77
+> Retval = 1
+85a86
+> Retval = 1
+88d88
+< Retval = 0
+99a100,101
+> Retval = 0
+> Retval = 0
+103,107d104
+< Retval = 2
+< Retval = 2
+< Retval = 2
+< Retval = 2
+< Retval = 2
+109,112d105
+< Retval = 2
+< Retval = 2
+< Retval = 2
+< Retval = 2
+114,115d106
+< Retval = 2
+< Retval = 2
+118d108
+< Retval = 1
+123,124d112
+< Retval = 2
+< Retval = 2
+128,131d115
+< Retval = 0
+< Retval = 2
+< Retval = 2
+< Retval = 2
+139,142d122
+< Retval = 2
+< Retval = 0
+< Retval = 0
+< Retval = 0
+143a124,127
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+152a137,152
+> Retval = 0
+> Retval = 1
+> Retval = 1
+> Retval = 0
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 0
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+> Retval = 1
+158a159
+> Retval = 0
+164d164
+< Retval = 2

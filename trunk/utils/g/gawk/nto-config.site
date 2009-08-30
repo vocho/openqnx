@@ -1,0 +1,15 @@
+# This file overrides configure determined values.
+# In case of cross-compilation, some host capabilities 
+# can not be checked. 
+# This file overrdies them.
+# 
+#
+
+#  QNX cross compiled binary.
+#
+# skip checking of getpgrp arguments:
+ac_cv_func_getpgrp_void=yes
+#  define HAVE_MMAP
+ac_cv_func_mmap_fixed_mapped=yes
+#  undef HAVE_MADVISE
+ac_cv_func_madvise=no

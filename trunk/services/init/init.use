@@ -1,0 +1,7 @@
+%C - process control initialization
+
+FILES:
+	/etc/config/rc
+	/etc/config/rc.${HOSTNAME}
+	/etc/config/ttys
+	/etc/config/ttys.${HOSTNAME}

@@ -1,0 +1,331 @@
+@c This is part of the paxutils manual.
+@c Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+@c Written by Sergey Poznyakoff
+@c This file is distributed under GFDL 1.1 or any later version
+@c published by the Free Software Foundation.
+
+@cindex genfile
+    This appendix describes @command{genfile}, an auxiliary program
+used in the GNU tar testsuite. If you are not interested in developing
+GNU tar, skip this appendix.
+
+    Initially, @command{genfile} was used to generate data files for
+the testsuite, hence its name. However, new operation modes were being
+implemented as the testsuite grew more sophisticated, and now
+@command{genfile} is a multi-purpose instrument.
+
+    There are three basic operation modes:
+
+@table @asis
+@item File Generation
+    This is the default mode. In this mode, @command{genfile}
+generates data files.
+
+@item File Status
+    In this mode @command{genfile} displays status of specified files.
+
+@item Synchronous Execution.
+    In this mode @command{genfile} executes the given program with
+@option{--checkpoint} option and executes a set of actions when
+specified checkpoints are reached.
+@end table
+
+@menu
+* Generate Mode::     File Generation Mode.
+* Status Mode::       File Status Mode.
+* Exec Mode::         Synchronous Execution mode.
+@end menu
+
+@node Generate Mode
+@appendixsec Generate Mode
+
+@cindex Generate Mode, @command{genfile}
+@cindex @command{genfile}, generate mode
+@cindex @command{genfile}, create file
+    In this mode @command{genfile} creates a data file for the test
+suite. The size of the file is given with the @option{--length}
+(@option{-l}) option. By default the file contents is written to the
+standard output, this can be changed using @option{--file}
+(@option{-f}) command line option. Thus, the following two commands
+are equivalent:
+
+@smallexample
+@group
+genfile --length 100 > outfile
+genfile --length 100 --file outfile
+@end group
+@end smallexample
+
+    If @option{--length} is not given, @command{genfile} will
+generate an empty (zero-length) file.
+
+@cindex @command{genfile}, seeking to a given offset
+    The command line option @option{--seek=@var{N}} istructs @command{genfile}
+to skip the given number of bytes (@var{N}) in the output file before
+writing to it.  It is similar to the @option{seek=@var{N}} of the
+@command{dd} utility.
+
+@cindex @command{genfile}, reading a list of file names
+    You can instruct @command{genfile} to create several files at one
+go, by giving it @option{--files-from} (@option{-T}) option followed
+by a name of file containing a list of file names. Using dash
+(@samp{-}) instead of the file name causes @command{genfile} to read
+file list from the standard input. For example:
+
+@smallexample
+@group
+# Read file names from file @file{file.list}
+genfile --files-from file.list
+# Read file names from standard input
+genfile --files-from -
+@end group
+@end smallexample
+
+@cindex File lists separated by NUL characters
+    The list file is supposed to contain one file name per line. To
+use file lists separated by ASCII NUL character, use @option{--null}
+(@option{-0}) command line option:
+
+@smallexample
+genfile --null --files-from file.list
+@end smallexample
+
+@cindex pattern, @command{genfile}
+    The default data pattern for filling the generated file consists
+of first 256 letters of ASCII code, repeated enough times to fill the
+entire file. This behavior can be changed with @option{--pattern}
+option. This option takes a mandatory argument, specifying pattern
+name to use. Currently two patterns are implemented:
+
+@table @option
+@item --pattern=default
+    The default pattern as described above.
+
+@item --pattern=zero
+    Fills the file with zeroes.
+@end table
+
+    If no file name was given, the program exits with the code
+@code{0}.  Otherwise, it exits with @code{0} only if it was able to
+create a file of the specified length.
+    
+@cindex Sparse files, creating using @command{genfile}
+@cindex @command{genfile}, creating sparse files
+    Special option @option{--sparse} (@option{-s}) instructs
+@command{genfile} to create a sparse file. Sparse files consist of
+@dfn{data fragments}, separated by @dfn{holes} or blocks of zeros. On
+many operating systems, actual disk storage is not allocated for
+holes, but they are counted in the length of the file. To create a
+sparse file, @command{genfile} should know where to put data fragments,
+and what data to use to fill them. So, when @option{--sparse} is given
+the rest of the command line specifies a so-called @dfn{file map}.
+
+    The file map consists of any number of @dfn{fragment
+descriptors}. Each descriptor is composed of two values: a number,
+specifying fragment offset from the end of the previous fragment or,
+for the very first fragment, from the beginning of the file, and
+@dfn{contents string}, i.e., a string of characters, specifying the
+pattern to fill the fragment with. File offset can be suffixed with
+the following quantifiers:
+
+@table @samp
+@item k
+@itemx K
+The number is expressed in kilobytes.
+@item m
+@itemx M
+The number is expressed in megabytes.
+@item g
+@itemx G
+The number is expressed in gigabytes.
+@end table
+
+    For each letter in contents string @command{genfile} will generate
+a @dfn{block} of data, filled with this letter and will write it to
+the fragment. The size of block is given by @option{--block-size}
+option. It defaults to 512. Thus, if the string consists of @var{n}
+characters, the resulting file fragment will contain
+@code{@var{n}*@var{block-size}} of data. 
+
+    Last fragment descriptor can have only file offset part. In this
+case @command{genfile} will create a hole at the end of the file up to
+the given offset.
+
+    For example, consider the following invocation:
+
+@smallexample
+genfile --sparse --file sparsefile 0 ABCD 1M EFGHI 2000K 
+@end smallexample
+
+@noindent
+It will create 3101184-bytes long file of the following structure:
+
+@multitable @columnfractions .35 .20 .45
+@item Offset  @tab Length       @tab Contents
+@item 0       @tab 4*512=2048   @tab Four 512-byte blocks, filled with
+letters @samp{A}, @samp{B}, @samp{C} and @samp{D}.
+@item 2048    @tab 1046528      @tab Zero bytes 
+@item 1050624 @tab 5*512=2560   @tab Five blocks, filled with letters
+@samp{E}, @samp{F}, @samp{G}, @samp{H}, @samp{I}.
+@item 1053184  @tab 2048000     @tab Zero bytes
+@end multitable
+
+    The exit code of @command{genfile --status} command is @code{0}
+only if created file is actually sparse.
+    
+@node Status Mode
+@appendixsec Status Mode
+
+    In status mode, @command{genfile} prints file system status for
+each file specified in the command line. This mode is toggled by
+@option{--stat} (@option{-S}) command line option. An optional argument to this
+option specifies output @dfn{format}: a comma-separated list of
+@code{struct stat} fields to be displayed. This list can contain
+following identifiers @FIXME{should we also support @samp{%} notations
+as in stat(1)??}:
+
+@table @asis
+@item name
+    The file name.
+    
+@item dev
+@itemx st_dev
+    Device number in decimal.
+    
+@item ino
+@itemx st_ino
+    Inode number.
+    
+@item mode[.@var{number}]
+@itemx st_mode[.@var{number}]
+    File mode in octal.  Optional @var{number} specifies octal mask to
+be applied to the mode before outputting.  For example, @code{--stat
+mode.777} will preserve lower nine bits of it.  Notice, that you can
+use any punctuation character in place of @samp{.}.
+    
+@item nlink
+@itemx st_nlink
+    Number of hard links.
+    
+@item uid
+@itemx st_uid
+    User ID of owner.
+    
+@item gid
+@itemx st_gid
+    Group ID of owner.
+    
+@item size
+@itemx st_size
+    File size in decimal.
+    
+@item blksize
+@itemx st_blksize
+    The size in bytes of each file block.
+    
+@item blocks
+@itemx st_blocks
+    Number of blocks allocated.
+     
+@item atime
+@itemx st_atime
+    Time of last access.
+    
+@item mtime
+@itemx st_mtime
+    Time of last modification
+
+@item ctime
+@itemx st_ctime
+    Time of last status change
+
+@item sparse
+    A boolean value indicating whether the file is @samp{sparse}.     
+@end table
+
+    Modification times are displayed in @acronym{UTC} as
+@acronym{UNIX} timestamps, unless suffixed with @samp{H} (for
+``human-readable''), as in @samp{ctimeH}, in which case usual
+@code{tar tv} output format is used.
+
+    The default output format is: @samp{name,dev,ino,mode,
+nlink,uid,gid,size,blksize,blocks,atime,mtime,ctime}. 
+
+    For example, the following command will display file names and
+corresponding times of last access for each file in the current working
+directory:
+
+@smallexample
+genfile --stat=name,atime *
+@end smallexample
+
+@node Exec Mode
+@appendixsec Exec Mode
+
+@cindex Exec Mode, @command{genfile}
+    This mode is designed for testing the behavior of @code{paxutils}
+commands when some of the files change during archiving. It is an
+experimental mode.
+
+    The @samp{Exec Mode} is toggled by @option{--run} command line
+option (or its alias @option{-r}). The argument to this option gives
+the command line to be executed. The actual command line is
+constructed by inserting @option{--checkpoint} option between the
+command name and its first argument (if any). Due to this, the
+argument to @option{--run} may not use traditional @command{tar}
+option syntax, i.e., the following is wrong: 
+
+@smallexample
+# Wrong!
+genfile --run 'tar cf foo bar'
+@end smallexample
+
+@noindent
+
+Use the following syntax instead:
+
+@smallexample
+genfile --run 'tar -cf foo bar'
+@end smallexample
+
+    The rest of command line after @option{--run} or its equivalent
+specifies checkpoint values and actions to be executed upon reaching
+them. Checkpoint values are introduced with @option{--checkpoint}
+command line option. Argument to this option is the number of
+checkpoint in decimal.
+
+    Any number of @dfn{actions} may be specified after a
+checkpoint. Available actions are
+
+@table @option
+@item --cut @var{file}
+@itemx --truncate @var{file}
+    Truncate @var{file} to the size specified by previous
+@option{--length} option (or 0, if it is not given).
+    
+@item --append @var{file}
+    Append data to @var{file}. The size of data and its pattern are
+given by previous @option{--length} and @option{pattern} options.
+
+@item --touch @var{file}
+    Update the access and modification times of @var{file}. These
+timestamps are changed to the current time, unless @option{--date}
+option was given, in which case they are changed to the specified
+time. Argument to @option{--date} option is a date specification in
+an almost arbitrary format (@pxref{Date input formats}).
+
+@item --exec @var{command}
+    Execute given shell command.
+    
+@end table
+
+    Option @option{--verbose} instructs @command{genfile} to print on
+standard output notifications about checkpoints being executed and to
+verbosely describe exit status of the command.
+
+    While the command is being executed its standard output remains
+connected to descriptor 1. All messages it prints to file descriptor
+2, except checkpoint notifications, are forwarded to standard
+error.
+
+    @command{Genfile} exits with the exit status of the executed command.

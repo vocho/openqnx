@@ -1,0 +1,22 @@
+wc Testcases
+by Sunil Puri (spuri)
+
+Basic Testcases
+---------------
+1) Test with no options, -l, -w, -c, -m, -cw, -cl, -lc, -wl,  -lw, -cwl, -lwc,
+   -cml, -ml, -lm, -mcl, -ww, -ll, -cc, -mm to verify interpretation of options
+2) Use with {0, 1, 2} files on command line
+3) Try with {0, 1} readable files x {1, 2} unreadable files
+4) Try with a file that is {empty, has an empty line}
+5) Try with a file that has blanks {leading, middle, trailing} on lines.
+   (Note: blank strings consisted of just blanks, just tabs, and a combination
+   thereof in random orders)
+6) Try with large input file
+7) Try with 1 line file with {1, 2, 3} number of {1, 2, 3} char words
+
+Command Line Testing
+--------------------
+1) Try with invalid options
+2) Try with valid options between filenames
+
+

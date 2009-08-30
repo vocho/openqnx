@@ -1,0 +1,148 @@
+1,42c1,42
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: non-numeric argument
+45,46c45,46
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+49,50c49,50
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+53,55c53,55
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: attempted division by zero.
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: division by zero
+57,59c57,59
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: attempted modulus by zero.
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: division by zero
+61,62c61,62
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+65,66c65,66
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+69,70c69,70
+< expr error: invalid string operator
+< expr error: invalid string operator
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+73,75c73,75
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: attempted division by zero.
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: division by zero
+77,79c77,79
+< expr error: invalid string operator
+< expr error: invalid string operator
+< expr error: attempted modulus by zero.
+---
+> expr: non-numeric argument
+> expr: non-numeric argument
+> expr: division by zero

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="c">
+	<type>Element</type>
+	<classification>SDK</classification>
+	<kind type="library"/>
+
+	<!-- Available for what platforms? -->
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<!-- Source for source modules and builds -->
+	<source available="true">
+		<location type="" subdirs="true" relative="true">.</location>
+	</source>
+
+	<!-- Binary packaging info (including public headers -->
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="SharedArchive" generated="true">
+			<kind type="library"/>
+			<location runtime="false" basedir="lib/{cpu}/so{.:endian}">libcS.a</location>
+		</component>
+
+		<component id="Startups" generated="false">
+			<kind type="library"/>
+			<location type="install">/lib</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crt1.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crtbegin.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crtbeginG.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crtend.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crtendG.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crti.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">crtn.o</location>
+			<location runtime="false" basedir="startup/{cpu}/a{.:endian}">mcrt1.o</location>
+		</component>
+
+		<component id="ntolink" generated="false">
+			<kind type="library"/>
+			<location type="install">/lib</location>
+			<location runtime="false" basedir="startup/ppc/" isa="ppc" byteorder="be">nto.link</location>
+			<location runtime="false" basedir="startup/mips/" isa="mips" byteorder="be">nto.link</location>
+			<location runtime="false" basedir="startup/mips/" isa="mips" byteorder="le">nto.link</location>
+			<location runtime="false" basedir="startup/arm/" isa="arm" byteorder="le">nto.link</location>
+			<location runtime="false" basedir="startup/arm/" isa="arm" byteorder="be">nto.link</location>
+			<location runtime="false" basedir="startup/sh/" isa="sh" byteorder="le">nto.link</location>
+			<location runtime="false" basedir="startup/x86/" isa="x86">nto.link</location>
+		</component>
+
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location runtime="false" basedir="lib/{cpu}/a{.:endian}">libc.a</location>
+		</component>
+
+		<component id="SharedObj" generated="true">
+			<kind type="library"/>
+			<location runtime="true" basedir="lib/{cpu}/so{.:endian}">libc.so</location>
+			<link runtime="true" isa="{cpu}" byteorder="{endian}" src="../../lib/libc.so.3" dst="/usr/lib/ldqnx.so.2" tos="nto"/>
+		</component>
+
+		<!-- Public headers to include in package -->
+		<component id="headers" basedir="public">
+			<kind type="header"/>
+			<source available="true">
+			<location runtime="false" relative="true" subdirs="false">.</location>
+			<location runtime="false" relative="true" subdirs="false">hw</location>
+			<location runtime="false" relative="true" subdirs="false">sys</location>
+
+			<location runtime="false" relative="true" subdirs="false" tisa="arm">arm</location>
+			<location runtime="false" relative="true" subdirs="false" tisa="x86">x86</location>
+			<location runtime="false" relative="true" subdirs="false" tisa="mips">mips</location>
+			<location runtime="false" relative="true" subdirs="false" tisa="ppc">ppc</location>
+			<location runtime="false" relative="true" subdirs="false" tisa="sh" >sh</location>
+			<link runtime="false" src="sys/poll.h" dst="/usr/include/poll.h" tos="nto"/>
+			</source>
+		</component>
+	</contents>
+
+	<!-- Dependencies -->
+	<requires>
+		<part build="false" location="services/system"/>
+		<part build="false" location="lib/pm"/>
+		<part build="false" location="services/net/npm/qnet"/>
+		<part build="false" location="lib/io-char"/>
+		<part build="false" location="utils/m/mkasmoff"/>
+		<part build="false" location="lib/socket"/>
+		<part build="false" location="lib/m"/>
+		<part build="false" location="lib/elf"/>
+		<part build="false" location="hardware/pci"/>
+		<part build="false" location="services/registry"/>
+		<part build="false" location="services/blk/io-blk"/>
+		<part build="false" location="services/syslogd"/>
+		<part build="false" location="hardware/startup/lib"/>
+	</requires>
+</module>

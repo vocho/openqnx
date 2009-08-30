@@ -1,0 +1,78 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description:
+# Previous versions checked only mtime/ctime of directories during
+# incremental backups.  As a result, it sufficed to rename a single file
+# to get full dump of the directory where it resided.  Since v.1.15.91
+# tar checks directory contents as well, so in this case only the renamed
+# file is dumped.
+
+AT_SETUP([renamed files in incrementals])
+AT_KEYWORDS([incremental incr03 rename])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+mkdir directory
+genfile --file=directory/x
+genfile --file=directory/y
+
+tar -cf archive.1 -g db directory
+
+mv directory/x directory/z
+tar -cf archive.2 -g db directory
+
+mv directory orig
+
+echo Listing of archive.1
+tar -tf archive.1 | sort 
+echo Listing of archive.2
+tar -tf archive.2 | sort 
+
+echo Directory after first restore
+tar -xf archive.1 -g db
+find directory | sort
+
+echo Directory after second restore
+tar -xf archive.2 -g db
+find directory | sort 
+],
+[0],
+[Listing of archive.1
+directory/
+directory/x
+directory/y
+Listing of archive.2
+directory/
+directory/z
+Directory after first restore
+directory
+directory/x
+directory/y
+Directory after second restore
+directory
+directory/y
+directory/z
+],[],[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of incr03.at
+

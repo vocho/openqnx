@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<module name="dit">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+		<availability ref="toolshosts"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+
+	<contents>
+		<package isHost="true">
+			<component id="dit" generated="true">
+				<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+					deflate
+				</location>
+			</component>
+		</package>
+
+	</contents>
+
+
+<!--
+	<requires>
+		<part build="true" location="lib/compat"/>
+		<part build="true" location="lib/ucl"/>
+		<part build="true" location="lib/lzo"/>
+	</requires>
+-->
+
+</module>

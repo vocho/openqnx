@@ -1,0 +1,45 @@
+# This file overrides configure determined values.
+# In case of cross-compilation, some host capabilities 
+# can not be checked. 
+# This file overrdies them.
+# 
+#
+
+#  QNX cross compiled binary.
+#
+# skip checking of getpgrp arguments:
+ac_cv_func_getpgrp_void=yes
+# skip checking of setpgrp:
+ac_cv_func_setpgrp_void=yes
+# define HAVE_MMAP
+ac_cv_func_mmap_fixed_mapped=yes
+
+# skip checking for PROCESS_SHARED locks.
+apr_cv_process_shared_works=yes
+# skip checking for robust cross-process mutex support
+apr_cv_mutex_robust_shared=no
+# skip checking whether TCP_NODELAY and TCP_CORK can both be enabled
+apr_cv_tcp_nodelay_with_cork=no
+
+apr_cv_use_lfs64=yes
+
+# When cross-compiling, configure defaults to wrong size for
+# the following types.
+ac_cv_sizeof_ssize_t=4
+ac_cv_sizeof_size_t=4
+ac_cv_sizeof_pid_t=4
+ac_cv_sizeof_off_t=4
+ac_cv_file__dev_zero=yes
+ac_cv_struct_rlimit=yes
+ac_cv_sizeof_struct_iovec=8
+
+if test "${TARGET_SYSNAME}" = nto; then
+  if test "${SYSNAME}" != nto; then
+# this is cross-compiling case
+# we need to set endian for expat library.
+ac_cv_c_bigendian=no
+  fi
+fi
+
+
+available_tags=CC

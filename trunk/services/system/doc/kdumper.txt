@@ -1,0 +1,160 @@
+KDUMPER
+=======================================
+
+When initializing, kdumper allocates memory for a "struct kdump" structure
+(defined in <sys/kdump.h> and places the physical address of it in 
+"SYSPAGE_ENTRY(private)->kdump_info".  A utility program can do a direct 
+physical map of the paddr to twiddle various flags controlling the dump
+after the system has come up.
+
+In addition, kdumper also hooks the 
+"SYSPAGE_ENTRY(callout)->debug[0].display_char" callout and records all
+kprintf output in a ring buffer. This ring buffer is written out
+as part of the kernel dump.
+
+Since this is a bootstrap executable, it needs to be placed in the [virtual=?]
+section of the mkifs control file. It should come before procnto, but
+after kdebug (if present).
+
+The kernel dump is written out as an ELF core file - but it's not directly
+loadable by GDB. First off, the register information isn't written
+out the same way. Second off, the addresses for the segments are physical 
+ones, not the virtuals that GDB wants. Finally, if any of the paddrs are 
+above 4G, the 64-bit version of the ELF format is used as opposed to the 
+more usual 32-bit. To use GDB, you have to use the "kdserver" program,
+which will present the contents of the kernel dump to GDB via its
+remote debug protocol and takes care of all the messy details that GDB
+doesn't want to know about (see below).
+
+The following command line options are supported:
+
+	-a/-A/-I
+
+By default, a kernel dump only contains the memory allocated for
+procnto, along with the code and static data for the bootstrap executables
+in the image file system. If the -A option is specified, memory allocated 
+to user processes are dumped as well. If the -a option is used, the memory 
+allocated to the active user process on the CPU that caused the dump will 
+be written to the file. If the -I switch is present, then all of the image
+file system contents will be written out. These options can be controlled
+after the fact by manipulating the "dump_type" field in struct kdump:
+
+  (.dump_type & KDUMP_MEM_MASK) == KDUMP_ALL           // same as -A
+  (.dump_type & KDUMP_MEM_MASK) == KDUMP_ACTIVE        // same as -a
+  (.dump_type & KDUMP_MEM_MASK) == KDUMP_SYSTEM        // neither -A nor -a 
+  (.dump_type & KDUMP_IFS_MASK) == KDUMP_IFS_FULL      // same as -I
+  (.dump_type & KDUMP_IFS_MASK) == KDUMP_IFS_BOOTSTRAP // -I not specified
+
+
+	-B
+
+By default, kdumper writes the dump using the 32-bit ELF format, unless 
+there's a paddr > 4G, which causes the 64-bit form to be used. The -B 
+option causes a 64-bit ELF format to be used in all cases. This can
+be controlled after the fact by setting the "big" field in struct kdump.
+
+	-c/-C
+
+Using the -C option causes the dump file to be compressed.  If -c is 
+specified, compression is disabled and we don't call an initialization 
+function (saving some memory) but removing the ability to turn on 
+compression later. Enabling/disabling compression after the fact can
+be controlled by setting the "compress" field in struct kdump.
+
+
+	-k/-K
+
+Using the -K option will cause the kernel debugger to get a chance to
+be invoked (if present) when a dump is requested. If the kernel debugger
+fails to clear the error condition, the dump will happen. Using the "-k"
+option (the default) causes the dump to happen without checking with
+the kernel debugger first. This can be controlled after the fact by
+setting the "kdebug_wanted" field in struct kdump.
+
+	-l <size>
+
+Using this option sets the size of the ring buffer used to record kprintf
+output. The default is 512, minimum is 100.
+
+	-U
+
+By default, a kernel dump is performed if an unhandled exception occurs 
+while executing in the kernel or process manager. Specifying "-U" will cause
+a kernel dump if an unhandled exception occurs on a user process.
+
+	-v
+
+Increase the verbosity of kdumper. More -v's, more verbosity.
+
+	-w <writer_name>
+
+The kernel dumper has the ability to specify different "writers"
+to allow the dump to be placed on different types of devices. The -w option
+says which one to use. In the source the the writers are all in files
+of the name: "write_<writer_name>.c". Adding a new file to the tree of that
+form will automatically add the name to the allowed list for the -w option.
+The file needs to have a function definition of the form:
+
+	void write_<writer_name>(void *buff, unsigned length);
+
+The function will be called first with the parameters 
+(WRITE_CMD_ADDR, WRITE_INIT) to allow it to initialize, then repeatedly 
+with a valid pointer and length to write out the data and finally with 
+(WRITE_CMD_ADDR, WRITE_FINI) to finalize and flush out any buffers.
+
+The are are currently three writers supported:
+
+	uuencode 
+
+This is the default. The dump is uuencoded and written to the kprintf
+device. After uudecoding, the dump file will be named "kdump.elf" if
+uncompressed, "kdump.elf.gz" if compressed - the gunzip program will
+uncompress it.
+
+	dummy
+
+Throw the dump information away (used for debugging kdumper).
+
+	external
+
+Does an indirect function call via the 'writer' field in struct kdump.
+In the mkifs build file, after the kdumper executable, you should place
+another bootstrap program that fills in the 'writer' field with a pointer
+to a function in itself that will accept the same semantics described
+above and perform whatever actions are required to save the dump information
+on whatever media is appropriate.
+
+
+
+KDSERVER
+=======================================
+Once the kernel dumper has been transfered to a file, we need to read it.
+Since the addresses contained within it are physical, GDB won't be
+able to directly process the dump file. Instead, we use a small utility
+that accepts the GDB remote debug protocol as input and, using the information
+contained in the dump file, performs the necessary vaddr to paddr translations
+and locates the proper spot to return the requested information.
+
+For example, say you have a kernel dump called /tmp/kdump.elf for the MIPS. 
+You can run the following commands:
+
+	ntomips-gdb procnto_g.sym
+	(gdb) target remote |kdserver /tmp/kdump.elf
+
+and gdb will act just like you're debugging a normal process core file,
+but for procnto :-). 
+
+If you issue the GDB "monitor kprintf" command, it will output
+the contents of the kprintf ring buffer.
+
+If you issue the GDB "monitor pid <pid>[-<tid>]" comand, kdserver will 
+switch the context it returns to GDB (e.g. page table/regiser set) to the ones
+for the given process and (optionally) thread id. If <tid> isn't specified,
+the first thread for the process is used. If "monitor pid 0" is used, the
+context is switched to the original faulting information.  After using the 
+"monitor pid" command, you have to immediately issue a "continue" command
+to get GDB to invalidate its cached information (register set, etc).
+
+The kdserver program takes a "-P<num>" option, which does the same
+protocol switching that the "-P<num>" option does for gdb_kdebug. When
+using Cisco built versions of GDB, "-P1" will need to be specified.

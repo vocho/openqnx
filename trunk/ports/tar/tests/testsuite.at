@@ -1,0 +1,194 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# We need a recent Autotest.
+m4_version_prereq([2.52g])
+
+m4_define([AT_TAR_CHECK],[
+  AT_XFAIL_IF(test -f $[]XFAILFILE)
+  m4_foreach([FMT],
+             [m4_if([$7],[],[v7,oldgnu,ustar,posix,gnu],[$7])],
+             [AT_CHECK([
+mkdir FMT
+(cd FMT
+TEST_TAR_FORMAT=FMT
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H FMT"
+export TAR_OPTIONS
+rm -rf *
+$1)],$2,$3,$4,$5,$6)])
+])
+
+m4_define([RE_CHECK],[
+AT_DATA([$1.re],[$2])
+awk '{print NR " " $[]0}' $1 > $[]$.1
+awk '{print NR " " $[]0}' $1.re | join - $[]$.1 |
+while read NUM RE LINE
+do
+  echo "$LINE" | grep -- "$RE" >/dev/null || exit 1
+done
+])
+
+m4_define([AT_SKIP_TEST],[exit 77])
+
+dnl AT_TARBALL_PREREQ(tarball, md5sum) - Check if test tarball exists
+dnl in $TEST_DATA_DIR. If it does not, try to download it from
+dnl $TEST_DATA_URL. If download fails, or it the file's md5 sum does not
+dnl match second argument, skip the test.
+
+m4_define([AT_TARBALL_PREREQ],[
+test -z "$[]TEST_DATA_DIR" && AT_SKIP_TEST
+tarball_prereq $1 $2 $[]TEST_DATA_DIR $[]TEST_DATA_URL || AT_SKIP_TEST])
+
+dnl AT_TARBALL_PREREQ(tarball, md5sum) - Same for star testfiles
+m4_define([AT_STAR_PREREQ],[
+test -z "$STAR_TESTSCRIPTS" && AT_SKIP_TEST
+tarball_prereq $1 $2 $[]STAR_TESTSCRIPTS $[]STAR_DATA_URL || AT_SKIP_TEST
+])
+
+dnl AT_GZIP_PREREQ - Skip test unless gzip (or $1) is available
+m4_define([AT_GZIP_PREREQ],[
+cat /dev/null | m4_if([$1],[],gzip,[$1]) - > /dev/null 2>&1 || AT_SKIP_TEST
+])
+
+dnl AT_SORT_PREREQ - Skip test if sort utility outputs unwanted data on stderr
+m4_define([AT_SORT_PREREQ],[
+test -z "`sort < /dev/null 2>&1`" || AT_SKIP_TEST
+])
+
+dnl AT_UNPRIVILEGED_PREREQ - Skip test if running at root privileges
+m4_define([AT_UNPRIVILEGED_PREREQ],[
+echo "test" > $[]$
+chmod 0 $[]$
+cat $[]$ > /dev/null 2>&1
+result=$?
+rm -f $[]$
+test $result -eq 0 && AT_SKIP_TEST
+])
+
+m4_define([AT_TAR_MKHIER],[
+install-sh -d $1 >/dev/null
+m4_if([$2],,,genfile --file [$1]/[$2])])
+
+m4_include([sparsemvp.at])
+
+AT_INIT
+
+AT_TESTED([tar])
+
+m4_include([version.at])
+
+m4_include([pipe.at])
+
+m4_include([options.at])
+m4_include([options02.at])
+
+m4_include([T-empty.at])
+m4_include([T-null.at])
+
+m4_include([indexfile.at])
+m4_include([verbose.at])
+
+m4_include([append.at])
+m4_include([append01.at])
+m4_include([append02.at])
+
+m4_include([exclude.at])
+
+m4_include([delete01.at])
+m4_include([delete02.at])
+m4_include([delete03.at])
+m4_include([delete04.at])
+m4_include([delete05.at])
+
+m4_include([extrac01.at])
+m4_include([extrac02.at])
+m4_include([extrac03.at])
+m4_include([extrac04.at])
+m4_include([extrac05.at])
+m4_include([extrac06.at])
+m4_include([extrac07.at])
+
+m4_include([gzip.at])
+
+m4_include([incremental.at])
+m4_include([incr01.at])
+m4_include([incr02.at])
+m4_include([listed01.at])
+m4_include([listed02.at])
+m4_include([incr03.at])
+m4_include([incr04.at])
+m4_include([rename01.at])
+m4_include([rename02.at])
+m4_include([rename03.at])
+m4_include([chtype.at])
+
+m4_include([ignfail.at])
+
+m4_include([link01.at])
+
+m4_include([longv7.at])
+m4_include([long01.at])
+m4_include([lustar01.at])
+m4_include([lustar02.at])
+m4_include([lustar03.at])
+
+m4_include([multiv01.at])
+m4_include([multiv02.at])
+m4_include([multiv03.at])
+m4_include([multiv04.at])
+m4_include([multiv05.at])
+
+m4_include([old.at])
+
+m4_include([recurse.at])
+
+m4_include([same-order01.at])
+m4_include([same-order02.at])
+
+m4_include([shortrec.at])
+
+m4_include([sparse01.at])
+m4_include([sparse02.at])
+m4_include([sparse03.at])
+m4_include([sparsemv.at])
+m4_include([spmvp00.at])
+m4_include([spmvp01.at])
+m4_include([spmvp10.at])
+
+m4_include([update.at])
+
+m4_include([volume.at])
+m4_include([volsize.at])
+
+m4_include([comprec.at])
+
+m4_include([truncate.at])
+m4_include([grow.at])
+
+m4_include([star/gtarfail.at])
+m4_include([star/gtarfail2.at])
+
+m4_include([star/multi-fail.at])
+
+m4_include([star/ustar-big-2g.at])
+m4_include([star/ustar-big-8g.at])
+
+m4_include([star/pax-big-10g.at])

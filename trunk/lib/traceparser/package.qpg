@@ -1,0 +1,11 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+        <QPG:Add type="file" file="nto/*/a/libtraceparser.a" pinfo="$"/>
+        <QPG:Add hos="solaris" proc="sparc" type="file" file="solaris/*/a/libtraceparser.a" pinfo="$"/>
+        <QPG:Add hos="linux" type="file" file="linux/*/a/libtraceparser.a" pinfo="$"/>
+        <QPG:Add hos="win32" type="file" file="win32/*/a/traceparser.lib" pinfo="$"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

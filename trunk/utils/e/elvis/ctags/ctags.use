@@ -1,0 +1,31 @@
+ctags - Generates "tags" and (optionally) "refs" files
+
+ctags [-D word] [-FBNgitvshlpdxra] files...
+
+Options:
+
+If no options are given, then ctags acts as though the -l -i -t -v and
+-s option flags were given.  If you want to omit those options, you
+can do so by explicitly giving a harmless option such as -F.
+
+-Dword This causes Elvis to ignore any instance of "word" in your
+       source code.
+-F     Enclose regular expressions in slashes (/regexp/) which will
+       cause elvis to search from the top of the file.  This is the
+       default.
+-B     Enclose the regular expressions in question marks (?regexp?) so
+       elvis will search backward from the bottom of the file.
+-N     This causes ctags to use line numbers for all tags.
+-g     For static tags, generate entries that look like global tags.
+-i     Include inline definitions.
+-t     Include typedefs.
+-v     Include variable declarations.
+-s     Include static tags.
+-e     Include extern tags.
+-h     Add hints that may help Elvis handle overloaded tags better.
+-l     Add "ln" line number hints (to help with elvis' "showtag").
+-p     Write parsing information to stdout.
+-d     Warn about duplicates, on stdout.
+-x     Generate a human-readable tag list instead of a "tags" file.
+-r     This causes ctags to generate both tags and refs.
+-a     Append to tags, and maybe refs.

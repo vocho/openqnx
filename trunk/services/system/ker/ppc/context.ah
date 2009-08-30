@@ -1,0 +1,708 @@
+#
+# Macro definitions to save and restore context as we transfer in and
+# out of the kernel.
+#
+# NOTE: Don't use SPRG 3 anywhere - it contains the CPU number on an SMP
+# system.
+#
+
+	.set SRR0,	0x01a
+	.set SRR1,	0x01b
+	.set SRR2,	0x3de
+	.set SRR3,	0x3df
+
+	.set PPC_MSR_INKERNEL_BIT,0x04
+	
+	# reg save area size, keeping 16-byte aligned
+	.equ	EK_KSTK_SPACE, (SIZEOF_REG+0xf) & ~0xf
+	
+.set	NEED_DISABLE,0
+.ifdef VARIANT_booke
+.set	NEED_DISABLE,1
+.endif
+.ifdef VARIANT_400
+.set	NEED_DISABLE,1
+.endif
+
+.macro DISABLE_CI_MC, save_r31=0
+.if NEED_DISABLE
+	.if &save_r31
+	mtsprg	0,%r31
+	.endif
+	li		%r31,0
+	mtmsr	%r31
+	.if &save_r31
+	mfsprg	%r31,0
+	.endif
+.endif
+.endm
+
+.ifdef VARIANT_900
+.ifdef PPC_CPUOP_ENABLED
+	.cpu ppc64
+.endif
+.macro RFE
+	rfid
+.endm
+.else
+.macro RFE
+	rfi
+.endm
+.endif
+
+
+#
+# SMP macros to get cpu # and to load data from arrays
+#
+# GETCPU returns the byte offset into an array for a given CPU num
+#		scale is the bit shift to apply to the cpu #
+#
+# LW_SMP: load a word from a CPU-indexed array
+#
+
+.ifdef VARIANT_smp
+
+#
+# Note that when the SPR holding the CPUNUM changes, you also
+# have to hit the code implementing INTR_GENFLAG_LOAD_CPUNUM in
+# interrupt.c
+#
+.macro	GETCPU,reg1,scale=0
+	mfsprg	&reg1,3
+	.if	&scale
+		rlwinm	&reg1,&reg1,&scale,0,31-&scale
+	.endif
+.endm
+
+.macro	SMP_ADDR,reg1,reg2,base=_
+	.ifc &base,_
+		add		&reg1,&reg1,&reg2
+	.else
+		addis	&reg1,&reg2,&base
+	.endif
+.endm
+
+.macro	LW_SMP,reg1,name,reg2
+	la		&reg1,&name@sdarel(%r13)
+	lwzx	&reg1,&reg2,&reg1
+.endm
+
+.macro	SETCPU,reg1,reg2
+	GETCPU	&reg2,0
+	lis		&reg1,cpunum@ha	
+	stb		&reg2,cpunum@l(&reg1)
+.endm
+
+# We flag that a certain CPU is in the kernel by using bits of the MSR
+# This bit is used with performace monitoring. The advantage of the MSR
+# bit is that it is automatically cleared on return to a user process.
+# Note: these macros should get moved to a CPU-specific include, as they
+# are specific to the 604e. With other cpu's (i.e. 603,750), we could
+# use another unused "feature" register to act as the PIR
+
+.macro	SET_CPUINKERNEL,reg1
+	ori		&reg1,&reg1,PPC_MSR_INKERNEL_BIT
+.endm
+
+.macro	CLEAR_CPUINKERNEL,reg1
+	mfmsr	&reg1
+	rlwinm	&reg1,&reg1,0,30,28
+	mtmsr	&reg1
+.endm
+
+#
+# Pass MSR, tests to see if our inkernel bit is set
+# Leaves old MSR value in reg1, reg2 is scratch
+#
+.macro	IS_CPUINKERNEL,reg1,reg2
+	andi.	&reg2,&reg1,PPC_MSR_INKERNEL_BIT
+.endm
+
+.macro SPIN_LOCK r,ar,sym,full=0
+	.if &full
+		loada	&ar,&sym
+	.else
+		la		&ar,&sym@sdarel(%r13)
+	.endif
+1969:
+	lwarx	&r,0,&ar
+	cmplwi	&r,0
+	bne		1969b
+	li		&r,1
+	stwcx.	&r,0,&ar
+	bne-	1969b
+.endm
+
+.macro SPIN_UNLOCK r,sym
+	li		&r,0
+	stw		&r,&sym@sdarel(%r13)
+.endm
+
+.else		# Non-SMP case; no-ops
+
+.macro	GETCPU,reg1,scale
+.endm
+
+.macro	SMP_ADDR,reg1,reg2,base=_
+	.ifnc &base,_
+		lis	&reg1,&base
+	.endif
+.endm
+
+.macro	LW_SMP,reg1,name,reg2
+	lwz		&reg1,&name@sdarel(%r13)
+.endm
+
+.macro	SETCPU,reg1,reg2
+.endm
+
+.macro	SET_CPUINKERNEL,reg1
+.endm
+
+.macro	CLEAR_CPUINKERNEL,reg1
+.endm
+
+.macro	IS_CPUINKERNEL,reg1,reg2
+.endm
+
+.macro SPIN_LOCK r,ar,sym,full=0
+.endm
+
+.macro SPIN_UNLOCK r,sym
+.endm
+
+.endif
+
+#
+# First half of kernel entry sequence. Sets inkernel, sets a stack, 
+# and saves the following resgisters:
+# r0,r1,r2,r3,r4,r5,r29,r30,r31
+# cr,iar,msr,lr,xer
+#
+#		On exit:
+#			R1	- kernel stack pointer
+#			R29	- original value of inkernel
+#			R30	- register save area pointer
+#			R31	- active thread
+#
+# After a partial kernel entry through the macro, there should
+# be enough registers to do basic housekeeping without doing a full
+# kernel entry (e.g. fpu save/restore etc.)
+#
+# Arguments: 	setinkernel sets inkernel using inkern
+# 				kentry is for a kernel entry (system call)
+#				iar is the spr which contains the old IAR
+#				msr is the spr which contains the old msr
+#				lock indicates whether we should acquire the ker spinlock (SMP)
+#				inintr indicates if the inintr bit should be set
+#
+# Don't use R0 in the macro, want to keep ker call number in reg
+#
+# Because of the differences between SMP and non-SMP, we've split
+# this in two macros, instead of having on full of .ifdef's
+#
+
+.equ	EK_EXC,		2
+.equ	EK_INTR,	3
+
+.ifdef VARIANT_smp
+
+.macro ENTERKERNEL, ek_type, iar, msr, rot=0
+	mtsprg	(0+&rot)%3,%r31
+	DISABLE_CI_MC
+	mtsprg	(1+&rot)%3,%r30
+	mtsprg	(2+&rot)%3,%r29
+	mfcr	%r29
+
+	lis		%r31,actives@ha
+	la		%r31,actives@l(%r31)
+	GETCPU	%r30,2
+	lwzx	%r31,%r30,%r31
+
+	# Check the CPUINKERNEL bit to see which stack we need to load
+	mfspr	%r30,&msr		# Saved MSR
+	IS_CPUINKERNEL	%r30,%r30
+	beq+	2f
+
+	# in kernel already, subtract reg save area, keep 16-byte aligned
+	subi	%r30,%r1,EK_KSTK_SPACE
+	stw		%r1,REG_GPR+1*PPCINT(%r30)
+	la		%r1,-16(%r30)
+	b		3f
+2:
+	# from user space
+	stw		%r1,REG_GPR+1*PPCINT+REG_OFF(%r31)
+	lis		%r1,ker_stack@ha
+	la		%r1,ker_stack@l(%r1)
+	GETCPU	%r30,2
+	lwzx	%r1,%r30,%r1
+	la		%r30,REG_OFF(%r31)
+3:
+	stw		%r29,REG_CR(%r30)
+	stw		%r2,REG_GPR+2*PPCINT(%r30)
+	# Set the inkernel bit in MSR
+	mfmsr	%r2
+	SET_CPUINKERNEL	%r2
+
+	mtmsr	%r2
+
+	mfsprg	%r2,(2+&rot)%3
+	stw		%r2,REG_GPR+29*PPCINT(%r30)
+	mfsprg	%r2,(1+&rot)%3
+	stw		%r2,REG_GPR+30*PPCINT(%r30)
+	mfsprg	%r2,(0+&rot)%3
+	stw		%r2,REG_GPR+31*PPCINT(%r30)
+	mfspr	%r2,&iar
+	stw		%r2,REG_IAR(%r30)
+	mfspr	%r2,&msr
+	stw		%r2,REG_MSR(%r30)
+.ifdef VARIANT_900
+ 	rldicl	%r2,%r2,32,32
+ 	stw		%r2,REG_MSR_U(%r30)
+.endif
+	mflr	%r2
+	stw		%r2,REG_LR(%r30)
+	mfxer	%r2
+	stw		%r2,REG_XER(%r30)
+	stw		%r0,REG_GPR+0*PPCINT(%r30)
+	stw		%r3,REG_GPR+3*PPCINT(%r30)
+	stw		%r4,REG_GPR+4*PPCINT(%r30)
+	stw		%r5,REG_GPR+5*PPCINT(%r30)
+	stw		%r11,REG_GPR+11*PPCINT(%r30)
+	stw		%r12,REG_GPR+12*PPCINT(%r30)
+	mfctr	%r3
+	stw		%r3,REG_CTR(%r30)
+
+.if &ek_type == EK_INTR 
+	lis		%r3,inkernel@ha	
+	la		%r3,inkernel@l(%r3)
+999:
+	lwarx	%r29,0,%r3
+	addi	%r4,%r29,1
+	stwcx.	%r4,0,%r3
+	bne-	999b
+.else
+	lis		%r3,inkernel@ha
+	lwz		%r29,inkernel@l(%r3)
+.endif
+.endm
+
+#
+# Macro to do a kernel call entry. Split because it was too messy
+#
+.macro ENTERKCALL, iar, msr
+	mtsprg	0,%r31
+	DISABLE_CI_MC
+	mtsprg	1,%r30
+	mtsprg	2,%r29
+	mfcr	%r29
+
+	lis		%r31,actives@ha
+	la		%r31,actives@l(%r31)
+	GETCPU	%r30,2
+	lwzx	%r31,%r30,%r31
+
+	# from user space
+	stw		%r1,REG_OFF+REG_GPR+1*PPCINT(%r31)
+	lis		%r1,ker_stack@ha
+	la		%r1,ker_stack@l(%r1)
+	lwzx	%r1,%r30,%r1
+	la		%r30,REG_OFF(%r31)
+	stw		%r2,REG_GPR+2*PPCINT(%r30)
+
+	# Set the inkernel bit in MSR
+	mfmsr	%r2
+	SET_CPUINKERNEL	%r2
+	mtmsr	%r2
+
+	stw		%r29,REG_CR(%r30)
+	mfsprg	%r2,2
+	stw		%r2,REG_GPR+29*PPCINT(%r30)
+	mfsprg	%r2,1
+	stw		%r2,REG_GPR+30*PPCINT(%r30)
+	mfsprg	%r2,0
+	stw		%r2,REG_GPR+31*PPCINT(%r30)
+	mfspr	%r2,&iar
+	stw		%r2,REG_IAR(%r30)
+	mfspr	%r2,&msr
+	stw		%r2,REG_MSR(%r30)
+.ifdef VARIANT_900
+ 	rldicl	%r2,%r2,32,32
+ 	stw		%r2,REG_MSR_U(%r30)
+.endif
+	mflr	%r2
+	stw		%r2,REG_LR(%r30)
+	stw		%r0,REG_GPR+0*PPCINT(%r30)
+	stw		%r3,REG_GPR+3*PPCINT(%r30)
+	stw		%r4,REG_GPR+4*PPCINT(%r30)
+	cmpwi	%r0,__KER_NOP
+	stw		%r5,REG_GPR+5*PPCINT(%r30)
+	bne+	1f
+	# A __kernop call needs these to be saved as well
+	stw		%r11,REG_GPR+11*PPCINT(%r30)
+	stw		%r12,REG_GPR+12*PPCINT(%r30)
+	mfctr	%r2
+	stw		%r2,REG_CTR(%r30)
+	mfxer	%r2
+	stw		%r2,REG_XER(%r30)
+1:
+.endm
+
+.else  # The Non-SMP ENTERKERNEL macro
+
+
+.macro ENTERKERNEL, ek_type, iar, msr, rot=0
+	mtsprg	(0+&rot)%3,%r31
+	DISABLE_CI_MC
+	mtsprg	(1+&rot)%3,%r30
+	mtsprg	(2+&rot)%3,%r29
+	mfcr	%r30
+	loadwz	%r29,inkernel
+	cmpwi	%r29,0
+	loadwz	%r31,actives
+
+	beq+	2f
+	# in kernel already, subtract reg save area, keep 16-byte aligned
+	stw		%r1,REG_GPR+1*PPCINT-EK_KSTK_SPACE(%r1)
+	stw		%r30,REG_CR-EK_KSTK_SPACE(%r1)
+	subi	%r30,%r1,EK_KSTK_SPACE
+	la		%r1,-16(%r30)
+	b		3f
+2:
+	# from user space
+	stw		%r1,REG_GPR+1*PPCINT+REG_OFF(%r31)
+	stw		%r30,REG_CR+REG_OFF(%r31)
+	
+	loadwz	%r1,ker_stack
+	la		%r30,REG_OFF(%r31)
+3:
+	stw		%r2,REG_GPR+2*PPCINT(%r30)
+	stw		%r3,REG_GPR+3*PPCINT(%r30)
+.if &ek_type == EK_INTR 
+	addi	%r2,%r29,1
+.else
+	ori		%r2,%r29,INKERNEL_NOW+INKERNEL_LOCK+INKERNEL_EXIT
+.endif
+	
+	lis		%r3,inkernel@ha
+	stw		%r2,inkernel@l(%r3)
+	
+	mfsprg	%r2,(2+&rot)%3
+	stw		%r2,REG_GPR+29*PPCINT(%r30)
+	mfsprg	%r2,(1+&rot)%3
+#	mfspr	&reg1,PPC700_SPR_PIR
+	stw		%r2,REG_GPR+30*PPCINT(%r30)
+	mfsprg	%r2,(0+&rot)%3
+	stw		%r2,REG_GPR+31*PPCINT(%r30)
+	mfspr	%r2,&iar
+	stw		%r2,REG_IAR(%r30)
+	mfspr	%r2,&msr
+	stw		%r2,REG_MSR(%r30)
+.ifdef VARIANT_900
+ 	rldicl	%r2,%r2,32,32
+ 	stw		%r2,REG_MSR_U(%r30)
+.endif
+	mflr	%r2
+	stw		%r2,REG_LR(%r30)
+	#
+	# Theoretically, we're reentrant at this point and could turn
+	# interrupts back on
+	#
+	stw		%r0,REG_GPR+0*PPCINT(%r30)
+	stw		%r4,REG_GPR+4*PPCINT(%r30)
+	stw		%r5,REG_GPR+5*PPCINT(%r30)
+	stw		%r11,REG_GPR+11*PPCINT(%r30)
+	stw		%r12,REG_GPR+12*PPCINT(%r30)
+	mfxer	%r2
+	stw		%r2,REG_XER(%r30)
+	mfctr	%r3
+	stw		%r3,REG_CTR(%r30)
+	
+	# irq or exception entry. Need to clear kcall bits
+	lwz		%r3,TFLAGS(%r31)
+	bitclr	%r3,%r3,_NTO_TF_KCALL_ACTIVE
+	stw		%r3,TFLAGS(%r31)
+.endm
+
+#
+# Kernel call entry. Simpler to split from above
+# Remember that we can use r11, r12 and ctr freely
+#
+.macro ENTERKCALL, iar, msr
+	DISABLE_CI_MC 1
+	loadwz	%r11,actives
+	stw		%r29,REG_OFF+REG_GPR+29*PPCINT(%r11)
+	stw		%r30,REG_OFF+REG_GPR+30*PPCINT(%r11)
+	stw		%r31,REG_OFF+REG_GPR+31*PPCINT(%r11)
+	mr		%r31,%r11
+	mfcr	%r29
+	mfspr	%r30,&iar
+	stw		%r29,REG_OFF+REG_CR(%r31)
+	mfspr	%r11,&msr
+	stw		%r30,REG_OFF+REG_IAR(%r31)
+	mflr	%r29
+	stw		%r11,REG_OFF+REG_MSR(%r31)
+.ifdef VARIANT_900
+ 	rldicl	%r11,%r11,32,32
+ 	stw		%r11,REG_OFF+REG_MSR_U(%r31)
+.endif
+	stw		%r29,REG_OFF+REG_LR(%r31)
+	stw		%r1,REG_OFF+REG_GPR+1*PPCINT(%r31)
+	lis		%r1,ker_stack@ha	
+	lwz		%r1,ker_stack@l(%r1)
+	
+	#
+	# The rest of the registers
+	#
+	stw		%r0,REG_OFF+REG_GPR+0*PPCINT(%r31)
+	stw		%r2,REG_OFF+REG_GPR+2*PPCINT(%r31)
+	stw		%r3,REG_OFF+REG_GPR+3*PPCINT(%r31)
+	stw		%r4,REG_OFF+REG_GPR+4*PPCINT(%r31)
+	stw		%r5,REG_OFF+REG_GPR+5*PPCINT(%r31)
+	
+	la		%r30,REG_OFF(%r31)
+.endm
+
+.endif
+
+
+#
+# Second half of the kernel entry sequence. Saves the other registers
+# (r6 through r28, ctr, ear), sets up small data ptrs, and loads
+# up useful variables in some registers:
+#			R1	- kernel stack pointer
+#			R2	- kernel small data area 2 pointer 
+#			R13	- kernel small data area pointer 
+#			R23	- Address of inkernel var
+#			R24	- ppc_ienable_bits
+#			R29	- original value of inkernel
+#			R30	- register save area pointer
+#			R31	- active thread
+#
+# This code gets copied, and the mmuon code is copied inline
+# following this.
+#
+# Don't use R0 in the macro, want to keep ker call number in reg
+#
+
+.macro ENTERKERNEL_COMMON
+	stw		%r6,REG_GPR+6*PPCINT(%r30)
+	stw		%r7,REG_GPR+7*PPCINT(%r30)
+	stw		%r8,REG_GPR+8*PPCINT(%r30)
+	stw		%r9,REG_GPR+9*PPCINT(%r30)
+	stw		%r10,REG_GPR+10*PPCINT(%r30)
+	stw		%r13,REG_GPR+13*PPCINT(%r30)
+	stw		%r14,REG_GPR+14*PPCINT(%r30)
+	stw		%r15,REG_GPR+15*PPCINT(%r30)
+	stw		%r16,REG_GPR+16*PPCINT(%r30)
+	stw		%r17,REG_GPR+17*PPCINT(%r30)
+	stw		%r18,REG_GPR+18*PPCINT(%r30)
+	stw		%r19,REG_GPR+19*PPCINT(%r30)
+	stw		%r20,REG_GPR+20*PPCINT(%r30)
+	stw		%r21,REG_GPR+21*PPCINT(%r30)
+	stw		%r22,REG_GPR+22*PPCINT(%r30)
+	stw		%r23,REG_GPR+23*PPCINT(%r30)
+	stw		%r24,REG_GPR+24*PPCINT(%r30)
+	stw		%r25,REG_GPR+25*PPCINT(%r30)
+	stw		%r26,REG_GPR+26*PPCINT(%r30)
+	stw		%r27,REG_GPR+27*PPCINT(%r30)
+	stw		%r28,REG_GPR+28*PPCINT(%r30)
+	lis		%r13,_SDA_BASE_@ha	
+	lis		%r2,_SDA2_BASE_@ha	
+	la		%r13,_SDA_BASE_@l(%r13)
+	la		%r2,_SDA2_BASE_@l(%r2)
+	lwz		%r24,ppc_ienable_bits@sdarel(%r13)
+	la		%r23,inkernel@sdarel(%r13)
+
+.ifdef VARIANT_instr
+# Save performance registers
+
+	# NYI Change to "copy code" mechanism to improve speed on
+	# platforms which don't have performance registers.
+
+	# Compare cpu.pcr field to disabled_perfregs address to see if
+	# performance registers have been turned on. 
+	lwz		%r3, CPUDATA(%r31)
+	lis		%r7, disabled_perfregs@ha
+	la		%r7, disabled_perfregs@l(%r7)
+	cmplw	%r7, %r3
+	beq+	1f
+	
+	# Save LR and ker call number
+	mflr	%r27
+	mr		%r28, %r0
+
+	# Perfregs pointer in R3
+	lis		%r4, cpu_save_perfregs@ha
+	la		%r4, cpu_save_perfregs@l(%r4)
+	mtctr	%r4
+	bctrl
+
+	# Restore saves
+	mr		%r0, %r28
+	mtlr	%r27
+1:
+.endif # instrumented kernel perfregs save
+
+.endm
+
+
+.macro FPU_RESTORE,reg
+	lfd		%f0,REG_FPSCR(&reg)
+	mtfsf	0xff,%f0
+	lfd		%f0,REG_FPR+0*8(&reg)
+	lfd		%f1,REG_FPR+1*8(&reg)
+	lfd		%f2,REG_FPR+2*8(&reg)
+	lfd		%f3,REG_FPR+3*8(&reg)
+	lfd		%f4,REG_FPR+4*8(&reg)
+	lfd		%f5,REG_FPR+5*8(&reg)
+	lfd		%f6,REG_FPR+6*8(&reg)
+	lfd		%f7,REG_FPR+7*8(&reg)
+	lfd		%f8,REG_FPR+8*8(&reg)
+	lfd		%f9,REG_FPR+9*8(&reg)
+	lfd		%f10,REG_FPR+10*8(&reg)
+	lfd		%f11,REG_FPR+11*8(&reg)
+	lfd		%f12,REG_FPR+12*8(&reg)
+	lfd		%f13,REG_FPR+13*8(&reg)
+	lfd		%f14,REG_FPR+14*8(&reg)
+	lfd		%f15,REG_FPR+15*8(&reg)
+	lfd		%f16,REG_FPR+16*8(&reg)
+	lfd		%f17,REG_FPR+17*8(&reg)
+	lfd		%f18,REG_FPR+18*8(&reg)
+	lfd		%f19,REG_FPR+19*8(&reg)
+	lfd		%f20,REG_FPR+20*8(&reg)
+	lfd		%f21,REG_FPR+21*8(&reg)
+	lfd		%f22,REG_FPR+22*8(&reg)
+	lfd		%f23,REG_FPR+23*8(&reg)
+	lfd		%f24,REG_FPR+24*8(&reg)
+	lfd		%f25,REG_FPR+25*8(&reg)
+	lfd		%f26,REG_FPR+26*8(&reg)
+	lfd		%f27,REG_FPR+27*8(&reg)
+	lfd		%f28,REG_FPR+28*8(&reg)
+	lfd		%f29,REG_FPR+29*8(&reg)
+	lfd		%f30,REG_FPR+30*8(&reg)
+	lfd		%f31,REG_FPR+31*8(&reg)
+.endm
+
+.macro FPU_SAVE,reg
+	stfd	%f0,REG_FPR+0*8(&reg)
+	stfd	%f1,REG_FPR+1*8(&reg)
+	stfd	%f2,REG_FPR+2*8(&reg)
+	stfd	%f3,REG_FPR+3*8(&reg)
+	stfd	%f4,REG_FPR+4*8(&reg)
+	stfd	%f5,REG_FPR+5*8(&reg)
+	stfd	%f6,REG_FPR+6*8(&reg)
+	stfd	%f7,REG_FPR+7*8(&reg)
+	stfd	%f8,REG_FPR+8*8(&reg)
+	stfd	%f9,REG_FPR+9*8(&reg)
+	stfd	%f10,REG_FPR+10*8(&reg)
+	stfd	%f11,REG_FPR+11*8(&reg)
+	stfd	%f12,REG_FPR+12*8(&reg)
+	stfd	%f13,REG_FPR+13*8(&reg)
+	stfd	%f14,REG_FPR+14*8(&reg)
+	stfd	%f15,REG_FPR+15*8(&reg)
+	stfd	%f16,REG_FPR+16*8(&reg)
+	stfd	%f17,REG_FPR+17*8(&reg)
+	stfd	%f18,REG_FPR+18*8(&reg)
+	stfd	%f19,REG_FPR+19*8(&reg)
+	stfd	%f20,REG_FPR+20*8(&reg)
+	stfd	%f21,REG_FPR+21*8(&reg)
+	stfd	%f22,REG_FPR+22*8(&reg)
+	stfd	%f23,REG_FPR+23*8(&reg)
+	stfd	%f24,REG_FPR+24*8(&reg)
+	stfd	%f25,REG_FPR+25*8(&reg)
+	stfd	%f26,REG_FPR+26*8(&reg)
+	stfd	%f27,REG_FPR+27*8(&reg)
+	stfd	%f28,REG_FPR+28*8(&reg)
+	stfd	%f29,REG_FPR+29*8(&reg)
+	stfd	%f30,REG_FPR+30*8(&reg)
+	stfd	%f31,REG_FPR+31*8(&reg)
+	mffs	%f0
+	stfd	%f0,REG_FPSCR(&reg)
+.endm
+
+#
+# Mark a block of code to be copied to low memory exception location
+#
+.macro EXC_COPY_CODE_START func
+	.global	&func
+&func:
+	.long	1962f - &func - 4
+.endm
+
+.macro EXC_COPY_CODE_END
+1962:
+.endm
+
+.macro BKE_GET_RANDOM reg, salt, tmp, sprg=99
+	# Choose a random replacement, avoid pegged entries.
+	#
+	# We're assuming that the timebase counter is running along at
+	# fairly rapid clip, incrementing at least every 10-20 instructions
+	# or so.
+	#
+	mfspr	&reg,PPC_SPR_TBL
+	.if &salt
+	#
+	# The 'salt' is used in instruction TLB misses so that if a data
+	# miss causes us to throw out the page that the instruction
+	# is on, the resulting itlb miss is less likely to choose the 
+	# same entry we just loaded.
+	#
+	xori	&reg,&reg,&salt
+	.endif
+	andi.	&reg,&reg,PPCBKE_RANDOM_SIZE-1
+.ifdef VARIANT_smp
+	#
+	# For SMP, we need a tmp register to get this cpu's RANDOM_BASE address
+	#
+.if &sprg - 99
+	mtspr	PPCBKE_SPR_SPRG&sprg,&tmp
+.endif
+	GETCPU	&tmp,0
+	slwi	&tmp,&tmp,PPCBKE_RANDOM_SHIFT
+	add		&reg,&tmp,&reg
+.if &sprg - 99
+	mfspr	&tmp,PPCBKE_SPR_SPRG&sprg&RO
+.endif
+.endif
+	lbz		&reg,PPCBKE_RANDOM_BASE(&reg)
+.endm
+
+#
+# Temp macro to print out a debug character. Destroys %r7, %r8, %r9
+#
+
+.set TEST_PORT_ADDR,0x800002f8
+
+.macro DBG_MSG var, r1=%r7, r2=%r8, r3=%r9
+.if 1
+	loadi	&r2,PPC_MSR_DR|PPC_MSR_EE
+	mfmsr	&r1
+	andc	&r2,&r1,&r2
+	mtmsr	&r2
+.ifdef VARIANT_600
+	# lock data cache
+    mfspr   &r2,1008
+	ori		&r2,&r2,0x1000
+    mtspr   1008,&r2
+.endif
+	sync
+	isync
+	loadi	&r2,TEST_PORT_ADDR
+	li		&r3,0
+	GETCPU	&r3
+	addi	&r3,&r3,&var
+	stb		&r3,0(&r2)
+	eieio
+.ifdef VARIANT_600
+	# unlock data cache
+    mfspr   &r2,1008
+	xori	&r2,&r2,0x1000
+    mtspr   1008,&r2
+.endif
+	mtmsr	&r1
+	sync
+	isync
+.endif
+.endm

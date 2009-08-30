@@ -1,0 +1,49 @@
+Fri Dec  3 21:39:47 1993  Piercarlo Grandi  (pcg@aber.ac.uk)
+
+	* polished 4.9 for linux; corrected a terrible, linux
+	specific performance bug that caused all streams to
+	become unbuffered; made emacs.c more understandable.
+	With 4.9 pdksh is twice as fast and one third the size
+	of bash 1.13, and has most of the relevant functionality.
+	To me it is a drop-in replacement.
+
+Sat May  8 15:55:24 1993  Simon J. Gerraty  (sjg@zen.void.oz.au)
+
+	* Ported to 386bsd - sh directory only, stc/* not needed.
+
+Sat Aug  1 17:11:24 1992  Simon J. Gerraty  (sjg@zen)
+
+	* Incorporated massive contribution from Peter Collinson
+	Refer to Changes.pc
+
+	* Incorporated Emacs-style completion provided by
+	Neil.Smithline@eng.sun.com this a bit nicer than the standard ksh
+	file completion.
+
+Sun May  3 17:50:03 1992  Simon J. Gerraty  (sjg@zen)
+
+	* Updated MACHINES.
+	* Placed source under CVS.  This should help with processing fixes
+	from the field.
+
+Sat Apr 25 10:53:20 1992  Simon J. Gerraty  (sjg@zen)
+
+	* Getting ready for 4.3 release.  
+
+Fri Nov 22 22:24:29 1991  Simon J. Gerraty  (sjg at zen)
+
+	* Cleaned up the build process slightly.  Makefiles in ./std tree
+	now maintain objects within the libraries rather than simply
+	building the .o's and archiving them.  Of course the make(1) used
+	must know how to maintain libraries :-)
+
+	* Added bug.report as a template for bug reporting.
+
+	* Source in ./sh can be built independently of ./std tree if
+	desired.  See comments in ./sh/Makefile.
+
+	* As originally distributed some of libstdc.a was not used and
+	libposix.a was not used at all.  On Sun's this highlighted a bug
+	(incompatibility) in the times() call.  Now the ./std/libs are
+	used fully, and the supplied times() call functions as expected.
+

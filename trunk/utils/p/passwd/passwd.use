@@ -1,0 +1,4 @@
+%C	[username ...]
+Where:
+ username is either an existing user, to change their password
+ or a new user to create an account for

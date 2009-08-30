@@ -1,0 +1,18 @@
+expr error: invalid syntax
+
+abc
+def
+ABC
+DEF
+   
+!@#
+,.:
+"123"
+"456"
+0
+-1
+1
+2
+-2
+117
+-117

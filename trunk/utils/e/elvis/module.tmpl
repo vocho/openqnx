@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<module name="elvis">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="elvis" generated="true">
+			<location basedir="elvis/{os}/{cpu}/o{.:endian}" runtime="true">
+				elvis
+			</location>
+		</component>
+		</package>
+		<package>
+		<component id="elvis_target" generated="true">
+			<location basedir="elvis/{os}/{cpu}/o{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				elvis
+			</location>
+		</component>
+		</package>
+	</contents>
+
+	<requires>
+<!--		<part build="true" location="lib/socket"/> -->
+	</requires>
+
+</module>

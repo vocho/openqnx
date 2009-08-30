@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<module name="rtc">
+	<type>Element</type>
+	<classification>Runtime</classification>
+
+        <description>
+                <short>RTC utility</short>
+                <abstract>
+                        <![CDATA[The rtc utility.]]>
+                </abstract>
+        </description>
+
+	<supports> 
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location>.</location>
+	</source>
+
+     <GroupOwner>hw</GroupOwner>
+     <RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="rtc" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}"
+				runtime="true">rtc</location>
+		</component>	
+   </contents>
+
+   <requires>
+      <part build="true" location="lib/util"/>
+      <part build="false" location="lib/i2c"/>
+   </requires>
+
+</module>

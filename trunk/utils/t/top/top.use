@@ -1,0 +1,8 @@
+%C - display system usage (UNIX)
+
+%C  top [-i <number>] [-d] [-n <node>]
+Options:
+ -d         dumb terminal
+ -n <node>  remote node
+ -p <pri>   run at priority
+ -i <iter>  # of iterations

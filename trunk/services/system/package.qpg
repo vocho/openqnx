@@ -1,0 +1,32 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="public/kernel/*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/*cisco*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/*_g*" handling="exclude"/>
+			<QPG:Add file="proc/*/*/procnto*.*" handling="exclude"/> 
+			<QPG:Add file="public/c6x/*" handling="exclude" />
+			<QPG:Add file="proc/*/*/procnto*tx79*" handling="exclude" /> 
+			<QPG:Add file="proc/*/*/procnto*instr" handling="exclude" /> 
+			<QPG:Add file="proc/*/*/procnto*gcc*" handling="exclude" /> 
+
+			<QPG:Add filetype="exe" component="proc-se" file="proc/*/*/procnto*" pinfo="$"> 
+			<QPG:Rule argument="*mips/?e/procnto" component="proc-pe"/>
+			<QPG:Rule argument="*mips/be.32/procnto-32" component="proc-pe"/>
+			<QPG:Rule argument="*ppc/be.800/procnto-800" component="proc-pe"/>
+			<QPG:Rule argument="*ppc/be.600.smp/procnto-600-smp" component="proc-pe"/>
+			<QPG:Rule argument="*ppc/be.400/procnto-400" component="proc-pe"/>
+			<QPG:Rule argument="*ppc/be.booke/procnto-booke" component="proc-pe"/>
+			</QPG:Add>
+
+			<QPG:Add component="kernel" type="tree" file="public/kernel" install="/usr/include/kernel/" />
+			<QPG:Add component="dev" type="tree" file="public/arm" install="/usr/include/arm/" target="arm" />
+			<QPG:Add component="dev" type="tree" file="public/mips" install="/usr/include/mips/" target="mips" />
+			<QPG:Add component="dev" type="tree" file="public/ppc" install="/usr/include/ppc/" target="ppc" />
+			<QPG:Add component="dev" type="tree" file="public/sh" install="/usr/include/sh/" target="sh" />
+			<QPG:Add component="dev" type="tree" file="public/x86" install="/usr/include/x86/" target="x86" />
+			<QPG:Add component="dev" type="tree" file="public" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

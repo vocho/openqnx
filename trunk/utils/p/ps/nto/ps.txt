@@ -1,0 +1,13 @@
+ps System Documentation
+
+June 1999
+
+Source Tree
+The 'ps' utility is broken down into the following modules:
+ps	This module contains main() and retrieves all the info about processes 
+	and threads from the procfs resource manager.
+output	This module displays info according to the layout. It also parses the
+	paramter to the -o option and stores it in an internal format to 
+	describe the layout.
+filter	This module validates filter lists and determines whether a process 
+	passes at least one of the filters.

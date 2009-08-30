@@ -1,0 +1,11 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+	 <QPG:Add file="nto/x86/o.socketpair/*" handling="exclude"/>
+         <QPG:Add file="nto/*/*/esh" pinfo="$"/>
+         <QPG:Add file="nto/*/*/uesh" pinfo="$"/>
+         <QPG:Add file="nto/*/*/fesh" pinfo="$"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

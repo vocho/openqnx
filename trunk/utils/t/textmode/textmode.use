@@ -1,0 +1,3 @@
+textmode - Attempt to put video card into text-mode using the Video BIOS,
+           and unlock the console.  
+

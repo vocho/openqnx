@@ -1,0 +1,7 @@
+%C - text editor
+
+%C [-] [-sx] [-p string] [file]
+Options:
+ -s	   Suppress diagnostics. Use if standard input to ed is from a script.
+ -x	   Prompt for an encryption key that will be used for reads and writes.
+ -p string Specify a command prompt.

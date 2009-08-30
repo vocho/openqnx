@@ -1,0 +1,5 @@
+%C	- arbitrary-precision arithmetic language (POSIX)
+
+%C  [-l]
+Options:
+ -l    Include math library and set scale to 20.

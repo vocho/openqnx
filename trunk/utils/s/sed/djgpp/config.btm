@@ -1,0 +1,1 @@
+       command.com /e:1024 /c %0.bat

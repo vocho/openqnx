@@ -1,0 +1,9 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="*/*/dumper" pinfo="dumper.pinfo"/>
+			<QPG:Add component="dev" type="tree" file="public" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

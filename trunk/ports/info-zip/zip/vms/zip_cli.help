@@ -1,0 +1,628 @@
+.!
+.!  File:       ZIP_CLI.HELP
+.!
+.!  Author:     Christian Spieler
+.!
+.!  Date:       05 Dec 95 (orig. ZIP.RNH, 22 Oct 91)
+.!
+.!  Description:
+.!
+.!      TPU-processable source file to produce VMS on-line help for
+.!      portable Zip.  Adapted from ZIP.RNH, originally based on
+.!      ZIP.MAN (now MANUAL).
+.!
+.!      To build:
+.!          $ EDIT /TPU/NOSECTION/NODISPLAY/COMMAND=CVTHELP.TPU ZIP_CLI.HELP
+.!          $ RUNOFF /OUT=ZIP_CLI.HLP ZIP_CLI.RNH
+.!          $ LIBR /HELP/INSERT libr ZIP_CLI
+.!
+.!  Modification history:
+.!
+.!      01-001          Christian Spieler       05-DEC-1995 02:02
+.!              Genesis.
+.!      01-002          Christian Spieler       20-JAN-1996 03:09
+.!              Modified /LICENSE and /VERBOSE descriptions.
+.!      01-003          Christian Spieler       11-FEB-1996 23:09
+.!              Added /[NO]EXTRA_FIELDS description.
+.!      01-004          Christian Spieler       11-MAR-1996 20:08
+.!              Removed /ENCRYPT=VERIFY option.
+.!      01-005          Christian Spieler       11-MAY-1996 23:08
+.!              Corrected/enhanced info about how to get help on UNIX options.
+.!      01-006          Christian Spieler       21-JUL-1997 22:26
+.!              Updated for new options of Zip 2.2.
+.!      01-006          Christian Spieler       14-OCT-1997 22:04
+.!              Cleanups for Zip 2.2 release (no version change).
+.!
+<INIT>
+<MAIN>
+ZIP
+
+Zip is a compression and file packaging utility for Unix, MSDOS, OS/2, and
+VMS.  It is analogous to a combination of tar and compress and is
+compatible with PKZIP (Phil Katz ZIP) for MSDOS systems.
+
+There is a companion to Zip called UnZip (of course).  Zip and UnZip can
+work with files produced by PKZIP under MSDOS, and PKZIP and PKUNZIP can
+work with files produced by Zip.
+
+Zip 2.2 is compatible with PKZIP 2.04.
+Note that PKUNZIP 1.10 cannot extract files produced by PKZIP 2.04
+or zip 2.2. You must use PKZIP 2.04g or unzip 5.0p1 (or later versions)
+to extract them.
+
+For a brief help on Zip and Unzip, run each without specifying any
+parameters on the command line. If you want to get the help screen
+describing the alternate UNIX style command interface, you must
+specify the -h option.
+
+Zip puts one or more compressed files into a single "zip file" along with
+information about the files, including the name, path if requested, date
+and time last modified, protection, and check information to verify the
+fidelity of each entry.  Zip can pack an entire directory structure in a
+zip file with a single command.  Compression ratios of 2:1 to 3:1 are
+common for text files.  Zip has has one compression method (deflation) and
+can also store files without compression. It automatically chooses the better
+of the two for each file to be compressed.
+
+Zip is useful for packaging a set of files to send to someone or for
+distribution; for archiving or backing up files; and for saving disk space
+by temporarily compressing unused files or directories.
+
+
+<FORMAT>
+ZIP zipfile [file[,...]] [/qualifiers]
+
+.!
+<TOPIC>
+Parameters
+
+<PARAMETER>
+zipfile
+
+<PTEXT>
+File specification for the ZIP archive. Zip will perform the requested action
+for every zipfile matching the specification.
+The default file specification is SYS$DISK:[].ZIP.
+
+Note that self-extracting ZIP files are supported; just specify the .EXE
+suffix yourself.
+<TXETP>
+
+<PARAMETER>
+file
+
+<PTEXT>
+An optional comma-separated list of files to be added or replaced in the
+zipfile. For unconditional add / replacement actions, a list must be
+specified. For the freshening operation, all archive members are processed
+per default; the optional file list restricts processing to the specified
+archive members.
+Expressions may be used to match multiple members.  For add/update operations,
+wildcard expressions are interpreted in  VMS wildcard syntax to match
+external files. In contrast, for freshening/deletion operation, wildcard
+expressions are interpreted in UNIX compatible syntax to match the
+internal names of archive members in the zipfile.
+<TXETP>
+
+<QUALIFIERS>
+<QUALIFIER>
+/ADJUST_OFFSETS
+
+/ADJUST_OFFSETS
+
+Adjust internal offsets of the Zip archive members after some data
+(e.g. a SFX executable stub) has been prepended to the archive file.
+<QUALIFIER>
+/APPEND
+
+/APPEND
+
+Try to work with the existing Zip archive. This option is ignored when
+any existing entry in the Zip archive gets updated or deleted.
+Without the /APPEND qualifier, Zip always creates a backup copy when
+modifying the archive. This is slower, but prevents corruption of the
+old archive in case of a fatal problem (power failures, program crash...).
+<QUALIFIER>
+/BATCH
+
+/BATCH[=listfile]
+
+Read list of files to add/update to the Zip archive from the listfile.
+The listfile defaults to SYS$INPUT.
+<QUALIFIER>
+/BEFORE
+
+/BEFORE=(VMS time specification)
+
+Only handle files that are older than the specified date and time.
+The specified time is compared with the files' RMS creation time.
+<QUALIFIER>
+/COMMENT
+
+/COMMENT[=KEYWORD[,KEYWORD]]
+
+Add comments to the Zip archive.
+<LITERAL>
+|  ZIP_FILE  Add/replace the multi-line archive comment. (default)
+|  FILES     Add file comment to each updated/added archive member.
+<LARETIL>
+
+The Zip program prompts for each comment to be added; this requires Zip
+to be run in interactive mode.
+
+The one-line archive member comments are terminated by typing RETURN.
+To skip a file comment, just type RETURN without entering any further
+characters.
+
+The zip archive comment may be multi-line. The comment is ended by a line
+containing just a period, or by supplying a ^Z.
+<QUALIFIER>
+/DELETE
+
+/DELETE
+
+Delete entries from zip file.
+<QUALIFIER>
+/DIRNAMES
+
+/DIRNAMES (default)
+/NODIRNAMES
+
+Store directory entries in the archive.
+<QUALIFIER>
+/ENCRYPT
+
+/ENCRYPT[="password"]
+
+Encrypt added and updated archive entries.
+
+You may specify the password on the command line, although we do not
+recommend it since THIS IS INSECURE. Remember to enclose the password
+string with quotes, to prevent automatic conversion to upper case or
+misinterpretation of punctuation characters by DCL.
+
+When the password was not specified, Zip prompts for it on SYS$COMMAND.
+For typing the password, terminal echo is suspended. For added user
+security, the password prompt appears twice and the two user inputs are
+checked for identity before using the password.
+<QUALIFIER>
+/EXCLUDE
+
+/EXCLUDE=(file[,...])
+
+A comma-separated list of files to exclude when deleting, updating or
+adding files in the archive.
+If multiple files are specified, the list should be included in
+parentheses.
+<QUALIFIER>
+/EXLIST
+
+/EXLIST=listfile
+
+The files matching the filename patterns listed in "listfile" are
+excluded when deleting, updating or adding files in the archive.
+The "listfile" is a normal text file with one filename pattern entry per
+line. The name pattern entries are recognized exactly as found in
+"listfile", including leading, embedding and trailing whitespace or most
+control characters (with exception of LineFeed and probably CarriageReturn).
+<QUALIFIER>
+/EXTRA_FIELDS
+
+/EXTRA_FIELDS (default)
+/NOEXTRA_FIELDS
+
+Allows inclusion of extra file attributes information in the zipfile's
+entry headers.
+Examples are: the VMS attributes (enabled by the /VMS qualifier), or
+additional GMT time stamps. These GMT time stamps are quite useful when
+transporting a Zip archive world wide, but they are only recognized
+by Info-ZIP's UnZip version 5.20 and later, and take up some additional
+space.
+When /EXTRA_FIELDS is negated, the /VMS qualifier to request saving of the
+VMS RMS file attributes is ignored, too!
+<QUALIFIER>
+/FRESHEN
+
+/FRESHEN
+
+Freshen existing zipfile entries; replace if newer.  Does not cause any new
+files to be added to the archive.
+<QUALIFIER>
+/FULL_PATH
+
+/FULL_PATH  (default)
+/NOFULL_PATH
+
+Directs Zip to store the directory part of the file names (relative to
+the current working directory) in the Zip archive.
+<QUALIFIER>
+/HELP
+
+/HELP
+
+Display Zip's help screen, including the version message.
+<QUALIFIER>
+/INCLUDE
+
+/INCLUDE=(file[,...])
+
+A comma-separated list of files to include when deleting, updating or
+adding files in the archive.
+If multiple files are specified, the list should be included in
+parentheses.
+<QUALIFIER>
+/INLIST
+
+/INLIST=listfile
+
+The files matching the filename patterns listed in "listfile" are
+included when deleting, updating or adding files in the archive.
+The "listfile" is a normal text file with one filename pattern entry per
+line. The name pattern entries are recognized exactly as found in
+"listfile", including leading, embedding and trailing whitespace or most
+control characters (with exception of LineFeed and probably CarriageReturn).
+<QUALIFIER>
+/JUNK
+
+/JUNK
+/NOJUNK (default)
+
+Junk the directory part of the file names for added entries (do not
+not save the directory structure). The /JUNK qualifier is an alias for
+/NOFULL_PATH.
+<QUALIFIER>
+/KEEP_VERSION
+
+/KEEP_VERSION
+/NOKEEP_VERSION (default)
+
+Directs Zip to include the version number appendix in the stored file names.
+This allows to store multiple version of the same file in a single Zip
+archive.
+
+The normal behaviour of Zip without /KEEP_VERSION is to use only the most
+recent version of a specified file and strip of the version number from
+the stored file name. This behaviour ensures better compatibility when
+transfering a Zip archive to non VMS systems.
+<QUALIFIER>
+/LATEST
+
+/LATEST
+
+The archive's creation and modification time is set to the latest
+modification time of all archive members.
+<QUALIFIER>
+/LEVEL
+
+/LEVEL=number
+
+Specifies the compression level:
+<LITERAL>
+|  0      Store
+|  1      Fastest compression (Defl:F)
+|  ...
+|  9      Best compression    (Defl:X)
+<LARETIL>
+
+The default level is 6.
+<QUALIFIER>
+/LICENSE
+
+/LICENSE
+
+Displays the Zip license.
+<QUALIFIER>
+/MOVE
+
+/MOVE
+
+Move the specified files into the Zip archive.
+Entries which have been added (or freshened) to the zip file get removed from
+the file system. If a directory is empty afterwards, it is also removed.
+<QUALIFIER>
+/MUST_MATCH
+
+/MUST_MATCH
+
+Input files must exist (and wildcards must match existing files).  By
+default, missing files and unmatched wildcards generate a warning when
+Zip finishes work on the files which do exist.  With /MUST_MATCH, Zip
+exits immediately with an error status if an input file is not found, or
+if an input file wildcard is not matched.
+<QUALIFIER>
+/PKZIP
+
+/PKZIP
+/NOPKZIP (default)
+
+Create PKZIP compatible archive entries.
+The file names are truncated and converted to upper case to match the
+MSDOS 8+3 file name syntax. Only the MSDOS compatible attributes are stored;
+the file owner's write permission is mapped to the "readonly" attribute.
+The archive entry is marked as being made under MSDOS regardless of the true
+host system of Zip.
+<QUALIFIER>
+/QUIET
+
+/QUIET
+
+Perform operations quietly.
+<QUALIFIER>
+/RECURSE
+
+/RECURSE[=KEYWORD]
+/NORECURSE (default)
+
+Directs Zip to recurse into subdirectories.
+The optional keywords recognized are:
+<LITERAL>
+|  PATH      take patterns as full path specifiers (-r) (default)
+|  FILENAMES start from current dir;
+|            only use filename part of file patterns (-R)
+<LARETIL>
+The new FILENAMES optional keyword modifies the recursion algorithm to
+be (almost) compatible to PKZIP's behaviour on subdirectory recursion.
+
+On VMS, this behaviour can be alternatively archived by using
+the "subdirectory recursing wildcard" [...] in the "include files" parameter
+list.
+<QUALIFIER>
+/SINCE
+
+/SINCE=(VMS time specification)
+
+Only handle files that are newer than the specified date and time.
+The specified time is compared with the files' RMS creation time.
+<QUALIFIER>
+/STORETYPES
+
+/STORETYPES=(.ext1,.ext2,... )
+
+For files with the specified extensions, Zip does not try to compress the
+data but stores them verbatim.  This speeds up operation on files that
+have already been compressed and where a second compression step usually
+does not gain much space.
+The default list of extensions where compression is suppressed is
+(.Z,.zip,.zoo,.arc,.arj).
+
+But note: when maximum level of compression is requested (/LEVEL=9), the
+STORETYPES heuristic is not used. In this case, Zip tries to compress ALL
+files.
+<QUALIFIER>
+/TEMP_PATH
+
+/TEMP_PATH=dirspec
+
+Specifies an alternate directory where Zip creates its temporary files.
+When this qualifier is not given, Zip attempts to write to the current
+working directory.
+<QUALIFIER>
+/TEST
+
+/TEST
+
+Test archive integrity.
+<QUALIFIER>
+/TRANSLATE_EOL
+
+/TRANSLATE_EOL[=KEYWORD]
+
+Selects conversion of the end-of-line markers in text files.
+The optional keywords recognized are:
+<LITERAL>
+|  LF        convert LF -> CRLF (UNIX to DOS) (default)
+|  CRLF      convert CRLF -> LF, strip trailing CTRL-Z's (DOS to UNIX)
+<LARETIL>
+
+This option should only be used with text files. The second option CRLF
+is only useful when a DOS text file has been transfered to a VMS disk
+in stream (or stream_lf) format.
+<QUALIFIER>
+/UNSFX
+
+/UNSFX
+
+Strip any prepended data from the Zip archive, for example a self-extracting
+executable stub.
+<QUALIFIER>
+/UPDATE
+
+/UPDATE
+
+Freshen existing archive entries; create new ones if needed.
+<QUALIFIER>
+/VERBOSE
+
+/VERBOSE[=NORMAL|MORE|DEBUG]
+
+Switch on verbose messages. This includes diagnostics on discovered
+oddities in the zipfile's structure, and a progress indicator during
+compression operation.  /VERBOSE with no value is equivalent to /VERBOSE
+= NORMAL.  MORE adds more messages, and DEBUG adds still more messages.
+
+When this qualifier is the only command line argument given, it has a special
+meaning. In this case a screen of diagnostic information about the program
+version is displayed. This display includes the Zip version number and
+release date, and it shows some information to determine when and how
+the executable was built and set up. This includes info on the used compiler's
+name and version, the date of the build (if available), and some optional
+compile time feature flags. Additionally, the contents of the environment
+variables (=logical names on VMS) that are read by Zip for runtime
+configuration are shown.
+This information is especially valuable when reporting problems or bugs.
+
+<QUALIFIER>
+/VMS
+
+/VMS[=ALL]
+
+Store VMS file attributes in Zip archive.
+
+When the optional keyword ALL is specified, all allocated blocks in a
+file are stored in the Zip archive, including data beyond the
+End-of-File (EOF) marker.
+
+/VMS provides good fidelity for well-formed files (no data past EOF)
+when unpacked on a VMS system.  Also, some types of file (notably
+Stream_LF text files) will be unpacked as expected on a non-VMS system.
+
+/VMS=ALL provides good fidelity, even for files with data past EOF, when
+unpacked on a VMS system.  However, the data from beyond the EOF marker
+will typically cause a file to appear corrupted when unpacked on a
+non-VMS system.
+<TOPIC>
+Authors
+
+Info-ZIP; currently maintained by Onno van der Linden.  VMS support maintained
+by Igor Mandrichenko, Christian Spieler, and Hunter Goatley.  Originally based
+on a program by Samuel H. Smith.
+
+VMS on-line help ported from Zip's MANUAL by Christian Spieler, using
+Hunter Goatley's work for UnZip.
+
+<TOPIC>
+Exit_Codes
+
+On VMS, Zip's UNIX style exit values are mapped into proper
+VMS status codes:
+<LITERAL>
+|   1                                  (success)  normal exit,
+|   (0x7fff0000 + 16*Zip_error_level)  warnings
+|   (0x7fff0002 + 16*Zip_error_level)  normal errors
+|   (0x7fff0004 + 16*Zip_error_level)  fatal errors
+<LARETIL>
+
+The Zip error level (or exit code) approximates the exit
+codes defined by PKWARE and takes on the following values:
+<LITERAL>
+|  VMS       Zip      Type of error
+|  severity  errcode
+|    -         0      normal; no errors or warnings detected.
+|    F         2      unexpected end of zip file.
+|    E         3      a generic error in the  zipfile  format  was
+|                     detected.   Processing  may  have  completed
+|                     successfully anyway;  some  broken  zipfiles
+|                     created by other archivers have simple work-
+|                     arounds.
+|    F         4      zip was unable to allocate memory for one or
+|                     more  buffers during program initialization.
+|    F         5      a severe error in  the  zipfile  format  was
+|                     detected.   Processing probably failed imme-
+|                     diately.
+|    E         6      entry too large to be split with zipsplit
+|    E         7      invalid comment format
+|    F         8      zip -T failed, or out of memory
+|    E         9      the user aborted zip prematurely  with  con-
+|                     trol-C (or similar)
+|    F         10     zip  encountered an error while using a temp
+|                     file
+|    F         11     read or seek error
+|    W         12     zip has nothing to do
+|    E         13     missing or empty zip file
+|    F         14     error writing to a file
+|    F         15     zip was unable to create a file for writing
+|    E         16     bad command line parameters
+|    E         18     zip could not open a specified file to read
+<LARETIL>
+
+<TOPIC>
+Logical_Names
+
+Zip scans its process environment for the logical name ZIP_OPTS, which
+can be used to specify a string of default options to modify Zip's
+behaviour. For the syntax, see help topic UNIX_Options.
+With the exception of "-i" and "-x", all recognized UNIX style options
+can be used within the ZIP_OPTS equivalence string.
+
+For example, the following will cause Zip to skip directories, include
+VMS attribute information perform all operations at quiet-level 1 by default:
+
+<LITERAL>
+|  $ define ZIP_OPTS "-qDV"
+<LARETIL>
+
+Note that the quotation marks here are required to preserve lowercase options
+(opposite of the command-line behavior).
+
+ZIP_OPTS may be defined as a symbol rather than a logical, but if both
+are defined, the logical is used.
+
+The alternative logical name ZIPOPT (more UNIX-like naming convention)
+is recognized as well. If both ZIPOPT and ZIP_OPTS are present (and do
+not equate to whitespace only), the content of ZIPOPT takes precedence
+and ZIP_OPTS is ignored.
+
+<TOPIC>
+UNIX_Options
+
+The default action of Zip is to add or replace zipfile entries from list, which
+can include the special name -@ to read names from SYS$INPUT.  The following
+list of options was taken from the on-line help generated when Zip is run
+with the -h command-line option:
+
+<LITERAL>
+|  -A   adjust self-extracting exe
+|  -b   use "path" for temp files
+|  -c   add one-line comments
+|  -d   delete entries in zipfile
+|  -D   do not add directory entries
+|  -e   encrypt
+|  -f   freshen: only changed files
+|  -F   fix zipfile (-FF try harder)
+|  -g   allow growing existing zipfile (unless updating or deleting)
+|  -h   show this help
+|  -i   include only names matching the following patterns
+|  -i@  include only names matching the patterns listed in "file"
+|  -j   junk (don't record) directory names
+|  -J   junk (remove) prepended (SFX) stub
+|  -k   simulate PKZIP made zipfile
+|  -l   translate end-of-lines (LF -> CRLF)
+|  -ll  translate end-of-lines (CRLF -> LF)
+|  -L   show software license
+|  -m   move into zipfile (delete files)
+|  -n   don't compress theses suffixes
+|  -o   make zipfile as old as latest entry
+|  -P   encrypt with specified "password"
+|  -q   quiet operation
+|  -r   recurse into subdirs, match against specified paths
+|  -R   recurse into subdirs of current dir, match filenames only
+|  -t   only do files after "mmddyyyy"
+|  -tt  only do files before "mmddyyyy"
+|  -T   test zip file integrity (calls unzip)
+|  -u   update: only changed or new files
+|  -v   verbose messages/print version info
+|  -V   save VMS file attributes
+|  -w   append the VMS version number to name stored in zip file
+|  -x   exclude names matching the following patterns
+|  -x@  exclude names matching the patterns listed in "file"
+|  -X   suppress storing of any extra file attributes
+|  -z   add zipfile comment
+|  -0   store only
+|  -1   compress faster
+|  -9   compress better
+|  -@   read list of files to process from SYS$INPUT
+<LARETIL>
+
+Note that uppercase options such as -A, -D, -L, -T and -V must be specified
+in quotes.  For example:
+
+<LITERAL>
+|  $ zip "-VD" -a zipfile
+<LARETIL>
+
+To negate a default option on the command line, add one or more minus signs
+before the option letter, in addition to the leading switch character `-':
+
+<LITERAL>
+|  $ zip --ql zipfile
+<LARETIL>
+
+or
+
+<LITERAL>
+|  $ zip -l-q zipfile
+<LARETIL>
+
+At present it is not possible to decrement an option below zero--that is,
+more than a few minuses have no effect.
+===

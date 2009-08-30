@@ -1,0 +1,10 @@
+" Check for changed timestamp (unless it was never set, or forced write)
+if !bang && edited && timestamp != "" && time(filename) != timestamp
+then error file's timestamp has changed
+" Maybe make a backup
+if backup && !newfile
+then {
+ switch os
+ case unix eval ! cp (filename) (filename).bak
+ default   eval ! copy (filename) (dirname(filename) / basename(filename)).bak >NUL
+}

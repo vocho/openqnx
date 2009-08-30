@@ -1,0 +1,32 @@
+#
+#  sh/util.ah
+#
+#  Copyright by QNX Software Systems Limited 2001. All rights reserved.
+#
+.ifndef SH_UTIL_AH_INCLUDED
+.set SH_UTIL_AH_INCLUDE,1
+
+.macro routine_start name, flags
+	.if ((&flags) \(&) 0x1) <> 0
+		.globl &name
+	.endif
+	&name:
+	.align 1
+.endm
+
+.macro routine_end name
+	.size &name,.-(&name)
+	.type &name,@function
+.endm
+
+/* ll: mov.l @r4,r0 */
+.macro	ll
+trapa #0xfe
+.endm
+
+/* sc: mov.l r5,@r4, ret r0: 0 -- fail, 1 success */
+.macro	sc
+trapa #0xff
+.endm
+
+.endif

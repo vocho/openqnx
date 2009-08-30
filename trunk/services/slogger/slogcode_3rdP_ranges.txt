@@ -1,0 +1,38 @@
+/*
+	******************************************************************
+	These are the 3rd party ranges that have been assigned to
+	customers requesting them.  Once a customer has been approved
+	you should ensure you have the latest version of this file
+	from CVS, then add the range in terms of offsets off the
+	3rd party define from public/sys/slogcodes.h. 
+
+	For example:
+
+	#define _SLOGC_3RDPARTY_JOECOMPANY_START (_SLOGC_3RDPARTY_START+1)
+	#define _SLOGC_3RDPARTY_JOECOMPANY_END (_SLOGC_3RDPARTY_START+10)
+
+	It should be noted that this file SHOULD NOT BE SHIPPED to anyone
+	outside of QSSL.
+	******************************************************************
+*/
+
+	/* Specific Harmon ranges inside the general one */	
+	#define _SLOGC_3RDPARTY_HARMAN_BECKER_START (_SLOGC_3RDPARTY_START+1)
+	#define _SLOGC_3RDPARTY_HARMAN_BECKER_END	(_SLOGC_3RDPARTY_START+10)
+	#define _SLOGC_3RDPARTY_HARMAN_START		(_SLOGC_3RDPARTY_START+11)
+	#define _SLOGC_3RDPARTY_HARMAN_END			(_SLOGC_3RDPARTY_START+50)
+
+	/*
+		*** DO NOT DISTRIBUTE THE OEM CODE MAPPINGS ***
+		[ OEM Codes ]
+	
+		OEM00001	Harman Becker
+		OEM00002	Harman 
+	*/
+
+	/* OEM Coded version defines to go into sys/slogcodes.h */
+	#define _SLOGC_3RDPARTY_OEM00001_START		_SLOGC_3RDPARTY_HARMAN_BECKER_START
+	#define _SLOGC_3RDPARTY_OEM00001_END		_SLOGC_3RDPARTY_HARMAN_BECKER_END
+	#define _SLOGC_3RDPARTY_OEM00002_START		_SLOGC_3RDPARTY_HARMAN_START
+	#define _SLOGC_3RDPARTY_OEM00002_END		_SLOGC_3RDPARTY_HARMON_END
+

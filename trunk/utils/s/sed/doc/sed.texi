@@ -1,0 +1,765 @@
+\input texinfo  @c -*-texinfo-*-
+@c %**start of header
+@setfilename sed.info
+@settitle sed, a stream editor
+@c %**end of header
+
+@c This file has the new style title page commands.
+@c Run `makeinfo' rather than `texinfo-format-buffer'.
+
+@c smallbook
+
+@c tex
+@c \overfullrule=0pt
+@c end tex
+
+@include version.texi
+
+@c Combine indices.
+@syncodeindex ky cp
+@syncodeindex pg cp
+@syncodeindex tp cp
+
+@defcodeindex op
+@syncodeindex op fn
+
+@ifinfo
+@direntry
+* sed: (sed).                   Stream EDitor.
+@end direntry
+This file documents @sc{sed}, a stream editor.
+
+
+Published by the Free Software Foundation,
+59 Temple Place - Suite 330
+Boston, MA 02111-1307, USA
+
+Copyright (C) 1998 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@setchapternewpage off
+
+@titlepage
+@title sed, a stream editor
+@subtitle version @value{VERSION}, @value{UPDATED}
+@author by Ken Pizzini
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1998 Free Software Foundation, Inc.
+
+@sp 2
+Published by the Free Software Foundation, @*
+59 Temple Place - Suite 330, @*
+Boston, MA 02111-1307, USA
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+
+@end titlepage
+@page
+
+
+@node Top, Introduction, (dir), (dir)
+@comment  node-name,  next,  previous,  up
+
+@ifinfo
+This document was produced for version @value{VERSION} of @sc{GNU} @sc{sed}.
+@end ifinfo
+
+@menu
+* Introduction::                Introduction
+* Invoking SED::                Invocation
+* sed Programs::                @sc{sed} programs
+* Examples::                    Some sample scripts
+* Limitations::                 About the (non-)limitations on line length
+* Other Resources::             Other resources for learning about @sc{sed}
+* Reporting Bugs::              Reporting bugs
+* Concept Index::               A menu with all the topics in this manual.
+* Command and Option Index::    A menu with all @sc{sed} commands and
+                                 command-line options.
+@end menu
+
+
+@node Introduction, Invoking SED, Top, Top
+@chapter Introduction
+
+@cindex Stream editor
+@sc{sed} is a stream editor.
+A stream editor is used to perform basic text
+transformations on an input stream
+(a file or input from a pipeline).
+While in some ways similar to an editor which
+permits scripted edits (such as @sc{ed}),
+@sc{sed} works by making only one pass over the
+input(s), and is consequently more efficient.
+But it is @sc{sed}'s ability to filter text in a pipeline
+which particularly distinguishes it from other types of
+editors.
+
+
+@node Invoking SED, sed Programs, Introduction, Top
+@chapter Invocation
+
+@sc{sed} may be invoked with the following command-line options:
+
+@table @samp
+@item -V
+@itemx --version
+@opindex -V
+@opindex --version
+@cindex Version, printing
+Print out the version of @sc{sed} that is being run and a copyright notice,
+then exit.
+
+@item -h
+@itemx --help
+@opindex -h
+@opindex --help
+@cindex Usage summary, printing
+Print a usage message briefly summarizing these command-line options
+and the bug-reporting address,
+then exit.
+
+@item -n
+@itemx --quiet
+@itemx --silent
+@opindex -n
+@opindex --quiet
+@opindex --silent
+By default, @sc{sed} will print out the pattern space
+at then end of each cycle through the script.
+These options disable this automatic printing,
+and @sc{sed} will only produce output when explicitly told to
+via the @code{p} command.
+
+@item -e @var{script}
+@itemx --expression=@var{script}
+@opindex -e
+@opindex --expression
+@cindex Script, from command line
+Add the commands in @var{script} to the set of commands to be
+run while processing the input.
+
+@item -f @var{script-file}
+@itemx --file=@var{script-file}
+@opindex -f
+@opindex --file
+@cindex Script, from a file
+Add the commands contained in the file @var{script-file}
+to the set of commands to be run while processing the input.
+
+@end table
+
+If no @code{-e}, @code{-f}, @code{--expression}, or @code{--file}
+options are given on the command-line,
+then the first non-option argument on the command line is
+taken to be the @var{script} to be executed.
+
+@cindex Files to be processed as input
+If any command-line parameters remain after processing the above,
+these parameters are interpreted as the names of input files to
+be processed.
+@cindex Standard input, processing as input
+A file name of @code{-} refers to the standard input stream.
+The standard input will processed if no file names are specified.
+
+
+@node sed Programs, Examples, Invoking SED, Top
+@chapter @sc{sed} Programs
+
+@cindex @sc{sed} program structure
+@cindex Script structure
+A @sc{sed} program consists of one or more @sc{sed} commands,
+passed in by one or more of the
+@code{-e}, @code{-f}, @code{--expression}, and @code{--file}
+options, or the first non-option argument if zero of these
+options are used.
+This document will refer to ``the'' @sc{sed} script;
+this will be understood to mean the in-order catenation
+of all of the @var{script}s and @var{script-file}s passed in.
+
+Each @sc{sed} command consists of an optional address or
+address range, followed by a one-character command name
+and any additional command-specific code.
+
+@menu
+* Addresses::                Selecting lines with @sc{sed}
+* Regular Expressions::      Overview of regular expression syntax
+* Data Spaces::              Where @sc{sed} buffers data
+* Common Commands::          Often used commands
+* Other Commands::           Less frequently used commands
+* Programming Commands::     Commands for die-hard @sc{sed} programmers
+@end menu
+
+
+@node Addresses, Regular Expressions, sed Programs, sed Programs
+@section Selecting lines with @sc{sed}
+@cindex Addresses, in @sc{sed} scripts
+@cindex Line selection
+@cindex Selecting lines to process
+
+Addresses in a @sc{sed} script can be in any of the following forms:
+@table @samp
+@item @var{number}
+@cindex Address, numeric
+@cindex Line, selecting by number
+Specifying a line number will match only that line in the input.
+(Note that @sc{sed} counts lines continuously across all input files.)
+
+@item @var{first}~@var{step}
+@cindex @sc{GNU} extensions, @code{@var{n}~@var{m}} addresses
+This @sc{GNU} extension matches every @var{step}th line
+starting with line @var{first}.
+In particular, lines will be selected when there exists
+a non-negative @var{n} such that the current line-number equals
+@var{first} + (@var{n} * @var{step}).
+Thus, to select the odd-numbered lines,
+one would use @code{1~2};
+to pick every third line starting with the second, @code{2~3} would be used;
+to pick every fifth line starting with the tenth, use @code{10~5};
+and @code{50~0} is just an obscure way of saying @code{50}.
+
+@item $
+@cindex Address, last line
+@cindex Last line, selecting
+@cindex Line, selecting last
+This address matches the last line of the last file of input.
+
+@item /@var{regexp}/
+@cindex Address, as a regular expression
+@cindex Line, selecting by regular expression match
+This will select any line which matches the regular expression @var{regexp}.
+If @var{regexp} itself includes any @code{/} characters,
+each must be escaped by a backslash (@code{\}).
+
+@item \%@var{regexp}%
+(The @code{%} may be replaced by any other single character.)
+
+@cindex Slash character, in regular expressions
+This also matches the regular expression @var{regexp},
+but allows one to use a different delimiter than @code{/}.
+This is particularly useful if the @var{regexp} itself contains
+a lot of @code{/}s, since it avoids the tedious escaping of every @code{/}.
+If @var{regexp} itself includes any delimiter characters,
+each must be escaped by a backslash (@code{\}).
+
+@item /@var{regexp}/I
+@itemx \%@var{regexp}%I
+@cindex @sc{GNU} extensions, @code{I} modifier
+The @code{I} modifier to regular-expression matching is a @sc{GNU}
+extension which causes the @var{regexp} to be matched in
+a case-insensitive manner.
+
+@end table
+
+If no addresses are given, then all lines are matched;
+if one address is given, then only lines matching that
+address are matched.
+
+@cindex Range of lines
+@cindex Several lines, selecting
+An address range can be specified by specifying two addresses
+separated by a comma (@code{,}).
+An address range matches lines starting from where the first
+address matches, and continues until the second address matches
+(inclusively).
+If the second address is a @var{regexp}, then checking for the
+ending match will start with the line @emph{following} the
+line which matched the first address.
+If the second address is a @var{number} less than (or equal to)
+the line matching the first address,
+then only the one line is matched.
+
+@cindex Excluding lines
+@cindex Selecting non-matching lines
+Appending the @code{!} character to the end of an address
+specification will negate the sense of the match.
+That is, if the @code{!} character follows an address range,
+then only lines which do @emph{not} match the address range
+will be selected.
+This also works for singleton addresses,
+and, perhaps perversely, for the null address.
+
+
+@node Regular Expressions, Data Spaces, Addresses, sed Programs
+@section Overview of regular expression syntax
+
+@c XXX FIXME
+[[I may add a brief overview of regular expressions at a later date;
+for now see any of the various other documentations for regular
+expressions, such as the @sc{awk} info page.]]
+
+
+@node Data Spaces, Common Commands, Regular Expressions, sed Programs
+@section Where @sc{sed} buffers data
+
+@cindex Buffer spaces, pattern and hold
+@cindex Spaces, pattern and hold
+@cindex Pattern space, definition
+@cindex Hold space, definition
+@sc{sed} maintains two data buffers: the active @emph{pattern} space,
+and the auxiliary @emph{hold} space.
+In ``normal'' operation, @sc{sed} reads in one line from the
+input stream and places it in the pattern space.
+This pattern space is where text manipulations occur.
+The hold space is initially empty, but there are commands
+for moving data between the pattern and hold spaces.
+@c XXX FIXME: explain why this is useful/interesting to know.
+
+
+@node Common Commands, Other Commands, Data Spaces, sed Programs
+@section Often used commands
+
+If you use @sc{sed} at all, you will quite likely want to know
+these commands.
+
+@table @samp
+@item #
+[No addresses allowed.]
+
+@findex # (comment) command
+@cindex Comments, in scripts
+The @code{#} ``command'' begins a comment;
+the comment continues until the next newline.
+
+@cindex Portability, comments
+If you are concerned about portability, be aware that
+some implementations of @sc{sed} (which are not POSIX.2
+conformant) may only support a single one-line comment,
+and then only when the very first character of the script is a @code{#}.
+
+@findex -n, forcing from within a script
+@cindex Caveat --- #n on first line
+Warning: if the first two characters of the @sc{sed} script
+are @code{#n}, then the @code{-n} (no-autoprint) option is forced.
+If you want to put a comment in the first line of your script
+and that comment begins with the letter `n'
+and you do not want this behavior,
+then be sure to either use a capital `N',
+or place at least one space before the `n'.
+
+@item s/@var{regexp}/@var{replacement}/@var{flags}
+(The @code{/} characters may be uniformly replaced by
+any other single character within any given @code{s} command.)
+
+@findex s (substitute) command
+@cindex Substitution of text
+@cindex Replacing text matching regexp
+The @code{/} character (or whatever other character is used in its stead)
+can appear in the @var{regexp} or @var{replacement}
+only if it is preceded by a @code{\} character.
+Also newlines may appear in the @var{regexp} using the two
+character sequence @code{\n}.
+
+The @code{s} command attempts to match the pattern
+space against the supplied @var{regexp}.
+If the match is successful, then that portion of the pattern
+space which was matched is replaced with @var{replacement}.
+
+@cindex Backreferences, in regular expressions
+@cindex Parenthesized substrings
+The @var{replacement} can contain @code{\@var{n}} (@var{n} being
+a number from 1 to 9, inclusive) references, which refer to
+the portion of the match which is contained between the @var{n}th
+@code{\(} and its matching @code{\)}.
+Also, the @var{replacement} can contain unescaped @code{&}
+characters which will reference the whole matched portion
+of the pattern space.
+To include a literal @code{\}, @code{&}, or newline in the final
+replacement, be sure to precede the desired @code{\}, @code{&},
+or newline in the @var{replacement} with a @code{\}.
+
+@findex s command, option flags
+@cindex Substitution of text, options
+@cindex Replacing text matching regexp, options
+The @code{s} command can be followed with zero or more of the
+following @var{flags}:
+
+@table @samp
+@item g
+@cindex Global substitution
+@cindex Replacing all text matching regexp in a line
+Apply the replacement to @emph{all} matches to the @var{regexp},
+not just the first.
+@item p
+@cindex Printing text after substitution
+If the substitution was made, then print the new pattern space.
+@item @var{number}
+@cindex Replacing only @var{n}th match of regexp in a line
+Only replace the @var{number}th match of the @var{regexp}.
+@item w @var{file-name}
+@cindex Write result of a substitution to file
+If the substitution was made, then write out the result to the named file.
+@item I
+(This is a @sc{GNU} extension.)
+
+@cindex @sc{GNU} extensions, @code{I} modifier
+@cindex Case-insensitive matching
+Match @var{regexp} in a case-insensitive manner.
+@end table
+
+@item q
+[At most one address allowed.]
+
+@findex q (quit) command
+@cindex Quitting
+Exit @sc{sed} without processing any more commands or input.
+Note that the current pattern space is printed
+if auto-print is not disabled.
+
+@item d
+@findex d (delete) command
+@cindex Deleting lines
+Delete the pattern space;
+immediately start next cycle.
+
+@item p
+@findex p (print) command
+@cindex Print selected lines
+Print out the pattern space (to the standard output).
+This command is usually only used in conjunction with the @code{-n}
+command-line option.
+
+@cindex Caveat --- @code{p} command and -n flag
+Note: some implementations of @sc{sed}, such as this one, will
+double-print lines when auto-print is not disabled and the @code{p}
+command is given.
+Other implementations will only print the line once.
+Both ways conform with the POSIX.2 standard, and so neither
+way can be considered to be in error.
+@cindex Portability, @code{p} command and -n flag
+Portable @sc{sed} scripts should thus avoid relying on either behavior;
+either use the @code{-n} option and explicitly print what you want,
+or avoid use of the @code{p} command (and also the @code{p} flag to the
+@code{s} command).
+
+@item n
+@findex n (next-line) command
+@cindex Next input line, replace pattern space with
+@cindex Read next input line
+If auto-print is not disabled, print the pattern space,
+then, regardless, replace the pattern space with the next line of input.
+If there is no more input then @sc{sed} exits without processing
+any more commands.
+
+@item @{ @var{commands} @}
+@findex @{@} command grouping
+@cindex Grouping commands
+@cindex Command groups
+A group of commands may be enclosed between
+@code{@{} and @code{@}} characters.
+(The @code{@}} must appear in a zero-address command context.)
+This is particularly useful when you want a group of commands
+to be triggered by a single address (or address-range) match.
+
+@end table
+
+
+@node Other Commands, Programming Commands, Common Commands, sed Programs
+@section Less frequently used commands
+
+Though perhaps less frequently used than those in the previous
+section, some very small yet useful @sc{sed} scripts can be built with
+these commands.
+
+@table @samp
+@item y/@var{source-chars}/@var{dest-chars}/
+(The @code{/} characters may be uniformly replaced by
+any other single character within any given @code{y} command.)
+
+@findex y (transliterate) command
+@cindex Transliteration
+Transliterate any characters in the pattern space which match
+any of the @var{source-chars} with the corresponding character
+in @var{dest-chars}.
+
+Instances of the @code{/} (or whatever other character is used in its stead),
+@code{\}, or newlines can appear in the @var{source-chars} or @var{dest-chars}
+lists, provide that each instance is escaped by a @code{\}.
+The @var{source-chars} and @var{dest-chars} lists @emph{must}
+contain the same number of characters (after de-escaping).
+
+@c XXX was getting a bad page break; remove this @need if formatting changes
+@need 1000
+@item a\
+@itemx @var{text}
+[At most one address allowed.]
+
+@findex a (append text lines) command
+@cindex Adding a block of text after a line
+@cindex Text, appending
+Queue the lines of text which follow this command
+(each but the last ending with a @code{\},
+which will be removed from the output)
+to be output at the end of the current cycle,
+or when the next input line is read.
+
+@item i\
+@itemx @var{text}
+[At most one address allowed.]
+
+@findex i (insert text lines) command
+@cindex Inserting a block of text before a line
+@cindex Text, insertion
+Immediately output the lines of text which follow this command
+(each but the last ending with a @code{\},
+which will be removed from the output).
+
+@item c\
+@itemx @var{text}
+@findex c (change to text lines) command
+@cindex Replace specific input lines
+@cindex Selected lines, replacing
+Delete the lines matching the address or address-range,
+and output the lines of text which follow this command
+(each but the last ending with a @code{\},
+which will be removed from the output)
+in place of the last line
+(or in place of each line, if no addresses were specified).
+A new cycle is started after this command is done,
+since the pattern space will have been deleted.
+
+@item =
+[At most one address allowed.]
+
+@findex = (print line number) command
+@cindex Print line number
+@cindex Line number, print
+Print out the current input line number (with a trailing newline).
+
+@item l
+@findex l (list unambiguously) command
+@cindex List pattern space
+@cindex Print unambiguous representation of pattern space
+Print the pattern space in an unambiguous form:
+non-printable characters (and the @code{\} character)
+are printed in C-style escaped form;
+long lines are split, with a trailing @code{\} character
+to indicate the split; the end of each line is marked
+with a @code{$}.
+
+@item r @var{filename}
+[At most one address allowed.]
+
+@findex r (read file) command
+@cindex Read text from a file
+@cindex Insert text from a file
+Queue the contents of @var{filename} to be read and
+inserted into the output stream at the end of the current cycle,
+or when the next input line is read.
+Note that if @var{filename} cannot be read, it is treated as
+if it were an empty file, without any error indication.
+
+@item w @var{filename}
+@findex w (write file) command
+@cindex Write to a file
+Write the pattern space to @var{filename}.
+The @var{filename} will be created (or truncated) before the
+first input line is read; all @code{w} commands (including
+instances of @code{w} flag on successful @code{s} commands)
+which refer to the same @var{filename} are output through
+the same @sc{FILE} stream.
+
+@item D
+@findex D (delete first line) command
+@cindex Delete first line from pattern space
+Delete text in the pattern space up to the first newline.
+If any text is left, restart cycle with the resultant
+pattern space (without reading a new line of input),
+otherwise start a normal new cycle.
+
+@item N
+@findex N (append Next line) command
+@cindex Next input line, append to pattern space
+@cindex Append next input line to pattern space
+Add a newline to the pattern space,
+then append the next line of input to the pattern space.
+If there is no more input then @sc{sed} exits without processing
+any more commands.
+
+@item P
+@findex P (print first line) command
+@cindex Print first line from pattern space
+Print out the portion of the pattern space up to the first newline.
+
+@item h
+@findex h (hold) command
+@cindex Copy pattern space into hold space
+@cindex Replace hold space with copy of pattern space
+@cindex Hold space, copying pattern space into
+Replace the contents of the hold space with the contents of the pattern space.
+
+@item H
+@findex H (append Hold) command
+@cindex Append pattern space to hold space
+@cindex Hold space, appending from pattern space
+Append a newline to the contents of the hold space,
+and then append the contents of the pattern space to that of the hold space.
+
+@item g
+@findex g (get) command
+@cindex Copy hold space into pattern space
+@cindex Replace pattern space with copy of hold space
+@cindex Hold space, copy into pattern space
+Replace the contents of the pattern space with the contents of the hold space.
+
+@item G
+@findex G (appending Get) command
+@cindex Append hold space to pattern space
+@cindex Hold space, appending to pattern space
+Append a newline to the contents of the pattern space,
+and then append the contents of the hold space to that of the pattern space.
+
+@item x
+@findex x (eXchange) command
+@cindex Exchange hold space with pattern space
+@cindex Hold space, exchange with pattern space
+Exchange the contents of the hold and pattern spaces.
+
+@end table
+
+
+@node Programming Commands, , Other Commands, sed Programs
+@section Commands for die-hard @sc{sed} programmers
+
+In most cases, use of these commands indicates that you are
+probably better off programming in something like @sc{perl}.
+But occasionally one is committed to sticking with @sc{sed},
+and these commands can enable one to write quite convoluted
+scripts.
+
+@cindex Flow of control in scripts
+@table @samp
+@item : @var{label}
+[No addresses allowed.]
+
+@findex : (label) command
+@cindex Labels, in scripts
+Specify the location of @var{label} for the @code{b} and @code{t} commands.
+In all other respects, a no-op.
+
+@item b @var{label}
+@findex b (branch) command
+@cindex Branch to a label, unconditionally
+@cindex Goto, in scripts
+Unconditionally branch to @var{label}.
+The @var{label} may be omitted, in which case the next cycle is started.
+
+@item t @var{label}
+@findex t (conditional branch) command
+@cindex Branch to a label, if @code{s///} succeeded
+@cindex Conditional branch
+Branch to @var{label} only if there has been a successful @code{s}ubstitution
+since the last input line was read or @code{t} branch was taken.
+The @var{label} may be omitted, in which case the next cycle is started.
+
+@end table
+
+
+@node Examples, Limitations, sed Programs, Top
+@chapter Some sample scripts
+
+@c XXX FIXME
+[[Not this release, sorry.
+But check out the scripts in the testsuite directory,
+and the amazing dc.sed script in the
+top-level directory of this distribution.]]
+
+
+@node Limitations, Other Resources, Examples, Top
+@chapter About the (non-)limitations on line length
+
+@cindex @sc{GNU} extensions, unlimited line length
+@cindex Portability, line length limitations
+For those who want to write portable @sc{sed} scripts,
+be aware that some implementations have been known to
+limit line lengths (for the pattern and hold spaces)
+to be no more than 4000 bytes.
+The POSIX.2 standard specifies that conforming @sc{sed}
+implementations shall support at least 8192 byte line lengths.
+@sc{GNU} @sc{sed} has no built-in limit on line length;
+as long as @sc{sed} can malloc() more (virtual) memory,
+it will allow lines as long as you care to feed it
+(or construct within it).
+
+@node Other Resources, Reporting Bugs, Limitations, Top
+@chapter Other resources for learning about @sc{sed}
+
+@cindex Addtional reading about @sc{sed}
+In addition to several books that have been written about @sc{sed}
+(either specifically or as chapters in books which discuss
+shell programming), one can find out more about @sc{sed}
+(including suggestions of a few books) from the FAQ
+for the seders mailing list, available from any of:
+@display
+ @uref{http://www.dbnet.ece.ntua.gr/~george/sed/sedfaq.html}
+ @uref{http://www.ptug.org/sed/sedfaq.htm}
+ @uref{http://www.wollery.demon.co.uk/sedtut10.txt}
+@end display
+
+There is an informal ``seders'' mailing list manually maintained
+by Al Aab.  To subscribe, send e-mail to @email{af137@@torfree.net}
+with a brief description of your interest.
+
+@node Reporting Bugs, Concept Index, Other Resources, Top
+@chapter Reporting bugs
+
+@cindex Bugs, reporting
+Email bug reports to @email{bug-gnu-utils@@gnu.org}.
+Be sure to include the word ``sed'' somewhere in the ``Subject:'' field.
+
+@c XXX FIXME: the term "cycle" is never defined...
+
+@page
+@node Concept Index, Command and Option Index, Reporting Bugs, Top
+@unnumbered Concept Index
+
+This is a general index of all issues discussed in this manual, with the
+exception of the @sc{sed} commands and command-line options.
+
+@printindex cp
+
+@page
+@node Command and Option Index, , Concept Index, Top
+@unnumbered Command and Option Index
+
+This is an alphabetical list of all @sc{sed} commands and command-line
+opions.
+
+@printindex fn
+
+@contents
+@bye

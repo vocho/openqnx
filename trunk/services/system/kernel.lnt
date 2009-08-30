@@ -1,0 +1,100 @@
+//
+// FlexeLint Configuration (common)
+//
+//     @@@ FIXME: documentation
+//
+
+//
+// DEFINES
+//
+
+//
+// FLEXELINT FLAGS
+//
+
+//
+// FLEXELINT MISCELLANEOUS OPTIONS
+//
+
+//
+// FLEXELINT AUTHOR OPTIONS
+//
+
+//
+// FLEXELINT STRONG TYPES
+//
+
+//
+// FLEXELINT SEMANTIC OPTIONS
+//
+
+//
+// FLEXELINT INHIBITION OPTIONS
+//
+
+// global suppressions
+
+// miscellaneous suppressions
+
+-emacro(505,atomic_order)	// permit redundant left comma arg (intentional)
+
+-emacro(506,CRASHCHECK)		// permit const val bool (called with const arg)
+
+-emacro(564,VECP,VECP2)		// permit dep on eval order (intentional)
+
+-emacro(722,LINK?_END,LINK?_SORTL,LINK?_SORTLE,LINK?_SORTG,LINK?_SORTGE,LINK?_PRI,LINK?_REM) // permit suspicious semi (intentional 'for(;;)')
+-emacro(722,MUTEXHOLDLIST_PRI) // permit suspicious semi (intentional 'for(;;)')
+
+-emacro(774,CRASHCHECK)		// permit const val 'if()' (called with const arg)
+
+//
+// IGNORED RETURN VALUE SUPPRESSIONS (MESSAGE 534)
+//
+
+-esym(534,__Ring0)
+-esym(534,_rsrc_block_limit_op)
+-esym(534,_sreallocfunc)
+-esym(534,cont_one_thread)
+-esym(534,cred_set)
+-esym(534,flush_700ht_entry)
+-esym(534,force_ready)
+-esym(534,intrevent_add)
+-esym(534,kprintf)
+-esym(534,map_coalese)
+-esym(534,map_destroy)
+-esym(534,map_isolate)
+-esym(534,map_remove)
+-esym(534,memobj_pmem_del)
+-esym(534,memobj_pmem_walk)
+-esym(534,memref_walk)
+-esym(534,message_attach)
+-esym(534,object_done)
+-esym(534,pa_size_info)
+-esym(534,proc_mux_lock)
+-esym(534,proc_mux_unlock)
+-esym(534,proc_rlock_adp)
+-esym(534,proc_thread_pool_reserve_done)
+-esym(534,proc_unlock_adp)
+-esym(534,proc_wlock_adp)
+-esym(534,pte_unmap)
+-esym(534,pulse_attach)
+-esym(534,pulse_deliver)
+-esym(534,resmgr_attach)
+-esym(534,rounded_mprotect)
+-esym(534,rsrc_insert_create)
+-esym(534,rsrcdbmgr_proc_devno)
+-esym(534,sigevent_exe)
+-esym(534,sigevent_proc)
+-esym(534,signal_kill_process)
+-esym(534,stop_one_thread)
+-esym(534,sysmgr_conf_set)
+-esym(534,sysmgr_confstr_set)
+-esym(534,sysmgr_confstr_set)
+-esym(534,timer_deactivate)
+-esym(534,trap_install)
+-esym(534,ultoa)
+-esym(534,vector_add)
+-esym(534,vector_flag)
+-esym(534,vector_rem)
+-esym(534,vmm_munmap)
+-esym(534,walk_asinfo)

@@ -1,0 +1,167 @@
+.TH
+memory allocator
+.SH
+Introduction
+.PP
+Standard C libraries come equipped with a general purpose memory
+allocator \- \fCmalloc\fP.
+The programming interface is simple and powerful.
+This paper describes a fresh \fCmalloc\fP library with some new
+capabilities
+capabilihich maintains this
+interface, but presents a plethora of configuration options.
+
+
+.SH
+Background
+.PP
+Traditional malloc implementations are a first-fit allocator
+[KNUTH] using the service sbrk to change the size of the data
+segment.
+The first fit model is balances performance and fragmentation
+of memory.
+The sbrk model is not so good, as memory can only be released
+to the system when the 'end' of the data segment is not in use.
+.SH
+Implementation
+.PP
+This allocator uses a 
+can be reclaimed
+
+The \fCmalloc\fP library is a good general purpose specification
+for a memory allocator.
+This implementation strives for a high degree of compatibility
+with the \fCWATCOM\fP implementation, higher performance and
+better memory utilization.
+.PP
+A traditional \fCmalloc\fP is based upon \fCsbrk\fP to change
+the boundary of the data segment.
+A failing of this is that memory can only be released to the
+Operating System if it is at the very end of the data segment.
+More modern services, such as \fCmmap\fP and \fCmunmap\fP can
+allocate and release memory at any location in the data segment.
+This allocator is based upon \fCmmap\fP and \fCmunmap\fP.
+.PP
+Memory allocation is typically performed by maintaining a list
+of available memory fragments; if a request cannot be fulfilled
+from a fragment, it asks the system for more memory.
+Releasing memory puts a corresponding node into this list.
+This mechanism is quite proficient at keeping memory in as large
+a segment as possible, to minimize the number of requests to the
+system, however the list must be scanned for each alloc and release.
+.PP
+
+
+
+of free
+\fCSbrk\fP alters the boundary of the data segment of a program
+
+This malloc library uses different allocation strategies
+for different sized objects in an attempt to obtain high
+performance and low waste.
+.PP
+The standard malloc library is based upon an sbrk() model;
+attempts to physically reduce the data size of the program
+can only be made when the top of the heap is unused.
+QNX also thwarts this by refusing to shrink the data segment in
+brk() to avoid interference with mmap().
+.PP
+The system interface in this allocator relies upon two functions:
+morecore(n); and donecore(n,s).
+Morecore aquires a quantity of memory; donecore indicates the
+allocator no longer needs this space.
+This implementation uses mmap() in morecore() to acquire memory
+and munmap() in donecore() to release it.
+.PP
+The allocator divides sizes into three broad categories: small,
+medium and large.
+The boundaries for these sizes is configurable with some constraints.
+Small objects are managed by band.c, medium objects by list.c, and
+large objects by large.c
+.SH
+BAND ALLOCATOR
+.PP
+Band.c is a fixed-size allocator.
+A set of objects are allocated to form a block, and within the block
+managed by a single list.
+When a block becomes unused (all objects in the block are on it's
+free list), the block is returned to another allocator.
+When all blocks are fully used, a new block is allocated.
+Allocation from and return to a block are constant time operations.
+The allocator maintains a 'hint' which, if valid, points at the
+lowest address block with available entries.
+Blocks are stored on a sorted list, and the allocator rejects
+attempts to return an object to the wrong block, eliminating
+at least one type of user error.
+.SH
+BAND TUNING
+.PP
+The bands are defined by an Band structure, which can be tuned for
+the size of object and number of objects in a block.
+Furthur tuning may be available by changing the hint mechanism.
+It is currently attempts to empty blocks near the beginning of the
+list first, however some applications may find that maintaining it
+at the last block allocated from will enhance performance.
+.SH
+LIST ALLOCATOR
+.PP
+To minimize fragmentation, medium sized objects are kept on a classic
+first fit allocator.  Available segments are released to donecore()
+when they exceed certain size and alignment constraints.  The allocator
+is bound to a somewhat larger block size than is typical; this is to
+minimize the co-allescing operations on release of memory.
+.PP
+The allocator keeps a signature as well as length at the beginning of
+the object.
+Attempts to release memory lacking this signature are rejected, eliminating
+a source of user error.
+.SH
+LARGE ALLOCATOR
+.PP
+The large allocator maintains no free list.
+Objects have a small header and are allocated in sets of pages from
+morecore().
+When an object is released, it is immediately returned to donecore().
+Unfortunately, the small header means that user requests are never
+page-aligned, and allocating an exact multiple of pagesize will 
+waste almost a page.
+This could be fixed with an unseemly familiarity with the other 
+allocators.
+.SH
+IMPLEMENTATION
+.PP
+In all allocators, the work immediately preceding the object contains
+the size, in bytes, of the object.
+This allows the traditional malloc() interface to be built readily:
+an allocation request is diverted to one of the above allocators based
+upon the request size.
+A free() request examines the size and passes the object on to the
+appropriate allocator.
+Realloc() causes a bit of a concern, however.
+Growing or shrinking an object may cause it to move from one 
+allocators domain to another.  The rules currently enforced are:
+.nf
+original	new	difference	action
+SMALL          SMALL    same band      return original
+MEDIUM         MEDIUM   MEDIUM          list_resize().
+LARGE          LARGE    <PSIZ           return original
+*               *         *             alloc new and copy.
+.fi
+.sp
+More work may be needed here.
+
+.SH
+CONFIGURATION
+.PP
+The principal configuration requirement is deciding where to
+split the allocation domains.
+Once the domains are configured, selecting the band's is of
+next importance.
+Balancing the number of bands, block size and factoring are
+of import.
+.PP
+To augment this operation, the library routines have a configuration
+option to keep detailed statistics upon use.
+The tables generated by these statistics may be used to configure
+the allocator for particular applications; this configuration may
+be automated.

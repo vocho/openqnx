@@ -1,0 +1,6 @@
+%C - run a program immune from hangups (POSIX)
+
+%C [--] program [arguments]...
+
+Program output will be appended to nohup.out or $HOME/nohup.out if pwd is
+not writeable.

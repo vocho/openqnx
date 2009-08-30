@@ -1,0 +1,91 @@
+expr Testcases
+by Sunil Puri (spuri)
+
+Basic Test Cases
+----------------
+These testcases test that expr understands the semantics for each operator
+for each operand type:
+1) Test divide and modulus by zero (NTO returns 3 for divide or modulus by 
+   zero because it is a semantic error, not a syntax error; Linux returns 2)
+2) Test with no expr
+3) Test with single operands SO={0, "", -1, 1, 2, a, abc, -, +}
+4) Test OR operator with SOxSO
+5) Test AND operator with SOxSO
+6) Test {=, <} x OPERANDS={"", abc, def, ABC, DEF, "   ", "!@#", 
+   ",.:", "123", "456", 0, -25, 317}^2
+7) Test {<=, !=, >=, >} x {0, "", 2, abc, =}^2
+8) Test {+ - * / %} x NUMS={0, 1, 10, -1, -3, "", abc, 2}^2
+9) Test with formatted numbers: {1111, +1111}^2 x {+ -} (Linux can not 
+   recognize "1111 + +1111" as a valid expr)
+
+Precedence Testing
+------------------
+1) Precendence testing was done with bracketted subexpression testing and
+   nesting testing. Tests include generating permutations of the following 
+   subexprs at various combinations of: 
+
+   subexprs {12 | 34, 34 & 13, 12 = 34, 12 + 34, 4 * 6} (to cover all but 
+   	the regex precedence level) x
+   bracketting subexprs {e1 op e2, (e1) op e2, e1 op (e2), (e1) op (e2)} 
+   	(where e1, e2 are expressions themselves) x
+   nesting at levels {1, 2, 3, 4}
+2) Tested EXPR_NEST_MAX+{-1, 0, +1} nesting levels
+
+Testing Regular Expressions 
+--------------------------- 
+1) I used the gnu regex library testcases to test our expr's testcases. I ran 
+   the tests on NTO and Linux expr and compared the differences to find bugs. 
+   The differences between NTO and Linux are due to bugs with the Linux 
+   version, according to the Posix spec. Note that some shell interpolation 
+   made some testcases incomprehendible to both NTO and Linux.
+   Differences between Linux and NTO regex handling in expr:
+   - our regex lib recognizes special char set names like
+     "[[.right-square-bracket.]]", Linux compains about invalid char range
+     for "t-s" and "e-b"
+   - Linux can not find matches for these regexs, whereas NTO can:
+     abc : ab*bc
+     xabcy : abc
+     ababc : abc
+     aabc : abc$
+     aac : a[b-d]
+     xayabbbz : ab*
+
+   - Linux finds matches for these regexs, whereas NTO can't:
+     abc : ab|cd (This is a bug in our regex library)
+     NTO reports an invalid syntax on these testcases Posix mandates that 
+     strings should be categorized as either operators or operands.
+     Thus, "-" should be recoginized as an operator.
+     "-" : ()*
+     "-" : *a
+     "-" : ^*
+     "-" : *$
+
+Notes on RegEx Testing 
+----------------------
+- expr had difficulty recognizing some backrefs for testcases it received
+  via automated testing through shell scripts. However, when fed the testcase
+  directly via the keyboard, expr had no difficulty reading the testcase.
+- the testcases included using matching and mismatching subexpressions and no
+  subexpressions, to ensure Posix-compliant results for regex
+
+Syntax Testing
+--------------
+1)Test with operators {before, after} other operators, {beginning, end} x
+  {exprs, subexprs}, 
+2)Test operands {before, after} x {other operands, subexprs}
+3)Tested with too many {'(', ')'} x nested {0, 1, 2} times, empty braces, 
+4)Tested with invalid operator symbols
+
+Return Value and Output Testing
+-------------------------------
+1) Test with 0, "" results of exprs
+2) Test with {ucase, lcase, punct, whitespace, number} strings, 
+   {pos, neg} integers results for exprs
+3) Test with regexs with {matching, mismatching} strings x 
+   {0, 1, 2} number of
+   {matching, mismatching} subexpressions
+
+Test Cases To Do List
+---------------------
+1) Testing the regex operator ':' with precedence levels
+

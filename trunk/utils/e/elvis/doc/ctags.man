@@ -1,0 +1,326 @@
+.TH CTAGS 1
+.SH NAME
+ctags - Generates "tags" and (optionally) "refs" files
+.SH SYNOPSIS
+.B ctags
+.RB [ -D
+.IR word ]
+.RB [ -FBNgitvshlpdxra ]
+.I files...
+.SH VERSION
+This page describes the
+.B Elvis 2.2_0
+version of
+.BR c\&tags .
+See
+.BR elvis (1).
+.SH DESCRIPTION
+.B ctags
+generates the
+.I tags
+and 
+.I refs
+files from a group of C source files.
+The
+.I tags
+file is used by Elvis' ":tag" command,
+\fB^]\fR command, and \fB-t\fR option.
+The
+.I refs
+file is sometimes used by the
+.BR ref (1)
+program.
+.PP
+Each C source file is scanned for #define statements and
+global function definitions.
+The name of the macro or function becomes the name of a tag.
+For each tag, a line is added to the
+.I tags
+file.
+.PP
+The filenames list will typically be the names of all C source
+files in the current directory, like this:
+.RS
+.nf
+
+$ ctags *.c *.h
+.RE
+.fi
+.SH OPTIONS
+If no options are given, then
+.B ctags
+acts as though the
+.B -l -i -t -v
+and
+.B -s
+option flags were given.
+If you want to omit those options, you can do so by explicitly giving
+a harmless option such as
+.BR -F.
+.IP \fB-D\fIword\fR
+This causes Elvis to ignore any instance of "\fIword\fR" in your source code.
+This is handy if you're using a macro for conditionally declaring the arguments
+to functions, in order to make your code be backward-compatible with older K&R
+C compilers.
+\fIctags\fR always ignores "P_" and "__P";
+the \fB-D\fIword\fR flag allows you to make it ignore a third word.
+.IP \fB-F\fR
+Enclose regular expressions in slashes (/regexp/) which will cause
+.BR elvis (1)
+to search from the top of the file.
+This is the default.
+.IP \fB-B\fR
+Enclose the regular expressions in question marks (?regexp?) so
+.BR elvis (1)
+will search backward from the bottom of the file.
+The search direction rarely matters; this option exists mostly for
+compatibility with earlier versions of ctags.
+.IP \fB-N\fR
+This causes
+.B ctags
+to use line numbers for all tags.
+Without this flag, it would use numbers for #define'ed macros,
+and regular expressions for anything else.
+.IP \fB-g\fR
+For static tags, generate entries that look like global tags.
+(I.e., never generate an extra "file:" attribute.)
+This implies -s and -h.
+.IP \fB-i\fR
+Include inline definitions.
+A tag will be generated for each function which is declared as being
+inline, __inline, or __inline__.
+.IP \fB-t\fR
+Include typedefs.
+A tag will be generated for each user-defined type.
+Also tags will be generated for struct and enum names.
+Types are considered to be global if they are defined in a header file,
+and static if they are defined in a C source file.
+.IP \fB-v\fR
+Include variable declarations.
+A tag will be generated for each variable, except for those that are declared
+inside the body of a function.
+.IP \fB-s\fR
+Include static tags.
+.B ctags
+will normally put global tags in the
+.I tags
+file, and silently ignore the static tags.
+This flag causes both global and static tags to be added.
+.IP \fB-e\fR
+Include extern tags.
+.B ctags
+will normally ignore extern declarations of functions or variables;
+that's handy when generating tags for your own programs.
+A tags file for the extern declarations in the system's standard header files
+can be a very handy resource, so this \fB-e\fR flag was created.
+.IP \fB-h\fR
+Add hints that may help Elvis handle overloaded tags better.
+The resulting tags file may be unreadable by programs other than Elvis, though.
+.IP \fB-l\fR
+Add "ln" line number hints.
+This implies \fB-h\fR, since it would be pointless if hints weren't allowed.
+The "ln" hints are used by
+.BR elvis (1)
+to make its "showtag" option work much faster.
+.IP \fB-p\fR
+Write parsing information to stdout.
+This is intended mainly as an aid to debugging the \fIctags\fR command itself.
+If \fIctags\fR doesn't generate all of the tags that you expect it to,
+then try studying the \fB-p\fR output to determine what syntax feature is
+tripping it up.
+.IP \fB-d\fR
+Warn about duplicates, on stdout.
+.B ctags
+allows tags with duplicate names, except for typedefs (tags with kind=t)
+which must be unique.
+When a duplicate tag is detected,
+.B ctags
+can either add it if neither the new tag nor the existing one has "kind=t",
+skip it if the existing one has "kind=t", or
+add it and delete the existing one if the new one has "kind=t".
+Usually you won't care, but
+.B -d
+may help you understand why
+.I ctags
+fails to add a tag that you expected it to add.
+.IP \fB-x\fR
+Generate a human-readable tag list instead of a "tags" file.
+The list is written to stdout.
+Each line contains a tag name, the line number and file name where
+the tag is defined, and the text of that line.
+.IP \fB-r\fP
+This causes
+.B ctags
+to generate both 
+.I tags
+and
+.IR refs .
+Without \fB-r\fP, it would only generate
+.IR tags .
+.IP \fB-a\fR
+Append to
+.IR tags ,
+and maybe
+.IR refs .
+Normally,
+.B ctags
+overwrites these files each time it is invoked.
+This flag is useful when you have too many files in the current directory
+for you to list them on a single command-line;
+it allows you to split the arguments among several invocations.
+.B "This may result in an unsorted tags file."
+.SH "FORMAT OF THE TAGS FILE"
+The
+.I tags
+file is a text file.
+Each line stores the attributes of a single tag.
+The basic format of a line is:
+.IP
+\(bu the name of the tag
+.br
+\(bu a tab character
+.br
+\(bu the name of the file containing the tag
+.br
+\(bu a tab character
+.br
+\(bu the tag's address within that file
+.PP
+The tag address may be given as either line number (a string of digits),
+or a regular expression using ex/vi's "nomagic" syntax, delimited by either
+slashes or question marks.
+Regular expressions are allowed to contain tab characters.
+.PP
+The authors of Elvis, Vim, and "Exuberant" Ctags have agreed on a
+standard format for adding additional attributes to tags.
+In this format, the first three fields of all tags are identical to the
+traditional format, except that a semicolon-doublequote character pair
+is appended to the tag address field, with the extra attributes appearing
+after that.
+.PP
+The semicolon-doublequote character pair is present because it has the
+surprising side-effect of making the original ex/vi ignore the remainder
+of the line, thus allowing the original ex/vi to read new-format tags files.
+The original ex/vi will simply ignore the extra attributes.
+.PP
+Any additional attributes are appended to the tag's line.
+They may be appended in any order.
+Each attribute will use the following format:
+.IP
+\(bu a tab character
+.br
+\(bu the name of the attribute
+.br
+\(bu a colon character, ':'
+.br
+\(bu the value of the attribute.
+.PP
+Note that each additional attribute has an explicit name.
+Different tags files may use totally different names for additional attributes,
+and even within a single file, most tags will use only a subset of the
+possible attributes.
+This version of ctags uses the following names:
+.IP file
+This attribute is used to mark static tags -- i.e., tags for C/C++ functions
+or variables whose scope is limited to the function in which they are
+defined.
+The value is the name of the file where it is defined,
+except that if the file is the same as field 2
+(and it nearly always is)
+then the value may be given as a zero-length string.
+.IP class
+This is used to mark member functions of C++ classes.
+The value is the class name.
+However, currently ctags doesn't do a very good job of detecting whether a
+function is a member function or not.
+.IP kind
+This attribute's value is a single letter, indicating the lexical type
+of the tagged identifier:
+\fBf\fR for a function,
+\fBt\fR for a typedef,
+\fBs\fR for a struct tag,
+\fBu\fR for a union tag,
+\fBv\fR for a variable,
+\fBd\fR for a macro definition, or
+\fBx\fR for an extern declaration.
+.IP
+Note that in the tags file, the "kind:" label is omitted, for the sake of compactness.
+.IP ln
+This gives the line number where the tag was defined.
+It is redundant, but it is still somewhat useful because it allows
+.BR elvis (1)'s
+"showtag" option to work faster.
+.PP
+The values can only contain tabs if those tabs are converted to the '\\t'
+(backslash-t) notation.
+Similarly, a newline, carriage return, or literal backslash can be given
+as '\\n', '\\r', or '\\\\' respectively.
+For MS-DOS file names, this means the names must use double backslashes.
+Space characters don't require any special encoding.
+(This doesn't apply to file names in the
+.I tagfile
+field, where names can be given without any special encoding.
+It only applies to file names in extra fields.)
+.PP
+As a special case, if an extra attribute contains no ':' to delimit the
+name from the value, then the attribute string is assumed to be the value
+of an attribute named "kind".
+Usually this will be a single letter indicating what type of token the
+tag represents -- 'f' for function, 'v' for variable, and so on.
+.PP
+Here's an example of a new-format tag:
+.RS
+.nf
+bar	foo.c	/^void Foo::bar(int zot)$/;"	class:Foo
+.fi
+.RE
+The tagname is "bar", to match its function's name.
+The tagfile is "foo.c".
+The tagaddress is a regular expression containing the whole definition line.
+Note that a semicolon-doublequote character pair has been appended to the
+tagaddress.
+There is only one additional attribute, with the name "class" and the value
+"Foo".
+.SH FILES
+.IP tags
+A cross-reference that lists each tag name, the name of the source file that
+contains it, and a way to locate a particular line in the source file.
+.IP refs
+The
+.I refs
+file contains the definitions for each tag in the
+.I tags
+file, and very little else.
+This file can be useful, for example, when licensing restrictions prevent
+you from making the source code to the standard C library readable by everybody,
+but you still want everybody to know what arguments the library functions need.
+.SH BUGS
+.B ctags
+is sensitive to indenting and line breaks.
+Consequently, it might not discover all of the tags in a file that
+is formatted in an unusual way.
+.PP
+The
+.B -a
+flag causes tag files to be appended, but not necessarily sorted.
+Some programs expect tags files to be sorted, and will misbehave if they
+aren't.
+Also, the new format allows a "!_TAG_FILE_SORTED" marker near the top of the
+file to indicate whether the file is sorted, but that might not be accurate
+after new tags are appended to the file.
+Consequently, you should avoid the use of
+.BR -a .
+.PP
+The new standard doesn't specify how overloaded operators are to be labelled.
+If your C++ source contains a definition of operator+=(), then this version of
+.B ctags
+will store a tag named "operator+=".
+Other versions of ctags could simply use the name "+=".
+
+.SH "SEE ALSO"
+.BR elvis (1),
+.BR ref (1)
+.SH AUTHOR
+Steve Kirkendall
+.br
+kirkenda@cs.pdx.edu

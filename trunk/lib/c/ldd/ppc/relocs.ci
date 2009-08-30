@@ -1,0 +1,384 @@
+/*
+Copyright 2001, QNX Software Systems Ltd. All Rights Reserved
+ 
+This source code has been published by QNX Software Systems Ltd. (QSSL).
+However, any use, reproduction, modification, distribution or transfer of
+this software, or any software which includes or is based upon any of this
+code, is only permitted under the terms of the QNX Realtime Plaform End User
+License Agreement (see licensing.qnx.com for details) or as otherwise
+expressly authorized by a written license agreement from QSSL. For more
+information, please email licensing@qnx.com.
+*/
+/* 
+ * This is the CPU-specific file for the dynamic loader
+ * for PPC. There are a few things to watch for:
+ *
+ * - 	We have an on-the-fly generated PLT. This means we need to modify
+ *	the data segment, give the plt execute permissions, and flush
+ *	the PPC caches properly. To do this, we need to call the kernel
+ *	directly from here, without jumping through the library (because
+ *	the caches aren't flushed yet :-) ). 
+ * - 	We also need to give the GOT execute permission, as PIC code calls
+ *	GOT. - 4 (which is just a brlr) to get the GOT address.
+ * 	Easiest is just to give the whole data segment PROT_EXEC...
+ */
+
+/*
+ * These are needed because they may be needed further in ldd (for the malloc
+ * functions and so on). We cannot wait until _CMain to set this up...
+ */
+
+extern void *__SysCpupageGet(int index);
+extern struct cpupage_entry *_cpupage_ptr;
+extern struct syspage_entry *_syspage_ptr;
+
+
+/* This is the bind function used for lazy binding */
+
+void bind_func(void){ 
+ 	//Placeholder for now
+}
+
+/* 
+ * This is the _start_ function, the entry point into the dynamic linker
+ */
+
+/*lint --e(19) turn off useless 'C' declaration for asm code */
+void _start_(void);
+	__asm__(" .globl\t_start_\n"
+		"\t _start_:\n"
+		// Next we want to save all arguments before calling ldd
+		"\t mr\t %r20,%r1\n"		// Saved SP
+		"\t mr\t %r21,%r3\n"		// Saved argc
+		"\t mr\t %r22,%r4\n"		// Saved argv 
+		"\t mr\t %r23,%r5\n"		// Saved envp 
+		"\t mr\t %r24,%r6\n"		// Saved auxv
+		"\t mr\t %r25,%r7\n"		// Saved term. function
+		"\t mr\t %r3, %r4\n"
+		"\t addi\t %r3, %r3,-4\n"	// %r3 has addr. of frame
+		"\t bl	1f\n"				// Needed because we need to flush GOT-4
+		"\t bl _GLOBAL_OFFSET_TABLE_@local-4\n"
+		"\t 1:\n"
+		"\t mflr %r12\n"
+		"\t lwz %r11,0(%r12)\n"
+		"\t rlwinm %r11,%r11,0,6,29\n"
+		"\t add %r11,%r11,%r12\n"
+		"\t dcbf 0,%r11\n"
+		"\t sync\n"
+		"\t isync\n"
+		"\t icbi 0,%r11\n"
+		"\t sync\n"
+		"\t isync\n"
+		"\t bl\t ldd\n"				// Call ldd
+		"\t bl _GLOBAL_OFFSET_TABLE_@local-4\n"
+		"\t mflr \t %r11\n" 			// Executable entry point
+		"\t mtlr \t %r3\n" 			// Executable entry point
+		"\t mr\t %r3,%r21\n"		// Restore context for main
+		"\t mr\t %r4,%r22\n"
+		"\t mr\t %r5,%r23\n"
+		"\t mr\t %r6,%r24\n"
+		"\t lwz\t %r7,_do_exit_fini@got(%r11)\n"
+		"\t blrl \n"
+#ifdef __PIC__
+		"\t b \t exit@plt\n"		// Should never get here...
+#else
+		"\t b \t exit\n"		
+#endif
+		"\t.type\t _start_,@function\n"
+		"\t.size\t _start_,.-_start_\n"
+	);
+
+
+static void unknown_symbol(const char *name)
+{
+	write(STDERR_FILENO, "unknown symbol: ", 16);
+	write(STDERR_FILENO, name, strlen(name));
+	write(STDERR_FILENO, "\n", 1);
+}
+
+/*
+ * Relocate all local GOT entries. On PPC, there are no GOT entries.
+ * Rather, all the magic is done in the loader-generated PLT.
+ */
+
+static void relocate_local_got(struct object *obj) {
+
+	return;
+}
+
+/*
+ * This is used to do the rest of the magic for the PPC:
+ * - Flush the d-cache/i-cache for our PLT stuff.
+ * - Set up the _syspage_ptr to the right values, now that we are resolved.
+ * - Change the protections on the PLT to allow execute privileges. 
+ */
+static int (*__ppc_MsgSendnc_ptr)(int, const void *, int, void *, int);
+ 
+static void __ppc_plt_flush(struct object *obj, int (*__ppc_MsgSendnc_r)
+	(int __coid, const void *__smsg, int __sbytes, void *__rmsg, int __rbytes)) {
+	unsigned long 		vec[50];
+	mem_ctrl_t		msg;
+	
+	if(__ppc_MsgSendnc_ptr == NULL) {
+		__ppc_MsgSendnc_ptr = __ppc_MsgSendnc_r ? __ppc_MsgSendnc_r : &MsgSendnc_r;
+	}
+
+	vector_decode(vec, sizeof vec/sizeof *vec, obj->dynamic, 0);
+
+	/* Change to PROT_EXEC so we can execute out of the PLT */
+	msg.i.type = _MEM_CTRL;
+	msg.i.subtype = _MEM_CTRL_PROTECT;
+	msg.i.addr = obj->text_addr + obj->data_offset;
+	msg.i.len = obj->data_size;
+	msg.i.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
+	__ppc_MsgSendnc_ptr(MEMMGR_COID, &msg.i, sizeof msg.i, 0, 0); 
+
+	/* Flush DCACHE */
+	msg.i.type = _MEM_CTRL;
+	msg.i.subtype = _MEM_CTRL_SYNC;
+	msg.i.addr = obj->text_addr + obj->data_offset;
+	msg.i.len = obj->data_size;
+	msg.i.flags = MS_SYNC | MS_INVALIDATE_ICACHE;
+	__ppc_MsgSendnc_ptr(MEMMGR_COID, &msg.i, sizeof msg.i, 0, 0); 
+
+	/* Flush caches */
+	if ( vec[DT_PLTGOT] != -1 ) {
+		msg.i.type = _MEM_CTRL;
+		msg.i.subtype = _MEM_CTRL_SYNC;
+		msg.i.addr = RELOC(obj, vec[DT_PLTGOT]);
+		msg.i.len = (size_t) vec[DT_PLTRELSZ] + 72;
+		msg.i.flags = MS_INVALIDATE_ICACHE;
+		__ppc_MsgSendnc_ptr(MEMMGR_COID, &msg.i, sizeof msg.i, 0, 0); 
+	}
+
+	/* Set up syspage pointers, needed by later code in loader */	
+	_syspage_ptr = __SysCpupageGet(CPUPAGE_SYSPAGE);
+	_cpupage_ptr = __SysCpupageGet(CPUPAGE_ADDR);
+
+}
+
+/* Sets up the PLT. See the ABI for the format */
+
+static void relocate_global_got(struct objlist *ol, int mode) {
+	unsigned long vec[50];
+	struct object *obj = ol->object;
+	unsigned long *plt, *plt_array, *plt_table ;
+	int num_slots, i;
+	
+	// Get the dynamic tags
+	vector_decode(vec, sizeof vec/sizeof *vec, obj->dynamic, 0);
+
+	plt = (unsigned long *) RELOC(obj,vec[DT_PLTGOT]);
+
+	/* If vec[DT_PLTGOT] is -1, we don't have a plt in this object... */
+	if( vec[DT_PLTGOT] == -1 ) {
+		return;
+	}
+
+	plt_array = plt + 72 / sizeof(unsigned long);
+	num_slots = vec[DT_PLTRELSZ] / vec[DT_RELAENT];
+	plt_table =  plt + (72 + num_slots * 8) / sizeof(unsigned long);
+
+	/*	
+	 * Now fill in the plt table. Follow the ABI; we have plenty of room
+	 * left for other stuff (lazy binding, for example) if we wish.
+	 */ 
+	plt[0] = 0;
+ 
+ 	// addis %r11,%r11,X
+ 	// lwz %r11,Y(%r11)
+ 	// mtctr %r11
+ 	// bctr
+	plt[1] = 0x3d6b0000 | (((unsigned int)(plt_table) + 0x8000) >> 16);
+	plt[2] = 0x816b0000 | ((int)(plt_table) & 0xffff);
+	plt[3] = 0x7d6903a6;
+	plt[4] = 0x4e800420;
+
+	// Next fill in call table
+	for (i = 0; i < num_slots; i++){
+		plt_array[2*i] = 0x39600000 | (i * 4);
+		plt_array[2*i + 1] = 0x4c000000 - (72 + i * 8);
+	}
+
+	return;
+}
+
+
+
+static int resolve_rels(const Elf32_Rel *rel, int nrel, struct objlist *ol, int mode) {
+        struct object               *obj = ol->object;
+        const list_head_t           *this = ol->root;
+        struct objlist              o;
+        const char              	*name;
+        struct object           	*tobj;
+        const Elf32_Sym         	*sym, *tsym;
+        const Elf32_Rela         	*rela = (Elf32_Rela *) rel;
+		unsigned long 				vec[50];
+		unsigned long				*plt_table, *plt_array;
+		int							jmpnum = 0, num_slots, ret = 0;
+
+	vector_decode(vec, sizeof vec/sizeof *vec, obj->dynamic, 0);
+
+	if ( vec[DT_PLTGOT] != -1 ) {
+		plt_array = (unsigned long *) RELOC(obj, vec[DT_PLTGOT] + 72);
+		num_slots = vec[DT_PLTRELSZ] / vec[DT_RELAENT];
+		plt_table = (unsigned long *) RELOC(obj, vec[DT_PLTGOT] + 72 + num_slots * 8);
+	}
+	else {
+		plt_array = NULL;
+		num_slots = 0;
+		plt_table = NULL;
+	}
+
+	/*
+	 * if this is a DT_SYMBOLIC object, then make sure it gets searched
+	 * first, by temporarily placing it at the head of the objlist
+	 */
+
+    if (obj->flags & OBJFLAG_SYMBOLIC) {
+		o.object = obj;
+		list_append(this, &o);
+	}
+
+	while (nrel--) {
+		int                     rtype;
+		unsigned long           *dst = RELOCP(obj, rela->r_offset);
+
+		sym = &obj->symbols[ELF32_R_SYM(rela->r_info)];
+		name = obj->strings + sym->st_name;
+		rtype = ELF32_R_TYPE(rela->r_info);
+		if ( rtype == R_PPC_NONE ) {
+			/* Nothing to do... */
+			rela++;
+			continue;
+		}
+
+		if (rtype == R_PPC_GLOB_DAT) {
+
+			if (sym && sym->st_name) {
+				tsym = lookup_global(name, this, 0, 1, &tobj);
+				if (tsym) {
+					*dst = rela->r_addend + RELOC(tobj, tsym->st_value);
+				} else if((sym->st_shndx == SHN_UNDEF) && (ELF32_ST_BIND(sym->st_info) != STB_WEAK)) {
+					unknown_symbol( name );
+					ret = -1;
+				} else if(ELF32_ST_BIND(sym->st_info) == STB_WEAK) {
+					*dst = 0;
+				} else {
+					*dst = RELOC(obj, rela->r_addend);
+				}
+
+			} else {
+				*dst = RELOC(obj, rela->r_addend);
+			}
+
+		} else if (rtype == R_PPC_COPY) {
+
+			tsym = lookup_global(name, this, obj, 0, &tobj);
+
+			if (tsym) {
+				xmemcpy(dst, RELOCP(tobj, tsym->st_value), 
+					tsym->st_size < sym->st_size ?
+					tsym->st_size : sym->st_size);
+			} else {
+				unknown_symbol( name );
+				ret = -1;
+			}
+
+		} else if (rtype == R_PPC_RELATIVE) {
+
+			*dst = RELOC(obj, rela->r_addend);
+
+		} else if (rtype == R_PPC_ADDR32) {
+
+			tsym = lookup_global(name, this, 0, 0, &tobj);
+
+			if (tsym) {
+				*dst = rela->r_addend + RELOC(tobj, tsym->st_value);
+			} else if(sym->st_shndx == SHN_UNDEF) {
+				unknown_symbol( name );
+				ret = -1;
+			} else {
+				*dst = rela->r_addend;
+			}
+			
+		} else if (rtype == R_PPC_JMP_SLOT) {
+
+			uint32_t		dist;
+			void 			*dest_addr;
+	
+			tsym = lookup_global(name, this, 0, 1, &tobj);
+			if(tsym) {
+				dest_addr = RELOCP(tobj, tsym->st_value);
+				dist = (unsigned) dest_addr - (unsigned) &plt_array[2*jmpnum];
+
+				// Optimize the PLT for special (very common) cases
+				if(dist < 0x01ffffff) {  
+					// We can go in single jump
+					plt_array[2*jmpnum] = 0x48000000 | (dist & 0x01ffffff);
+				} else if(dist > 0xfe000000) {   
+					// Negative relative of < 32MB
+					plt_array[2*jmpnum] = 0x4a000000 | (dist & 0x01ffffff);
+				} else if((unsigned) dest_addr > 0xfe000000) {  
+					// Absolute to top 32MB of mem
+					plt_array[2*jmpnum] = 0x4a000002 + ((unsigned) dest_addr & 0x01ffffff);
+				} else {
+					plt_table[jmpnum] = (unsigned) dest_addr;
+				}
+				jmpnum++;
+			} else {
+				if((sym->st_shndx == SHN_UNDEF) && (ELF32_ST_BIND(sym->st_info) != STB_WEAK)) {
+					unknown_symbol( name );
+					ret = -1;
+				} else if(ELF32_ST_BIND(sym->st_info) == STB_WEAK) {
+					plt_table[jmpnum++] = 0;
+				} else {
+					plt_table[jmpnum++] = RELOC(obj, sym->st_value);
+				}
+			}
+		}
+		rela++;
+	}
+
+	/*
+	 * if the object was previously placed at the list head, remove it
+	 */
+
+	if (obj->flags & OBJFLAG_SYMBOLIC) {
+		list_delete(&o);
+	}
+
+	/* Extra magic for PPC: get kernel call address */
+	tsym = lookup_global("MsgSendnc_r", this, NULL, 0, &tobj); 
+	if(tsym) {
+		__ppc_plt_flush(obj, RELOCP(tobj, tsym->st_value));
+	} else {
+		// Hopefully we get here because we're trying to dlopen some lib.
+		__ppc_plt_flush(obj, NULL);
+	}
+
+	return ret;
+}
+
+static int resolve(const list_head_t *this, int mode) {
+	unsigned long		vec[50];
+	struct objlist		*o;
+	int					ret = 0;
+
+	list_backward(this, o) {
+		struct object		*obj = o->object;
+
+		vector_decode(vec, sizeof vec / sizeof *vec, obj->dynamic, 0);
+		if (!(obj->flags & OBJFLAG_RESOLVED)) {
+			relocate_global_got(o, mode);
+			if (vec[DT_RELA] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_RELA]),
+						vec[DT_RELASZ] / sizeof(Elf32_Rela), o, RTLD_NOW)) {
+					ret = -1;
+				}
+			}
+		}
+		obj->flags |= (OBJFLAG_RELSDONE | OBJFLAG_RESOLVED);
+	}
+	return ret;
+}

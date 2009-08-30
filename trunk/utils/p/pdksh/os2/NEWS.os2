@@ -1,0 +1,106 @@
+Version 5.2.6
+
+ 1. The bug where hereis documents would leave temporary files behind has 
+    been fixed.
+
+ 2. Changed extension search order to place .exe files ahead of files with
+    no extension.  This permits the gcc option -Zexe to work properly,
+    however it causes some limitations.  Should this be a problem then I will
+    have to detect and ignore zero length files without an extension as a
+    special case for gcc.  I would prefer not to do this.
+
+ 3. Increased the number of file descriptors available to 40.  This corrects
+    a problem that showed up on some warp connect systems.
+
+ 4. Allowed any extension to be used for a script so long as the user
+    explicitly types it in.
+
+Version 5.2.4
+
+ 1. You can now open multiple files in a script, i.e. exec works.  Some
+    better checking could still be done.
+ 
+ 2. A bug in reading input files where data was getting shifted around
+    has been fixed. (forced binary mode to emx a number of places for input.)
+ 
+ 3. Directories with same name as executables will no longer cause an error.
+
+ 4. OS2 cmd processing of extproc header line only passes the file name
+    to the spawned process instead of the full pathname.  This is a bug
+    in os2 IMHO since if you explicitely want a certain path for the
+    command you cannot guarantee it.  A change was made to search the
+    path within ksh to permit this processing to work.  Note that the
+    copy ksh finds might not be the one you wanted but at least you can
+    copy your cmd files around without having to modify them.  A side
+    effect of this change is that typing: "ksh whatis" will now search
+    your path as well which does change the standard behavior of ksh.
+ 
+ 5. #! processing will now search for the shell using the explicit path
+    and if not found then it will use the path variable.
+    Most of you won't notice any difference since the shell will still
+    be found but if you needed a particular one then this can be done.
+    Note that if you only want a particular pathname use "\"'s in the path.
+ 
+ 6. Ksh will now honor the advertised EXECSHELL variable if it is set 
+    instead of OS2_SHELL as the shell to be used if there is no
+    #! or extproc line in the file.  The difference is EXECSHELL will not
+    have any options supplied while OS2_SHELL will automatically get
+    /c and the pathname will have '\' as the directory separator.  
+    OS2_SHELL will still be used if EXECSHELL is not set.
+ 
+ 7. A new option to print, -f, has been added for os2 users.  It will
+    force forward slashes.  It is useful when trying to massage an
+    environmental variable containing backslashes using something like
+    sed which always interpretes backslashes as escapes.  There is
+    and example of this in the new kshrc.ksh that I have included.
+ 
+ 8. Working with os2 variables can be a pain try to escape all of the ';'s
+    so I have supplied some new functions in the kshrc.ksh.  Please
+    checkout add_path, pre_path, and del_path.  These functions will
+    append a path, prepend a path, or delete a path from the variable
+    you specify, PATH by default.  These are modification of the
+    samples shipped with the unix pdksh startup files.
+ 
+ 9. The echo output and other outputs from ksh now use forward slashes 
+    and in general forward slashes will be seen more often than before.  
+    Backslashes will still be accepted on input and command line
+    completion but it was too painful to try and preserve the os2 look 
+    for output and permit Unix scripts to work.  If you prefer the
+    old method change the variable DIRSEP in sh.h and rebuild.
+ 
+10. A bug requiring all command extensions to be in lower case was
+    fixed.  This showed up most often in the setting of OS2_SHELL.
+
+11. os2/configure will now set up to build either ksh or sh.
+
+
+Version 5.2.2
+
+o OS2 executable can be built directly from original sources!  No patches
+  required.  Just unload, cd to source directory, run os2\configure, and 
+  then make (v3.73 minimum), nmake, or dmake.
+o Built on emx09a. (513 was built on 08.)
+o Now uses full signal processing from emx.  Previous version used fake 
+  signals. Better and more accurate signal status.
+o TMPDIR variable can now point to a another drive.  Which can be a FAT
+    drive.
+o Improved case folding in vi mode for file name matches.
+o Vi mode can now use cursor keys if desired. (Like emacs mode)
+o Both vi and emacs mode now get a set of default stty settings.  ^C
+    and ^U should now work during command line editing.
+o #!/bin/sh and similar lines at the top of scripts are now stripped
+    of pathname prefixes permitting use of standard OS2 search paths.
+    This should permit better shell script portability.
+o case statement variable usage is now case sensitive.  Also applies
+    to several other variable constructions.
+o Now accepts .sh as an executable extension.
+o All commands that start a new window are automatically backgrounded.
+o ksh can usually be made to grok gnu configure scripts but the results
+    are still very script dependant.  See the readme.os2 for details.
+
+
+Version 5.1.3
+
+This was the original version 5 release based on an earlier port of
+4.9 by Kai Rommel.
+

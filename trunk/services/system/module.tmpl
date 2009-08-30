@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="procnto">
+	<type>Element</type>
+	<classification>Runtime</classification>
+	<kind type="exe"/>
+
+	<!-- Available for what platforms? -->
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<!-- Source for source modules and builds -->
+	<source available="true">
+		<location subdirs="true" relative="true">.</location>
+		<!-- NYI: Have to exclude "cisco" variant directories from src pkg -->
+	</source>
+
+	<!-- Binary packaging info (including public headers -->
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="armProcessManagers" generated="true">
+			<kind type="exe"/>
+			<location runtime="true"  strip="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4">procnto</location>
+			<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4">procnto</location>
+			<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v6">procnto-v6</location>
+			<location runtime="true"  strip="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4.instr">procnto-instr</location>
+			<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4.instr">procnto-instr</location>
+			<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v6.instr">procnto-v6-instr</location>
+		</component>
+		<component id="mipsProcessManagers" generated="true">
+			<kind type="exe"/>
+			<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be">procnto</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le">procnto</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.instr">procnto-instr</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.instr">procnto-instr</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.32">procnto-32</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.32">procnto-32</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.32.instr">procnto-32-instr</location>
+			<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.32.instr">procnto-32-instr</location>
+		</component>
+		<component id="ppcProcessManagers" generated="true">
+			<kind type="exe"/>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.400">procnto-400</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.400.instr">procnto-400-instr</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600">procnto-600</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600.instr">procnto-600-instr</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.800">procnto-800</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.800.instr">procnto-800-instr</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke">procnto-booke</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.instr">procnto-booke-instr</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900">procnto-900</location>
+			<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900.instr">procnto-900-instr</location>
+		</component>
+		<component id="shProcessManagers" generated="true">
+			<kind type="exe"/>
+			<location runtime="true"  strip="false" isa="sh" byteorder="le" basedir="proc/sh/le">procnto</location>
+			<location runtime="true"  strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.instr">procnto-instr</location>
+		</component>
+		<component id="x86ProcessManagers" generated="true">
+			<kind type="exe"/>
+			<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o">procnto</location>
+			<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.instr">procnto-instr</location>
+		</component>
+
+		<!-- Public headers to include in package -->
+		<component id="headers" basedir="public">
+			<kind type="header"/>
+			<source available="true">
+			<location runtime="false" subdirs="false">.</location>
+			<location runtime="false" subdirs="false">hw</location>
+			<location runtime="false" subdirs="false">sys</location>
+
+			<location runtime="false" subdirs="false" strip="false" tisa="arm">arm</location>
+			<location runtime="false" subdirs="false" strip="false" tisa="x86">x86</location>
+			<location runtime="false" subdirs="false" strip="false" tisa="mips">mips</location>
+			<location runtime="false" subdirs="false" strip="false" tisa="ppc">ppc</location>
+			<location runtime="false" subdirs="false" strip="false" tisa="sh" >sh</location>
+			</source>
+		</component>
+	
+		<!--SMP procs are delivered separately from general release -->
+		<package name="ex-smp">
+			<component id="mipsSMPProcessManagers" generated="true">
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.smp">procnto-smp</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.smp">procnto-smp</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.smp.instr">procnto-smp-instr</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.smp.instr">procnto-smp-instr</location>
+			</component> 
+			<component id="ppcSMPProcessManagers" generated="true">
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600.smp">procnto-600-smp</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600.smp.instr">procnto-600-smp-instr</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.smp">procnto-booke-smp</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.smp.instr">procnto-booke-smp-instr</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900.smp">procnto-900-smp</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900.smp.instr">procnto-900-smp-instr</location>
+			</component> 
+			<component id="x86SMPProcessManagers" generated="true">
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.smp">procnto-smp</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.smp.instr">procnto-smp-instr</location>
+			</component> 
+			<component id="shSMPProcessManagers" generated="true">
+				<location runtime="true" strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.smp">procnto-smp</location> 
+				<location runtime="true" strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.smp.instr">procnto-smp-instr</location> 
+			</component>
+		</package>
+
+		<!-- Thingies that go into an internal package -->
+		<package isInternal="true">
+			<component id="armProcessManagersInternal" generated="true">
+				<kind type="exe"/>
+				<location runtime="true"  strip="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="arm" byteorder="le" basedir="proc/arm/le.v6.g">procnto-v6_g</location>
+			</component>
+			<component id="mipsProcessManagersInternal" generated="true">
+				<kind type="exe"/>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.smp.g">procnto-smp_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.smp.g">procnto-smp_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.32.g">procnto-32_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.32.g">procnto-32_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.cisco">procnto-cisco</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="be" basedir="proc/mips/be.cisco.g">procnto-cisco_g</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.tx79">procnto-tx79</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.tx79.instr">procnto-tx79-instr</location>
+				<location runtime="true"  strip="false" isa="mips" byteorder="le" basedir="proc/mips/le.tx79.g">procnto-tx79_g</location>
+			</component>
+			<component id="ppcProcessManagersInternal" generated="true">
+				<kind type="exe"/>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.400.g">procnto-400_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600.g">procnto-600_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600.smp.g">procnto-600-smp_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.800.g">procnto-800_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900.g">procnto-900_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.900.smp.g">procnto-900-smp_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.g">procnto-booke_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.smp.g">procnto-booke-smp_g</location>
+				<location runtime="true"  strip="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.booke.smp.instr.g">procnto-booke-smp-instr_g</location>
+			</component>
+			<component id="shProcessManagersInternal" generated="true">
+				<kind type="exe"/>
+				<location runtime="true"  strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.smp.g">procnto-smp_g</location>
+				<location runtime="true"  strip="false" isa="sh" byteorder="le" basedir="proc/sh/le.smp.instr.g">procnto-smp-instr_g</location>
+			</component>
+			<component id="x86ProcessManagersInternal" generated="true">
+				<kind type="exe"/>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.g">procnto_g</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.smp.g">procnto-smp_g</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.ac">procnto-ac</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.instr.ac">procnto-instr-ac</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.smp.ac">procnto-smp-ac</location>
+				<location runtime="true"  strip="false" isa="x86" basedir="proc/x86/o.smp.instr.ac">procnto-smp-instr-ac</location>
+			</component>
+			<component id="KernelHeaders" basedir="public">
+				<kind type="header"/>
+				<source available="false">
+				<location runtime="false" subdirs="false">kernel</location>
+				</source>
+			</component>
+		</package>
+
+		<package name="partsched">
+                <component generated="false">
+			<kind type="library"/>
+			<location type="install">/boot/sys/</location>
+                        <location runtime="false" isa="x86" basedir="proc/x86/o">libmod_aps.a</location>
+                        <location runtime="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600">libmod_aps.a</location>
+                        <location runtime="false" isa="mips" byteorder="be" basedir="proc/mips/be">libmod_aps.a</location>
+                        <location runtime="false" isa="mips" byteorder="le" basedir="proc/mips/le">libmod_aps.a</location>
+                        <location runtime="false" isa="sh" byteorder="le" basedir="proc/sh/le">libmod_aps.a</location>
+                        <location runtime="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4">libmod_aps.a</location>
+                        <location runtime="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4">libmod_aps.a</location>
+                </component>
+		</package>
+
+		<package name="modules" isInternal="true">
+                <component generated="false">
+			<kind type="library"/>
+			<location type="install">/boot/sys/</location>
+                        <location runtime="false" isa="x86" basedir="proc/x86/o">libmod_apm.a</location>
+                        <location runtime="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600">libmod_apm.a</location>
+                        <location runtime="false" isa="mips" byteorder="be" basedir="proc/mips/be">libmod_apm.a</location>
+                        <location runtime="false" isa="mips" byteorder="le" basedir="proc/mips/le">libmod_apm.a</location>
+                        <location runtime="false" isa="sh" byteorder="le" basedir="proc/sh/le">libmod_apm.a</location>
+                        <location runtime="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4">libmod_apm.a</location>
+                        <location runtime="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4">libmod_apm.a</location>
+
+                        <location runtime="false" isa="x86" basedir="proc/x86/o">libmod_apmgr.a</location>
+                        <location runtime="false" isa="ppc" byteorder="be" basedir="proc/ppc/be.600">libmod_apmgr.a</location>
+                        <location runtime="false" isa="mips" byteorder="be" basedir="proc/mips/be">libmod_apmgr.a</location>
+                        <location runtime="false" isa="mips" byteorder="le" basedir="proc/mips/le">libmod_apmgr.a</location>
+                        <location runtime="false" isa="sh" byteorder="le" basedir="proc/sh/le">libmod_apmgr.a</location>
+                        <location runtime="false" isa="arm" byteorder="be" basedir="proc/arm/be.v4">libmod_apmgr.a</location>
+                        <location runtime="false" isa="arm" byteorder="le" basedir="proc/arm/le.v4">libmod_apmgr.a</location>
+                </component>
+		</package>
+	</contents>
+
+	<!-- Dependencies -->
+	<requires>
+		<part build="false" location="lib/elf"/>
+		<part build="true"  location="lib/c"/>
+		<part build="false" location="hardware/startup/lib"/>
+		<part build="false" location="utils/m/mkasmoff"/>
+	</requires>
+</module>

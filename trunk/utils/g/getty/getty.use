@@ -1,0 +1,5 @@
+%C - set terminal mode (NetBSD)
+
+FILES:
+	/etc/config/gettytab
+	/etc/config/gettytab.${HOSTNAME}

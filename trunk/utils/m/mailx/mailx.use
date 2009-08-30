@@ -1,0 +1,45 @@
+%C [-EiInv] [-s subject] [-c cc-addr] [-b bcc-addr] to-addr ...
+   [-sendmail-option ...]
+%C [-EiInNv] -f [name]
+%C [-EiInNv] [-u user]
+
+
+-v      Verbose mode.  The details of delivery are displayed on the
+        user's terminal.
+
+-E      Do not send messages with an empty body.  This is useful for pip­
+        ing errors from cron(8) scripts.
+
+-i      Ignore tty interrupt signals.  This is particularly useful when
+        using mail on noisy phone lines.
+
+-I      Force mail to run in interactive mode even when input is not a
+        terminal. In particular, the `~' special character when sending
+        mail is only active in interactive mode.
+
+-n      Inhibit reading the system-wide mail.rc files upon startup.
+
+-N      Inhibit the initial display of message headers when reading mail
+        or editing a mail folder.
+
+-s subject
+        Specify subject on command line.  (Only the first argument after
+        the -s flag is used as a subject; be careful to quote subjects
+        containing spaces.)
+
+-c cc-addr
+        Send carbon copies to cc-addr list of users.  The cc-addr argu­
+        ment should be a comma-separated list of names.
+
+-b bcc-addr
+        Send blind carbon copies to bcc-addr list of users.  The bcc-addr
+        argument should be a comma-separated list of names.
+
+-f [mbox]
+        Read in the contents of your mbox (or the specified file) for
+        processing; when you quit, mail writes undeleted messages back to
+        this file.
+
+-u      Is equivalent to:
+
+              mail -f /var/mail/user

@@ -1,0 +1,169 @@
+<html><head>
+<title>Elvis-2.2_0 Input Mode</title>
+</head><body>
+<h1>3. INPUT MODE</h1>
+
+You can't type text into your file directly from visual command mode.
+Instead, you must first give a command which will put you into input mode.
+The commands to do this are
+<a href="elvisvi.html#A">A,</a>
+<a href="elvisvi.html#C">C,</a>
+<a href="elvisvi.html#I">I,</a>
+<a href="elvisvi.html#O">O,</a>
+<a href="elvisvi.html#R">R,</a>
+<a href="elvisvi.html#S">S,</a>
+<a href="elvisvi.html#a">a,</a>
+<a href="elvisvi.html#i">i,</a>
+<a href="elvisvi.html#o">o,</a> and
+<a href="elvisvi.html#s">s.</a>
+
+<p>The
+<a href="elvisvi.html#S">S,</a>
+<a href="elvisvi.html#s">s,</a>
+<a href="elvisvi.html#C">C,</a> and
+<a href="elvisvi.html#c">c</a>
+commands temporarily place a $ at the end of the text that
+they are going to change.
+
+<p>In input mode, all keystrokes are inserted into the text at the
+cursor's position, except for the following:
+
+<pre graphic>
+.-----.-----------------------------------------------------.
+| KEY | FUNCTION                                            |
+|-----|-----------------------------------------------------|
+| ^@  | (Nul) Insert a copy of last input text, then exit   |
+| ^A  | Insert a copy of the last input text                |
+| ^D  | Delete one indent character                         |
+| ^H  | (Backspace) Erase the character before the cursor   |
+| ^I  | (Tab) Depends on the <a href="elvisopt.html#inputtab">inputtab</a> option                |
+| ^K  | Compose the next two characters as a digraph        |
+| ^M  | (Enter) Insert a newline (^J, linefeed)             |
+| ^O  | Read &amp; run a single <a href="elvisvi.html">vi command</a>, then resume input   |
+| ^P  | Insert the contents of the cut buffer               |
+| ^R  | Redraw the window, like ^L                          |
+| ^T  | Insert an indent character                          |
+| ^U  | Backspace to the beginning of the line              |
+| ^V  | Insert the following keystroke, even if special     |
+| ^W  | Backspace to the beginning of the current word      |
+| ^X  | Use the next two keystrokes as hex digits of 1 byte |
+|^X^X | Stay in hex digit mode until next non-hex keystroke |
+| ^[  | (ESCape) Exit from input mode, back to command mode |
+^-----^-----------------------------------------------------^
+</pre>
+Also, on some systems, <kbd>^S</kbd> may stop output,
+<kbd>^Q</kbd> may restart output, and
+<kbd>^C</kbd> may interrupt execution.
+
+<p>The <a href="elvisvi.html#R">R</a> visual command puts you in overtype mode,
+which is a slightly different form of input mode.
+In overtype mode, each time you insert a character,
+one of the old characters is deleted from the file.
+
+<h2>3.1 Arrow keys in Input Mode</h2>
+
+The arrow keys can be used to move the cursor in input mode.
+(This is an extension; the real Vi doesn't support arrow keys in input mode.)
+The <kbd>PgUp</kbd>, <kbd>PgDn</kbd>, <kbd>Home</kbd>, and <kbd>End</kbd>
+keys work in input mode, too.
+The <kbd>Delete</kbd> key deletes a single character in input mode.
+The <kbd>Insert</kbd> key toggles between input mode and replace mode.
+
+<h2>3.2 Digraphs</h2><a name="DIG"></a>
+
+Elvis supports digraphs as a way to enter non-ASCII characters.
+A digraph is a character which is composed of two other characters.
+For example, an apostrophe and the letter i could be defined as a digraph
+which is to be stored and displayed as an accented i.
+
+<p>There is no single standard for extended ASCII character sets,
+so Elvis uses a configurable digraph table.
+You can view or edit the digraph table via the
+<a href="elvisex.html#digraph">:digraph!</a> ex command.
+
+<p>When inputting text, there are two ways you can type in a digraph.
+The first way is to type the first character, then hit <kbd>backspace</kbd>,
+and then type the second character.
+Elvis will then substitute the non-ASCII character in their place.
+Digraphs entered this way will not be recognized unless you've turned on
+the <a href="elvisopt.html#digraph">digraph</a> option.
+
+<p>The other way is to type <kbd>^K</kbd> followed by the two characters,
+without a backspace.  This method works regardless of the value of
+the <a href="elvisopt.html#digraph">digraph</a> option.
+
+<h3>3.2.1 Latin-1 digraphs</h3>
+
+The most common standard for non-ASCII symbol sets is called Latin-1
+(or ISO 8859/1, or ECMA-94 -- these are all the same).
+This symbol set is used by X-windows and graphical Windows95 programs,
+but not MS-DOS.
+
+<p>Elvis is distributed with a file named
+<a href="elvisses.html#elvis.lat">lib/elvis.lat</a> which contains the
+<a href="elvisex.html#digraph">:digraph</a> commands necessary to set up
+the digraph table appropriately for Latin-1.
+Most of these digraphs are fairly straight-forward.
+For example, to generate an accented "i", type <kbd>^K, i,</kbd>
+and an apostrophe character.
+You can list all of the digraphs via the command "<code>:dig!</code>"
+
+<p>The default <a href="elvisses.html#elvis.ini">lib/elvis.ini</a> file reads
+the lib/elvis.lat file automatically.
+This is very handy if your system really does use Latin-1, but if it doesn't
+then you'll probably want to disable the automatic loading.
+You can disable it by editing the lib/elvis.ini file,
+searching for the "<code>source!&nbsp;(elvispath("elvis.lat"))</code>" line,
+and inserting a double-quote character at the start of that line.
+
+<h3>3.2.2 PC-8 digraphs</h3>
+
+MS-DOS doesn't use Latin-1, and neither do OS/2 or Win32 console applications,
+such as Elvis.
+So for Microsoft operating systems, Elvis loads its digraph table via
+a file named <a href="elvisses.html#elvis.pc8">lib/elvis.pc8</a>.
+This sets up the digraph table appropriately for the 437 code page,
+which is Microsoft's default.
+If you use a different code page, you may wish to edit lib/elvis.pc8.
+
+<h2>3.3 Abbreviations</h2><a name="ABBR"></a>
+
+Elvis can expand abbreviations for you.
+You define an abbreviation with the <a href="elvisex.html#abbreviate">:abbr</a>
+command, and then whenever you type in the abbreviated form while in input mode,
+Elvis will immediately replace it with the long form.
+COBOL programmers should find this useful. :-)
+
+<p>Elvis doesn't perform the substitution until you type a non-alphanumeric
+character to mark the end of the word.
+If you type a control-V before that non-alphanumeric character, then
+Elvis will not perform the substitution.
+
+<p>Elvis also requires the abbreviated text to either appear at the start
+of a line, or immediately after a non-alphanumeric character.
+This prevents Elvis from trying to treat the ends of words as abbreviations.
+This is necessary so that if you set up an abbreviation which maps "ed" to
+"editor", Elvis won't mangle "confused" into "confuseditor".
+
+<p>Abbreviations are allowed to contain punctuation characters.
+For example, <strong>TeX</strong> users might find it useful to map
+"\b" to "\begin".
+
+<h2>3.4 Auto-Indent</h2>
+With the <a href="elvisopt.html#autoindent">autoindent</a> option turned on,
+Elvis will automatically insert leading whitespace at the beginning of each
+new line that you type in.
+The leading whitespace is copied from the preceding line.
+
+<p>To add more leading whitespace, type control-T.
+To remove some whitespace, type control-D.
+
+<p>If you ":set noautotab", then the whitespace generated by control-T will
+always consist of spaces -- never tabs.
+Some people seem to prefer this.
+
+<p>Elvis' autoindent mode isn't 100% compatible with vi's.
+In Elvis, 0^D and ^^D don't work,
+^U can wipe out all indentation, 
+and sometimes Elvis will use a different amount of indentation than vi would.
+</body></html>

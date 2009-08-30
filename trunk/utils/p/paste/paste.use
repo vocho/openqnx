@@ -1,0 +1,25 @@
+%C	- merge subsequent or corresponding lines of files.
+
+%C  [-s] [-d delimeters] file...
+
+Options:
+ -s    Operate in 'serial' mode.  By default paste merges corresponding lines
+       of the specified files.  When -s is specified, the paste utility
+       operates on each file in turn, replacing each newline except the last
+       according to the delimiter list.
+ -d    Delimiter list.  List of delimiters to use instead of the default <tab>
+       character ('\t').  The delimiter list is used circularly.  When -s is
+       not specified, the delimiter list is reset when a newline from the last
+       file specified is encountered.  When -s is specified, the delimiter list
+       is reset when the last newline from each file is encountered.  If a
+       backslash character is encountered, the delimiter is procesed according
+       to the following table:
+         \0   no delimiter
+         \t   tab
+         \n   newline
+         \\   backslash
+
+file...
+ list of files to merge.  If '-' is specified, standard input is used.  If
+ '-' is specified more than once, a line is processed circularly for each
+ instance.

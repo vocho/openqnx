@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<module name="mkdir">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="mkdir" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				mkdir
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="mkdir_target" generated="true">
+			<location basedir="nto/{cpu}/{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">
+				mkdir
+			</location>
+		</component>
+		</package>
+
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+	</requires>
+</module>

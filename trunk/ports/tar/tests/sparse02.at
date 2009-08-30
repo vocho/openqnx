@@ -1,0 +1,41 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+AT_SETUP([extracting sparse file over a pipe])
+AT_KEYWORDS([sparse sparse02])
+
+# Tar 1.14 - 1.15.1 was unable to extract sparse files to a pipe.
+# References: <16896.21739.460782.124775@jik.kamens.brookline.ma.us>
+# http://lists.gnu.org/archive/html/bug-tar/2005-02/msg00003.html 
+
+AT_TAR_CHECK([
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || AT_SKIP_TEST
+tar -c -f archive --sparse sparsefile || exit 1
+echo separator
+
+tar xfO archive | cat - > sparsecopy || exit 1
+cmp sparsefile sparsecopy
+],
+[0],
+[separator
+],
+[],[],[],[posix, gnu, oldgnu])
+
+AT_CLEANUP

@@ -1,0 +1,116 @@
+First information about the binary distribution of VMS UnZip 5.4
+----------------------------------------------------------------
+This archive comes in different variations:
+
+ "unz540x-vms-<cpu-compiler>-{obj|exe}.exe",
+ and
+ "unz540x-vms-<cpu-compiler>-obj.bck",
+
+ where <cpu-compiler> is "axp", "vax-decc", or "vax-vaxc", depending on
+ the environment used for creating the binaries.
+
+ ...-obj.exe denotes object library distributions that require
+ a link step on the local machine.
+
+ ...-exe.exe denotes "ready-to-run" executable distributions, that do
+ not require additional work. The caveat of these executable distribution
+ is that they do not run on VMS versions that are older than the system
+ used for building the executables (typical error message: "shareable
+ library mismatch").
+
+ ...-obj.bck are uncompressed VMS backup saveset distributions of the
+ object libraries.  They are much larger than the self-extracting Zip
+ archives and are only supplied for people with (old) versions of VMS
+ where the supplied SFX archives do not work. Therefore, if you already
+ have an old version of UnZip for VMS (5.0p1, better: 5.2), the better
+ choice is to fetch the Zip SFX archive and extract it manually, using
+ the older VMS UnZip program.
+ Note that backup savesets are 32256-bytes-fixed-length-record files;
+ when tranfered via binary FTP, the  resulting file's record format is
+ usually 512-bytes-fixed-length.  Before extracting them with BACKUP, the
+ record size of the saveset has to be restored to 32256 bytes (best done
+ with the public domain "FILE" utility, available from DECUS; or found on
+ ftp.wku.edu.).  The contents of these  saveset are identically to the
+ corresponding ...-obj.exe archives.
+
+Contents of the "vms" executables self extracting archives
+for UnZip 5.4:
+
+a) common files (documentation etc.):
+  00binary.vms         this file
+  readme.vms           general VMS info about using UnZip and zipfiles
+  readme               what UnZip is; general information
+  license              Info-ZIP copyright and distribution policy
+  where                pointer to Zip/UnZip support archives
+  makesfx.com          command file to create self-extracting archives
+  unzip.txt            UnZip manual page, human-readable format
+  unzipsfx.txt         UnZipSFX manual page, human-readable format
+  zipinfo.txt          ZipInfo manual page, human-readable format
+  3rdparty.bug         known bugs in PK[UN]ZIP, WinZip, etc.
+  unzip.hlp            UnZip help module, for default command interface
+  unzip_cli.hlp        UnZip help module, for VMSCLI command interface
+  unzipsfx.hlp         UnZipSFX pre-formatted help page
+
+b) object library distributions:
+  link_unz.com         command procedure for the linking step
+  vms/unzip.opt        auxiliary files required for linking step
+  vms/unzipsfx.opt        ...
+
+  unzip.<cpu_compiler>_olb         object libraries for UnZip and UnZipSFX
+  unzipsfx.<cpu_compiler>_olb      (both command interfaces)
+
+  unzipcli.<cpu_compiler>_olb      additional object libraries for UnZip and
+  unzsfxcli.<cpu_compiler>_olb     UnZipSFX, VMSCLI (DCL like) interface
+
+c) executable distributions:
+  unzip.exe            UnZip executable, default command interface
+  unzipsfx.exe         UnZipSFX executable, default command interace
+  unzip_cli.exe        UnZip executable, VMSCLI command interface
+
+  (To save space, unzipsfx_cli.exe has been omitted from the executable
+  distributions. The command interface of the SFX stubs is of minor
+  importance, anyway, since it cannot be used without first defining a
+  "foreign command" to run the SFX archive. In most cases, it is much
+  easier to use "$run <zipsfxarchive>.exe" at the command prompt.)
+
+  The binary files "*.<...>_olb" and "*.exe" have been stored in the Zip
+  archives with VMS attributes saved! If you extract them using a non-VMS
+  port of UnZip, you may get unusable files.
+
+
+If you decided to fetch the object library distribution, you have to
+link the executables on your local site. This requires runtime support
+for the C runtime library to be installed, which may not be present
+on older VAX VMS systems (prior to VMS 6).
+To create the executables, just invoke the "link_unz.com" command procedure.
+This will generate all executables (both unzip with UNIX-style command syntax
+and with VMSCLI command interface), but note that the executable's
+extension is ".<cpu_compiler>_exe"!
+In case your system is a VAX and your current working directory carries
+both the DEC C and the VAX C object distributions, you have to specify
+either "VAXC" or "DECC" to tell link_unz.com which binaries you want
+to build.
+
+Additionally, link_unz.com defines foreign commands for the newly linked
+executables, so you can test them without any further work.
+In order to use the default (UNIX-like) command interface, you can
+proceed straight ahead after unpacking the distribution.
+If you rather prefer to use the VMSCLI interface, you have to specify
+the option "VMSCLI" (or just "CLI") to the command starting link_unz.com.
+
+The executables (object libraries) in this archive have been compiled
+with the following options enabled:
+ * [decription support]
+
+The environment used for compilation was:
+
+a)  On Alpha AXP :   OpenVMS(AXP) 6.2;  DEC C V 5.6-003
+b1) On VAX       :   OpenVMS(VAX) 6.1;  DEC C V 4.0
+b2)                       alternatively VAX C V 3.2
+
+One final note:
+The binary files of the distribution have been archived with "saving all VMS
+attributes" enabled. Please do not repack the binary part of the archives on
+a non-VMS system, to prevent corruption of the files.
+
+04 December 1997, Christian Spieler

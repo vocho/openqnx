@@ -1,0 +1,39 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Check that tar doesn't complain when reading short records.
+# This can happen when the input blocksize differs from the blocksize
+# used to create the archive.
+
+AT_SETUP([short records])
+AT_KEYWORDS([shortrec.at])
+
+AT_TAR_CHECK([
+mkdir directory
+(cd directory && touch a b c d e f g h i j k l m n o p q r)
+tar -c -b 1 -f - directory | tar -t -f - >/dev/null
+tar -c -b 1 -f archive directory
+tar -t -f archive >/dev/null
+tar -t -f - < archive >/dev/null
+
+rm -r directory
+])
+
+AT_CLEANUP

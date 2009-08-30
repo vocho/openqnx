@@ -1,0 +1,242 @@
+@comment  GNU tar Archive Format description.
+@comment
+@comment   Copyright (C) 1988, 1989, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
+@comment   2000, 2001, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+@comment
+@comment   This program is free software; you can redistribute it and/or modify it
+@comment   under the terms of the GNU General Public License as published by the
+@comment   Free Software Foundation; either version 2, or (at your option) any later
+@comment   version.
+@comment
+@comment   This program is distributed in the hope that it will be useful, but
+@comment   WITHOUT ANY WARRANTY; without even the implied warranty of
+@comment   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+@comment   Public License for more details.
+@comment
+@comment   You should have received a copy of the GNU General Public License along
+@comment   with this program; if not, write to the Free Software Foundation, Inc.,
+@comment   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  
+
+/*@r{ tar Header Block, from POSIX 1003.1-1990.  }*/
+
+/*@r{ POSIX header.  }*/
+
+struct posix_header
+@{                              /*@r{ byte offset }*/
+  char name[100];               /*@r{   0 }*/
+  char mode[8];                 /*@r{ 100 }*/
+  char uid[8];                  /*@r{ 108 }*/
+  char gid[8];                  /*@r{ 116 }*/
+  char size[12];                /*@r{ 124 }*/
+  char mtime[12];               /*@r{ 136 }*/
+  char chksum[8];               /*@r{ 148 }*/
+  char typeflag;                /*@r{ 156 }*/
+  char linkname[100];           /*@r{ 157 }*/
+  char magic[6];                /*@r{ 257 }*/
+  char version[2];              /*@r{ 263 }*/
+  char uname[32];               /*@r{ 265 }*/
+  char gname[32];               /*@r{ 297 }*/
+  char devmajor[8];             /*@r{ 329 }*/
+  char devminor[8];             /*@r{ 337 }*/
+  char prefix[155];             /*@r{ 345 }*/
+                                /*@r{ 500 }*/
+@};
+
+#define TMAGIC   "ustar"        /*@r{ ustar and a null }*/
+#define TMAGLEN  6
+#define TVERSION "00"           /*@r{ 00 and no null }*/
+#define TVERSLEN 2
+
+/*@r{ Values used in typeflag field.  }*/
+#define REGTYPE  '0'            /*@r{ regular file }*/
+#define AREGTYPE '\0'           /*@r{ regular file }*/
+#define LNKTYPE  '1'            /*@r{ link }*/
+#define SYMTYPE  '2'            /*@r{ reserved }*/
+#define CHRTYPE  '3'            /*@r{ character special }*/
+#define BLKTYPE  '4'            /*@r{ block special }*/
+#define DIRTYPE  '5'            /*@r{ directory }*/
+#define FIFOTYPE '6'            /*@r{ FIFO special }*/
+#define CONTTYPE '7'            /*@r{ reserved }*/
+
+#define XHDTYPE  'x'            /*@r{ Extended header referring to the
+                                   next file in the archive }*/
+#define XGLTYPE  'g'            /*@r{ Global extended header }*/
+
+/*@r{ Bits used in the mode field, values in octal.  }*/
+#define TSUID    04000          /*@r{ set UID on execution }*/
+#define TSGID    02000          /*@r{ set GID on execution }*/
+#define TSVTX    01000          /*@r{ reserved }*/
+                                /*@r{ file permissions }*/
+#define TUREAD   00400          /*@r{ read by owner }*/
+#define TUWRITE  00200          /*@r{ write by owner }*/
+#define TUEXEC   00100          /*@r{ execute/search by owner }*/
+#define TGREAD   00040          /*@r{ read by group }*/
+#define TGWRITE  00020          /*@r{ write by group }*/
+#define TGEXEC   00010          /*@r{ execute/search by group }*/
+#define TOREAD   00004          /*@r{ read by other }*/
+#define TOWRITE  00002          /*@r{ write by other }*/
+#define TOEXEC   00001          /*@r{ execute/search by other }*/
+
+/*@r{ tar Header Block, GNU extensions.  }*/
+
+/*@r{ In GNU tar, SYMTYPE is for to symbolic links, and CONTTYPE is for
+   contiguous files, so maybe disobeying the `reserved' comment in POSIX
+   header description.  I suspect these were meant to be used this way, and
+   should not have really been `reserved' in the published standards.  }*/
+
+/*@r{ *BEWARE* *BEWARE* *BEWARE* that the following information is still
+   boiling, and may change.  Even if the OLDGNU format description should be
+   accurate, the so-called GNU format is not yet fully decided.  It is
+   surely meant to use only extensions allowed by POSIX, but the sketch
+   below repeats some ugliness from the OLDGNU format, which should rather
+   go away.  Sparse files should be saved in such a way that they do *not*
+   require two passes at archive creation time.  Huge files get some POSIX
+   fields to overflow, alternate solutions have to be sought for this.  }*/
+
+/*@r{ Descriptor for a single file hole.  }*/
+
+struct sparse
+@{                              /*@r{ byte offset }*/
+  char offset[12];              /*@r{   0 }*/
+  char numbytes[12];            /*@r{  12 }*/
+                                /*@r{  24 }*/
+@};
+
+/*@r{ Sparse files are not supported in POSIX ustar format.  For sparse files
+   with a POSIX header, a GNU extra header is provided which holds overall
+   sparse information and a few sparse descriptors.  When an old GNU header
+   replaces both the POSIX header and the GNU extra header, it holds some
+   sparse descriptors too.  Whether POSIX or not, if more sparse descriptors
+   are still needed, they are put into as many successive sparse headers as
+   necessary.  The following constants tell how many sparse descriptors fit
+   in each kind of header able to hold them.  }*/
+
+#define SPARSES_IN_EXTRA_HEADER  16
+#define SPARSES_IN_OLDGNU_HEADER 4
+#define SPARSES_IN_SPARSE_HEADER 21
+
+/*@r{ Extension header for sparse files, used immediately after the GNU extra
+   header, and used only if all sparse information cannot fit into that
+   extra header.  There might even be many such extension headers, one after
+   the other, until all sparse information has been recorded.  }*/
+
+struct sparse_header
+@{                              /*@r{ byte offset }*/
+  struct sparse sp[SPARSES_IN_SPARSE_HEADER];
+                                /*@r{   0 }*/
+  char isextended;              /*@r{ 504 }*/
+                                /*@r{ 505 }*/
+@};
+
+/*@r{ The old GNU format header conflicts with POSIX format in such a way that
+   POSIX archives may fool old GNU tar's, and POSIX tar's might well be
+   fooled by old GNU tar archives.  An old GNU format header uses the space
+   used by the prefix field in a POSIX header, and cumulates information
+   normally found in a GNU extra header.  With an old GNU tar header, we
+   never see any POSIX header nor GNU extra header.  Supplementary sparse
+   headers are allowed, however.  }*/
+
+struct oldgnu_header
+@{                              /*@r{ byte offset }*/
+  char unused_pad1[345];        /*@r{   0 }*/
+  char atime[12];               /*@r{ 345 Incr. archive: atime of the file }*/
+  char ctime[12];               /*@r{ 357 Incr. archive: ctime of the file }*/
+  char offset[12];              /*@r{ 369 Multivolume archive: the offset of
+                                   the start of this volume }*/
+  char longnames[4];            /*@r{ 381 Not used }*/
+  char unused_pad2;             /*@r{ 385 }*/
+  struct sparse sp[SPARSES_IN_OLDGNU_HEADER];
+                                /*@r{ 386 }*/
+  char isextended;              /*@r{ 482 Sparse file: Extension sparse header
+                                   follows }*/
+  char realsize[12];            /*@r{ 483 Sparse file: Real size}*/
+                                /*@r{ 495 }*/
+@};
+
+/*@r{ OLDGNU_MAGIC uses both magic and version fields, which are contiguous.
+   Found in an archive, it indicates an old GNU header format, which will be
+   hopefully become obsolescent.  With OLDGNU_MAGIC, uname and gname are
+   valid, though the header is not truly POSIX conforming.  }*/
+#define OLDGNU_MAGIC "ustar  "  /*@r{ 7 chars and a null }*/
+
+/*@r{ The standards committee allows only capital A through capital Z for
+   user-defined expansion.  Other letters in use include:
+
+   'A' Solaris Access Control List
+   'E' Solaris Extended Attribute File
+   'I' Inode only, as in 'star'
+   'N' Obsolete GNU tar, for file names that do not fit into the main header.
+   'X' POSIX 1003.1-2001 eXtended (VU version)  }*/
+
+/*@r{ This is a dir entry that contains the names of files that were in the
+   dir at the time the dump was made.  }*/
+#define GNUTYPE_DUMPDIR 'D'
+
+/*@r{ Identifies the *next* file on the tape as having a long linkname.  }*/
+#define GNUTYPE_LONGLINK 'K'
+
+/*@r{ Identifies the *next* file on the tape as having a long name.  }*/
+#define GNUTYPE_LONGNAME 'L'
+
+/*@r{ This is the continuation of a file that began on another volume.  }*/
+#define GNUTYPE_MULTIVOL 'M'
+
+/*@r{ This is for sparse files.  }*/
+#define GNUTYPE_SPARSE 'S'
+
+/*@r{ This file is a tape/volume header.  Ignore it on extraction.  }*/
+#define GNUTYPE_VOLHDR 'V'
+
+/*@r{ Solaris extended header }*/
+#define SOLARIS_XHDTYPE 'X'
+
+/*@r{ J@"org Schilling star header }*/
+
+struct star_header
+@{                              /*@r{ byte offset }*/
+  char name[100];               /*@r{   0 }*/
+  char mode[8];                 /*@r{ 100 }*/
+  char uid[8];                  /*@r{ 108 }*/
+  char gid[8];                  /*@r{ 116 }*/
+  char size[12];                /*@r{ 124 }*/
+  char mtime[12];               /*@r{ 136 }*/
+  char chksum[8];               /*@r{ 148 }*/
+  char typeflag;                /*@r{ 156 }*/
+  char linkname[100];           /*@r{ 157 }*/
+  char magic[6];                /*@r{ 257 }*/
+  char version[2];              /*@r{ 263 }*/
+  char uname[32];               /*@r{ 265 }*/
+  char gname[32];               /*@r{ 297 }*/
+  char devmajor[8];             /*@r{ 329 }*/
+  char devminor[8];             /*@r{ 337 }*/
+  char prefix[131];             /*@r{ 345 }*/
+  char atime[12];               /*@r{ 476 }*/
+  char ctime[12];               /*@r{ 488 }*/
+                                /*@r{ 500 }*/
+@};
+
+#define SPARSES_IN_STAR_HEADER      4
+#define SPARSES_IN_STAR_EXT_HEADER  21
+
+struct star_in_header
+@{
+  char fill[345];       /*@r{   0  Everything that is before t_prefix }*/
+  char prefix[1];       /*@r{ 345  t_name prefix }*/
+  char fill2;           /*@r{ 346  }*/
+  char fill3[8];        /*@r{ 347  }*/
+  char isextended;      /*@r{ 355  }*/
+  struct sparse sp[SPARSES_IN_STAR_HEADER]; /*@r{ 356  }*/
+  char realsize[12];    /*@r{ 452  Actual size of the file }*/
+  char offset[12];      /*@r{ 464  Offset of multivolume contents }*/
+  char atime[12];       /*@r{ 476  }*/
+  char ctime[12];       /*@r{ 488  }*/
+  char mfill[8];        /*@r{ 500  }*/
+  char xmagic[4];       /*@r{ 508  "tar" }*/
+@};
+
+struct star_ext_header
+@{
+  struct sparse sp[SPARSES_IN_STAR_EXT_HEADER];
+  char isextended;
+@};
+

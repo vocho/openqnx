@@ -1,0 +1,251 @@
+/*
+Copyright 2001, QNX Software Systems Ltd. All Rights Reserved
+ 
+This source code has been published by QNX Software Systems Ltd. (QSSL).
+However, any use, reproduction, modification, distribution or transfer of
+this software, or any software which includes or is based upon any of this
+code, is only permitted under the terms of the QNX Realtime Plaform End User
+License Agreement (see licensing.qnx.com for details) or as otherwise
+expressly authorized by a written license agreement from QSSL. For more
+information, please email licensing@qnx.com.
+*/
+/* This is the CPU-specific file for the dynamic loader
+ * for SH4
+ */
+
+extern struct syspage_entry *_syspage_ptr;
+extern struct cpupage_entry *_cpupage_ptr;
+extern void *__SysCpupageGet(int index);
+extern void *__SysCpupageSet(int index, int value);
+
+/* This is the bind function used for lazy binding */
+
+void bind_func(void) {}
+
+/* 
+ * This is the _start_ function, the entry point into the program
+ * when linked with the shared lib.
+ */
+
+#ifdef __PIC__
+
+void _start_(void);
+        __asm__(
+                ".globl\t_start_\n"
+                "\t_start_:\n"
+		"\tmov.l\t r0,@-r15\n"
+		"\tmov.l\t r4,@-r15\n"
+		"\tmov.l\t r5,@-r15\n"
+		"\tmov.l\t 0f,r0\n"
+		"\tlds\t r0,fpscr\n"
+		"\tmov.l\t 1f,r2\n"
+		"\tmova\t 1f,r0\n"
+		"\tadd\t r2,r0\n"
+		"\tmov.l\t @r15+,r4\n"
+		"\tmov.l\t r4,@-r15\n"
+		"\tjsr\t @r0\n"
+		"\tnop\n"
+		"\tmov.l\t @r15+,r5\n"
+		"\tmov\t r0,r1\n"
+		"\tmov.l\t @r15+,r4\n"
+		"\tmov.l\t @r15+,r0\n"
+		"\tjmp\t @r1\n"
+		"\tnop\n"
+		"\t.align 2\n"
+        "\t0:.long 0xc0000\n"
+        "\t1:.long ldd - .\n"
+        "\t.type\t_start_,@function\n"
+        "\t.size\t_start_,.-_start_\n"
+        );
+
+void __udivsi3_i4();
+        __asm__(
+        "\t__udivsi3_i4:\n"
+		"\t mov #1,r1\n"
+		"\t cmp/hi r1,r5\n"
+		"\t bf trivial\n"
+		"\t rotr r1\n"
+		"\t xor r1,r4\n"
+		"\t lds r4,fpul\n"
+		"\t mova L1_udivsi3,r0\n"
+#ifdef __LITTLEENDIAN__
+		"\t fmov.s @r0+,fr5\n"
+		"\t fmov.s @r0,fr4\n"
+#else
+		"\t fmov.s @r0+,fr4\n"
+		"\t fmov.s @r0,fr5\n"
+#endif
+		"\t float fpul,dr0\n"
+		"\t xor r1,r5\n"
+		"\t lds r5,fpul\n"
+		"\t float fpul,dr2\n"
+		"\t fadd dr4,dr0\n"
+		"\t fadd dr4,dr2\n"
+		"\t fdiv dr2,dr0\n"
+		"\t rts\n"
+		"\t ftrc dr0,fpul\n"
+	"trivial:\n"
+		"\t rts\n"
+		"\t lds r4,fpul\n"
+		".align 2\n"
+	"L1_udivsi3:\n"
+		"\t .double 2147483648\n"
+        "\t.type\t__udivsi3_i4,@function\n"
+        "\t.size\t__udivsi3_i4,.-__udivsi3_i4\n"
+        );
+#endif
+
+/*
+ * Resolve the GOT entries on SH4. Pretty straightforward, got[1]
+ * is the list within which we need to resolve the relocations, got[2]
+ * is the lazy-binding function.
+ */
+
+void relocate_local_got(struct object *obj) {
+
+	obj->got[0] = RELOC(obj, obj->got[0]);
+	obj->got[1] = (uintptr_t) obj;
+	obj->got[2] = (uintptr_t) bind_func;
+}
+
+
+/* 
+ * And this is the function used to resolve the relocations.
+ * We keep a CPU-specifc one, so that we don't end up with a 
+ * huge switch/if hunk of code in ldd.c...
+ */
+
+static int resolve_rels(const Elf32_Rel *rels, int nrel, struct objlist *ol, int mode) {
+        struct object                   *obj = ol->object;
+        const list_head_t               *this = ol->root;
+        struct objlist                  o;
+		int								ret = 0;
+		const Elf32_Rela				*rel = (const Elf32_Rela *)rels;
+        /*
+         * if this is a DT_SYMBOLIC object, then make sure it gets searched
+         * first, by temporarily placing it at the head of the objlist
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                o.object = obj;
+                list_append(this, &o);
+        }
+
+        while (nrel--) {
+                const Elf32_Sym         *sym = &obj->symbols[ELF32_R_SYM(rel->r_info)];
+                const char                      *name = obj->strings + sym->st_name;
+                const Elf32_Sym         *tsym;
+                uint32_t                addend;
+                struct object           *tobj;
+                int                                     rtype;
+                unsigned long           *dst = RELOCP(obj, rel->r_offset);
+
+                rtype = ELF32_R_TYPE(rel->r_info);
+				addend = rel->r_addend;
+				if ( rtype == R_SH_NONE ) {
+					/* Nothing to do... */
+					rel++;
+					continue;
+				}
+                /*
+                 * when searching for the source of a copy relocation don't
+                 * look for the symbol within the object being processed
+                 *
+                 * when processing jump slot relocations, the PLT symbol should
+                 * not be used.  The PLT symbol is detected by having
+                 * st_shndx == SHN_UNDEF and type == STT_FUNC and st_value != 0.
+                 * If the address of a function AND a call is taken by an
+                 * object to a function, then the linker should ONLY generate
+                 * an R_386_32 relocation so that the GOT entry will point to
+                 * the PLT entry for the function.  These PLT symbols should
+                 * only exist in the executable.
+                 *
+                 * Another thing we do here is to resolve the internal relative
+                 * relocs on the first bootstrapping pass (for libc.so). These
+                 * obviously don't get done again. We also have the ability to reverse
+                 * the global relative relocations, to "undo" our bootstrapping phase
+                 * and resolve the symbols in libc.so in the right context. For other
+                 * relocations, we don't need to undo them since there are no addends.
+                 */
+
+               if ((rtype == R_SH_RELATIVE || ((mode == RTLD_LAZY) && rtype == R_SH_JMP_SLOT))
+                       && !(obj->flags & OBJFLAG_RELSDONE)) {
+                       *dst = RELOC(obj, addend);
+               } else if ((tsym = lookup_global(name, this, rtype == R_SH_COPY ? obj : 0,
+                               rtype == R_SH_JMP_SLOT, &tobj)) ||
+                               (ELF32_ST_BIND(sym->st_info) == STB_WEAK)) {
+                       uintptr_t             val = tsym ? RELOC(tobj, tsym->st_value) : 0;
+
+                       if (rtype == R_SH_JMP_SLOT) {
+                               *dst = val;
+                       } else if (rtype == R_SH_GLOB_DAT) {
+                               *dst = val;
+                       } else if (rtype == R_SH_DIR32) {
+                               *dst = addend + (unsigned) RELOFFSET((obj->flags & OBJFLAG_REVERSED), (val));
+                       } else if (rtype == R_SH_COPY && tsym) {
+                               xmemcpy(dst, (void *)val, tsym->st_size < sym->st_size ?
+                                       tsym->st_size : sym->st_size);
+                       } else if (tsym) {
+							write(STDERR_FILENO,"unknown relocation type\n",24);
+							ret = -1;
+                       } else {
+							write(STDERR_FILENO,"bad weak relocation type\n",25);
+							ret = -1;
+                       }
+               } else {
+                    if(rtype != R_SH_RELATIVE && (!((mode == RTLD_LAZY) && (rtype == R_SH_JMP_SLOT)))) {
+						write(STDERR_FILENO, "unknown symbol: ", 16);
+						write(STDERR_FILENO, name, strlen(name));
+						write(STDERR_FILENO, "\n", 1);
+						ret = -1;
+					}
+               }
+               rel++;
+       }
+
+        /*
+         * if the object was previously placed at the list head, remove it
+         */
+
+        if (obj->flags & OBJFLAG_SYMBOLIC) {
+                list_delete(&o);
+        }
+        return ret;
+}
+
+static int resolve(const list_head_t *this, int mode) {
+	unsigned long		vec[50];
+	struct objlist		*o;
+	int					ret = 0;
+
+	list_backward(this, o) {
+		struct object		*obj = o->object;
+
+		vector_decode(vec, sizeof vec / sizeof *vec, obj->dynamic, 0);
+		if (!(obj->flags & OBJFLAG_RESOLVED)) {
+			if (vec[DT_RELA] != -1) {
+				if (resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_RELA]),
+						vec[DT_RELASZ] / sizeof(Elf32_Rela), o, RTLD_NOW)) {
+					ret = -1;
+				}
+			}
+			if (vec[DT_JMPREL] != -1) {
+				if(resolve_rels((Elf32_Rel *)RELOCP(obj, vec[DT_JMPREL]),
+					vec[DT_PLTRELSZ] / sizeof(Elf32_Rela), o, mode)) {
+					ret = -1;
+				}
+			}
+		}
+		/* The internal relative relocs are done, don't do them again. */
+		obj->flags |= (OBJFLAG_RELSDONE | OBJFLAG_RESOLVED);
+	}
+
+	/*
+	 * Should now be safe to call CpuSyspageGet to setup syspage...
+	 * This is needed because the rest of ldd may call fn. which need these.
+	 */
+	_cpupage_ptr = __SysCpupageGet(CPUPAGE_ADDR);
+	_syspage_ptr = __SysCpupageGet(CPUPAGE_SYSPAGE);
+
+	return ret;
+}

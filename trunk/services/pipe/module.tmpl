@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<module name="pipe">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="pipe" generated="true">
+			<location basedir="{cpu}/{o|endian}" runtime="true">
+				pipe
+			</location>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/system"/>
+		<part build="false" location="lib/io-char"/>
+	</requires>
+
+</module>

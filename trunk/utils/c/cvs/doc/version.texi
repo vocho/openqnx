@@ -1,0 +1,4 @@
+@set UPDATED 12 September 2003
+@set UPDATED-MONTH September 2003
+@set EDITION 1.11.9
+@set VERSION 1.11.9

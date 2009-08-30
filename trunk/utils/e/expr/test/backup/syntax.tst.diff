@@ -1,0 +1,94 @@
+1,31c1,31
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< /home/spuri
+< expr error: invalid syntax
+---
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> =
+> expr: syntax error
+> expr: syntax error
+> 0
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> +
+> expr: syntax error
+> expr: syntax error
+> expr: non-numeric argument
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> /home/guest
+> expr: syntax error
+33,39c33,39
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+---
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+41,46c41,46
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+< expr error: invalid syntax
+---
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error
+> expr: syntax error

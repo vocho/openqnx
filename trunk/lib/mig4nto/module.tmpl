@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<module name="mig4nto">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+
+		<component id="SharedObj" generated="true">
+			<kind type="library"/>
+			<location basedir="x86/so" runtime="true">
+				libmig4nto.so
+			</location>
+		</component>
+
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="x86/a" runtime="false">
+				libmig4nto.a
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/mig4nto"/>
+		<part build="false" location="services/system"/>
+		<part build="false" location="lib/io-char"/>
+		<part build="false" location="hardware/devb/cam"/>
+		<part build="false" location="services/blk/io-blk"/>
+		<part build="false" location="services/net/npm/qnet"/>
+		<part build="false" location="hardware/pci"/>
+	</requires>
+
+</module>

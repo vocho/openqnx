@@ -1,0 +1,22 @@
+Likely:
+ {9} Construct more comprehensive test vectors.
+ {8} Improve the documentation.
+ {8} Add +N addressing (e.g., /foo/,+4d; /foo/+3,/bar/+2 s/foo/bar/).
+ {8} Generalize ~ addressing (e.g., /foo/,~4d; /foo/+3,/bar/~2 s/foo/bar/).
+ {7} Make lib/regex.c handle [[=x=]] and [[.x.]].  (Alternatively:
+       make rx library perform reasonably.)
+ {7} Look into improving regex performance.
+ {6} Allow for NULs in command script files.
+
+Maybe:
+ {6} Add i18n support.  [Need others to do translations.]
+ {6} Warn/error for \` and \' in impossible contexts.
+       [Only if can cleanly patch regex.c without breaking other apps
+        which really want the distinction between these and ^ and $;
+		otherwise this becomes a {1}.]
+ {5} Use tcov to construct more extensive test vectors.
+ {5} Allow compilation with different regexp libraries.
+ {4} Add -N addressing (e.g., /foo/-3,/bar/+2 s/foo/bar/).
+
+Unlikely:
+ {1} Add filters (Use perl instead.)

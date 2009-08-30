@@ -1,0 +1,30 @@
+" Here are some typical settings that you might want to try.  The simplest
+" way to use this file is to :source this file, and then run ":mkexrc" to
+" save the settings where they can be automatically loaded.
+set autoindent
+try set spell
+try set smartargs
+set taglibrary
+set wrapscan
+set incsearch
+set spellautoload
+map gw lbygS:word <C-P><Enter>
+try {
+ alias wc {
+  "Count words in the buffer, or a range of lines
+  local w=0
+  !(%)%s/\w\+/let w=w+1/gx
+  calc w "words"
+ }
+}
+try check +other
+try check -link
+try aug END
+then {
+ au!
+ au BgChanged light color x11.spell on pink
+ au BgChanged dark color x11.spell on maroon
+ au BgChanged light color windows.spell on pink
+ au BgChanged dark color windows.spell on maroon
+}
+try aug END

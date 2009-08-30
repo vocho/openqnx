@@ -1,0 +1,12 @@
+#/bin/sh
+
+while expr $# > /dev/null
+do
+	echo $1
+#	cp $1.o1 old-$1.o1
+#	grep -v Process old-$1.o1 | grep -v Invalid | cat -c > $1.o1
+	grep -v expr $1.ret.o1 > q1
+	grep -v expr $1.ret.o2 > q2
+	diff q1 q2 > $1.ret.diff
+	shift
+done

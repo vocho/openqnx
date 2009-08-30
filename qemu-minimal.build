@@ -1,0 +1,94 @@
+#
+# The build file for QNX Neutrino booting on QEMU standard PC
+# Absolute mimimal config for a shell, networking and ftp
+#
+[virtual=x86,bios +compress] boot = {
+    startup-bios -s64k
+    [+keeplinked]
+    PATH=/proc/boot:/bin:/usr/bin LD_LIBRARY_PATH=/proc/boot:/lib:/usr/lib:/lib/dll procnto
+}
+
+[+script] startup-script = {
+    display_msg "  "
+    display_msg "Welcome to QNX Neutrino 6.4.0 inside QEMU!"
+    display_msg "  "
+    procmgr_symlink ../../proc/boot/libc.so.3 /usr/lib/ldqnx.so.2
+
+    display_msg "---> Starting PCI Services"
+    pci-bios
+    waitfor /dev/pci
+
+    display_msg "---> Starting EIDE Driver"
+    devb-eide blk cache=64M,auto=partition,vnode=2000,ncache=2000,noatime,commit=low dos exe=all
+    waitfor /dev/hd0
+
+    # Mount disk as /
+    # Also, mount CD rom
+
+    display_msg "---> Mounting Filesystems"
+    mount /dev/hd0 /
+    mount -tcd /dev/cd0 /fs/cd0
+    
+    #display_msg "---> Starting io-pkt-v4"
+    #io-pkt-v4 -dne2000 -ptcpip
+    #waitfor /proc/boot/io-pkt-v4
+    #display_msg "---> Registering with DHCP"
+    #dhcp.client
+    
+    # Some common servers
+    pipe &
+    mqueue &
+    devc-pty &
+    
+#### Chose either console or serial port (or BOTH using [+session])
+
+    display_msg "---> Starting Console Manager"
+    devc-con &
+    reopen /dev/con1
+    
+    #display_msg "---> Starting Serial Manager"
+    #devc-ser8250 -e -b115200 &
+    #reopen /dev/ser1
+
+    display_msg "---> Starting esh"
+    esh
+
+}
+
+libc.so
+libcam.so
+io-blk.so
+cam-disk.so
+fs-qnx4.so
+cam-cdrom.so
+fs-cd.so
+libsocket.so.2
+devn-ne2000.so
+#npm-tcpip.so
+
+[data=c]
+
+pipe
+mqueue
+devc-pty
+io-pkt-v4
+pci-bios
+devb-eide
+esh
+devc-con
+devc-ser8250
+ls
+cat
+mount
+ifconfig
+#dhcp.client
+ping
+pci
+slay
+pidin
+qconn
+tftp
+tftpd
+mkdir
+mt_metadata
+mt_logger

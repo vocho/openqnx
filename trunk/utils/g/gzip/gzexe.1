@@ -1,0 +1,51 @@
+.TH GZEXE 1
+.SH NAME
+gzexe \- compress executable files in place
+.SH SYNOPSIS
+.B gzexe
+.I "name .\|.\|."
+.SH DESCRIPTION
+The
+.I  gzexe
+utility allows you to compress executables in place and have them
+automatically uncompress and execute when you run them (at a penalty
+in performance).  For example if you execute ``gzexe /usr/bin/gdb'' it
+will create the following two files:
+.nf
+.br
+    -rwxr-xr-x  1 root root 1026675 Jun  7 13:53 /usr/bin/gdb
+    -rwxr-xr-x  1 root root 2304524 May 30 13:02 /usr/bin/gdb~
+.fi
+/usr/bin/gdb~ is the original file and /usr/bin/gdb is the self-uncompressing
+executable file.  You can remove /usr/bin/gdb~ once you are sure that
+/usr/bin/gdb works properly.
+.PP
+This utility is most useful on systems with very small disks.
+.SH OPTIONS
+.TP
+.B \-d
+Decompress the given executables instead of compressing them.
+.SH "SEE ALSO"
+gzip(1), znew(1), zmore(1), zcmp(1), zforce(1)
+.SH CAVEATS
+The compressed executable is a shell script.  This may create some
+security holes.  In particular, the compressed executable relies
+on the PATH environment variable to find
+.I gzip
+and some standard utilities
+.RI ( basename ,
+.IR chmod ,
+.IR ln ,
+.IR mkdir ,
+.IR mktemp ,
+.IR rm ,
+.IR sleep ,
+and
+.IR tail ).
+.SH "BUGS"
+.I gzexe
+attempts to retain the original file attributes on the compressed executable,
+but you may have to fix them manually in some cases, using
+.I chmod
+or
+.IR chown .

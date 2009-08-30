@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<module name="termcap">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+				libtermcap.a
+			</location>
+		</component>
+
+		<component id="SharedArchive" generated="true">
+			<kind type="library"/>
+			<location basedir="{os}/{cpu}/a{.:endian}.shared" runtime="false">
+				libtermcapS.a
+			</location>
+		</component>
+
+		<component id="config" generated="false">
+			<kind type="config"/>
+			<location basedir="config" runtime="false" subdirs="true">
+				.
+			</location>
+		</component>
+
+	</contents>
+
+</module>

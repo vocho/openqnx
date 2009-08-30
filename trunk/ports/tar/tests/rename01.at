@@ -1,0 +1,89 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# Description: Test basic handling of renamed directory in the incremental
+# archives. 
+
+AT_SETUP([renamed dirs in incrementals])
+AT_KEYWORDS([incremental rename rename01])
+
+AT_TAR_CHECK([
+AT_SORT_PREREQ
+
+mkdir foo
+genfile --file foo/file1
+genfile --file foo/file2
+mkdir foo/bar
+genfile --file foo/bar/file
+
+echo "Creating base archive"
+tar -g incr -cf arch.1 -v foo
+
+mv foo/bar foo/baz
+
+echo "Creating incremental archive"
+tar -g incr -cf arch.2 -v foo
+
+mv foo old
+
+tar xfg arch.1 /dev/null
+
+echo "Begin directory listing 1"
+find foo | sort 
+echo "End directory listing 1"
+
+tar xfg arch.2 /dev/null
+echo Begin directory listing 2
+find foo | sort
+echo End directory listing 2
+],
+[0],
+[Creating base archive
+foo/
+foo/bar/
+foo/file1
+foo/file2
+foo/bar/file
+Creating incremental archive
+foo/
+foo/baz/
+Begin directory listing 1
+foo
+foo/bar
+foo/bar/file
+foo/file1
+foo/file2
+End directory listing 1
+Begin directory listing 2
+foo
+foo/baz
+foo/baz/file
+foo/file1
+foo/file2
+End directory listing 2
+],
+[tar: foo/bar: Directory is new
+tar: foo/baz: Directory has been renamed from `foo/bar'
+],
+[],[],[gnu, oldgnu, posix])
+
+AT_CLEANUP
+
+# End of rename01.at

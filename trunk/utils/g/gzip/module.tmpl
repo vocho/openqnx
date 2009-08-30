@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<module name="gzip">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent></RuntimeComponent>
+
+	<contents>
+		<package isHost="false">
+				<component id="gzip" generated="true">
+					<location basedir="nto-{cpu}-{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">gzip</location>
+					<location basedir="nto-{cpu}-{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">gunzip</location>
+					<location basedir="nto-{cpu}-{o|endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="true">zcat</location>
+					<link src="gunzip" dst="bin/uncompress" os="nto" isa="{cpu}" byteorder="{endian}"/>
+				</component>
+		</package>
+		<package isHost="true">
+				<component id="gzip" generated="true">
+					<location basedir="win32-x86-o" os="win32" isa="x86" runtime="true">gzip</location>
+					<location basedir="win32-x86-o" os="win32" isa="x86" runtime="true">gunzip</location>
+					<location basedir="win32-x86-o" os="win32" isa="x86" runtime="true">zcat</location>
+					<link src="gunzip" dst="usr/bin/uncompress" os="win32" isa="x86"/>
+				</component>
+		</package>
+
+	</contents>
+
+</module>

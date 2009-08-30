@@ -1,0 +1,71 @@
+* ABOUT BUGS
+
+Before reporting a bug, please check the list of known bugs
+and the list of oft-reported non-bugs (below).
+
+Bugs and comments may be sent to bug-gnu-utils@gnu.org; please
+include the word ``sed'' in the Subject: header.
+
+Please do not send a bug report like this:
+
+	[while building frobme-1.3.4] 
+	$ configure 
+	sed: file sedscr line 1: Unknown option to 's'
+	$ sed --version
+	GNU sed version 3.01
+
+If GNU sed doesn't configure your favorite package, take a few extra
+minutes to identify the specific problem and make a stand-alone test
+case.
+
+A stand-alone test case includes all the data necessary to perform the
+test, and the specific invocation of sed that causes the problem.  The
+smaller a stand-alone test case is, the better.  A test case should
+not involve something as far removed from sed as ``try to configure
+frobme-1.3.2''.  Yes, that is in principle enough information to look
+for the bug, but that is not a very practical prospect.
+
+
+
+* KNOWN BUGS
+
+Regular expression evaluation performance sucks.  Fixing this is
+a high priority for the next release, but I did not want to open
+this can of worms for the 3.01 release because there were more
+important functional bugs which had been wanting fixing.  And
+another issue is that the regular expression routines provided
+do not _fully_ support POSIX.2 BREs.
+
+Improvement of the documentation and the testsuite are also in the
+plans for 3.02.  Specific suggestions are welcome, but I am
+already aware of the general complaint of "this ain't good
+enough", so you don't need to tell me that.
+
+
+* NON-BUGS
+
+ `sed -n' and `s/regex/replace/p'
+
+Some versions of sed ignore the `p' (print) option of an `s' command
+unless the `-n' command switch has been specified.  Other versions
+always honor the `p' option.  GNU sed is the latter sort.  (Both
+approaches are allowed by POSIX.2.)
+
+
+ regexp syntax clashes
+
+GNU sed uses the Posix basic regular expression syntax.  According to
+the standard, the meaning of some escape sequences is undefined in
+this syntax;  notable in the case of GNU sed are `\|', `\+', `\?',
+`\`', `\'', `\<', `\>', `\b', `\B', `\w', and `\W'.
+
+As in all GNU programs that use Posix basic regular expressions, sed
+interprets these escape sequences as meta-characters.  So, `x\+'
+matches one or more occurrences of `x'.   `abc\|def' matches either
+`abc' or `def'.
+
+This syntax may cause problems when running scripts written for other
+seds.  Some sed programs have been written with the assumption that
+`\|' and `\+' match the literal characters `|' and `+'.  Such scripts
+must be modified by removing the spurious backslashes if they are to
+be used with GNU sed.

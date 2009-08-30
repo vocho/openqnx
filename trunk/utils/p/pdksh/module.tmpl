@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<module name="pdksh">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+		<availability supported="false">
+			<os name="win32">
+				<cpu isa="x86"/>
+			</os>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="pdksh" generated="true">
+			<location basedir="{os}-{cpu}-{o|endian}" runtime="true">
+				ksh
+			</location>
+		</component>
+		</package>
+
+		<package>
+		<component id="pdksh_target" generated="true">
+			<location os="nto" isa="{cpu}" byteorder="{endian}" basedir="{os}-{cpu}-{o|endian}" runtime="true">
+				ksh
+			</location>
+		</component>
+		</package>
+		<package isHost="true">
+			<component>
+				<location type="install">usr/bin</location>
+				<link os="qnx6" isa="x86" src="../../bin/ksh" dst="usr/bin/ksh"/>
+			</component>
+		</package>
+	</contents>
+
+</module>

@@ -1,0 +1,51 @@
+
+Create a one-to-one mapping area on all processors and use it for message
+transfer of physically contigous messages.
+
+Have multiple transfer area mapping "slots" and rotate through them
+for non-contigous messages.
+
+Optimize MIPSLE memcpy.
+
+Create optimized assembler routines for message pass code on non-X86
+CPU's.
+
+Move the iov_t arrays into kernel memory when their address space is
+active to avoid having to map them at message transfer time.
+
+Allow the iov_t arrays to change shape during the message transfer
+to allow physically discontinuous messages to be transfered through
+the one-to-one mapping area (Hao, please correct this if I've mangled
+your meaning).
+
+Zero memory during the unmap operation (process time) so that the
+mmap operation doesn't have to do it (kernel time). Requires zeroing
+all of memory during initialization. Alternatively, have the idle thread
+zero pages.
+
+Map page tables/directories uncached.
+
+Move the mdestroy out of kernel time, or split up ProcessDestroy in
+a series of subcalls. The mdestroy is quite costly, especially if we 
+additionally need to zero memory.
+
+Split the Proc malloc() into a kernel one (used only to grow
+the object lists), and one for proc, which could be faster than the list-based
+one.
+
+Support large page table entries.
+
+Map kernel using 4M pages (when available) on x86.
+
+Since we now have PPC-family specific kernels, some runtime checks can
+be replaced with conditional compilation (e.g. checking for the EAR register
+on 400 & 800 series processors can be omitted).
+
+Use stmw/lmw instructions for PPC big-endian save/restore context operations.
+
+Allow multiple messages passes at the same time in the SMP kernel. Failing
+that, allow a higher priority process attempting to get into the kernel
+to preempt a message pass in process.
+
+Have fast interrupt identification entry sequences, which only save a subset
+of CPU registers. 

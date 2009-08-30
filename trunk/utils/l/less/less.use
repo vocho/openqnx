@@ -1,0 +1,60 @@
+%-less
+less    [-[+]aBcCdeEfimMnNqQrsSuUw] [-b n] [-x n] [-[z] n] [-h n] [-j n]
+        [-p pattern] [-y n] [-[oO] logfile] [-t tag] [-T tagsfile]
+        [+cmd] [file ...]
+Options:
+ -a     Start searches after the last line displayed on the screen
+ -b n   Use a nonstandard number of buffers (default 10)
+ -B     Disable automatic allocation of buffers
+ -c     Do full-screen redraws from the top line down
+ -C     Clear the screen, then do full-screen redraws from the top line down
+ -d     Suppress the error message normally displayed if the terminal is dumb
+ -e     Automatically exit the second time end-of-file is reached
+ -E     Automatically exit the first time end-of-file is reached
+ -f     Force nonregular files to be opened
+ -h n   Specify a maximum number of lines to scroll backward
+ -i     Ignore case; uppercase and lowercase are considered identical
+ -j n   Use this line on the screen to position "target" lines
+ -m     Prompt verbosely (like more), with the percent into the file
+ -M     Prompt even more verbosely than more
+ -n     Suppresses line numbers
+ -N     Display a line number at the beginning of each line
+ -o f   Copy input to the named file as it is being viewed
+ -O f   Copy input to the named file as it is being viewed (force overwrite)
+ -p p   Start at the first occurrence of the pattern 'p' in the file
+ -q     Be moderately quiet; only ring the terminal bell on errors
+ -Q     Be totally quiet; never ring the terminal bell
+ -r     Display "raw" control characters
+ -s     Squeeze consecutive blank lines into a single blank line
+ -S     Chop rather than fold lines longer than the screen width
+ -t t   Edit the file containing the specified tag
+ -T f   Use the specified tags file in place of the tags file
+ -u     Treat backspaces and carriage returns as printable characters
+ -U     Treat backspaces and carriage returns as control characters
+ -w     Use blank lines to represent lines past the end ofthe file
+ -x n   Set tab stops every n positions
+ -y n   Specifies a maximum number of lines to scroll forward
+ -[z] n Change the default scrolling window size to n lines
+
+ +       Specify an initial command to less
+ ++      Specify an initial command for every file viewed
+
+Where:
+ file    A pathname of an input file. If no file operands are specified,
+         less uses the standard input.
+%-more
+%C      [-ceius] [-n lines] [-p pattern] [-t tag] [-x tabstop] [file ...]
+
+Options:
+ -c          Clear full screen between 'pages'
+ -e          Stop after last line in file (if more than 1 page)
+ -i          Ignore case during searches
+ -u          Display backspaces as CONTROL characters
+ -s          Squeeze multiple lines into one
+ -n lines    An integer number of lines/screen
+ -p pattern  Pattern to search for before first page display
+ -t tag      Edit the file containing the specified tag
+ -x tabstop  Change default tab stops
+
+Where:
+ file        Optional file name(s) (- means standard input)

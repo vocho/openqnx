@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<module name="mkrom">
+	<type>Element</type>
+	<classification>Runtime</classification>
+
+	<supports> 
+<availability supported="false">
+ <cpu isa="arm"><byteOrder>be</byteOrder></cpu>
+         <host os="nto"/>
+         <host os="win32"/>
+         <host os="solaris"/>
+      </availability>
+	</supports>
+
+	<source available="false">
+		<location>.</location>
+	</source>
+
+     <GroupOwner>tools</GroupOwner>
+     <RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<component id="mkrom" generated="true">
+			<location basedir="{os}/{cpu}/o"
+				runtime="true">mkrom</location>
+		</component>	
+   </contents>
+	
+</module>

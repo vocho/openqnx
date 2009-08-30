@@ -1,0 +1,47 @@
+Modifying this file will cause all of procnto to do a clean recompile.
+You should put a comment in here as to the reason.
+
+Checkin for Memory Partitioning support (PR43579)
+
+Added a 'refs' field to the object header to fix various pathmgr
+race conditions (PR's 18121, 29998, 52139)
+
+PR54807 - rename partmgr module to apmgr. This involved a directory name change,
+file name changes as well as a change to all internal function names.
+ex. mempartmgr --> apmmgr, partmgr --> apmgr
+
+PR53642 - kernel/types.h and apm.h
+
+PR50366 - change to sizeof(struct object_header) in pathmgr_object.h
+
+PRxxx - change to public/kernel/objects.h
+
+PR53135 - change to mclass.h
+
+PR42743 - lots of changes so build the world. Note that you will need the latest
+			lib/c headers and in order to use adaptive partitioning (apm/aps),
+			the latest 'ap' cpmmand (utils/a/ap)
+
+PR10963 - Switched the structure fields in kernel/objects.h over to
+the pril stuff
+
+PR43576 - header files have moved. Need an updated libc
+
+PR57652 - queued_event_priority went from 8 to 32 bits in size
+
+PR58859 - because of public header change. Also, rebuild libc
+
+PR59033 - because of public header file changes
+
+PR 59650 - make sure all the SNAP_TIME_INLINE uses are recompiled
+
+PR 55001 - upped LIBMOD version check to make sure we don't have
+procnto and modules compiled with different compilers.
+
+PR56615 - make sure all WITHIN_BOUNDRY uses are recompiled
+
+PR61625, PR61519, PR61298, PR61756 (single byte write of '\0') - recompile for STRLCPY
+
+PR62009 - save PPCBKE_SPR_DBSR in debug exception, then reset DBSR before re-enabling interrupts
+
+PR62022 - can't filter user events

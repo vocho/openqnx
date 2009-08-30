@@ -1,0 +1,128 @@
+qnx|qnxt|qnxw|qnxm|QNX console:co#80:it#4:li#25:am:bw:ht:ms:ti=\Eh:te=\ER:\
+	:al=\EE:cd=\EJ:ce=\EK:cl=\EH\EJ:cm=\EY%+ %+ :dc=\Ef:dl=\EF:\
+	:ho=\EH:ic=\Ee:nd=\EC:sf=\n:sr=\EI:up=\EA:\
+	:mb=\E{:md=\E<:me=\ER:so=\E(:se=\E):us=\E@40:ue=\ER:\
+	:kb=^?:ku=\0377\0241:kd=\0377\0251:kl=\0377\0244:kr=\0377\0246:\
+	:kN=\0377\0252:kP=\0377\0242:kh=\0377\0240:kH=\0377\0250:\
+	:ac=`\004a\261f\367g\361j\331k\277l\332m\300n\305o\337q\304s\334t\303u\264v\301w\302x\263y\363z\362{\343|}\234~\372:\
+	:vi=\Ey0:ve=\Ey1:vs=\Ey2:rp=\Eg%+ %.:cQ=\Ey1:cI=\Ey2:@7=\0377\0250:
+qnx2|qnxs|QNX2 console:\
+	:kb=^?:ku=\0241:kd=\0251:kl=\0244:kr=\0246:\
+	:kN=\0252:kP=\0242:kh=\0240:kH=\0250:tc=qnx:
+qnx-am|automatic margins:am:ti=\Eh:tc=qnx:
+qnx-nam|no autowrap:am@:bw@:ti=\Ei:tc=qnx:
+qnx-ndl|no delete line:dl@:tc=qnx:
+qnx-ul|standout underlining:us=\E(:ue=\E):tc=qnx:
+tqnx:co#80:it#4:li#25:am:bs:bw:ht:ms:ti=<ti>:te=<te>:cr=<cr>\r:\
+	:al=<al>:cd=<cd>:ce=<ce>:cl=<cl>:cm=<cm%d,%d>:dc=<dc>:dl=<dl>:\
+	:ho=<ho>:ic=<ic>:nd=<nd>:nl=<nl>\n:sf=<sf>:sr=<sr>:up=<up>:\
+	:mb=<mb>:md=<md>:me=<me>:so=<so>:se=<se>:us=<us>:ue=<ue>:\
+	:kb=^?:ku=\0377\0241:kd=\0377\0251:kl=\0377\0244:kr=\0377\0246:\
+	:kN=\0377\0252:kP=\0377\0242:kh=\0377\0240:kH=\0377\0250:
+qansi|qansi-m|qansi-8859m|QNX ANSI:am:G0:co#80:it#8:li#25:ti=\E[?7h:\
+	:AL=\E[%dL:DC=\E[%dP:DL=\E[%dM:DO=\E[%dB:IC=\E[%d@:LE=\E[%dD:\
+	:RA=\E[?7l:RI=\E[%dC:SA=\E[?7h:SF=\E[%dS:SR=\E[%dT:UP=\E[%dA:\
+	:ae=^O:al=\E[L:as=^N:bt=\E[Z:cb=\E[K\E[X:cd=\E[J:ce=\E[K:ch=\E[%i%dG:\
+	:cl=\E[2J\E[H:cm=\E[%i%d;%dH:cs=\E[%i%d;%dr:ct=\E[2g:dc=\E[P:dl=\E[M:do=\E[B:\
+	:ec=\E[%dX:ho=\E[H:ic=\E[@:is=\E[?7h\E[0;10;39;49m:\
+	:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:k5=\EOT:k6=\EOU:k7=\EOV:k8=\EOW:k9=\EOX:\
+	:k;=\EOY:kB=\E[Z:kC=\ENa:kD=\E[P:kF=\E[a:kI=\E[@:kN=\E[U:kP=\E[V:kR=\E[b:kT=\ENb:\
+	:ka=\ENd:kb=\177:kd=\E[B:kh=\E[H:kl=\E[D:kr=\E[C:ku=\E[A:\
+	:le=\E[D:ll=\E[99H:mb=\E[5m:md=\E[1m:me=\E[m^O:mh=\E[2m:mk=\E[9m:mr=\E[7m:\
+	:nd=\E[C:nw=\EE:op=\E[39;49m:rp=%.\E[%p2%{1}%-%db:\
+	:se=\E[27m:sf=\E[S:so=\E[7m:sr=\E[T:st=\EH:ue=\E[24m:up=\E[A:us=\E[4m:\
+	:ac=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~:\
+	:vb=\E[?5h\E[?5l:ve=\E[?25h\E[?12l:vi=\E[?25l:\
+	:ws=\E[5m:we=\E[m:bo=\E[1m:be=\E[m:@7=\E[Y:
+dw|vt52|DEC VT52:am:bs:bw:pt:co#80:it#4:li#25:ti=\Ei:te=\ER:\
+	:al=\EE:cd=\EJ:ce=\EK:cl=^L:cm=\EY%+ %+ :dc=\Ef:dl=\EF:do=\EB:\
+	:ho=\EH:ic=\Ee:nd=\EC:sr=\EI:up=\EA:\
+	:mb=\E{:md=\E<:me=\E>\E}:so=\E(:se=\E):us=\E@40:ue=\ER:\
+	:kb=^H:kd=\EB:kl=\ED:kr=\EC:ku=\EA:
+d0|vt100|vt100-am|vt100am|dec vt100:\
+	:do=^J:co#80:li#24:cl=50\E[;H\E[2J:sf=5\ED:\
+	:le=^H:bs:am:cm=5\E[%i%d;%dH:nd=2\E[C:up=2\E[A:\
+	:ce=3\E[K:cd=50\E[J:so=2\E[7m:se=2\E[m:us=2\E[4m:ue=2\E[m:\
+	:md=2\E[1m:mr=2\E[7m:mb=2\E[5m:me=2\E[m:is=\E[r\E[H:\
+	:rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:ks=\E[?1h\E=:ke=\E[?1l\E>:\
+	:ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
+	:ho=\E[H:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:pt:sr=5\EM:vt#3:xn:\
+	:sc=\E7:rc=\E8:cs=\E[%i%d;%dr:
+dy|vt102|vt-102|dec vt102:\
+	:do=^J:co#80:li#24:cl=50\E[;H\E[2J:\
+	:le=^H:bs:cm=5\E[%i%d;%dH:nd=2\E[C:up=2\E[A:\
+	:ce=3\E[K:cd=50\E[J:so=2\E[7m:se=2\E[m:us=2\E[4m:ue=2\E[m:\
+	:md=2\E[1m:mr=2\E[7m:mb=2\E[5m:me=2\E[m:is=\E[r\E[H:\
+	:rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:ks=\E[?1h\E=:ke=\E[?1l\E>:\
+	:ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
+	:ho=\E[H:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:pt:sr=5\EM:vt#3:\
+	:sc=\E7:rc=\E8:cs=\E[%i%d;%dr:vs=\E[?7l:ve=\E[?7h:
+dl|vt200|vt220|vt200-js|vt220-js|dec vt200 series with jump scroll:\
+	:im=\E[4h:ei=\E[4l:mi:dc=\E[P:dm=:ed=:al=\E[L:dl=\E[M:\
+	:cs=\E[%i%d;%dr:sf=\ED:sr=\EM:sb=\EM:\
+	:ce=\E[K:cl=\E[H\E[J:cd=\E[J:cm=\E[%i%d;%dH:nd=\E[C:up=\E[A:\
+	:so=\E[7m:se=\E[27m:us=\E[4m:ue=\E[24m:\
+	:md=\E[1m:mr=\E[7m:mb=\E[5m:me=\E[m:\
+	:AL=\E[%dL:DL=\E[%dM:IC=\E[%d@:DC=\E[%dP:\
+	:is=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[r\E[H:\
+	:rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:\
+	:vb=\E[?5h\E[?5l:tc=vt100:
+pc3|ibmpc3|IBM PC 386BSD Console:\
+	:DO=\E[%dB:K1=\E[H:K2=\E[I:K3=\E[E:K4=\E[F:K5=\E[G:LE=\E[%dD:\
+	:RI=\E[%dC:UP=\E[%dA:am:bl=^G:bs:cb=\E[1K:cd=\E[J:ce=\E[K:cl=\E[H\E[J:\
+	:cm=\E[%i%d;%dH:co#80:cr=^M:do=^J:ho=\E[H:is=\E[m:k0=\E[V:k1=\E[M:\
+	:k2=\E[N:k3=\E[O:k4=\E[P:k5=\E[Q:k6=\E[R:k7=\E[S:k8=\E[T:k9=\E[U:\
+	:kD=\177:kH=\E[F:kN=\E[G:kP=\E[I:kb=\177:kd=\E[B:kh=\E[H:kl=\E[D:\
+	:kr=\E[C:ku=\E[A:le=^H:li#25:ms:nd=\E[C:rs=\E[m\E[x\E[14r:se=\E[m:\
+	:sf=\E[S:so=\E[7m:sr=\E[T:ta=^I:te=\E[m:ti=\E[m:up=\E[A:km:pt:\
+	:AL=\E[%dL:DL=\E[%dM:SF=\E[%dS:SR=\E[%dT:al=\E[L:dl=\E[M:
+vs|xterm|vs100|xterm terminal emulator (X window system):\
+	:cr=^M:do=^J:nl=^J:bl=^G:le=^H:ho=\E[H:\
+	:co#80:li#65:cl=\E[H\E[2J:bs:am:cm=\E[%i%d;%dH:nd=\E[C:up=\E[A:\
+	:ce=\E[K:cd=\E[J:so=\E[7m:se=\E[m:us=\E[4m:ue=\E[m:\
+	:md=\E[1m:mr=\E[7m:me=\E[m:\
+	:ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
+	:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:ta=^I:pt:sf=\n:sr=\EM:\
+	:al=\E[L:dl=\E[M:ic=\E[@:dc=\E[P:\
+	:MT:ks=\E[?1h\E=:ke=\E[?1l\E>:\
+	:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:\
+	:rs=\E[r\E<\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:xn:\
+	:AL=\E[%dL:DL=\E[%dM:IC=\E[%d@:DC=\E[%dP:\
+	:ti=\E7\E[?47h:te=\E[2J\E[?47l\E8:\
+	:hs:ts=\E[?E\E[?%i%dT:fs=\E[?F:es:ds=\E[?E:
+vk|kterm|vs100|xterm terminal emulator (X window system):\
+	:cr=^M:do=^J:nl=^J:bl=^G:le=^H:ho=\E[H:\
+	:co#80:li#65:cl=\E[H\E[2J:bs:am:cm=\E[%i%d;%dH:nd=\E[C:up=\E[A:\
+	:ce=\E[K:cd=\E[J:so=\E[7m:se=\E[m:us=\E[4m:ue=\E[m:\
+	:md=\E[1m:mr=\E[7m:me=\E[m:\
+	:ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
+	:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:ta=^I:pt:sf=\n:sr=\EM:\
+	:al=\E[L:dl=\E[M:ic=\E[@:dc=\E[P:\
+	:MT:ks=\E[?1h\E=:ke=\E[?1l\E>:\
+	:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:\
+	:rs=\E[r\E<\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:xn:\
+	:AL=\E[%dL:DL=\E[%dM:IC=\E[%d@:DC=\E[%dP:\
+	:ti=\E7\E[?47h:te=\E[2J\E[?47l\E8:\
+	:hs:ts=\E[?E\E[?%i%dT:fs=\E[?F:es:ds=\E[?E:\
+	:sc=\E7:rc=\E8:cs=\E[%i%d;%dr:
+qnx-8859m|QNX-8859 with mouse events:\
+	:km:mi:ms:xt:YA:YC:\
+	:co#80:it#4:li#25:Co#8:pa#8:NC#3:Yd#1:\
+	:bl=^g:cr=\r:cl=\EH\EJ:ce=\EK:cd=\EJ:cm=\EY%+ %+ :do=\l:\
+	:ho=\EH:vi=\Ey0:le=\b:ve=\Ey1:nd=\EC:up=\EA:vs=\Ey2:dc=\Ef:\
+	:dl=\EF:mb=\E{:md=\E<:ti=\Ei:mr=\E(:so=\E(:us=\E[:\
+	:me=\E}\E]\E>\E):te=\Eh\ER:se=\E):ue=\E]:i1=\E/0t:ic=\Ee:\
+	:al=\EE:ka=\377\344:kC=\377\341:kt=\377\237:kD=\377\254:\
+	:kL=\377\274:kd=\377\251:kM=\377\313:kE=\377\310:kS=\377\314:\
+	:k1=\377\201:k;=\377\212:k2=\377\202:k3=\377\203:k4=\377\204:\
+	:k5=\377\205:k6=\377\206:k7=\377\207:k8=\377\210:k9=\377\211:\
+	:kh=\377\240:kI=\377\253:kA=\377\273:kl=\377\244:kN=\377\252:\
+	:kP=\377\242:kr=\377\246:kF=\377\261:kR=\377\271:kT=\377\342:\
+	:ku=\377\241:rp=\Eg%+ %.:r1=\ER:sf=\l:sr=\EI:\
+	:sa=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;:\
+	:ta=\t:\
+	:ac=O\327a#j+k+l+m+n+t+u+v+w+q-x|o#s#f\260g\261~\244,\253+\273.v-]:\
+	:kB=\377\200:\
+	:F1=\377\256:F2=\377\257:F3=\377\213:\
+	:F4=\377\214:F5=\377\215:F6=\377\216:F7=\377\217:F8=\377\220:\
+	:F9=\377\221

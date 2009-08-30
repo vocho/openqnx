@@ -1,0 +1,10 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="*/a*/libbessel.a" pinfo="$"/>
+			<QPG:Add file="*/so*/libbesselS.a" pinfo="$"/>
+			<QPG:Add file="*/so*/libbessel.so" pinfo="$"/>
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

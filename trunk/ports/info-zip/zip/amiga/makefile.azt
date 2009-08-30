@@ -1,0 +1,285 @@
+# Makefile for Zip, ZipNote, ZipCloak, ZipSplit for Aztec C 5.2
+# Also ZipLM, a version of Zip that needs much less free memory
+#   -- Paul Kienitz, last updated 12 Feb 01
+
+# Make sure platform is defined correctly, and select memory usage options:
+DEFINES = -d AMIGA -d DYN_ALLOC -d ASM_CRC
+# ASM_CRC now serves only as a notation for "Zip -L".
+
+CC = cc
+AS = as
+CFLAGS = -psb0e -sabfmnpu -wcr0u $(DEFINES)
+# -pbs means unsigned chars and short ints, -sabfmnpu is various small
+# optimizations, -wcr0u adjusts type checking strictness
+
+CFLAGD = -bs -psb0e -s0f0n -wcr0u $(DEFINES)
+# -bs is include source debugging info, -s0f0n is avoid hard-to-debug optimizations
+
+WSIZ = WSIZE=4096
+LOWFLAGS = $(CFLAGS) -d $(WSIZ) -d SMALL_MEM
+# used for compiling a low-memory-use version of Zip
+
+LOWFLAGD = $(CFLAGD) -d $(WSIZ) -d SMALL_MEM
+# for the debuggable low-memory-use version
+
+ASOPTS = -n -eAMIGA -eDYN_ALLOC -eCPUTEST -eINT16
+LOWASOPTS = $(ASOPTS) -e$(WSIZ) -eSMALL_MEM
+# Options used for assembling amiga/deflate.a; must generally match the
+# settings in DEFINES.  LOWASOPTS are for the low-memory version.
+
+LD = ln
+LDLIBS = -lc16
+LDFLAGS = -m +q
+
+LDFLAGD = -m +q -g -w
+
+
+# default C rules
+.c.o :
+	$(CC) $(CFLAGS) -o $@ $*.c
+
+# rules for routines containing entries needed by utilities
+.c.oo :
+	$(CC) $(CFLAGS) -d UTIL -o $@ $*.c
+
+# rules for the low-memory version:
+
+.c.ol :
+	$(CC) $(LOWFLAGS) -o $@ $*.c
+
+# default C rules for debugging
+.c.od :
+	$(CC) $(CFLAGD) -o $@ $*.c
+
+# debugging rules for routines containing entries needed by utilities
+.c.dd :
+	$(CC) $(CFLAGD) -d UTIL -o $@ $*.c
+
+# rules for the low-memory version:
+
+.c.dl :
+	$(CC) $(LOWFLAGD) -o $@ $*.c
+
+
+# object file lists
+
+ZIP_H = zip.h ziperr.h tailor.h amiga/osdep.h amiga/z-stat.h
+
+
+OBJZ = zip.o deflate.o trees.o zipfile.o zipup.o util.o timezone.o \
+        fileio.o globals.o amiga/amiga.o amiga/amigazip.o amiga/crc_68.o \
+        crctab.o crypt.o ttyio.o
+
+OBJL = zip.ol deflate.ol trees.ol zipfile.ol \
+        zipup.ol util.ol timezone.ol fileio.ol globals.ol crypt.ol \
+        ttyio.ol crctab.ol amiga/amiga.ol amiga/amigazip.ol amiga/crc_68.o
+
+OBJU = zipfile.oo fileio.oo util.oo globals.o amiga/amiga.oo \
+        amiga/amigazip.oo
+OBJN = zipnote.o  $(OBJU)
+OBJC = zipcloak.o $(OBJU) crctab.o crypt.oo ttyio.o
+OBJS = zipsplit.o $(OBJU)
+
+# These are the debuggable versions:
+
+DBJZ = zip.od deflate.od trees.od zipfile.od zipup.od \
+        util.od timezone.od fileio.od globals.od amiga/amiga.od \
+        amiga/amigazip.od amiga/crc_68.o crctab.od crypt.od ttyio.od
+
+DBJL = zip.dl deflate.dl trees.dl zipfile.dl zipup.dl util.dl timezone.dl \
+        fileio.dl globals.dl amiga/amiga.dl amiga/amigazip.dl amiga/crc_68.o \
+        crctab.dl crypt.dl ttyio.dl
+
+DBJU = zipfile.dd fileio.dd util.dd globals.od amiga/amiga.dd \
+        amiga/amigazip.dd
+DBJN = zipnote.od  $(DBJU)
+DBJC = zipcloak.od $(DBJU) crctab.od crypt.dd ttyio.od
+DBJS = zipsplit.od $(DBJU)
+
+
+#  HERE WE GO:
+
+all : Zip ZipNote ZipSplit ZipCloak
+
+z : Zip
+
+n : ZipNote
+
+s : ZipSplit
+
+c : ZipCloak
+
+l : ZipLM
+
+# Debug versions:
+
+dall : Zip.dbg ZipNote.dbg ZipSplit.dbg ZipCloak.dbg
+
+dz : Zip.dbg
+
+dn : ZipNote.dbg
+
+ds : ZipSplit.dbg
+
+dc : ZipCloak.dbg
+
+dl : ZipLM.dbg
+
+
+Zip : $(OBJZ) $(ZIP_H)
+	$(LD) $(LDFLAGS) -o $@ $(OBJZ) $(LDLIBS)
+	-@delete Zip.dbg
+
+ZipNote : $(OBJN) $(ZIP_H)
+	$(LD) $(LDFLAGS) -o $@ $(OBJN) $(LDLIBS)
+	-@delete ZipNote.dbg
+
+ZipSplit : $(OBJS) $(ZIP_H)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+	-@delete ZipSplit.dbg
+
+ZipCloak : $(OBJC) $(ZIP_H)
+	$(LD) $(LDFLAGS) -o $@ $(OBJC) $(LDLIBS)
+	-@delete ZipCloak.dbg
+
+ZipLM : $(OBJL) $(ZIP_H)
+	$(LD) $(LDFLAGS) -o $@ $(OBJL) $(LDLIBS)
+	-@delete ZipLM.dbg
+
+
+Zip.dbg : $(DBJZ) $(ZIP_H)
+	$(LD) $(LDFLAGD) -o Zip $(DBJZ) $(LDLIBS)
+
+ZipNote.dbg : $(DBJN) $(ZIP_H)
+	$(LD) $(LDFLAGD) -o ZipNote $(DBJN) $(LDLIBS)
+
+ZipSplit.dbg : $(DBJS) $(ZIP_H)
+	$(LD) $(LDFLAGD) -o ZipSplit $(DBJS) $(LDLIBS)
+
+ZipCloak.dbg : $(DBJC) $(ZIP_H)
+	$(LD) $(LDFLAGD) -o ZipCloak $(DBJC) $(LDLIBS)
+
+ZipLM.dbg : $(DBJL) $(ZIP_H)
+	$(LD) $(LDFLAGD) -o ZipLM $(DBJL) $(LDLIBS)
+
+
+clean : bugclean
+	-delete quiet $(OBJZ)
+	-delete quiet $(OBJL)
+	-delete quiet zipnote.o zipcloak.o zipsplit.o \
+                       crypt.oo $(OBJU)
+
+bugclean :
+	-delete quiet $(DBJZ)
+	-delete quiet $(DBJL)
+	-delete quiet zipnote.od zipcloak.od zipsplit.od \
+                       crypt.dd $(DBJU)
+
+cleaner : clean
+	-delete quiet Zip ZipNote ZipSplit ZipCloak ZipLM
+	-delete quiet Zip.dbg ZipNote.dbg ZipSplit.dbg ZipCloak.dbg ZipLM.dbg
+
+
+# header dependencies:
+
+zip.o zipnote.o zipcloak.o zipsplit.o crypt.o ttyio.o deflate.o \
+   trees.o zipfile.o zipup.o fileio.o util.o timezone.o crctab.o \
+   globals.o amiga/amiga.o : $(ZIP_H)
+
+zip.ol zipnote.ol zipcloak.ol zipsplit.ol crypt.ol ttyio.ol deflate.ol \
+   trees.ol zipfile.ol zipup.ol fileio.ol util.ol timezone.ol crctab.ol \
+   globals.ol amiga/amiga.ol : $(ZIP_H)
+
+crypt.oo zipfile.oo fileio.oo util.oo : $(ZIP_H)
+
+amiga/amigazip.o amiga/amigazip.ol amiga/amigazip.oo : amiga/amiga.h $(ZIP_H)
+
+zip.o zipnote.o zipcloak.o zipsplit.o zipup.o \
+   zip.ol zipnote.ol zipcloak.ol zipsplit.ol zipup.ol : revision.h
+
+amiga/amiga.o amiga/amiga.ol : crypt.h
+
+crypt.o crypt.oo crypt.ol ttyio.o ttyio.ol zipcloak.o zipcloak.ol \
+   zip.o zip.ol zipup.o zipup.ol : crypt.h ttyio.h
+
+timezone.o timezone.ol : timezone.h
+amiga/amiga.o amiga/amiga.ol amiga/amiga.oo : timezone.h
+
+zipup.o zipup.ol : amiga/zipup.h
+
+
+# SPECIAL CASES:
+
+# -mr changes expression parsing; avoids a bogus "expression too complex" error:
+trees.o : trees.c
+	$(CC) $(CFLAGS) -mr -o $@ trees.c
+
+trees.ol : trees.c
+	$(CC) $(LOWFLAGS) -mr -o $@ trees.c
+
+trees.od : trees.c
+	$(CC) $(CFLAGD) -mr -o $@ trees.c
+
+trees.ld : trees.c
+	$(CC) $(LOWFLAGD) -mr -o $@ trees.c
+
+# Substitute the assembly version of deflate.c: (but not in debug version)
+deflate.o : amiga/deflate.a
+	$(AS) $(ASOPTS) -o $@ amiga/deflate.a
+
+deflate.ol : amiga/deflate.a
+	$(AS) $(LOWASOPTS) -o $@ amiga/deflate.a
+
+# The assembly CRC function:
+amiga/crc_68.o : amiga/crc_68.a
+	$(AS) -n -o $@ amiga/crc_68.a
+
+# Put the Amiga internal version data with today's date into amiga.c:
+amiga/amiga.o : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(CFLAGS) -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+amiga/amiga.ol : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(LOWFLAGS) -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+amiga/amiga.od : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(CFLAGD) -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+amiga/amiga.ld : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(LOWFLAGD) -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+amiga/amiga.oo : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(CFLAGS) -d UTIL -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+amiga/amiga.dd : amiga/amiga.c amiga/filedate.c amiga/stat.c
+	rx > env:VersionDate "say '""'translate(date('E'), '.', '/')'""'"
+	$(CC) $(CFLAGD) -d UTIL -o $@ amiga/amiga.c
+	delete env:VersionDate
+
+# Put the compiler version number into amigazip.c:
+amiga/amigazip.o : amiga/amigazip.c
+	$(CC) $(CFLAGS) -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c
+
+amiga/amigazip.ol : amiga/amigazip.c
+	$(CC) $(LOWFLAGS) -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c
+
+amiga/amigazip.od : amiga/amigazip.c
+	$(CC) $(CFLAGD) -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c
+
+amiga/amigazip.ld : amiga/amigazip.c
+	$(CC) $(LOWFLAGD) -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c
+
+amiga/amigazip.oo : amiga/amigazip.c
+	$(CC) $(CFLAGS) -d UTIL -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c
+
+amiga/amigazip.dd : amiga/amigazip.c
+	$(CC) $(CFLAGD) -d UTIL -o $@ -d __VERSION__=5 -d __REVISION__=2 amiga/amigazip.c

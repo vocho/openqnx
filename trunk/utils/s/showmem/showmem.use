@@ -1,0 +1,9 @@
+showmem [options] - display memory information 
+-S          Show memory summary (free/used) for the system
+-P          Show process/sharedlibrary/ summary for the system
+-D[lsh]     Show detailed process information 
+             l = libraries/binaries
+             s = stack
+             h = heap
+-d file     Dump the raw map information to specified file
+-v			Increase the verbosity of the output

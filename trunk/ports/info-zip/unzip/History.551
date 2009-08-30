@@ -1,0 +1,189 @@
+UnZip, version 5.51, 22 May 2004
+
+Features added (or removed):
+
+5.51a (09 Mar 02):
+ - no new features
+
+5.51b (11 Jan 03):
+ - TANDEM: new -r option to suppress extension merging [Dave Smith]
+ - WinCE, new port in addition to pUnZip (GUI): command line tool usable for
+    "batch" processes (not quite finished, needs "makefile" cleanup, tests,
+    and refinements) [Simon Roberts, SPC]
+ - SET_DIR_ATTRIB feature code revised and reorganized to allow seamless
+    adaption to different OS environments; added support for restoring
+    directory timestamps to the WIN32 port [Kai-Uwe-Rommel, SPC]
+
+5.51c (13 May 03):
+ - WinCE command line tool integration is (almost) finished: project file is
+    cleaned up and works with VC-embedded 3.0; port needs testing... [SPC]
+
+5.51d (27 Feb 04):
+ - Cygwin is recognized as a target in the Unix port
+    [Charles Wilson, Cosmin Truta, SPC]
+ - remove support for quoting characters from all ports; this feature was a
+    security hole [SPC]
+
+5.51e (01 Mar 04):
+ - Win32 port (list.c, unzpriv.h, win32.c, w32cfg.h): the date in (non-ZipInfo)
+    listings is displayed using the separator given by the system's locale,
+    when available [Cosmin Truta]
+
+5.51f (16 Apr 04):
+ - no new features
+
+5.51 final (22 May 04):
+ - no new features
+
+Bugs fixed:
+
+5.51a (09 Mar 02):
+ - process.c: corrected process_zipfiles() message and return code when a
+    wildcard archive spec matches exactly one "non-ziparchive" file [SPC]
+ - fileio.c: fixed partflush() "-a" textmode output for 16-bit ports
+    (was a new bug, introduced in 5.50) [SPC]
+ - inflate.c: modified CHECK_EOF code to allow "virtual" reading beyond EOF in
+    NEEDBITS() macro to fix an old but rarely triggered extraction bug [SPC]
+ - amiga/flate.a, human68k/flate.s: attempted to synchronize with changed
+    C version [SPC]
+ - explode.c, inflate.c, globals.h, unzpriv.h: cleaned up some "signed vs.
+    unsigned" inconsistencies [SPC]
+ - inflate.c: provided workaround for CHECK_EOF problem when using zlib (send
+    a fake input byte when seeing error because of "premature" EOF) [SPC]
+ - unzpriv.h: disabled DEFLATE64 when compiling/linking against zlib [SPC]
+ - windll/windll_lc.def: added missing file to distribution archive [SPC]
+ - windll/vb/vbunzip.bas: corrected UZDLLServ callback function - the second
+    function parameter is the size of the archive entry, not the length of
+    the message string [SPC]
+
+5.51b (11 Jan 03):
+ - consts.h, funzip.c, inflate.c, unzpriv.h: changed type of mask_bits[] array
+    into "unsigned" for better core-loop performance [SPC]
+ - amiga/flate.a, human68k/flate.s: small correction (optimization) to changes
+    in 5.51a, removed debugging stuff [Paul Kienitz]
+ - fileio.c: added display of system error string to error message shown when
+    open_input_file() fails at the [f]open() function [SPC]
+ - process.c: slightly generalize summary message when no Zip archive could be
+    found or opened (file may be present but unaccessible due to locking or
+    insufficient permission) [Santiago Vila, SPC]
+ - globals.h: undefine zlib_version macro when compiling against zlib to work
+    around a naming conflict [SPC]
+ - unzpriv.h: do not define WILD_STAT_BUG for Borland C on WIN32 [SPC]
+ - unzip.h, unzpriv.h: added precautions for some WIN32 compiler environments
+    which also try to appear as UNIX compatible [SPC]
+ - tandem/tanunz.c bugfix: set file code of generic (non-Tandem) non-text files
+    to 0 (unstructured) instead of 100 (object file) [Dave Smith]
+ - win32/win32.c: added recognition for Borland C++ Builder 6.0 to version()
+    [Brad Clarke]
+ - tandem/tanunz.c bugfix: set file code of Enscribe files containing text data
+    to 101 (Edit) [Dave Smith]
+ - api.c writeToMemory(), fileio.c flush(): Added check for buffer overflow
+    when extracting to memory and output buffer is different from decompression
+    work area [Samuel R. Blackburn, SPC]
+ - tandem configuration bugfix: Deflate64 was incompatible with non-WIDE memory
+    models; fixed OUTBUFSIZ logic and "unsigned" vs. "size_t" incompatibility
+    issues [Dave Smith, SPC]
+
+5.51c (13 May 03):
+ - OS2, WIN32, WinCE: '\\' chars are not allowed in file names, map them to '_'
+    to prevent misinterpreting them as directory separators [David F, SPC]
+ - windll, VB example: updated integration of "Open file" common dialog and
+    added special Readme text to document installation and maintenance issues
+    of the VB example code [ED, SPC]
+ - unzpriv.h: enclosed shift op expressions in definitions of MPN_xxx macro
+    constant with parentheses (for safety) [Cosmin Truta]
+ - win32/win32.c: fixed bugs in set_direc_attribs(), do not try to set dirtimes
+    on Win9x systems [Cosmin Truta]
+ - SET_DIR_ATTRIBS option: changed defer_dir_attribs() function interface to
+    allow non-error return without deferred direntry data [SPC]
+ - BeOS, Theos: updated SET_DIR_ATTRIBS code to work with the revised generic
+    code [SPC]
+ - WinCE port: revitalized WinCE port code, updated VC project files, added
+    "VC embedded Tools 3.0" project file [SPC]
+ - unzip.h: added rule to define UNIX flag for NetBSD [Ray Phillips]
+ - unix/Makefile: added "-DUNIX" to default CF settings, to get rid of misc
+    problems concerning auto-detection of a "Unix" environment [SPC]
+ - LICENSE: include SFXWiz in the exeption clause concerning distribution
+    of self-extracting archives [Greg Roelofs]
+ - Amiga, AosVS, Atari, BeOS, FlexOS, Human68K, MacOS, MSDOS, Novell, OS/2,
+    Unix, Win32, (Theos, WinCE - only code sync, no bug to fix):
+    fixed hole in directory traversal security code which did not recognize
+    "../" when path component contained some control character which was
+    silently skipped ["jelmer", SPC]
+
+5.51d (27 Feb 04):
+ - unix/unix.c: added recognition for Cygwin, i586 and i686 to version()
+    [Cosmin Truta]
+ - unzip.h, unzpriv.h, unix/unzcfg.h: allowed Cygwin to compile as a Unix port
+    [Charles Wilson, Cosmin Truta, SPC]
+ - unix/unxcfg.h: added inclusion of <utime.h> for DG/UX to fix setting
+    of file time-stamps [Dave Lovelace]
+ - macos/source/macstat.c: corrected size in zeroing instruction of stat buffer
+    [Yamaga Tomonori]
+ - extract.c: fixed memory leak in SET_DIR_ATTRIB code in case of premature
+    exit (disk full or user break), execute deferred tasks for processed
+    entries in this case [SPC]
+ - unix/zipgrep: allow grep of filenames with embedded spaces [Greg Roelofs]
+ - win32: update support for newer Cygwin releases [Cosmin Truta]
+ - use central directory's entry names for extraction/testing, emit warning for
+    local/central entry name difference (bug report by Jan Echternach) [SPC]
+ - all SYMLINKS-capable ports (AOS/VS, Atari, BeOS, Unix): defer creation of
+    symlinks until all extractions for current archive are finished, to close
+    a security hole (bug report by Jan Echternach)
+    (Changed: globals.h, unzpriv.h, extract.c, [system]/[system].c) [SPC]
+ - crypt.h: changed default setting for Zip to enable crypt support [SPC]
+ - partial documentation updates, as suggested by Greg [SPC]
+
+5.51e (01 Mar 04):
+ - unzpriv.h: guarded some definitions of USE_EF_UT_TIME [Cosmin Truta]
+ - Cygwin: putenv() must not be called in iz_w32_prepareTZenv() [Cosmin Truta]
+ - unix/unxcfg.h: include <unistd.h> for Cygwin [Cosmin Truta]
+ - unix/unix.c: enable old code that sets DIRENT symbol for _POSIX_VERSION
+    environments [Cosmin Truta]
+ - win32/Makefile.bc: updated the "clean" target [Cosmin Truta]
+ - win32/Makefile.gcc: updated CC_CPU_OPT to "-mcpu=pentiumpro";
+    fixed the "clean" target [Cosmin Truta]
+ - man/unzip.1: added note about the use of the "-:" option [Lon Hohberger]
+ - merged in usable changes (see above) from Cosmin's bogus 5.51d beta archive
+    variant [SPC]
+ - win32: guarded "NTSD integration code" (not working, under construction)
+    with preprocessor symbol NTSD_DEV to allow intermediate compilation and
+    testing of the current state [SPC]
+
+5.51f (16 Apr 04):
+ - Acorn: updated/fixed Makefile [Darren Salt]
+ - win32/Makefile: revised (experimental) USE_ZLIB support to work with the
+    current ZLIB release 1.2.1; [Cosmin Truta, Christian Spieler]
+ - win32/Makefile: "clean" target simplified for Win9x support [Cosmin Truta]
+ - INSTALL: describe DATE_SEPCHAR option [Cosmin Truta]
+ - unzip.c: make command-arg "\\"-to-"/" conversion MBCS-safe [SPC]
+ - BeOS, QDOS, Tandem, Theos, Unix - close_outfile(): to make compilers happy,
+    use union for matching "struct utimbuf" with "iztimes" [Jan Echternach]
+ - all SYMLINKS-capable ports (AOS/VS, Atari, BeOS, Unix): check for allocation
+    size overflow of "deferring symlink" structure (reported by Jan Echternach)
+    (Changed: [system]/[system].c) [SPC]
+ - api.c - redirect_outfile(): check for allocation overflow in textmode when
+    lenEOL != 1; check against integer overflow for 16-bit ports [SPC]
+ - fileio.c - open_outfile(): use G.lrec.ucsize throughoutly instead of
+    G.pInfo.uncompr_size [SPC]
+ - extract.c - extract_or_test_entrylist(): check for ucsize vs. csize mismatch
+    in STORED entries; synchronize and emit warning message [SPC]
+
+5.51f2 (16 Apr 04):
+ - extract.c: fixed compilation error (misplaced ')') [Cosmin Truta]
+ - win32/Makefile: added missing rule to build unzsfx32.lib [Cosmin Truta]
+ - INSTALL, History.551: fixed some minor typos in docs [Cosmin Truta]
+
+5.51 final (22 May 04):
+ - no code changes
+ - updated WHERE file, History.551 file, and various copyright and release
+    dates where necessary [GRR]
+ - removed "beta" status from unzver.h [GRR]
+
+==================
+
+These changes occurred in beta versions 5.51a to 5.51.  This list may have
+left out some bugfixes and even some features...void where prohibited, your
+mileage may vary, etc., etc.
+
+Christian Spieler

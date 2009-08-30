@@ -1,0 +1,72 @@
+<html><head>
+<title>Elvis-2.2_0 Quick Reference</title>
+</head><body>
+<h1><!-- This "h1" tag is here just to avoid Elvis' normal indentation -->
+<font size=2><pre graphic>
+.----------------------.-----------------------.-----------------------------.
+| VISUAL MOVEMENT CMDS | VISUAL EDIT CMDS      | EX COMMANDS <a href="#NOTE2">[2]</a>             |
+| <a href="elvisvi.html#h">h</a>    Move left       | <a href="elvisvi.html#i">i</a>    Insert           | <a href="elvisex.html#quit">:q!</a>      QUIT, NO SAVE      |
+| <a href="elvisvi.html#j">j</a>    Move down       | <a href="elvisvi.html#a">a</a>    Append           | <a href="elvisex.html#xit">:x</a>       SAVE &amp; QUIT        |
+| <a href="elvisvi.html#k">k</a>    Move up         | <a href="elvisvi.html#o">o</a>    Open line after  | <a href="elvisex.html#qall">:qa</a>      Quit all windows   |
+| <a href="elvisvi.html#l">l</a>    Move right      | <a href="elvisvi.html#O">O</a>    Open line before | <a href="elvisex.html#help">:h topic</a> Help               |
+| <a href="elvisvi.html#G">xxxG</a> Go to line xxx  | <a href="elvisvi.html#R">R</a>    Replace          | <a href="elvisex.html#write">:w file</a>  Write this file    |
+| <a href="elvisvi.html#slash">/xxx</a> Search forward  | <a href="elvisvi.html#x">x</a>    Delete char      | <a href="elvisex.html#next">:n</a>       Edit next file     |
+| <a href="elvisvi.html#quest">?xxx</a> Search backward | <a href="elvisvi.html#X">X</a>    Delete prev char | <a href="elvisex.html#edit">:e file</a>  Edit other file    |
+| <a href="elvisvi.html#n">n</a>    Repeat search   | <a href="elvisvi.html#p">p</a>    Paste after <a href="#NOTE3">[3]</a>  | <a href="elvisex.html#set">:se ...</a>  Set/show options   |
+|----------------------| <a href="elvisvi.html#P">P</a>    Paste before <a href="#NOTE3">[3]</a> | <a href="elvisex.html#lpr">:lp</a>      Print              |
+| VISUAL WINDOW CMDS   | <a href="elvisvi.html#u">u</a>    Undo             | <a href="elvisex.html#tag">:ta name</a> Look up a tag      |
+| <a href="elvisvi.html#^Ws">^Ws</a>  Split window    |-----------------------| <a href="elvisex.html#make">:mak</a>     Compile, find error|
+| <a href="elvisvi.html#^W^W">^W^W</a> Go to next win  | <a name="OPER">VISUAL OPERATORS</a> <a href="#NOTE4">[4]</a>  | <a href="elvisex.html#errlist">:er</a>      Find next error    |
+| <a href="elvisvi.html#^Wq">^Wq</a>  SAVE &amp; QUIT     | <a href="elvisvi.html#lt">&lt;</a>    Shift left       |-----------------------------|
+| <a href="elvisvi.html#^Wd">^Wd</a>  Toggle display  | <a href="elvisvi.html#gt">&gt;</a>    Shift right      | OPTIONS <a href="#NOTE6">[6]</a>                 |
+|----------------------| <a href="elvisvi.html#=">=</a>    Adjust via ep <a href="#NOTE5">[5]</a>| <a href="elvisopt.html#readeol">readeol</a>    File type        |
+|VISUAL MISCELLANY     | <a href="elvisvi.html#bang">!xxx</a> Filter thru xxx  | <a href="elvisopt.html#bufdisplay">bufdisplay</a> How to display   |
+| <a href="elvisvi.html#Z">ZZ</a>   SAVE &amp; QUIT     | <a href="elvisvi.html#c">c</a>    Change           | <a href="elvisopt.html#tabstop">tabstop</a>    Width of tab char|
+| <a href="elvisvi.html#^L">^L</a>   Refresh screen  | <a href="elvisvi.html#d">d</a>    Delete           | <a href="elvisopt.html#shiftwidth">shiftwidth</a> For &lt; &gt; operators|
+| <a href="elvisvi.html#colon">:</a>    Run 1 ex command| <a href="elvisvi.html#y">y</a>    Yank             | <a href="elvisopt.html#inputtab">inputtab</a>   Role of &lt;tab&gt; key|
+| <a href="elvisvi.html#Q">Q</a>    Run many ex cmds|-----------------------| <a href="elvisopt.html#magic">magic</a>      Searching syntax |
+| <a href="elvisvi.html#K">K</a>    Look up word <a href="#NOTE7">[7]</a>| VISUAL SELECTIONS <a href="#NOTE8">[8]</a> | <a href="elvisopt.html#ruler">ruler</a>      Show line/columns|
+| Esc  Cancel command  | <a href="elvisvi.html#h">v</a>    Select chars     | <a href="elvisopt.html#showmode">showmode</a>   Show input state |
+| <a href="elvisvi.html#^G">^G</a>   Show file info  | <a href="elvisvi.html#V">V</a>    Select lines     | <a href="elvisopt.html#lptype">lptype</a>     Printer type     |
+| <a href="elvisvi.html#stop">.</a>    Repeat change   | <a href="elvisvi.html#^V">^V</a>   Select rectangle | <a href="elvisopt.html#lpout">lpout</a>      Printer port     |
+^----------------------^-----------------------^-----------------------------^</pre></font></h1>
+<font size=3>NOTES:
+<ol>
+
+<li><a name="NOTE1"></a>This is not a complete list of commands and options.
+I just tried to fit the most interesting and useful items in the smallest
+possible space.
+Control characters are represented as a caret and a letter;
+e.g., ^X means &lt;Control-X&gt;.
+
+<li><a name="NOTE2"></a>All ex command begin with a ':' keystroke, and end with a carriage return.
+Try <a href="elvisex.html">:help ex</a> for more information.
+
+<li><a name="NOTE3"></a>Most commands which delete or change text will save the old text in a
+cut buffer before making the change.
+The <kbd>p</kbd> and <kbd>P</kbd> commands copy text from the cut buffer
+back into the file.
+
+<li><a name="NOTE4"></a>Operator commands are normally  followed by a movement command;
+the operator then acts on the text between the cursor's original position,
+and the position that the movement command would move it to.
+For example, "d24G" deletes all lines between the current line and line 24.
+Alternatively, you could use a VISUAL SELECTION command and some movement
+commands to highlight text, and then hit the operator to act on that text.
+
+<li><a name="NOTE5"></a>The <kbd>=</kbd> operator sends text through an external filter program,
+named by the <a href="elvisopt.html#equalprg">equalprg</a> option.
+
+<li><a name="NOTE6"></a>Options are accessed via the <a href="elvisex.html#set">:set</a> command.
+
+<li><a name="NOTE7"></a>The <kbd>K</kbd> command runs the program named by the
+<a href="elvisopt.html#keywordprg">keywordprg</a> option;
+as an argument, it passes whatever word the cursor is on.
+This can provide convenient access to an on-line manual.
+
+<li><a name="NOTE8"></a>The visual selection commands highlight text; you can then hit an
+<a href="#OPER">operator</a> command to act on it,
+or hit the &lt;Esc&gt; key to cancel.
+
+</ol></font>
+</body></html>

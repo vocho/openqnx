@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<module name="ncurses">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="form/{os}/{cpu}/a{.:endian}" runtime="false">libform.a</location>
+			<location basedir="menu/{os}/{cpu}/a{.:endian}" runtime="false">libmenu.a</location>
+			<location basedir="panel/{os}/{cpu}/a{.:endian}" runtime="false">libpanel.a</location>
+			<location basedir="ncurses/{os}/{cpu}/a{.:endian}" runtime="false">libncurses.a</location>
+		</component>
+
+		<component id="SharedArchive" generated="true">
+			<kind type="library"/>
+			<location basedir="form/{os}/{cpu}/a{.:endian}.shared" runtime="false">libformS.a</location>
+			<location basedir="menu/{os}/{cpu}/a{.:endian}.shared" runtime="false">libmenuS.a</location>
+			<location basedir="panel/{os}/{cpu}/a{.:endian}.shared" runtime="false">libpanelS.a</location>
+			<location basedir="ncurses/{os}/{cpu}/a{.:endian}.shared" runtime="false">libncursesS.a</location>
+		</component>
+
+		<component id="clear" generated="true">
+			<location basedir="progs/clear/{os}/{cpu}/o{.:endian}" runtime="true">clear</location>
+		</component>
+		
+		<component id="tic" generated="true">
+			<location basedir="progs/tic/{os}/{cpu}/o{.:endian}" runtime="true">tic</location>
+		</component>
+
+		<component id="infocmp" generated="true">
+			<location basedir="progs/infocmp/{os}/{cpu}/o{.:endian}" runtime="true">infocmp</location>
+		</component>
+
+		<component id="Config" generated="false" basedir="include">
+			<kind type="header"/>
+			<location type="install">/usr/include/</location>
+			<location runtime="false">form.h</location>	
+			<location runtime="false">eti.h</location>	
+			<location runtime="false">menu.h</location>	
+			<location runtime="false">term.h</location>	
+			<location runtime="false">unctrl.h</location>	
+			<location runtime="false">panel.h</location>	
+			<location runtime="false">etip.h</location>	
+			<location runtime="false">curses.h</location>	
+			<location runtime="false">cursesapp.h</location>	
+			<location runtime="false">cursesf.h</location>	
+			<location runtime="false">cursesm.h</location>	
+			<location runtime="false">cursesp.h</location>	
+			<location runtime="false">cursesw.h</location>	
+			<link src="curses.h" dst="usr/include/ncurses.h" runtime="false"/>
+
+		</component>
+
+	</contents>
+
+</module>

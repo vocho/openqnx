@@ -1,0 +1,935 @@
+This is gzip.info, produced by makeinfo version 4.8 from gzip.texi.
+ 
+   This manual is for Gzip (version 1.3.12, 5 February 2007), and
+documents commands for compressing and decompressing data.
+
+   Copyright (C) 1998, 1999, 2001, 2002, 2006, 2007 Free Software
+Foundation, Inc.
+
+   Copyright (C) 1992, 1993 Jean-loup Gailly
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with no Front-Cover Texts,
+     and with no Back-Cover Texts.  A copy of the license is included
+     in the section entitled "GNU Free Documentation License".
+
+INFO-DIR-SECTION Utilities
+START-INFO-DIR-ENTRY
+* Gzip: (gzip).                 The gzip command for compressing files.
+END-INFO-DIR-ENTRY
+
+INFO-DIR-SECTION Individual utilities
+START-INFO-DIR-ENTRY
+* gzip: (gzip)Invoking gzip.                    Compress files.
+END-INFO-DIR-ENTRY
+
+
+File: gzip.info,  Node: Top,  Next: Overview,  Up: (dir)
+
+Compressing Files
+*****************
+
+This manual is for Gzip (version 1.3.12, 5 February 2007), and
+documents commands for compressing and decompressing data.
+
+   Copyright (C) 1998, 1999, 2001, 2002, 2006, 2007 Free Software
+Foundation, Inc.
+
+   Copyright (C) 1992, 1993 Jean-loup Gailly
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with no Front-Cover Texts,
+     and with no Back-Cover Texts.  A copy of the license is included
+     in the section entitled "GNU Free Documentation License".
+
+* Menu:
+
+* Overview::		Preliminary information.
+* Sample::		Sample output from `gzip'.
+* Invoking gzip::	How to run `gzip'.
+* Advanced usage::	Concatenated files.
+* Environment::		The `GZIP' environment variable
+* Tapes::               Using `gzip' on tapes.
+* Problems::		Reporting bugs.
+* Copying This Manual:: How to make copies of this manual.
+* Concept Index::	Index of concepts.
+
+
+File: gzip.info,  Node: Overview,  Next: Sample,  Prev: Top,  Up: Top
+
+1 Overview
+**********
+
+`gzip' reduces the size of the named files using Lempel-Ziv coding
+(LZ77).  Whenever possible, each file is replaced by one with the
+extension `.gz', while keeping the same ownership modes, access and
+modification times.  (The default extension is `-gz' for VMS, `z' for
+MSDOS, OS/2 FAT and Atari.)  If no files are specified or if a file
+name is "-", the standard input is compressed to the standard output.
+`gzip' will only attempt to compress regular files.  In particular, it
+will ignore symbolic links.
+
+   If the new file name is too long for its file system, `gzip'
+truncates it.  `gzip' attempts to truncate only the parts of the file
+name longer than 3 characters.  (A part is delimited by dots.) If the
+name consists of small parts only, the longest parts are truncated.
+For example, if file names are limited to 14 characters, gzip.msdos.exe
+is compressed to gzi.msd.exe.gz.  Names are not truncated on systems
+which do not have a limit on file name length.
+
+   By default, `gzip' keeps the original file name and time stamp in
+the compressed file.  These are used when decompressing the file with
+the `-N' option.  This is useful when the compressed file name was
+truncated or when the time stamp was not preserved after a file
+transfer.  However, due to limitations in the current `gzip' file
+format, fractional seconds are discarded.  Also, time stamps must fall
+within the range 1970-01-01 00:00:00 through 2106-02-07 06:28:15 UTC,
+and hosts whose operating systems use 32-bit time stamps are further
+restricted to time stamps no later than 2038-01-19 03:14:07 UTC.  The
+upper bounds assume the typical case where leap seconds are ignored.
+
+   Compressed files can be restored to their original form using `gzip
+-d' or `gunzip' or `zcat'.  If the original name saved in the
+compressed file is not suitable for its file system, a new name is
+constructed from the original one to make it legal.
+
+   `gunzip' takes a list of files on its command line and replaces each
+file whose name ends with `.gz', `.z', `.Z', `-gz', `-z' or `_z' and
+which begins with the correct magic number with an uncompressed file
+without the original extension.  `gunzip' also recognizes the special
+extensions `.tgz' and `.taz' as shorthands for `.tar.gz' and `.tar.Z'
+respectively.  When compressing, `gzip' uses the `.tgz' extension if
+necessary instead of truncating a file with a `.tar' extension.
+
+   `gunzip' can currently decompress files created by `gzip', `zip',
+`compress' or `pack'.  The detection of the input format is automatic.
+When using the first two formats, `gunzip' checks a 32 bit CRC (cyclic
+redundancy check).  For `pack', `gunzip' checks the uncompressed
+length.  The `compress' format was not designed to allow consistency
+checks.  However `gunzip' is sometimes able to detect a bad `.Z' file.
+If you get an error when uncompressing a `.Z' file, do not assume that
+the `.Z' file is correct simply because the standard `uncompress' does
+not complain.  This generally means that the standard `uncompress' does
+not check its input, and happily generates garbage output.  The SCO
+`compress -H' format (LZH compression method) does not include a CRC but
+also allows some consistency checks.
+
+   Files created by `zip' can be uncompressed by `gzip' only if they
+have a single member compressed with the 'deflation' method.  This
+feature is only intended to help conversion of `tar.zip' files to the
+`tar.gz' format.  To extract a `zip' file with a single member, use a
+command like `gunzip <foo.zip' or `gunzip -S .zip foo.zip'.  To extract
+`zip' files with several members, use `unzip' instead of `gunzip'.
+
+   `zcat' is identical to `gunzip -c'.  `zcat' uncompresses either a
+list of files on the command line or its standard input and writes the
+uncompressed data on standard output.  `zcat' will uncompress files
+that have the correct magic number whether they have a `.gz' suffix or
+not.
+
+   `gzip' uses the Lempel-Ziv algorithm used in `zip' and PKZIP.  The
+amount of compression obtained depends on the size of the input and the
+distribution of common substrings.  Typically, text such as source code
+or English is reduced by 60-70%.  Compression is generally much better
+than that achieved by LZW (as used in `compress'), Huffman coding (as
+used in `pack'), or adaptive Huffman coding (`compact').
+
+   Compression is always performed, even if the compressed file is
+slightly larger than the original.  The worst case expansion is a few
+bytes for the `gzip' file header, plus 5 bytes every 32K block, or an
+expansion ratio of 0.015% for large files.  Note that the actual number
+of used disk blocks almost never increases.  `gzip' normally preserves
+the mode, ownership and time stamps of files when compressing or
+decompressing.
+
+   The `gzip' file format is specified in P. Deutsch, GZIP file format
+specification version 4.3, Internet RFC 1952
+(ftp://ftp.isi.edu/in-notes/rfc1952.txt) (May 1996).  The `zip'
+deflation format is specified in P. Deutsch, DEFLATE Compressed Data
+Format Specification version 1.3, Internet RFC 1951
+(ftp://ftp.isi.edu/in-notes/rfc1951.txt) (May 1996).
+
+
+File: gzip.info,  Node: Sample,  Next: Invoking gzip,  Prev: Overview,  Up: Top
+
+2 Sample Output
+***************
+
+Here are some realistic examples of running `gzip'.
+
+   This is the output of the command `gzip -h':
+
+     Usage: gzip [OPTION]... [FILE]...
+     Compress or uncompress FILEs (by default, compress FILES in-place).
+
+     Mandatory arguments to long options are mandatory for short options too.
+
+       -c, --stdout      write on standard output, keep original files unchanged
+       -d, --decompress  decompress
+       -f, --force       force overwrite of output file and compress links
+       -h, --help        give this help
+       -l, --list        list compressed file contents
+       -L, --license     display software license
+       -n, --no-name     do not save or restore the original name and time stamp
+       -N, --name        save or restore the original name and time stamp
+       -q, --quiet       suppress all warnings
+       -r, --recursive   operate recursively on directories
+       -S, --suffix=SUF  use suffix SUF on compressed files
+       -t, --test        test compressed file integrity
+       -v, --verbose     verbose mode
+       -V, --version     display version number
+       -1, --fast        compress faster
+       -9, --best        compress better
+
+     With no FILE, or when FILE is -, read standard input.
+
+     Report bugs to <bug-gzip@gnu.org>.
+
+   This is the output of the command `gzip -v texinfo.tex':
+
+     texinfo.tex:     69.3% -- replaced with texinfo.tex.gz
+
+   The following command will find all regular `.gz' files in the
+current directory and subdirectories (skipping file names that contain
+newlines), and extract them in place without destroying the original,
+stopping on the first failure:
+
+     find . -name '*
+     *' -prune -o -name '*.gz' -type f -print |
+       sed "
+         s/'/'\\''/g
+         s/^\\(.*\\)\\.gz$/gunzip <'\\1.gz' >'\\1'/
+       " |
+       sh -e
+
+
+File: gzip.info,  Node: Invoking gzip,  Next: Advanced usage,  Prev: Sample,  Up: Top
+
+3 Invoking `gzip'
+*****************
+
+The format for running the `gzip' program is:
+
+     gzip OPTION ...
+
+   `gzip' supports the following options:
+
+`--stdout'
+`--to-stdout'
+`-c'
+     Write output on standard output; keep original files unchanged.
+     If there are several input files, the output consists of a
+     sequence of independently compressed members.  To obtain better
+     compression, concatenate all input files before compressing them.
+
+`--decompress'
+`--uncompress'
+`-d'
+     Decompress.
+
+`--force'
+`-f'
+     Force compression or decompression even if the file has multiple
+     links or the corresponding file already exists, or if the
+     compressed data is read from or written to a terminal.  If the
+     input data is not in a format recognized by `gzip', and if the
+     option `--stdout' is also given, copy the input data without
+     change to the standard output: let `zcat' behave as `cat'.  If
+     `-f' is not given, and when not running in the background, `gzip'
+     prompts to verify whether an existing file should be overwritten.
+
+`--help'
+`-h'
+     Print an informative help message describing the options then quit.
+
+`--list'
+`-l'
+     For each compressed file, list the following fields:
+
+          compressed size: size of the compressed file
+          uncompressed size: size of the uncompressed file
+          ratio: compression ratio (0.0% if unknown)
+          uncompressed_name: name of the uncompressed file
+
+     The uncompressed size is given as -1 for files not in `gzip'
+     format, such as compressed `.Z' files.  To get the uncompressed
+     size for such a file, you can use:
+
+          zcat file.Z | wc -c
+
+     In combination with the `--verbose' option, the following fields
+     are also displayed:
+
+          method: compression method (deflate,compress,lzh,pack)
+          crc: the 32-bit CRC of the uncompressed data
+          date & time: time stamp for the uncompressed file
+
+     The CRC is given as ffffffff for a file not in gzip format.
+
+     With `--verbose', the size totals and compression ratio for all
+     files is also displayed, unless some sizes are unknown.  With
+     `--quiet', the title and totals lines are not displayed.
+
+     The `gzip' format represents the input size modulo 2^32, so the
+     uncompressed size and compression ratio are listed incorrectly for
+     uncompressed files 4 GiB and larger.  To work around this problem,
+     you can use the following command to discover a large uncompressed
+     file's true size:
+
+          zcat file.gz | wc -c
+
+`--license'
+`-L'
+     Display the `gzip' license then quit.
+
+`--no-name'
+`-n'
+     When compressing, do not save the original file name and time
+     stamp by default.  (The original name is always saved if the name
+     had to be truncated.)  When decompressing, do not restore the
+     original file name if present (remove only the `gzip' suffix from
+     the compressed file name) and do not restore the original time
+     stamp if present (copy it from the compressed file).  This option
+     is the default when decompressing.
+
+`--name'
+`-N'
+     When compressing, always save the original file name and time
+     stamp; this is the default.  When decompressing, restore the
+     original file name and time stamp if present.  This option is
+     useful on systems which have a limit on file name length or when
+     the time stamp has been lost after a file transfer.
+
+`--quiet'
+`-q'
+     Suppress all warning messages.
+
+`--recursive'
+`-r'
+     Travel the directory structure recursively.  If any of the file
+     names specified on the command line are directories, `gzip' will
+     descend into the directory and compress all the files it finds
+     there (or decompress them in the case of `gunzip').
+
+`--suffix SUF'
+`-S SUF'
+     Use suffix SUF instead of `.gz'.  Any suffix can be given, but
+     suffixes other than `.z' and `.gz' should be avoided to avoid
+     confusion when files are transferred to other systems.  A null
+     suffix forces gunzip to try decompression on all given files
+     regardless of suffix, as in:
+
+          gunzip -S "" *        (*.* for MSDOS)
+
+     Previous versions of gzip used the `.z' suffix.  This was changed
+     to avoid a conflict with `pack'.
+
+`--test'
+`-t'
+     Test.  Check the compressed file integrity.
+
+`--verbose'
+`-v'
+     Verbose.  Display the name and percentage reduction for each file
+     compressed.
+
+`--version'
+`-V'
+     Version.  Display the version number and compilation options, then
+     quit.
+
+`--fast'
+`--best'
+`-N'
+     Regulate the speed of compression using the specified digit N,
+     where `-1' or `--fast' indicates the fastest compression method
+     (less compression) and `--best' or `-9' indicates the slowest
+     compression method (optimal compression).  The default compression
+     level is `-6' (that is, biased towards high compression at expense
+     of speed).
+
+
+File: gzip.info,  Node: Advanced usage,  Next: Environment,  Prev: Invoking gzip,  Up: Top
+
+4 Advanced usage
+****************
+
+Multiple compressed files can be concatenated.  In this case, `gunzip'
+will extract all members at once.  If one member is damaged, other
+members might still be recovered after removal of the damaged member.
+Better compression can be usually obtained if all members are
+decompressed and then recompressed in a single step.
+
+   This is an example of concatenating `gzip' files:
+
+     gzip -c file1  > foo.gz
+     gzip -c file2 >> foo.gz
+
+Then
+
+     gunzip -c foo
+
+is equivalent to
+
+     cat file1 file2
+
+   In case of damage to one member of a `.gz' file, other members can
+still be recovered (if the damaged member is removed).  However, you
+can get better compression by compressing all members at once:
+
+     cat file1 file2 | gzip > foo.gz
+
+compresses better than
+
+     gzip -c file1 file2 > foo.gz
+
+   If you want to recompress concatenated files to get better
+compression, do:
+
+     zcat old.gz | gzip > new.gz
+
+   If a compressed file consists of several members, the uncompressed
+size and CRC reported by the `--list' option applies to the last member
+only.  If you need the uncompressed size for all members, you can use:
+
+     zcat file.gz | wc -c
+
+   If you wish to create a single archive file with multiple members so
+that members can later be extracted independently, use an archiver such
+as `tar' or `zip'.  GNU `tar' supports the `-z' option to invoke `gzip'
+transparently.  `gzip' is designed as a complement to `tar', not as a
+replacement.
+
+
+File: gzip.info,  Node: Environment,  Next: Tapes,  Prev: Advanced usage,  Up: Top
+
+5 Environment
+*************
+
+The environment variable `GZIP' can hold a set of default options for
+`gzip'.  These options are interpreted first and can be overwritten by
+explicit command line parameters.  For example:
+
+     for sh:    GZIP="-8v --name"; export GZIP
+     for csh:   setenv GZIP "-8v --name"
+     for MSDOS: set GZIP=-8v --name
+
+   On VMS, the name of the environment variable is `GZIP_OPT', to avoid
+a conflict with the symbol set for invocation of the program.
+
+
+File: gzip.info,  Node: Tapes,  Next: Problems,  Prev: Environment,  Up: Top
+
+6 Using `gzip' on tapes
+***********************
+
+When writing compressed data to a tape, it is generally necessary to pad
+the output with zeroes up to a block boundary.  When the data is read
+and the whole block is passed to `gunzip' for decompression, `gunzip'
+detects that there is extra trailing garbage after the compressed data
+and emits a warning by default if the garbage contains nonzero bytes.
+You have to use the `--quiet' option to suppress the warning.  This
+option can be set in the `GZIP' environment variable, as in:
+
+     for sh:    GZIP="-q"  tar -xfz --block-compress /dev/rst0
+     for csh:   (setenv GZIP "-q"; tar -xfz --block-compress /dev/rst0)
+
+   In the above example, `gzip' is invoked implicitly by the `-z'
+option of GNU `tar'.  Make sure that the same block size (`-b' option
+of `tar') is used for reading and writing compressed data on tapes.
+(This example assumes you are using the GNU version of `tar'.)
+
+
+File: gzip.info,  Node: Problems,  Next: Copying This Manual,  Prev: Tapes,  Up: Top
+
+7 Reporting Bugs
+****************
+
+If you find a bug in `gzip', please send electronic mail to
+<bug-gzip@gnu.org>.  Include the version number, which you can find by
+running `gzip -V'.  Also include in your message the hardware and
+operating system, the compiler used to compile `gzip', a description of
+the bug behavior, and the input to `gzip' that triggered the bug.
+
+
+File: gzip.info,  Node: Copying This Manual,  Next: Concept Index,  Prev: Problems,  Up: Top
+
+Appendix A Copying This Manual
+******************************
+
+* Menu:
+
+* GNU Free Documentation License::  License for copying this manual.
+
+
+File: gzip.info,  Node: GNU Free Documentation License,  Up: Copying This Manual
+
+A.1 GNU Free Documentation License
+==================================
+
+                      Version 1.2, November 2002
+
+     Copyright (C) 2000,2001,2002 Free Software Foundation, Inc.
+     51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA
+
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+  0. PREAMBLE
+
+     The purpose of this License is to make a manual, textbook, or other
+     functional and useful document "free" in the sense of freedom: to
+     assure everyone the effective freedom to copy and redistribute it,
+     with or without modifying it, either commercially or
+     noncommercially.  Secondarily, this License preserves for the
+     author and publisher a way to get credit for their work, while not
+     being considered responsible for modifications made by others.
+
+     This License is a kind of "copyleft", which means that derivative
+     works of the document must themselves be free in the same sense.
+     It complements the GNU General Public License, which is a copyleft
+     license designed for free software.
+
+     We have designed this License in order to use it for manuals for
+     free software, because free software needs free documentation: a
+     free program should come with manuals providing the same freedoms
+     that the software does.  But this License is not limited to
+     software manuals; it can be used for any textual work, regardless
+     of subject matter or whether it is published as a printed book.
+     We recommend this License principally for works whose purpose is
+     instruction or reference.
+
+  1. APPLICABILITY AND DEFINITIONS
+
+     This License applies to any manual or other work, in any medium,
+     that contains a notice placed by the copyright holder saying it
+     can be distributed under the terms of this License.  Such a notice
+     grants a world-wide, royalty-free license, unlimited in duration,
+     to use that work under the conditions stated herein.  The
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You
+     accept the license if you copy, modify or distribute the work in a
+     way requiring permission under copyright law.
+
+     A "Modified Version" of the Document means any work containing the
+     Document or a portion of it, either copied verbatim, or with
+     modifications and/or translated into another language.
+
+     A "Secondary Section" is a named appendix or a front-matter section
+     of the Document that deals exclusively with the relationship of the
+     publishers or authors of the Document to the Document's overall
+     subject (or to related matters) and contains nothing that could
+     fall directly within that overall subject.  (Thus, if the Document
+     is in part a textbook of mathematics, a Secondary Section may not
+     explain any mathematics.)  The relationship could be a matter of
+     historical connection with the subject or with related matters, or
+     of legal, commercial, philosophical, ethical or political position
+     regarding them.
+
+     The "Invariant Sections" are certain Secondary Sections whose
+     titles are designated, as being those of Invariant Sections, in
+     the notice that says that the Document is released under this
+     License.  If a section does not fit the above definition of
+     Secondary then it is not allowed to be designated as Invariant.
+     The Document may contain zero Invariant Sections.  If the Document
+     does not identify any Invariant Sections then there are none.
+
+     The "Cover Texts" are certain short passages of text that are
+     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
+     that says that the Document is released under this License.  A
+     Front-Cover Text may be at most 5 words, and a Back-Cover Text may
+     be at most 25 words.
+
+     A "Transparent" copy of the Document means a machine-readable copy,
+     represented in a format whose specification is available to the
+     general public, that is suitable for revising the document
+     straightforwardly with generic text editors or (for images
+     composed of pixels) generic paint programs or (for drawings) some
+     widely available drawing editor, and that is suitable for input to
+     text formatters or for automatic translation to a variety of
+     formats suitable for input to text formatters.  A copy made in an
+     otherwise Transparent file format whose markup, or absence of
+     markup, has been arranged to thwart or discourage subsequent
+     modification by readers is not Transparent.  An image format is
+     not Transparent if used for any substantial amount of text.  A
+     copy that is not "Transparent" is called "Opaque".
+
+     Examples of suitable formats for Transparent copies include plain
+     ASCII without markup, Texinfo input format, LaTeX input format,
+     SGML or XML using a publicly available DTD, and
+     standard-conforming simple HTML, PostScript or PDF designed for
+     human modification.  Examples of transparent image formats include
+     PNG, XCF and JPG.  Opaque formats include proprietary formats that
+     can be read and edited only by proprietary word processors, SGML or
+     XML for which the DTD and/or processing tools are not generally
+     available, and the machine-generated HTML, PostScript or PDF
+     produced by some word processors for output purposes only.
+
+     The "Title Page" means, for a printed book, the title page itself,
+     plus such following pages as are needed to hold, legibly, the
+     material this License requires to appear in the title page.  For
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
+
+     A section "Entitled XYZ" means a named subunit of the Document
+     whose title either is precisely XYZ or contains XYZ in parentheses
+     following text that translates XYZ in another language.  (Here XYZ
+     stands for a specific section name mentioned below, such as
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
+     To "Preserve the Title" of such a section when you modify the
+     Document means that it remains a section "Entitled XYZ" according
+     to this definition.
+
+     The Document may include Warranty Disclaimers next to the notice
+     which states that this License applies to the Document.  These
+     Warranty Disclaimers are considered to be included by reference in
+     this License, but only as regards disclaiming warranties: any other
+     implication that these Warranty Disclaimers may have is void and
+     has no effect on the meaning of this License.
+
+  2. VERBATIM COPYING
+
+     You may copy and distribute the Document in any medium, either
+     commercially or noncommercially, provided that this License, the
+     copyright notices, and the license notice saying this License
+     applies to the Document are reproduced in all copies, and that you
+     add no other conditions whatsoever to those of this License.  You
+     may not use technical measures to obstruct or control the reading
+     or further copying of the copies you make or distribute.  However,
+     you may accept compensation in exchange for copies.  If you
+     distribute a large enough number of copies you must also follow
+     the conditions in section 3.
+
+     You may also lend copies, under the same conditions stated above,
+     and you may publicly display copies.
+
+  3. COPYING IN QUANTITY
+
+     If you publish printed copies (or copies in media that commonly
+     have printed covers) of the Document, numbering more than 100, and
+     the Document's license notice requires Cover Texts, you must
+     enclose the copies in covers that carry, clearly and legibly, all
+     these Cover Texts: Front-Cover Texts on the front cover, and
+     Back-Cover Texts on the back cover.  Both covers must also clearly
+     and legibly identify you as the publisher of these copies.  The
+     front cover must present the full title with all words of the
+     title equally prominent and visible.  You may add other material
+     on the covers in addition.  Copying with changes limited to the
+     covers, as long as they preserve the title of the Document and
+     satisfy these conditions, can be treated as verbatim copying in
+     other respects.
+
+     If the required texts for either cover are too voluminous to fit
+     legibly, you should put the first ones listed (as many as fit
+     reasonably) on the actual cover, and continue the rest onto
+     adjacent pages.
+
+     If you publish or distribute Opaque copies of the Document
+     numbering more than 100, you must either include a
+     machine-readable Transparent copy along with each Opaque copy, or
+     state in or with each Opaque copy a computer-network location from
+     which the general network-using public has access to download
+     using public-standard network protocols a complete Transparent
+     copy of the Document, free of added material.  If you use the
+     latter option, you must take reasonably prudent steps, when you
+     begin distribution of Opaque copies in quantity, to ensure that
+     this Transparent copy will remain thus accessible at the stated
+     location until at least one year after the last time you
+     distribute an Opaque copy (directly or through your agents or
+     retailers) of that edition to the public.
+
+     It is requested, but not required, that you contact the authors of
+     the Document well before redistributing any large number of
+     copies, to give them a chance to provide you with an updated
+     version of the Document.
+
+  4. MODIFICATIONS
+
+     You may copy and distribute a Modified Version of the Document
+     under the conditions of sections 2 and 3 above, provided that you
+     release the Modified Version under precisely this License, with
+     the Modified Version filling the role of the Document, thus
+     licensing distribution and modification of the Modified Version to
+     whoever possesses a copy of it.  In addition, you must do these
+     things in the Modified Version:
+
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has fewer than five), unless they release you
+          from this requirement.
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section Entitled "History", Preserve its Title,
+          and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section Entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. For any section Entitled "Acknowledgements" or "Dedications",
+          Preserve the Title of the section, and preserve in the
+          section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section Entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.
+
+       O. Preserve any Warranty Disclaimers.
+
+     If the Modified Version includes new front-matter sections or
+     appendices that qualify as Secondary Sections and contain no
+     material copied from the Document, you may at your option
+     designate some or all of these sections as invariant.  To do this,
+     add their titles to the list of Invariant Sections in the Modified
+     Version's license notice.  These titles must be distinct from any
+     other section titles.
+
+     You may add a section Entitled "Endorsements", provided it contains
+     nothing but endorsements of your Modified Version by various
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
+
+     You may add a passage of up to five words as a Front-Cover Text,
+     and a passage of up to 25 words as a Back-Cover Text, to the end
+     of the list of Cover Texts in the Modified Version.  Only one
+     passage of Front-Cover Text and one of Back-Cover Text may be
+     added by (or through arrangements made by) any one entity.  If the
+     Document already includes a cover text for the same cover,
+     previously added by you or by arrangement made by the same entity
+     you are acting on behalf of, you may not add another; but you may
+     replace the old one, on explicit permission from the previous
+     publisher that added the old one.
+
+     The author(s) and publisher(s) of the Document do not by this
+     License give permission to use their names for publicity for or to
+     assert or imply endorsement of any Modified Version.
+
+  5. COMBINING DOCUMENTS
+
+     You may combine the Document with other documents released under
+     this License, under the terms defined in section 4 above for
+     modified versions, provided that you include in the combination
+     all of the Invariant Sections of all of the original documents,
+     unmodified, and list them all as Invariant Sections of your
+     combined work in its license notice, and that you preserve all
+     their Warranty Disclaimers.
+
+     The combined work need only contain one copy of this License, and
+     multiple identical Invariant Sections may be replaced with a single
+     copy.  If there are multiple Invariant Sections with the same name
+     but different contents, make the title of each such section unique
+     by adding at the end of it, in parentheses, the name of the
+     original author or publisher of that section if known, or else a
+     unique number.  Make the same adjustment to the section titles in
+     the list of Invariant Sections in the license notice of the
+     combined work.
+
+     In the combination, you must combine any sections Entitled
+     "History" in the various original documents, forming one section
+     Entitled "History"; likewise combine any sections Entitled
+     "Acknowledgements", and any sections Entitled "Dedications".  You
+     must delete all sections Entitled "Endorsements."
+
+  6. COLLECTIONS OF DOCUMENTS
+
+     You may make a collection consisting of the Document and other
+     documents released under this License, and replace the individual
+     copies of this License in the various documents with a single copy
+     that is included in the collection, provided that you follow the
+     rules of this License for verbatim copying of each of the
+     documents in all other respects.
+
+     You may extract a single document from such a collection, and
+     distribute it individually under this License, provided you insert
+     a copy of this License into the extracted document, and follow
+     this License in all other respects regarding verbatim copying of
+     that document.
+
+  7. AGGREGATION WITH INDEPENDENT WORKS
+
+     A compilation of the Document or its derivatives with other
+     separate and independent documents or works, in or on a volume of
+     a storage or distribution medium, is called an "aggregate" if the
+     copyright resulting from the compilation is not used to limit the
+     legal rights of the compilation's users beyond what the individual
+     works permit.  When the Document is included in an aggregate, this
+     License does not apply to the other works in the aggregate which
+     are not themselves derivative works of the Document.
+
+     If the Cover Text requirement of section 3 is applicable to these
+     copies of the Document, then if the Document is less than one half
+     of the entire aggregate, the Document's Cover Texts may be placed
+     on covers that bracket the Document within the aggregate, or the
+     electronic equivalent of covers if the Document is in electronic
+     form.  Otherwise they must appear on printed covers that bracket
+     the whole aggregate.
+
+  8. TRANSLATION
+
+     Translation is considered a kind of modification, so you may
+     distribute translations of the Document under the terms of section
+     4.  Replacing Invariant Sections with translations requires special
+     permission from their copyright holders, but you may include
+     translations of some or all Invariant Sections in addition to the
+     original versions of these Invariant Sections.  You may include a
+     translation of this License, and all the license notices in the
+     Document, and any Warranty Disclaimers, provided that you also
+     include the original English version of this License and the
+     original versions of those notices and disclaimers.  In case of a
+     disagreement between the translation and the original version of
+     this License or a notice or disclaimer, the original version will
+     prevail.
+
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
+     Preserve its Title (section 1) will typically require changing the
+     actual title.
+
+  9. TERMINATION
+
+     You may not copy, modify, sublicense, or distribute the Document
+     except as expressly provided for under this License.  Any other
+     attempt to copy, modify, sublicense or distribute the Document is
+     void, and will automatically terminate your rights under this
+     License.  However, parties who have received copies, or rights,
+     from you under this License will not have their licenses
+     terminated so long as such parties remain in full compliance.
+
+ 10. FUTURE REVISIONS OF THIS LICENSE
+
+     The Free Software Foundation may publish new, revised versions of
+     the GNU Free Documentation License from time to time.  Such new
+     versions will be similar in spirit to the present version, but may
+     differ in detail to address new problems or concerns.  See
+     `http://www.gnu.org/copyleft/'.
+
+     Each version of the License is given a distinguishing version
+     number.  If the Document specifies that a particular numbered
+     version of this License "or any later version" applies to it, you
+     have the option of following the terms and conditions either of
+     that specified version or of any later version that has been
+     published (not as a draft) by the Free Software Foundation.  If
+     the Document does not specify a version number of this License,
+     you may choose any version ever published (not as a draft) by the
+     Free Software Foundation.
+
+ADDENDUM: How to use this License for your documents
+====================================================
+
+To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and license
+notices just after the title page:
+
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.2
+       or any later version published by the Free Software Foundation;
+       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+       Texts.  A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
+
+   If you have Invariant Sections, Front-Cover Texts and Back-Cover
+Texts, replace the "with...Texts." line with this:
+
+         with the Invariant Sections being LIST THEIR TITLES, with
+         the Front-Cover Texts being LIST, and with the Back-Cover Texts
+         being LIST.
+
+   If you have Invariant Sections without Cover Texts, or some other
+combination of the three, merge those two alternatives to suit the
+situation.
+
+   If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License, to
+permit their use in free software.
+
+
+File: gzip.info,  Node: Concept Index,  Prev: Copying This Manual,  Up: Top
+
+Appendix B Concept Index
+************************
+
+ [index ]
+* Menu:
+
+* bugs:                                  Problems.              (line 6)
+* concatenated files:                    Advanced usage.        (line 6)
+* Environment:                           Environment.           (line 6)
+* FDL, GNU Free Documentation License:   GNU Free Documentation License.
+                                                                (line 6)
+* invoking:                              Invoking gzip.         (line 6)
+* options:                               Invoking gzip.         (line 6)
+* overview:                              Overview.              (line 6)
+* sample:                                Sample.                (line 6)
+* tapes:                                 Tapes.                 (line 6)
+
+
+
+Tag Table:
+Node: Top1018
+Node: Overview2164
+Node: Sample7362
+Node: Invoking gzip9298
+Node: Advanced usage14290
+Node: Environment15877
+Node: Tapes16442
+Node: Problems17459
+Node: Copying This Manual17918
+Node: GNU Free Documentation License18156
+Node: Concept Index40552
+
+End Tag Table

@@ -1,0 +1,11 @@
+Contents of the "atheos" sub-directory for Zip 2.3 and later:
+
+  Contents      this file
+  README        Notes from the author of the AtheOS port
+  Makefile      makefile for building
+  atheos.c      AtheOS-specific routines (similar to the BeOS/UNIX ones)
+  osdep.h       AtheOS-specific includes and whatnot
+  zipup.h       Definitions for zip routines
+
+- Ruslan Nickolaev (nruslan@hotbox.ru)
+  Sep 06/2004

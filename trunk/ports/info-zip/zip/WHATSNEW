@@ -1,0 +1,80 @@
+WhatsNew file for Zip 2.32
+
+(See Changes for details)
+
+New things in Zip 2.32
+
+- Fixed -R operation to match the supplied file patterns in all recursed
+  subdirectories, like PKZIP 2.04 "-p -r" (or PKZIPC 4+ "-recurse")
+- Handle cases where -x, -R, and -i patterns are mixed
+- Fixes to ZipSplit, ZipNotes, and ZipCloak
+- Example C-Sharp code added for using zip32.dll (thanks to Adrian Maull)
+- Implemented some directory search speedups
+- Windows NTFS time fix
+- Fix VMS logical name parse problem
+- Handle VMS [...]
+- Add VMS DEBUG option
+- Fixed bug when encrypting large uncompressable files
+- Updated VMS help
+- Fixed selecting files to delete by date bug
+- Add new option, -MM, that will force Zip to exit with an OPEN error
+  (usually error code 18) as soon as it finds an input pattern that
+  is not matched during the directory scan or an input file that is
+  unreadable or locked when Zip tries to open it, and without creating
+  an archive (Note that, without -MM, Zip will do the usual thing of
+  warning when a pattern is not matched and skipping files it can't
+  read, creating the archive with what it can read, then exiting with
+  an OPEN error if files were skipped)
+- Add check for when zip tries to exceed the limit for seeking in
+  the output file and exit with error, instead of creating a
+  possibly bad archive
+- Can now handle Unix FIFO (named pipes)
+- Minor changes to allow Zip to compile with Visual C++ 2005
+
+New things in Zip 2.31
+
+- Crypt now part of source distribution (see Readme.cr)
+- Bug fixes:
+  - Debian patch 001 - Converted quoted strings
+  - Debian patch 002 - Makefile changes
+  - Debian patch 003 - Build changes
+  - Debian patch 004 - Changes to unix/configure
+  - Debian patch 005 - Fix for FNMAX path bug
+- Split VMS -V into -V and -VV (see Manual)
+- New VC6 project files thanks to Cosmin
+- AtheOS port (thanks to Ruslan Nickolaev)
+- Add api.c kluge for zip32.dll to support Visual Basic
+- Binary detection changed from 20% binary to new algorithm
+  that should better detect word processing files as binary
+  and should accept UTF-8 files as text.  This flags the file
+  in the archive as TEXT or BINARY for use by UnZip for line
+  end conversion (see proginfo/txtvsbin.txt)
+- License update
+- DJGPP fixes
+- Many Makefile updates
+- Fixes to ZipSplit, ZipNotes, and ZipCloak
+
+New things in Zip 2.3
+
+- IBM OS/390 port (Unix like, but EBCDIC) by Paul von Behren
+- Apple Macintosh (MACOS) port by Dirk Haase
+- Theos port by Jean-Michel Dubois
+- Multibyte characterset support by Yoshioka Tsuneo
+- Support for ISO 8601 date format with -t and -tt options
+- Info-ZIP license
+
+New things in Zip 2.2
+
+- BEOS port by Chris Herborth
+- QDOS port by Jonathan Hudson
+- TANDEM port by Dave Smith
+- WINDLL port (16-bit Win 3.x and 32-bit WinNT/Win95) by Mike White
+- SYSV packages support by John Bush
+- zip -P SeCrEt encrypts entries in the zip file with password SeCrEt
+  (WARNING: THIS IS INSECURE, use at your own risk)
+- zip -R recurses into subdirectories of current dir like "PKZIP -rP"
+- zip -x@exclude.lst excludes files specified in the file exclude.lst
+- zip -i@include.lst includes files specified in the file include.lst
+- zip -@ only handles one filename per line, but supports whitespace in names
+- zip -t mmddyyyy, 4 digit year number for uniqueness of years beyond 2000
+- zip -tt mmddyyyy only includes files before a specified date

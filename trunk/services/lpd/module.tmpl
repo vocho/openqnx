@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<module name="lpd">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="lpd" generated="true">
+			<location basedir="lpd/{os}/{cpu}/o{.:endian}"
+				runtime="true">lpd</location>
+		</component>
+
+		<component id="lpr" generated="true">
+			<location basedir="lpr/{os}/{cpu}/o{.:endian}"
+				runtime="true">lpr</location>
+		</component>
+
+		<component id="lprc" generated="true">
+			<location basedir="lprc/{os}/{cpu}/o{.:endian}"
+				runtime="true">lprc</location>
+		</component>
+
+		<component id="lprq" generated="true">
+			<location basedir="lprq/{os}/{cpu}/o{.:endian}"
+				runtime="true">lprq</location>
+		</component>
+
+		<component id="lprrm" generated="true">
+			<location basedir="lprrm/{os}/{cpu}/o{.:endian}"
+				runtime="true">lprrm</location>
+		</component>	
+
+	</contents>
+</module>

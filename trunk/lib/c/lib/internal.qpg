@@ -1,0 +1,9 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add component="dev" proc="x86" file="*/a.wcc/libc.a" pinfo="$"/>	
+			<QPG:Add component="dev" type="tree" file="../public/c6x" install="/usr/include/c6x/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

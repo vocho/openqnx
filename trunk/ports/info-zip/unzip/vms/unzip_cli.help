@@ -1,0 +1,547 @@
+.!
+.!  File:       UNZIP_CLI.HELP
+.!
+.!  Author:     Hunter Goatley
+.!
+.!  Date:       12 Jul 94 (orig. UNZIP.RNH, 23 Oct 91)
+.!
+.!  Description:
+.!
+.!      TPU-processable source file to produce VMS on-line help for
+.!      portable UnZip.  Adapted from UNZIP.RNH, originally based on
+.!      UNZIP.MAN (now UNZIP.TXT).
+.!
+.!      To build:
+.!          $ EDIT /TPU/NOSECTION/NODISPLAY/COMMAND=CVTHELP.TPU UNZIP_CLI.HELP
+.!          $ RUNOFF /OUT=UNZIP.HLP UNZIP_CLI.RNH
+.!          $ LIBR /HELP/INSERT libr UNZIP
+.!
+.!  Modification history:
+.!
+.!      02-001          Hunter Goatley          12-JUL-1994 16:59
+.!              Genesis.
+.!      02-002          Cave Newt               14-JUL-1994 11:36
+.!              Fixed /*TEXT options and added/removed various options.
+.!      02-003          Cave Newt               28-JUL-1994 08:54
+.!              Removed semicolons from comments and moved /ZIPINFO.
+.!      02-004          Christian Spieler       06-OCT-1995 02:02
+.!              Changed to conform to revised .CLD definition.
+.!      02-005          Christian Spieler       06-FEB-1996 02:20
+.!              Added description of /HELP qualifier.
+.!      02-006          Christian Spieler       12-MAY-1996 00:50
+.!              Some clarifications/cleanups.
+.!      02-007          Christian Spieler       04-MAR-1997 22:25
+.!              Added /[NO]CASE_INSENSITIVE to ZipInfo mode;
+.!              documented the new /PASSWORD="decryption_key" option.
+.!      02-007          Christian Spieler       22-JUL-1997 22:37
+.!              Formatting changes (prevent line wraps); added "Exit_Codes"
+.!              subtopic (no version number change).
+.!      02-007          Christian Spieler       28-APR-2000 03:22
+.!              Changed references to plaintext UnZip documentation file
+.!              into UNZIP.TXT (no version number change).
+.!      02-007          Hunter Goatley          07-Feb-2001 15:43
+.!              Reformatted qualifier item headers to show negated form of
+.!              option qualifier on separate line (no version number change).
+.!      02-008          Christian Spieler       18-Apr-2001 22:29
+.!              Added description for extended functionality of -b option.
+.!      02-009          Christian Spieler       10-Dec-2001 13:37
+.!              Added description for new /TRAVERSE_DIRS option.
+.!      02-010          Steven Schweda          28-Jan-2005 16:16:36
+.!              Added /TIMESTAMP (-T) qualifier.
+.!      02-010          Christian Spieler       29-Jan-2005 01:50
+.!              Completed description of -T qualifier (also for UNIX style).
+.!
+<INIT>
+<MAIN>
+UNZIP
+
+UnZip is used to extract files compressed and packaged by Zip (see HELP ZIP
+for information on ZIP).
+
+For a brief help on Zip and Unzip, run each without specifying any
+parameters on the command line (or apply the /HELP qualifier).
+To get a brief help sceen about the alternate UNIX style command interface,
+run each with the -h option applied.
+
+UNZIP will list, test, or extract from a ZIP archive.  ZIP archives are commonly
+found on MS-DOS systems; a VMS version of ZIP can also be found here.
+
+Archive member extraction is implied by the absence of the /SCREEN (-c),
+/PIPE (-p), /TEST (-t), /TIMESTAMP (-T), /LIST (-l, -v) or /COMMENT (-z)
+qualifiers (options).
+All archive members are processed unless a filespec is provided to
+specify a subset of the archive members.
+<FORMAT>
+UNZIP zipfile [file[,...]] [/qualifiers]
+
+.!
+<TOPIC>
+Parameters
+
+<PARAMETER>
+zipfile
+
+<PTEXT>
+File specification for the ZIP archive(s) with optional wildcards. UnZip will
+perform actions specified for every zipfile matching the specification.
+The default file specification is SYS$DISK:[].ZIP.
+
+Note that self-extracting ZIP files are supported; just specify the .EXE
+suffix yourself.
+<TXETP>
+
+<PARAMETER>
+file
+
+<PTEXT>
+An optional comma-separated list of archive members to be processed;
+if no list is given, all archive members are processed.  Expressions
+may be used to match multiple members.  Expressions should be enclosed
+in double-quotes to prevent interpretation by DCL.  Multiple filenames
+should be separated by blanks.  Each file specification is similar to
+a Unix egrep expression and may contain:
+
+<LITERAL>
+|*       matches a sequence of 0 or more characters
+|?       matches exactly 1 character
+|[...]   matches any single character found inside the brackets;
+|        ranges are specified by a beginning character, a hyphen,
+|        and an ending character.  If a '!' or '^' immediately
+|        follows the left bracket, then any character not in the
+|        given range is matched.
+|        Hint: To specify a verbatim left bracket '[', the
+|              three-character sequence "[[]" has to be used.
+<LARETIL>
+<TXETP>
+
+<QUALIFIERS>
+<QUALIFIER>
+/ZIPINFO
+
+/ZIPINFO
+
+Displays information about the Zip archive and the files contained therein.
+This function used to be provided by a separate ZipInfo program.
+
+The following qualifiers may be specified with /ZIPINFO:
+
+<LITERAL>
+|  /SHORT                 Short UNIX "ls -l" format (default)
+|  /MEDIUM                Medium UNIX "ls -l" format
+|  /LONG                  Long UNIX "ls -l" format
+|  /VERBOSE               Verbose, multi-page format
+|  /ONE_LINE              Filenames only, one per line
+|  /HEADER                Print header lines
+|  /TOTALS                Print totals for files
+|  /TIMES                 Print file times in sortable decimal format
+|  /[NO]CASE_INSENSITIVE  Match filenames case-insensitively
+|  /[NO]PAGE              Page screen output through built-in "more"
+<LARETIL>
+<QUALIFIER>
+/BINARY
+
+/BINARY[=KEYWORD]
+<NEXT>
+/NOBINARY (default)
+
+Selects conversion to VMS "standard" binary file format for
+extracted files, which is "fixed length 512 byte records,
+no record attributes". When extracting to SYS$OUTPUT (/SCREEN
+or /PIPE qualifier), this qualifier deactivates the default
+"text data" conversion, instead.
+The optional keywords recognized are:
+<LITERAL>
+|  AUTO     Automatically extracts files marked as "binary" (rather
+|           than "text") in standard VMS binary file format. (default)
+|  ALL      Extracts all files in standard VMS binary file format.
+|  NONE     Same as /NOBINARY.
+<LARETIL>
+
+Note that a combination of /BINARY[=AUTO] and /TEXT[=AUTO] is allowed.
+(see /TEXT qualifier)
+<QUALIFIER>
+/BRIEF
+
+/BRIEF (default)
+
+When used with /LIST, specifies that a brief listing of the archive's
+contents is to be displayed.  A brief listing shows the length, date,
+time, and file name for the files in the archive.
+<QUALIFIER>
+/CASE_INSENSITIVE
+
+/CASE_INSENSITIVE
+<NEXT>
+/NOCASE_INSENSITIVE (default)
+
+Match filenames case-insensitively.  (Good default option under VMS.)
+<QUALIFIER>
+/COMMENT
+
+/COMMENT
+<NEXT>
+/NOCOMMENT
+
+Display the archive comment.
+<QUALIFIER>
+/DIRECTORY
+
+/DIRECTORY=directory-spec
+
+Specifies the output directory where all the extracted files are to be
+placed.
+<QUALIFIER>
+/EXCLUDE
+
+/EXCLUDE=(file[,...])
+
+A comma-separated list of files to exclude when extracting files.
+If multiple files are specified, the list should be included in
+parentheses.
+
+<QUALIFIER>
+/FRESHEN
+
+/FRESHEN
+<NEXT>
+/NOFRESHEN
+
+Freshen existing files; replace if newer.  Does not cause any new files to
+be created.
+<QUALIFIER>
+/FULL
+
+/FULL
+
+When used with /LIST, specifies that a full listing of the archive's
+contents is to be displayed.  A full listing shows the length,
+compression method, compressed size, compression ratio, date,
+time, CRC value, and file name for the files in the archive.
+<QUALIFIER>
+/HELP
+
+/HELP
+
+Displays a one-page brief help screen and exits quietly.
+<QUALIFIER>
+/JUNK
+
+/JUNK
+<NEXT>
+/NOJUNK (default)
+
+Junk the stored paths (don't recreated the archive's directory
+structure.
+<QUALIFIER>
+/LIST
+
+/LIST
+
+List the contents of the archive.  /BRIEF and /FULL can be used to
+specify the amount of information displayed.  The default is /BRIEF.
+<QUALIFIER>
+/LOWERCASE
+
+/LOWERCASE
+<NEXT>
+/NOLOWERCASE (default)
+
+Convert filenames from all-uppercase operating systems to lowercase.  This
+option has no effect under VMS.
+<QUALIFIER>
+/OVERWRITE
+
+/OVERWRITE
+<NEXT>
+/NOOVERWRITE
+
+The qualifier /OVERWRITE forces overwriting of existing files when extracting.
+The negation /NOOVERWRITE results in never overwriting an existing file.
+The default action is to prompt for desired action when about to
+overwrite an existing file.
+
+For VMS, "overwriting" results in the creation of a new version of the file,
+unless version numbers are stored in the archive and /VERSION is specified.
+<QUALIFIER>
+/PAGE
+
+/PAGE
+<NEXT>
+/NOPAGE
+
+Feed all screen output through the built-in "more" pager.
+<QUALIFIER>
+/PASSWORD
+
+/PASSWORD=decryption-password
+
+Specifies a decryption password and prevents UnZip from prompting for
+a password in case the specified decryption key was wrong. The supplied
+string must be enclosed in double-quotes whenever it contains lowercase
+or special characters.
+<QUALIFIER>
+/PIPE
+
+/PIPE
+
+Extract files to SYS$OUTPUT with no informational messages.
+<QUALIFIER>
+/QUIET
+
+/QUIET[=SUPER]
+
+Perform operations quietly.  The keyword SUPER can be specified to make
+operations even more quiet.
+<QUALIFIER>
+/RESTORE
+
+/RESTORE
+<NEXT>
+/NORESTORE
+
+Restore file owner and protection settings.
+<QUALIFIER>
+/SCREEN
+
+/SCREEN
+<NEXT>
+/NOSCREEN
+
+Extracts matching files to SYS$OUTPUT (the terminal).
+<QUALIFIER>
+/TEST
+
+/TEST
+<NEXT>
+/NOTEST
+
+Test archive files.
+<QUALIFIER>
+/TEXT
+
+/TEXT[=KEYWORD]
+<NEXT>
+/NOTEXT (default)
+
+Selects conversion to VMS standard text file format.
+The optional keywords recognized are:
+<LITERAL>
+|  AUTO     Automatically extracts files marked as "text" (rather
+|           than "binary") in standard VMS text file format. (default)
+|  ALL      Extracts all files in standard VMS text file format.
+|  NONE     Same as /NOTEXT.
+<LARETIL>
+
+A similar functionality is available for binary files, see qualifier /BINARY.
+<QUALIFIER>
+/TIMESTAMP
+
+/TIMESTAMP
+
+Sets the timestamp of an archive to that of its newest file.  This qualifier
+corresponds to zip's /APPEND/LATEST (-go) option, but can be applied to
+wildcard zipfile specifications (e.g. "*.zip") and is much faster.
+<QUALIFIER>
+/TRAVERSE_DIRS
+
+/TRAVERSE_DIRS
+<NEXT>
+/NOTRAVERSE_DIRS (default)
+
+Allows to extract archive members into locations outside of the currently
+active "extraction root dir".  For security reasons, UnZip normally
+removes "parent dir" path components ("../") from the names of extracted
+files.  This feature (new for UnZip 5.50) prevents UnZip from accidentally
+writing files to "sensitive" areas outside the directory tree below the
+specified "extraction root".  By specifying the /TRAVERSE_DIRS option,
+this security feature can be switched off. This allows users to extract
+(older) archives that made use of "../" to create multiple directory
+trees at the level of the current extraction folder.
+<QUALIFIER>
+/UPDATE
+
+/UPDATE
+<NEXT>
+/NOUPDATE
+
+Update existing files; create new ones if needed.
+<QUALIFIER>
+/VERSION
+
+/VERSION
+<NEXT>
+/NOVERSION (default)
+
+Retain VMS file version numbers.
+
+<TOPIC>
+Authors
+
+Info-ZIP; currently maintained by Christian Spieler.  VMS support maintained
+by Igor Mandrichenko, Steven M. Schweda, Christian Spieler and Hunter Goatley.
+Originally based on a program by Samuel H. Smith.
+
+VMS on-line help ported from UNZIP.TXT by Hunter Goatley.
+
+<TOPIC>
+Exit_Codes
+
+On VMS, UnZip's UNIX style exit values are mapped into proper
+VMS status codes:
+<LITERAL>
+|   1                               (success)  normal exit,
+|   (0x7fff0000 + 16*UnZip_errnum)  -W- warnings
+|   (0x7fff0002 + 16*UnZip_errnum)  -E- normal errors
+|   (0x7fff0004 + 16*UnZip_errnum)  -F- fatal errors
+<LARETIL>
+
+The UnZip error level (or exit code) approximates the exit
+codes defined by PKWARE and takes on the following values:
+<LITERAL>
+|  VMS       UnZip    Type of error
+|  severity  errcode
+|    -         0      normal; no errors or warnings detected.
+|
+|    W         1      one or more warning errors were encountered,
+|                     but processing completed  successfully  any-
+|                     way.   This  includes  zipfiles where one or
+|                     more files was skipped  due  to  unsupported
+|                     compression  method  or  encryption  with an
+|                     unknown password.
+|
+|    E         2      a generic error in the  zipfile  format  was
+|                     detected.   Processing  may  have  completed
+|                     successfully anyway;  some  broken  zipfiles
+|                     created by other archivers have simple work-
+|                     arounds.
+|
+|    F         3      a severe error in  the  zipfile  format  was
+|                     detected.   Processing probably failed imme-
+|                     diately.
+|
+|    F         4      unzip was unable to allocate memory for  one
+|                     or  more  buffers during program initializa-
+|                     tion.
+|
+|    F         5      unzip  was  unable  to  allocate  memory  or
+|                     unable  to  obtain a tty to read the decryp-
+|                     tion password(s).
+|
+|    F         6      unzip was unable to allocate  memory  during
+|                     decompression to disk.
+|
+|    F         7      unzip  was  unable to allocate memory during
+|                     in-memory decompression.
+|
+|    F         8      [currently not used]
+|
+|    E         9      the specified zipfiles were not found.
+|
+|    E         10     invalid options were specified on  the  com-
+|                     mand line.
+|
+|    E         11     no matching files were found.
+|
+|    F         50     the disk is (or was) full during extraction.
+|
+|    F         51     the end of the ZIP archive  was  encountered
+|                     prematurely.
+|
+|    E         80     the user aborted unzip prematurely with con-
+|                     trol-C (or similar)
+|
+|    E         81     no files were found due to unsupported  com-
+|                     pression  methods or unsupported decryption.
+|                     (If even one additional file is successfully
+|                     processed, however, the exit status is 1.)
+|
+|    E         82     no  files  were  found due to bad decryption
+|                     password(s).  This is also the  exit  status
+|                     if  no files were found due to a combination
+|                     of unsupported  compression  and  bad  pass-
+|                     words.   As in the previous case, however, a
+|                     single successful file  will  result  in  an
+|                     exit status of 1 instead.)
+<LARETIL>
+
+In addition, there is a compilation option to expand upon this behavior:
+An executable compiled with the option RETURN_CODES defined displays
+a human-readable explanation of what the error status means.
+
+<TOPIC>
+UNIX_Options
+
+The default action of UnZip is to extract all zipfile entries.  The following
+options and modifiers can be provided:
+
+<LITERAL>
+|  -Z   ZipInfo mode
+|  -c   extract files to SYS$OUTPUT (terminal)
+|  -f   freshen existing files (replace if newer); create none
+|  -h   show brief help screen and exit quietly
+|  -l   list archive files (short format)
+|  -p   extract files to SYS$OUTPUT; no informational messages
+|  -t   test archive files
+|  -T   set zipfile timestamps to that of each archive's newest entry
+|  -u   update existing files; create new ones if needed
+|  -v   list archive files (verbose format)
+|  -z   display only the archive comment
+|
+|MODIFIERS
+|  -a   auto-extract only text files in standard VMS text file format
+|  -aa  extract all files as text
+|  -b   auto-extract only binary files in VMS fixed 512 bytes records
+|  -bb  extract all files as binary VMS fixed 512 byte record files
+|  -j   junk paths (don't recreate archive's directory structure)
+|  -n   never overwrite existing files; don't prompt
+|  -o   OK to overwrite files without prompting
+|  -q   perform operations quietly (-qq => even quieter)
+|  -C   match filenames case-insensitively
+|  -L   convert filenames to lowercase if created on MSDOS, VMS, etc.
+|  -P<pwd>  supply decryption password on the command line (insecure!)
+|  -M   page output through built-in "more" function
+|  -V   retain (VMS) file version numbers
+|  -X   restore owner/protection info (may require privileges)
+|  -:   allow "../" path components that traverse across extract dir root
+<LARETIL>
+
+Note that uppercase options such as -C, -L, -M, -P, -T, -V, -X and -Z
+must be specified in quotes.  For example:
+
+<LITERAL>
+|  $ unzip "-VX" -a zipfile
+<LARETIL>
+
+<TOPIC>
+UNZIP_OPTS_Default
+
+UnZip allows to modify its default behaviour by specifying (UNIX style)
+option defaults via the UNZIP_OPTS logical name.
+For example, the following will cause UnZip to match filenames without regard
+to case, restore owner/protection information and perform all operations at
+quiet-level 1 by default:
+
+<LITERAL>
+|  $ define UNZIP_OPTS "-qCX"
+<LARETIL>
+
+Note that the quotation marks here are required to preserve lowercase options
+(opposite of the command-line behavior). To negate a default option on the
+command line, add one or more minus  signs before the option letter, in
+addition to the leading switch character `-':
+
+<LITERAL>
+|  $ unzip --ql zipfile
+<LARETIL>
+
+or
+
+<LITERAL>
+|  $ unzip -l-q zipfile
+<LARETIL>
+
+At present it is not possible to decrement an option below zero--that is,
+more than a few minuses have no effect.
+
+UNZIP_OPTS may be defined as a symbol rather than a logical, but if both
+are defined, the logical is used.

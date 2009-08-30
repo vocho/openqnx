@@ -1,0 +1,66 @@
+@c This is part of the paxutils manual.
+@c Copyright (C) 2005 Free Software Foundation, Inc.
+@c Written by Sergey Poznyakoff
+@c This file is distributed under GFDL 1.1 or any later version
+@c published by the Free Software Foundation.
+
+  A @dfn{snapshot file} (or @dfn{directory file}) is created during
+incremental backups (@pxref{Incremental Dumps}).  It
+contains the status of the file system at the time of the dump and is
+used to determine which files were modified since the last backup.
+
+  @GNUTAR{} version @value{VERSION} supports two snapshot file
+formats.  The first format, called @dfn{format 0}, is the one used by
+@GNUTAR{} versions up to 1.15.1. The second format, called @dfn{format
+1} is an extended version of this format, that contains more metadata
+and allows for further extensions.
+
+  @samp{Format 0} snapshot file begins with a line containing a
+decimal number that represents the UNIX timestamp of the beginning of
+the last archivation. This line is followed by directory metadata
+descriptions, one per line. Each description has the following format:
+
+@smallexample
+[@var{nfs}]@var{dev} @var{inode} @var{name}
+@end smallexample
+
+@noindent
+where optional @var{nfs} is a single plus character (@samp{+}) if this
+directory is located on an NFS-mounted partition, @var{dev} and
+@var{inode} are the device and inode numbers of the directory, and
+@var{name} is the directory name.
+
+  @samp{Format 1} snapshot file begins with a line specifying the
+format of the file. This line has the following structure:
+
+@smallexample
+@samp{GNU tar-}@var{tar-version}@samp{-}@var{incr-format-version}
+@end smallexample
+
+@noindent
+where @var{tar-version} is the version of @GNUTAR{} implementation
+that created this snapshot, and @var{incr-format-version} is the
+version number of the snapshot format (in this case @samp{1}).
+
+  The following line contains two decimal numbers, representing the
+time of the last backup. First number is the number of seconds, the
+second one is the number of nanoseconds, since the beginning of the
+epoch.
+
+  Following lines contain directory metadata, one line per
+directory. The line format is:
+
+@smallexample
+[@var{nfs}]@var{mtime-sec} @var{mtime-nsec} @var{dev} @var{inode} @var{name}
+@end smallexample
+
+@noindent
+where @var{mtime-sec} and @var{mtime-nsec} represent the last
+modification time of this directory with nanosecond precision;
+@var{nfs}, @var{dev}, @var{inode} and @var{name} have the same meaning
+as with @samp{format 0}.
+
+
+@c End of snapshot.texi
+
+  

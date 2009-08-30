@@ -1,0 +1,11 @@
+%-getconf
+%C - get configuration information
+
+%C [-v specification] variable_name [pathname]
+%C -s variable_name value
+%C -a
+
+%-setconf
+%C - set configuration information
+
+%C variable_name value

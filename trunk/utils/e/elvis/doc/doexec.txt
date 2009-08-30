@@ -1,0 +1,579 @@
+The MS-DOS version of Elvis uses Thomas Wagner's do_exec() function to swap
+itself out while running external programs.  His original distribution is
+available at...
+
+    ftp://ftp.demon.co.uk/pub/mirrors/simtelnet/msdos/pgmutil/exec33b.zip
+
+In Elvis, the following files are derived from his work:
+
+    osmsdos/doexec.h	This is a copy of his "exec.h" file.
+
+    osmsdos/doexec.lib	This is a library containing the spawncl.obj and
+			checkpcl.obj files from his distribution, plus an
+			exec.obj file compiled from his exec.c source file.
+
+The following is the "readme.doc" file from his original distribution.
+-------------------------------------------------------------------------------
+
+                  An EXEC function with memory swap
+                   Version 3.3b, released 93-11-29
+
+                      Public Domain Software by
+                            Thomas Wagner
+                       Ferrari electronic GmbH
+                  (NOTE: Address change, see below)
+
+
+This archive contains the sources for an 'EXEC' function that allows
+calling external programs, while optionally swapping out the memory
+image to EMS, XMS, or file. When swapping out, only a few K of main
+memory remain resident. The code and data stub is about 1k, the actual
+memory usage depends on memory fragmentation, and especially on the
+size of the environment variables. The resident memory usage
+typically ranges from 2K to 7K.
+
+The Routines are compatible with 
+   Turbo C (Versions 1.x, 2.x, and C++ 1.0)
+   Borland C++ (Version 2.0 and above),
+   Microsoft C (Versions 5.1 and above), 
+   Watcom C (Version 8.0), 
+   Turbo Pascal (Versions 4.x to 6.x).
+
+EMS (LIM 3.0 or above) or XMS is used automatically if there is
+enough space left, otherwise a temporary file is created. If the
+"TEMP=" or "TMP=" environment variable is present, the temporary file
+is created in the directory specified by this variable, otherwise it
+is created in the current directory.
+
+For detailed usage and parameter information, see the file "exec.h" (C) 
+or "exec.pas" (Pascal).
+
+The general format is
+
+   retcode = do_exec (filename to execute,
+                      program parameter and redirection string,
+                      spawn options,
+                      memory needed (0xffff to always swap, 0 to never swap),
+                      environment pointer/flag)
+
+for example:
+
+   rc = do_exec ("cl", "-c -Od exec.c >&errout", USE_ALL, 0xffff, NULL);
+
+or, for Pascal:
+
+   rc := do_exec ('tpc', '/$D+ exec >&errout', USE_ALL, $ffff, false);
+
+Redirection for standard input, standard output, and standard error
+is optionally handled by parsing the command parameter string for the
+standard redirection combinations:
+
+   stdin:   <file
+   stdout:  >file    or >>file   to append
+   stderr:  >&file   or >&>file  to append
+
+Redirection is supported by default, to disable it you must change
+the define in both spawn.asm and exec.c/exec.pas.
+
+If the command to be executed is a BAT file, the command processor
+will be invoked automatically. The command processor will also be
+invoked if the command is empty. The COMSPEC environment variable is
+used to locate the command processor, any parameters present on the
+COMSPEC line are inserted into the parameter string.
+
+An example:
+
+   Given   COMSPEC=C:\DOS\COMMAND.COM /E:960
+           PATH=C:\DOS;C:\CMD
+           File B.BAT resides in C:\CMD
+           do_exec is called with ('b', 'one two >out', ...)
+
+   Then the command executed is
+           C:\DOS\COMMAND.COM
+   with the parameter string
+           /E:720 /C C:\CMD\B.BAT one two
+   and standard output redirected to file 'out'.
+
+
+
+                        CONTENTS
+                        ========
+
+This archive contains the following files:
+
+    README.DOC      This file
+    LIESMICH.DOC    German version of this file
+
+    GETLANG.EXE     A helper program to extract a single-language
+                    version from the dual-language source. All C and
+                    Assembler sources (Pascal sources only partially)
+                    are commented in both English and German,
+                    which makes the code hard to read. For easier
+                    reading, you can use GETLANG to eliminate one
+                    of the languages.
+
+         Usage:   GETLANG language compiler <infile >outfile
+            Where    language is 'E' for English or 'D' for German
+                     compiler is 'C' for C files, 'A' for Assembler,
+                     or 'P' for Pascal.
+
+         Samples: GETLANG e a <spawn.asm >spawne.asm
+                  GETLANG e c <extest.c >exteste.c
+
+    DEUTSCH.BAT     Batch-File to execute GETLANG for all source
+                    files, German version
+    ENGLISH.BAT     Batch-File to execute GETLANG for all source
+                    files, English version
+
+    SPAWN.ASM       The main swap/exec function
+
+        This file is common to the C and Pascal versions.
+        It must be assembled with Turbo-Assembler for use with
+        Pascal. The C version can be assembled with TASM (specify 
+        /JMASM51 on the command line) or MASM 5.1.
+
+        To assemble:
+            tasm /DPASCAL spawn,spawnp;     For Turbo Pascal, near calls
+            tasm /DPASCAL /DFARCALL spawn,spawnp;  
+                                            For Turbo Pascal, far calls
+            ?asm spawn;                     For C (default small model)
+            ?asm /DMODL=xxx spawn;          For C (model 'xxx')
+         Example:
+            masm /DMODL=large spawn;            Large model C
+            tasm /DMODL=medium /JMASM51 spawn;  Medium model C
+
+    SPAWNP.OBJ      SPAWN assembled for use with Pascal, near calls
+    SPAWNCS.OBJ     SPAWN assembled for use with C (small model)
+    SPAWNCL.OBJ     SPAWN assembled for use with C (large model)
+        
+        The C files have been assembled with the /MX switch
+        for case-sensitive external linking.
+
+        Note for Turbo Pascal: You can use the near call version of
+        SPAWN even when compiling with "force far calls" by enclosing
+        the external definitions of do_spawn and prep_swap in file
+        exec.pas with {$F-} and {$F+}.
+        To avoid confusion when generating multiple language
+        versions, the Pascal OBJ-File was named "spawnp.obj".
+
+    CHECKPAT.ASM   Utility function to check and resolve a path 
+
+        This file is common to the C and Pascal versions.
+        It must be assembled with Turbo-Assembler for use with
+        Pascal. The C version can be assembled with TASM (specify 
+        /JMASM51 on the command line) or MASM 5.1.
+
+        To assemble:
+            tasm /DPASCAL checkpat,checkpap;  For Turbo Pascal, near calls
+            tasm /DPASCAL /DFARCALL checkpat,checkpap;  
+                                              For Turbo Pascal, far calls
+            ?asm checkpat;                    For C (default small model)
+            ?asm /DMODL=xxx checkpat;         For C (model 'xxx')
+         Example:
+            masm /DMODL=large checkpat;            Large model C
+            tasm /DMODL=medium /JMASM51 checkpat;  Medium model C
+
+    CHECKPAP.OBJ    CHECKPAT assembled for use with Pascal, far calls
+    CHECKPCS.OBJ    CHECKPAT assembled for use with C (small model)
+    CHECKPCL.OBJ    CHECKPAT assembled for use with C (large model)
+    CHECKPAT.PAS    Wrapper unit for checkpat (Pascal only)   
+
+        The C files have been assembled with the /MX switch
+        for case-sensitive external linking.
+        The Pascal version must be assembled with the FARCALL switch
+        when used with the CHECKPAT.PAS unit. At least Turbo Pascal
+        version 5.5 seems to automatically generate a far call if an
+        external routine is defined in the interface part of the unit.
+
+    EXEC.PAS        Interface routines and documentation for Turbo Pascal
+    EXEC.C          Interface routines for C
+    EXEC.H          Interface definitions and documentation for C
+    COMPAT.H        MS-C/TC Compatibility definitions for C
+
+        These files prepare the parameters for the main spawn
+        function, and handle the file search and environment 
+        processing.
+
+    EXTEST.C        C Test program for EXEC
+    EXTEST.PAS      Turbo Pascal Test program for EXEC
+
+        The EXTEST program tests the functionality of the do_exec
+        function. It expects you to input a DOS-command and its
+        parameters, separated by a comma. Entering an empty line
+        will spawn a copy of COMMAND.COM without parameters.
+
+   MAKEPAS          Make-file for Turbo Pascal (Borland Make) 
+   MAKETC           Make-file for Borland C++ (Borland Make) 
+   MAKEMS           Make-file for Microsoft C (MS NMAKE) 
+
+
+The Turbo Pascal version of EXEC.PAS includes replacement functions
+for the environment access functions 'envcount', 'envstr', and
+'getenv', plus an additional function, 'putenv'. This function allows
+you to add strings to the environment for the spawned process. The
+definition is
+
+        procedure putenv (envstr: string);
+
+with 'envstr' containing a string of the form 'ENVVAR=value'. The '='
+is required. To delete an environment string, use 'ENVVAR='. Please
+use the environment functions from the EXEC unit only, do not mix them
+with calls to the DOS unit functions.
+
+
+                        SUPPORT
+                        =======
+
+This software is in the Public Domain. This means that there is no
+restriction whatsoever on private or commercial use. No registration
+fees have to be paid, and no licenses are necessary for use. It also
+means that the author can not be held liable for any damages caused
+by the use of this software. You have the source, please check it out
+before use.
+
+I will try my best to eliminate any bugs reported to me, and to 
+incorporate suggested enhancements and changes. However, my spare 
+time is limited, so I can not guarantee continued or individual 
+support. Please address all reports or questions to my business 
+address: 
+
+        Ferrari electronic GmbH
+        attn: Thomas Wagner
+        Ruhlsdorfer Strasse 138
+        D-14513 Teltow
+        Germany
+
+        Phone: (+49 3328) 474 626
+        Fax:   (+49 3328) 438 04-0
+        BBS:   (+49 3328) 438 04-8
+
+        Internet:    twagner@bix.com
+        BIX:         twagner
+        Compuserve:  100023,2042
+
+But, please, if at all possible, do it in writing. Please do not 
+phone unless it is absolutely vital (or you have a business 
+proposal). I like to hear about any applications for EXEC, and 
+if you are visiting Berlin, I also invite you to drop by for a 
+talk. But I am usually not that happy when I am interrupted in my 
+paid work by a phone call requesting support for a free product. 
+
+I will try to answer all letters and Faxes I receive. However, I am
+usually not the fastest in this respect, so please be patient. If you
+don't hear for me for a while, send me a short reminder. The
+preferred, and the fastest, method to reach me is through our BBS,
+and through BIX, where I daily check my mailbox. Send mail to
+'twagner' from BIX, or to 'twagner@bix.com" through the Internet. The
+second best way is CompuServe e-mail, which I usually check several
+times, but at least once, a week.
+
+BIX (tm) is an electronic conferencing system. BIX can be (and is)
+accessed from all parts of the world. Although accessing BIX from
+outside the US isn't exactly cheap (don't ask me what I have to pay
+each month), the wealth of information available there, and the fast
+and extensive help the other members can give you on all kinds of 
+hard- and software problems, makes it worth every Mark, Peseta, 
+Franc, or Ruble you have to spend. New versions and updates of EXEC
+will first appear on BIX. 
+
+To get more info on joining BIX, call the BIX Customer Service at 
+800-695-4775 (U.S.), or 617-354-4137 (elsewhere) from 12:00 to 23:00
+EDT (-4 GMT). BIX access currently is $39 for three months (flat
+fee), plus the applicable telecomm charges (Tymnet in the U.S. and
+Canada, your local PTT's Packet Net charges from outside the U.S.).
+International users living near a BT Tymnet node can access BIX
+through international Tymnet at special low rates. Call the BIX
+helpline for Tymnet access points and charges. Other international
+users will need an account (NUI) with their local packet net. Please
+enquire at your post/telecomm office for details.
+
+Our BBS is available 24 hours, 7 days a week, and supports up to
+14.400 bps, with V.42bis and MNP5 error correction and compression.
+
+
+                        RESTRICTIONS
+                        ============
+
+The "no return" mode of EXEC is included for completeness only. It
+has some disadvantages over the standard compiler functions for
+executing without return. In particular, files are not closed, and
+interrupt vectors used by the Run-Time-Library are not restored to
+the DOS defaults. If possible, use the standard RTL functions for
+this mode.
+
+The assembler module "spawn" must not be the first module linked.
+Either put it into a library, or specify spawn.obj as one of the last
+objects in the link command or the Turbo project file. The spawn
+module will overwrite about 1k at the start of the program image.
+Although the contents of this area will be saved, they may not
+contain parts of the spawn module itself, since this could destroy
+the code being executed. The do_exec function will check for this
+condition, and return an error code if the program code could be in
+danger.
+
+The calling program may not have interrupt handlers installed when
+calling the do_exec function. This includes handlers for Control C
+and critical errors. If you want to handle interrupts while the
+program is swapped, you will have to modify the spawn module such
+that the interrupt handlers are included in the resident part.
+
+All open files will stay open during the EXEC call. This reduces the
+number of handles available to the child process. The "C_FILE_INFO"
+environment variable created by some C compilers on the standard C
+spawn call is not supported. If the NO_INHERIT flag is set in
+spawn.asm (default), all open files except for the first five
+standard handles will be "hidden" from the child, and thus will not
+be inherited. This increases the possible number of open files for
+the child, although the system-wide open file limit (the config.sys
+FILES= value) still must be high enough to support all open files.
+
+Internal commands are not automatically processed. You can execute 
+those by loading the command interpreter (by passing an empty string 
+as the command name). For example:
+
+(C)     retcode = do_exec ("dir", "*.*", USE_ALL, 0xffff, environ);
+        if (retcode == RC_NOFILE)
+           retcode = do_exec ("", "/c dir *.*", USE_ALL, 0xffff, environ);
+
+(P)     retcode := do_exec ('dir', '*.*', USE_ALL, $ffff, true);
+        if (retcode = RC_NOFILE)
+           retcode := do_exec ('', '/c dir *.*', USE_ALL, $ffff, true);
+
+
+
+                        CAUTIONS
+                        ========
+
+The functions should be compatible with DOS versions down to DOS
+2.21, but they have been tested under DOS 3.3, DOS 4.0, DOS 5.0, 
+DOS 6.0, and DR-DOS 5.0 only.
+
+Compiler compatibility has been tested for Borland C++ 2.0/3.1,
+Microsoft C 6.0a, Visual C++ 1.0, and Turbo Pascal 5.5 only. I do not
+have access to other compilers. Turbo Pascal 6.0 was reported to work
+fine with EXEC. The DOS-extender mode of Turbo Pascal 7.0 (and any
+other DOS extender) will not work with EXEC.
+
+Spawning a command that exits and stays resident (TSR), like PRINT or
+Sidekick, will fragment memory and prevent a return to the calling
+program. This should, however, not crash the system. Allocated EMS
+or XMS pages are released, a swap file is deleted.
+
+If the program memory image is not contiguous, the swapping code has
+to use undocumented DOS-internals. In particular, the swapper has to
+modify DOS memory control blocks directly. In theory, this could lead
+to incompatibilities with later versions of DOS, or with DOS
+substitutes or emulators. In practice, no problems have been reported
+with any DOS version, including DOS 6.0 and the DR-DOS versions.
+
+If the NO_INHERIT flag is set to TRUE in spawn.asm, some undocumented
+fields in the PSP are used and modified. This should work with all
+DOS versions and clones, but you can set NO_INHERIT to FALSE if you
+are afraid of potential problems (but not if you use handle-table
+expansion).
+
+
+                        Revision History
+                        ================
+
+Changes for Version 3.3a to 3.3b:
+
+Under certain circumstances (the first MCB of a program was the PSP,
+not the environment, and unallocated blocks followed), the restored
+memory image was incorrect. This bug was reported and fixed by
+Giorgio Angelotti.
+
+Changes for version 3.3 to 3.3a:
+
+Besides the address change, the only significant modification is a
+better handling of redirection. Like with DOS, redirection parameters
+may now be interspersed with other command line arguments.
+
+The Pascal version was buggy in the handling of multiple redirection
+and COMSPEC parameters. This was fixed.
+
+
+Changes for version 3.2a to 3.3:
+
+A new option for Turbo Pascal recognizes the free heap space and
+suppresses swapping for this area. For many applications this will
+speed up the swapping process, and reduce swap space requirements.
+Since this is version dependent (Turbo Pascal version 6 uses a
+different heap management scheme than its predecessors), the
+preassembled version has this feature disabled. Please set PAS_FREE
+in SPAWN.ASM to TRUE, and set TPAS_6 to TRUE or FALSE depending on
+your version of Turbo Pascal to use it.
+
+The Pascal "putenv" function was buggy. When putting a variable
+already in the environment, it produced a duplicate entry instead of
+replacing it. Bug reported and fixed by A. Bailey.
+
+When determining program name and path, a program with a base name
+(without extension) equal to the name of a directory was not found
+under certain circumstances. The checkpath function was modified to
+correctly handle this case. Bug reported by H. Lembke.
+
+An extended handle table would cause the swap-back to fail on a
+file-swap if NO_INHERIT was true. This was due to the restoration of
+the handle table pointers before allocating and restoring the MCB the
+handle table was in. The handle table pointer is now restored after
+swapping everything back. Bug reported by H. Lembke.
+
+EXEC would fail completely with an extended handle table if
+NO_INHERIT was false. The MCB containing the handle table now is not
+swapped, which will likely fragment memory, so setting NO_INHERIT to
+false when extending the handle table is not recommended. 
+
+The C do_exec function now correctly handles NULL pointers to the
+command line and parameter strings.
+
+
+Changes for version 3.2 to 3.2a:
+
+A bug in checkpat.asm that caused incomplete path specs was fixed.
+
+A bug in spawn.asm that caused redirected files to stay open even
+after program termination was fixed.
+
+Changes for version 3.1 to 3.2:
+
+The call of a user-defineable function (through a function pointer or
+a procedure variable) from do_exec immediately before executing the
+external command was added. This function can output messages and
+perform additional checks. The previously internal structure
+containing the swap parameters was made global for access by this
+function. For details see exec.h/exec.pas, and the example in
+extest.c/extest.pas.
+
+A bug in checkpat.asm that led to erroneous operation of the 'exists'
+function when used with Turbo Pascal was fixed.
+
+The Pascal version of extest was (finally) brought up to date, and
+now corresponds closely to the C version. A sample for the use of the
+user-defined call-back function was added in both versions.
+
+The definition of the internal routines in exec.c was changed to
+"static", initialisation of some variables in do_exec was corrected.
+
+
+Changes for version 3.0a to 3.1:
+
+The capability to process BAT files and to handle redirection was
+added.  The program search order now exactly matches the DOS order
+with the exception of internal commands (there is no safe way to
+determine whether a command is internal or external). Redirection is
+optional.  The interface to do_exec did not change (redirection is
+handled by parsing the parameter string), but do_spawn takes three
+new parameters if redirection is enabled.
+
+A routine was added (checkpat.asm) that checks and resolves a path
+name in addition to splitting it. This routine does some thorough
+checks on the supplied path and filename, and will handle critical
+errors (invalid drive, drive not ready) without user intervention.
+This routine is used to process the program file name, the command
+processor filename, and the temporary path. This routine is not
+dependent on the other EXEC/SPAWN routines, and thus might be
+useful for other applications.
+
+Several new error codes allow better analysis of error conditions.
+
+The temporary file path will now always be a complete path, so that a
+change of the default drive and directory while spawned can no longer
+cause the swap file to get lost.
+
+Any parameters on the COMSPEC= environment string will be inserted
+into the command parameters when calling the command processor. This
+allows specification of environment size and other parameters when
+spawning.
+
+The check for file existance was moved to checkpat.asm, and changed
+from a 'find first' operation to 'get file attributes'. This seems to
+be marginally faster, and avoids compiler dependencies.
+
+The GETLANG program was corrected to use stderr to output the usage
+information.
+
+
+Changes for version 3.0 to 3.0a:
+
+A minor bug in EXEC.C was fixed: a '<' was missing in a German
+comment, so that GETLANG E would gobble up a large part of the file.
+
+A problem (feature? bug?) with the Turbo C/Borland C "stat" function
+always returning directories with a "read-only" attribute prevented
+the "TEMP" directory from being used. The Write permission for the
+directory is no longer checked.
+
+The preallocation of the swap file introduced in Version 3.0 to make
+sure that the disk can hold the swap file causes a severe slowdown
+when the swap drive is a Novell Network drive. Two new "method" flags
+were introduced to circumvent this problem:
+
+      NO_PREALLOC - never preallocate
+      CHECK_NET   - check for network drive, don't preallocate if net
+
+If the file is not preallocated, the disk is not checked for
+sufficient space at all. Using the "get disk free space" call usually
+takes even longer than preallocation. This is not a big problem
+though, swapping simply will fail with error code 0x502 when the disk
+is full on swapping out.
+
+Thanks to Tim Frost ('<' bug) and Tron Hvaring (stat and Novell
+problems) for their reports.
+
+
+Changes for version 3.0:
+
+This is a major rewrite of the code in spawn.asm. The interface for
+do_exec and do_spawn has changed, the exec and extest files have been
+modified accordingly.
+
+The main enhancement is support for XMS.
+
+The code in spawn.c was modularized a tad, and a lot of comments were
+added. This should help in better understanding the code. Old bugs
+(versions 2.4 and 2.5 were buggy in handling non-swapping spawns)
+were eliminated.
+
+The allocation of swap space has been separated from the actual
+swapping. Although not used in the current do_exec routine, this
+could be used to issue an informative message about where the
+swapping will go to, and to try other paths for the temporary file if
+allocation fails. You might elect to add support for this in the
+do_exec routine, just be careful not to modify the memory layout
+between the calls to prep_swap and do_swap.
+
+The MCB blocks are no longer modified in preparation of the swap.
+Instead of using an internal chain with undocumented fields in the
+MCB, the MCB chain is now parsed multiple times. Since the chain
+normally consists of just a few elements, this will not severely
+impact execution performance. MCBs are now swapped out and restored
+in their original form, including the "unused" fields that are not
+really unused in DOS 4.0 and later versions.
+
+Saving fragmented memory will now use less EMS space, since the
+blocks are packed tight. Previous versions started a new page for
+every MCB.
+
+Memory blocks located "below" the PSP (including the environment
+block, unless it is needed for an environment copy) will now be
+swapped, too. This may increase available memory if DOS memory is
+fragmented.
+
+
+Things not done in this release:
+
+The MCB chain still is modified directly. Although some users have
+suggested trying to call DOS to allocate the blocks, this has proven
+impractical in some tests. If memory is fragmented, getting DOS to
+allocate a block at an exact location is rather tedious. I will keep
+the suggestion in mind, but the current method works reliably with
+all known (and unknown) versions of DOS and its clones.
+
+Another good suggestion not implemented in this version is the save
+and restore of the interrupt vector table to remove TSRs installed
+while the program was swapped out. It would be rather complex to find
+and release all memory blocks belonging to the TSR, and without
+releasing the TSRs memory, the program can not be swapped back in
+anyway, so restoring the interrupt table wouldn't help.
+

@@ -1,0 +1,22 @@
+<QPG:Generation>
+	<QPG:Owner file="owner.qpg"/>
+	<QPG:Values>
+		<QPG:Files>
+			<QPG:Add file="*/so*/libmalloc*.a" pinfo="$"/>
+			<QPG:Add file="*/so*/libmalloc*.so" pinfo="$"/>
+            <QPG:Add filetype="symlink" target="x86" component="dev" file="libmalloc_g.so" install="/x86/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="x86" component="dev" file="libmalloc_gS.a" install="/x86/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+            <QPG:Add filetype="symlink" target="ppcbe" component="dev" file="libmalloc_g.so" install="/ppcbe/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="ppcbe" component="dev" file="libmalloc_gS.a" install="/ppcbe/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+            <QPG:Add filetype="symlink" target="mipsbe" component="dev" file="libmalloc_g.so" install="/mipsbe/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="mipsbe" component="dev" file="libmalloc_gS.a" install="/mipsbe/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+            <QPG:Add filetype="symlink" target="mipsle" component="dev" file="libmalloc_g.so" install="/mipsle/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="mipsle" component="dev" file="libmalloc_gS.a" install="/mipsle/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+            <QPG:Add filetype="symlink" target="armle" component="dev" file="libmalloc_g.so" install="/armle/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="armle" component="dev" file="libmalloc_gS.a" install="/armle/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+            <QPG:Add filetype="symlink" target="shle" component="dev" file="libmalloc_g.so" install="/shle/usr/lib/" linkto="malloc_g/libmalloc.so"/>
+            <QPG:Add filetype="symlink" target="shle" component="dev" file="libmalloc_gS.a" install="/shle/usr/lib/" linkto="malloc_g/libmallocS.a"/>
+	    <QPG:Add component="dev" type="tree" file="public/" install="/usr/include/" />
+		</QPG:Files>
+	</QPG:Values>
+</QPG:Generation>

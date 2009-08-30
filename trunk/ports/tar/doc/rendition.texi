@@ -1,0 +1,90 @@
+@c This is part of GNU tar manual.
+@c Copyright (C) 1992, 1994, 1995, 1996, 1997, 1999, 2000, 2001,
+@c 2003, 2004, 2006 Free Software Foundation, Inc.
+@c See file tar.texi for copying conditions.
+
+@c This file contains support for 'renditions' by Fran@,{c}ois Pinard
+@c I extended it by adding a FIXME_FOOTNOTE variable, which controls
+@c whether FIXME information should be placed in footnotes or
+@c inlined. --gray
+
+@c ======================================================================
+@c This document has three levels of rendition: PUBLISH, DISTRIB or PROOF,
+@c as decided by @set symbols.  The PUBLISH rendition does not show
+@c notes or marks asking for revision.  Most users will prefer having more
+@c information, even if this information is not fully revised for adequacy,
+@c so DISTRIB is the default for distributions.  The PROOF rendition
+@c show all marks to the point of ugliness, but is nevertheless useful to
+@c those working on the manual itself.
+@c ======================================================================
+
+@c Set this symbol if you wish FIXMEs to appear in footnotes, instead
+@c of being inserted into the text.
+@c @set PROOF_FOOTNOTED
+
+@ifclear PUBLISH
+@ifclear DISTRIB
+@ifclear PROOF
+@set DISTRIB
+@end ifclear
+@end ifclear
+@end ifclear
+
+@ifset PUBLISH
+@set RENDITION The book, version
+@end ifset
+
+@ifset DISTRIB
+@set RENDITION FTP release, version
+@end ifset
+
+@ifset PROOF
+@set RENDITION Proof reading version
+@end ifset
+
+@c Output marks for nodes needing revision, but not in PUBLISH rendition.
+
+@macro UNREVISED
+@ifclear PUBLISH
+@quotation
+@emph{(This message will disappear, once this node revised.)}
+@end quotation
+@end ifclear
+@end macro
+
+@c Output various FIXME information only in PROOF rendition.
+
+@macro FIXME{string}
+@ifset PROOF
+@ifset PROOF_FOOTNOTED
+@footnote{@strong{FIXME:} \string\}
+@end ifset
+@ifclear PROOF_FOOTNOTED
+@cartouche
+@strong{<FIXME>} \string\ @strong{</>}
+@end cartouche
+@end ifclear
+@end ifset
+
+@end macro
+
+@macro FIXME-ref{string}
+@ifset PROOF
+@strong{<REF>} \string\ @strong{</>}
+@end ifset
+@end macro
+
+@macro FIXME-pxref{string}
+@ifset PROOF
+@strong{<PXREF>} \string\ @strong{</>}
+@end ifset
+
+@end macro
+
+@macro FIXME-xref{string}
+@ifset PROOF
+@strong{<XREF>} \string\ @strong{</>}
+@end ifset
+@end macro
+
+@c End of rendition.texi

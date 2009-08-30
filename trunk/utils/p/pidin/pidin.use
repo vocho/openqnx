@@ -1,0 +1,55 @@
+pidin [options] argument - display system stats 
+-d delay   delay period in tenths of a second
+-F format  a string consisting of format identifiers
+-f formats contiguous string of format codes (-f mbe = -F %m %b %e)
+-h         this message
+-k         print PID & NID data until an error occurs
+-l         display statistics at intervals decided by -d option
+-M formats format string (as in printf()) 
+-n node    remote QNX node you are interested in
+-o prio    run at prio priority 
+-P pid     process family (pid or name) you are interested in
+-p pid     process (pid or name) you are interested in
+Formats
+A - arguments
+a - pid
+B - what you are blocked on
+b - tid
+c - code size (process)
+d - data size (process)
+E - environment
+f - process flags
+e - parent pid
+H - extended schedulling
+h - thread name
+I - pid and tid
+i - runmask and inherit mask
+J - state of the tid
+K - what kernel call was executed last
+l - last CPU the thread ran on
+M - memory owned by the pid
+m - stack size (process)
+N - short name of the process
+n - long name of process
+o - coids/fds of the process 
+P - parent group
+p - prio of thread
+Q - interrupts
+q - backtrace
+R - timers
+S - signal ignore mask
+s - signal queued mask
+T - number of threads
+[ - channels
+
+If no format is given then "%a %b %N %p %J %B" is used.
+
+Where argument is one of:
+  arg, backtrace, channels, env, extsched, fam, fds, flags, info, irqs, map,
+  mem, net, pmem, rc, regs, rmasks, sched, sig, sess, threads, timers, times,
+  ttimes, user
+  or
+  syspage{=section}
+  where section is one of:
+	system_private, qtime, callout, cpuinfo, cacheattr, asinfo,
+	hwinfo, typed_strings, strings, intrinfo, smp

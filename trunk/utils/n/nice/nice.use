@@ -1,0 +1,40 @@
+%C - run a program at a different priority (POSIX)
+
+%C	[-n increment] program [arguments]...
+Deprecated:
+%C  [-increment] program [arguments]...
+
+Where:
+  increment    Is a relative nice value (priority). (default: 1)
+
+Examples:
+
+Run 'make myapp' at one priority lower than the parent (be nice):
+    nice make myapp
+ or
+    nice -n1 make myapp
+ or 
+    nice -1 make myapp
+
+Run make at two priorities lower than the parent (be nicer):
+    nice -n2 make myapp
+ or
+    nice -2 make myapp
+ 
+Run make at two priorities HIGHER than the parent (be greedy):
+    nice -n-2 make myapp
+ or
+    nice --2 make myapp
+
+Note:
+
+Nice will exit with the exit status of the program being run, except
+if there is an error with nice itself or a problem invoking the program,
+in which case exit status is as follows:
+
+Bad nice value or usage               1
+Program doesn't exist               126
+Program can't be run                127
+
+In any of these cases a message will be written to the standard error
+in the form 'nice: (error message)' with details.

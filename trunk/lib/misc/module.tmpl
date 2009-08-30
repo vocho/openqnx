@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<module name="misc">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="Archive" generated="true">
+			<kind type="library"/>
+			<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">
+				libmisc.a
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+</module>

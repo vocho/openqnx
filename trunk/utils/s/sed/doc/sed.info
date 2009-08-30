@@ -1,0 +1,684 @@
+This is sed.info, produced by makeinfo version 4.0 from sed.texi.
+
+START-INFO-DIR-ENTRY
+* sed: (sed).                   Stream EDitor.
+END-INFO-DIR-ENTRY
+   This file documents SED, a stream editor.
+
+   Published by the Free Software Foundation, 59 Temple Place - Suite
+330 Boston, MA 02111-1307, USA
+
+   Copyright (C) 1998 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+
+File: sed.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+   This document was produced for version 3.02 of GNU SED.
+
+* Menu:
+
+* Introduction::                Introduction
+* Invoking SED::                Invocation
+* sed Programs::                SED programs
+* Examples::                    Some sample scripts
+* Limitations::                 About the (non-)limitations on line length
+* Other Resources::             Other resources for learning about SED
+* Reporting Bugs::              Reporting bugs
+* Concept Index::               A menu with all the topics in this manual.
+* Command and Option Index::    A menu with all SED commands and
+                                 command-line options.
+
+
+File: sed.info,  Node: Introduction,  Next: Invoking SED,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   SED is a stream editor.  A stream editor is used to perform basic
+text transformations on an input stream (a file or input from a
+pipeline).  While in some ways similar to an editor which permits
+scripted edits (such as ED), SED works by making only one pass over the
+input(s), and is consequently more efficient.  But it is SED's ability
+to filter text in a pipeline which particularly distinguishes it from
+other types of editors.
+
+
+File: sed.info,  Node: Invoking SED,  Next: sed Programs,  Prev: Introduction,  Up: Top
+
+Invocation
+**********
+
+   SED may be invoked with the following command-line options:
+
+`-V'
+`--version'
+     Print out the version of SED that is being run and a copyright
+     notice, then exit.
+
+`-h'
+`--help'
+     Print a usage message briefly summarizing these command-line
+     options and the bug-reporting address, then exit.
+
+`-n'
+`--quiet'
+`--silent'
+     By default, SED will print out the pattern space at then end of
+     each cycle through the script.  These options disable this
+     automatic printing, and SED will only produce output when
+     explicitly told to via the `p' command.
+
+`-e SCRIPT'
+`--expression=SCRIPT'
+     Add the commands in SCRIPT to the set of commands to be run while
+     processing the input.
+
+`-f SCRIPT-FILE'
+`--file=SCRIPT-FILE'
+     Add the commands contained in the file SCRIPT-FILE to the set of
+     commands to be run while processing the input.
+
+   If no `-e', `-f', `--expression', or `--file' options are given on
+the command-line, then the first non-option argument on the command
+line is taken to be the SCRIPT to be executed.
+
+   If any command-line parameters remain after processing the above,
+these parameters are interpreted as the names of input files to be
+processed.  A file name of `-' refers to the standard input stream.
+The standard input will processed if no file names are specified.
+
+
+File: sed.info,  Node: sed Programs,  Next: Examples,  Prev: Invoking SED,  Up: Top
+
+SED Programs
+************
+
+   A SED program consists of one or more SED commands, passed in by one
+or more of the `-e', `-f', `--expression', and `--file' options, or the
+first non-option argument if zero of these options are used.  This
+document will refer to "the" SED script; this will be understood to
+mean the in-order catenation of all of the SCRIPTs and SCRIPT-FILEs
+passed in.
+
+   Each SED command consists of an optional address or address range,
+followed by a one-character command name and any additional
+command-specific code.
+
+* Menu:
+
+* Addresses::                Selecting lines with SED
+* Regular Expressions::      Overview of regular expression syntax
+* Data Spaces::              Where SED buffers data
+* Common Commands::          Often used commands
+* Other Commands::           Less frequently used commands
+* Programming Commands::     Commands for die-hard SED programmers
+
+
+File: sed.info,  Node: Addresses,  Next: Regular Expressions,  Prev: sed Programs,  Up: sed Programs
+
+Selecting lines with SED
+========================
+
+   Addresses in a SED script can be in any of the following forms:
+`NUMBER'
+     Specifying a line number will match only that line in the input.
+     (Note that SED counts lines continuously across all input files.)
+
+`FIRST~STEP'
+     This GNU extension matches every STEPth line starting with line
+     FIRST.  In particular, lines will be selected when there exists a
+     non-negative N such that the current line-number equals FIRST + (N
+     * STEP).  Thus, to select the odd-numbered lines, one would use
+     `1~2'; to pick every third line starting with the second, `2~3'
+     would be used; to pick every fifth line starting with the tenth,
+     use `10~5'; and `50~0' is just an obscure way of saying `50'.
+
+`$'
+     This address matches the last line of the last file of input.
+
+`/REGEXP/'
+     This will select any line which matches the regular expression
+     REGEXP.  If REGEXP itself includes any `/' characters, each must
+     be escaped by a backslash (`\').
+
+`\%REGEXP%'
+     (The `%' may be replaced by any other single character.)
+
+     This also matches the regular expression REGEXP, but allows one to
+     use a different delimiter than `/'.  This is particularly useful
+     if the REGEXP itself contains a lot of `/'s, since it avoids the
+     tedious escaping of every `/'.  If REGEXP itself includes any
+     delimiter characters, each must be escaped by a backslash (`\').
+
+`/REGEXP/I'
+`\%REGEXP%I'
+     The `I' modifier to regular-expression matching is a GNU extension
+     which causes the REGEXP to be matched in a case-insensitive manner.
+
+   If no addresses are given, then all lines are matched; if one
+address is given, then only lines matching that address are matched.
+
+   An address range can be specified by specifying two addresses
+separated by a comma (`,').  An address range matches lines starting
+from where the first address matches, and continues until the second
+address matches (inclusively).  If the second address is a REGEXP, then
+checking for the ending match will start with the line _following_ the
+line which matched the first address.  If the second address is a
+NUMBER less than (or equal to) the line matching the first address,
+then only the one line is matched.
+
+   Appending the `!' character to the end of an address specification
+will negate the sense of the match.  That is, if the `!' character
+follows an address range, then only lines which do _not_ match the
+address range will be selected.  This also works for singleton
+addresses, and, perhaps perversely, for the null address.
+
+
+File: sed.info,  Node: Regular Expressions,  Next: Data Spaces,  Prev: Addresses,  Up: sed Programs
+
+Overview of regular expression syntax
+=====================================
+
+   [[I may add a brief overview of regular expressions at a later date;
+for now see any of the various other documentations for regular
+expressions, such as the AWK info page.]]
+
+
+File: sed.info,  Node: Data Spaces,  Next: Common Commands,  Prev: Regular Expressions,  Up: sed Programs
+
+Where SED buffers data
+======================
+
+   SED maintains two data buffers: the active _pattern_ space, and the
+auxiliary _hold_ space.  In "normal" operation, SED reads in one line
+from the input stream and places it in the pattern space.  This pattern
+space is where text manipulations occur.  The hold space is initially
+empty, but there are commands for moving data between the pattern and
+hold spaces.
+
+
+File: sed.info,  Node: Common Commands,  Next: Other Commands,  Prev: Data Spaces,  Up: sed Programs
+
+Often used commands
+===================
+
+   If you use SED at all, you will quite likely want to know these
+commands.
+
+`#'
+     [No addresses allowed.]
+
+     The `#' "command" begins a comment; the comment continues until
+     the next newline.
+
+     If you are concerned about portability, be aware that some
+     implementations of SED (which are not POSIX.2 conformant) may only
+     support a single one-line comment, and then only when the very
+     first character of the script is a `#'.
+
+     Warning: if the first two characters of the SED script are `#n',
+     then the `-n' (no-autoprint) option is forced.  If you want to put
+     a comment in the first line of your script and that comment begins
+     with the letter `n' and you do not want this behavior, then be
+     sure to either use a capital `N', or place at least one space
+     before the `n'.
+
+`s/REGEXP/REPLACEMENT/FLAGS'
+     (The `/' characters may be uniformly replaced by any other single
+     character within any given `s' command.)
+
+     The `/' character (or whatever other character is used in its
+     stead) can appear in the REGEXP or REPLACEMENT only if it is
+     preceded by a `\' character.  Also newlines may appear in the
+     REGEXP using the two character sequence `\n'.
+
+     The `s' command attempts to match the pattern space against the
+     supplied REGEXP.  If the match is successful, then that portion of
+     the pattern space which was matched is replaced with REPLACEMENT.
+
+     The REPLACEMENT can contain `\N' (N being a number from 1 to 9,
+     inclusive) references, which refer to the portion of the match
+     which is contained between the Nth `\(' and its matching `\)'.
+     Also, the REPLACEMENT can contain unescaped `&' characters which
+     will reference the whole matched portion of the pattern space.  To
+     include a literal `\', `&', or newline in the final replacement,
+     be sure to precede the desired `\', `&', or newline in the
+     REPLACEMENT with a `\'.
+
+     The `s' command can be followed with zero or more of the following
+     FLAGS:
+
+    `g'
+          Apply the replacement to _all_ matches to the REGEXP, not
+          just the first.
+
+    `p'
+          If the substitution was made, then print the new pattern
+          space.
+
+    `NUMBER'
+          Only replace the NUMBERth match of the REGEXP.
+
+    `w FILE-NAME'
+          If the substitution was made, then write out the result to
+          the named file.
+
+    `I'
+          (This is a GNU extension.)
+
+          Match REGEXP in a case-insensitive manner.
+
+`q'
+     [At most one address allowed.]
+
+     Exit SED without processing any more commands or input.  Note that
+     the current pattern space is printed if auto-print is not disabled.
+
+`d'
+     Delete the pattern space; immediately start next cycle.
+
+`p'
+     Print out the pattern space (to the standard output).  This
+     command is usually only used in conjunction with the `-n'
+     command-line option.
+
+     Note: some implementations of SED, such as this one, will
+     double-print lines when auto-print is not disabled and the `p'
+     command is given.  Other implementations will only print the line
+     once.  Both ways conform with the POSIX.2 standard, and so neither
+     way can be considered to be in error.  Portable SED scripts should
+     thus avoid relying on either behavior; either use the `-n' option
+     and explicitly print what you want, or avoid use of the `p'
+     command (and also the `p' flag to the `s' command).
+
+`n'
+     If auto-print is not disabled, print the pattern space, then,
+     regardless, replace the pattern space with the next line of input.
+     If there is no more input then SED exits without processing any
+     more commands.
+
+`{ COMMANDS }'
+     A group of commands may be enclosed between `{' and `}' characters.
+     (The `}' must appear in a zero-address command context.)  This is
+     particularly useful when you want a group of commands to be
+     triggered by a single address (or address-range) match.
+
+
+File: sed.info,  Node: Other Commands,  Next: Programming Commands,  Prev: Common Commands,  Up: sed Programs
+
+Less frequently used commands
+=============================
+
+   Though perhaps less frequently used than those in the previous
+section, some very small yet useful SED scripts can be built with these
+commands.
+
+`y/SOURCE-CHARS/DEST-CHARS/'
+     (The `/' characters may be uniformly replaced by any other single
+     character within any given `y' command.)
+
+     Transliterate any characters in the pattern space which match any
+     of the SOURCE-CHARS with the corresponding character in DEST-CHARS.
+
+     Instances of the `/' (or whatever other character is used in its
+     stead), `\', or newlines can appear in the SOURCE-CHARS or
+     DEST-CHARS lists, provide that each instance is escaped by a `\'.
+     The SOURCE-CHARS and DEST-CHARS lists _must_ contain the same
+     number of characters (after de-escaping).
+
+`a\'
+`TEXT'
+     [At most one address allowed.]
+
+     Queue the lines of text which follow this command (each but the
+     last ending with a `\', which will be removed from the output) to
+     be output at the end of the current cycle, or when the next input
+     line is read.
+
+`i\'
+`TEXT'
+     [At most one address allowed.]
+
+     Immediately output the lines of text which follow this command
+     (each but the last ending with a `\', which will be removed from
+     the output).
+
+`c\'
+`TEXT'
+     Delete the lines matching the address or address-range, and output
+     the lines of text which follow this command (each but the last
+     ending with a `\', which will be removed from the output) in place
+     of the last line (or in place of each line, if no addresses were
+     specified).  A new cycle is started after this command is done,
+     since the pattern space will have been deleted.
+
+`='
+     [At most one address allowed.]
+
+     Print out the current input line number (with a trailing newline).
+
+`l'
+     Print the pattern space in an unambiguous form: non-printable
+     characters (and the `\' character) are printed in C-style escaped
+     form; long lines are split, with a trailing `\' character to
+     indicate the split; the end of each line is marked with a `$'.
+
+`r FILENAME'
+     [At most one address allowed.]
+
+     Queue the contents of FILENAME to be read and inserted into the
+     output stream at the end of the current cycle, or when the next
+     input line is read.  Note that if FILENAME cannot be read, it is
+     treated as if it were an empty file, without any error indication.
+
+`w FILENAME'
+     Write the pattern space to FILENAME.  The FILENAME will be created
+     (or truncated) before the first input line is read; all `w'
+     commands (including instances of `w' flag on successful `s'
+     commands) which refer to the same FILENAME are output through the
+     same FILE stream.
+
+`D'
+     Delete text in the pattern space up to the first newline.  If any
+     text is left, restart cycle with the resultant pattern space
+     (without reading a new line of input), otherwise start a normal
+     new cycle.
+
+`N'
+     Add a newline to the pattern space, then append the next line of
+     input to the pattern space.  If there is no more input then SED
+     exits without processing any more commands.
+
+`P'
+     Print out the portion of the pattern space up to the first newline.
+
+`h'
+     Replace the contents of the hold space with the contents of the
+     pattern space.
+
+`H'
+     Append a newline to the contents of the hold space, and then
+     append the contents of the pattern space to that of the hold space.
+
+`g'
+     Replace the contents of the pattern space with the contents of the
+     hold space.
+
+`G'
+     Append a newline to the contents of the pattern space, and then
+     append the contents of the hold space to that of the pattern space.
+
+`x'
+     Exchange the contents of the hold and pattern spaces.
+
+
+File: sed.info,  Node: Programming Commands,  Prev: Other Commands,  Up: sed Programs
+
+Commands for die-hard SED programmers
+=====================================
+
+   In most cases, use of these commands indicates that you are probably
+better off programming in something like PERL.  But occasionally one is
+committed to sticking with SED, and these commands can enable one to
+write quite convoluted scripts.
+
+`: LABEL'
+     [No addresses allowed.]
+
+     Specify the location of LABEL for the `b' and `t' commands.  In
+     all other respects, a no-op.
+
+`b LABEL'
+     Unconditionally branch to LABEL.  The LABEL may be omitted, in
+     which case the next cycle is started.
+
+`t LABEL'
+     Branch to LABEL only if there has been a successful `s'ubstitution
+     since the last input line was read or `t' branch was taken.  The
+     LABEL may be omitted, in which case the next cycle is started.
+
+
+File: sed.info,  Node: Examples,  Next: Limitations,  Prev: sed Programs,  Up: Top
+
+Some sample scripts
+*******************
+
+   [[Not this release, sorry.  But check out the scripts in the
+testsuite directory, and the amazing dc.sed script in the top-level
+directory of this distribution.]]
+
+
+File: sed.info,  Node: Limitations,  Next: Other Resources,  Prev: Examples,  Up: Top
+
+About the (non-)limitations on line length
+******************************************
+
+   For those who want to write portable SED scripts, be aware that some
+implementations have been known to limit line lengths (for the pattern
+and hold spaces) to be no more than 4000 bytes.  The POSIX.2 standard
+specifies that conforming SED implementations shall support at least
+8192 byte line lengths.  GNU SED has no built-in limit on line length;
+as long as SED can malloc() more (virtual) memory, it will allow lines
+as long as you care to feed it (or construct within it).
+
+
+File: sed.info,  Node: Other Resources,  Next: Reporting Bugs,  Prev: Limitations,  Up: Top
+
+Other resources for learning about SED
+**************************************
+
+   In addition to several books that have been written about SED
+(either specifically or as chapters in books which discuss shell
+programming), one can find out more about SED (including suggestions of
+a few books) from the FAQ for the seders mailing list, available from
+any of:
+      `http://www.dbnet.ece.ntua.gr/~george/sed/sedfaq.html'
+      `http://www.ptug.org/sed/sedfaq.htm'
+      `http://www.wollery.demon.co.uk/sedtut10.txt'
+
+   There is an informal "seders" mailing list manually maintained by Al
+Aab.  To subscribe, send e-mail to <af137@torfree.net> with a brief
+description of your interest.
+
+
+File: sed.info,  Node: Reporting Bugs,  Next: Concept Index,  Prev: Other Resources,  Up: Top
+
+Reporting bugs
+**************
+
+   Email bug reports to <bug-gnu-utils@gnu.org>.  Be sure to include
+the word "sed" somewhere in the "Subject:" field.
+
+
+File: sed.info,  Node: Concept Index,  Next: Command and Option Index,  Prev: Reporting Bugs,  Up: Top
+
+Concept Index
+*************
+
+   This is a general index of all issues discussed in this manual, with
+the exception of the SED commands and command-line options.
+
+* Menu:
+
+* Adding a block of text after a line:   Other Commands.
+* Address, as a regular expression:      Addresses.
+* Address, last line:                    Addresses.
+* Address, numeric:                      Addresses.
+* Addresses, in SED scripts:             Addresses.
+* Addtional reading about SED:           Other Resources.
+* Append hold space to pattern space:    Other Commands.
+* Append next input line to pattern space: Other Commands.
+* Append pattern space to hold space:    Other Commands.
+* Backreferences, in regular expressions: Common Commands.
+* Branch to a label, if s/// succeeded:  Programming Commands.
+* Branch to a label, unconditionally:    Programming Commands.
+* Buffer spaces, pattern and hold:       Data Spaces.
+* Bugs, reporting:                       Reporting Bugs.
+* Case-insensitive matching:             Common Commands.
+* Caveat -- #n on first line:            Common Commands.
+* Caveat -- p command and -n flag:       Common Commands.
+* Command groups:                        Common Commands.
+* Comments, in scripts:                  Common Commands.
+* Conditional branch:                    Programming Commands.
+* Copy hold space into pattern space:    Other Commands.
+* Copy pattern space into hold space:    Other Commands.
+* Delete first line from pattern space:  Other Commands.
+* Deleting lines:                        Common Commands.
+* Exchange hold space with pattern space: Other Commands.
+* Excluding lines:                       Addresses.
+* Files to be processed as input:        Invoking SED.
+* Flow of control in scripts:            Programming Commands.
+* Global substitution:                   Common Commands.
+* GNU extensions, I modifier <1>:        Addresses.
+* GNU extensions, I modifier:            Common Commands.
+* GNU extensions, N~M addresses:         Addresses.
+* GNU extensions, unlimited line length: Limitations.
+* Goto, in scripts:                      Programming Commands.
+* Grouping commands:                     Common Commands.
+* Hold space, appending from pattern space: Other Commands.
+* Hold space, appending to pattern space: Other Commands.
+* Hold space, copy into pattern space:   Other Commands.
+* Hold space, copying pattern space into: Other Commands.
+* Hold space, definition:                Data Spaces.
+* Hold space, exchange with pattern space: Other Commands.
+* Insert text from a file:               Other Commands.
+* Inserting a block of text before a line: Other Commands.
+* Labels, in scripts:                    Programming Commands.
+* Last line, selecting:                  Addresses.
+* Line number, print:                    Other Commands.
+* Line selection:                        Addresses.
+* Line, selecting by number:             Addresses.
+* Line, selecting by regular expression match: Addresses.
+* Line, selecting last:                  Addresses.
+* List pattern space:                    Other Commands.
+* Next input line, append to pattern space: Other Commands.
+* Next input line, replace pattern space with: Common Commands.
+* Parenthesized substrings:              Common Commands.
+* Pattern space, definition:             Data Spaces.
+* Portability, comments:                 Common Commands.
+* Portability, line length limitations:  Limitations.
+* Portability, p command and -n flag:    Common Commands.
+* Print first line from pattern space:   Other Commands.
+* Print line number:                     Other Commands.
+* Print selected lines:                  Common Commands.
+* Print unambiguous representation of pattern space: Other Commands.
+* Printing text after substitution:      Common Commands.
+* Quitting:                              Common Commands.
+* Range of lines:                        Addresses.
+* Read next input line:                  Common Commands.
+* Read text from a file:                 Other Commands.
+* Replace hold space with copy of pattern space: Other Commands.
+* Replace pattern space with copy of hold space: Other Commands.
+* Replace specific input lines:          Other Commands.
+* Replacing all text matching regexp in a line: Common Commands.
+* Replacing only Nth match of regexp in a line: Common Commands.
+* Replacing text matching regexp:        Common Commands.
+* Replacing text matching regexp, options: Common Commands.
+* Script structure:                      sed Programs.
+* Script, from a file:                   Invoking SED.
+* Script, from command line:             Invoking SED.
+* SED program structure:                 sed Programs.
+* Selected lines, replacing:             Other Commands.
+* Selecting lines to process:            Addresses.
+* Selecting non-matching lines:          Addresses.
+* Several lines, selecting:              Addresses.
+* Slash character, in regular expressions: Addresses.
+* Spaces, pattern and hold:              Data Spaces.
+* Standard input, processing as input:   Invoking SED.
+* Stream editor:                         Introduction.
+* Substitution of text:                  Common Commands.
+* Substitution of text, options:         Common Commands.
+* Text, appending:                       Other Commands.
+* Text, insertion:                       Other Commands.
+* Transliteration:                       Other Commands.
+* Usage summary, printing:               Invoking SED.
+* Version, printing:                     Invoking SED.
+* Write result of a substitution to file: Common Commands.
+* Write to a file:                       Other Commands.
+
+
+File: sed.info,  Node: Command and Option Index,  Prev: Concept Index,  Up: Top
+
+Command and Option Index
+************************
+
+   This is an alphabetical list of all SED commands and command-line
+opions.
+
+* Menu:
+
+* # (comment) command:                   Common Commands.
+* --expression:                          Invoking SED.
+* --file:                                Invoking SED.
+* --help:                                Invoking SED.
+* --quiet:                               Invoking SED.
+* --silent:                              Invoking SED.
+* --version:                             Invoking SED.
+* -e:                                    Invoking SED.
+* -f:                                    Invoking SED.
+* -h:                                    Invoking SED.
+* -n:                                    Invoking SED.
+* -n, forcing from within a script:      Common Commands.
+* -V:                                    Invoking SED.
+* : (label) command:                     Programming Commands.
+* = (print line number) command:         Other Commands.
+* a (append text lines) command:         Other Commands.
+* b (branch) command:                    Programming Commands.
+* c (change to text lines) command:      Other Commands.
+* D (delete first line) command:         Other Commands.
+* d (delete) command:                    Common Commands.
+* G (appending Get) command:             Other Commands.
+* g (get) command:                       Other Commands.
+* H (append Hold) command:               Other Commands.
+* h (hold) command:                      Other Commands.
+* i (insert text lines) command:         Other Commands.
+* l (list unambiguously) command:        Other Commands.
+* N (append Next line) command:          Other Commands.
+* n (next-line) command:                 Common Commands.
+* P (print first line) command:          Other Commands.
+* p (print) command:                     Common Commands.
+* q (quit) command:                      Common Commands.
+* r (read file) command:                 Other Commands.
+* s (substitute) command:                Common Commands.
+* s command, option flags:               Common Commands.
+* t (conditional branch) command:        Programming Commands.
+* w (write file) command:                Other Commands.
+* x (eXchange) command:                  Other Commands.
+* y (transliterate) command:             Other Commands.
+* {} command grouping:                   Common Commands.
+
+
+
+Tag Table:
+Node: Top1016
+Node: Introduction1736
+Node: Invoking SED2282
+Node: sed Programs3725
+Node: Addresses4710
+Node: Regular Expressions7417
+Node: Data Spaces7776
+Node: Common Commands8299
+Node: Other Commands12430
+Node: Programming Commands16341
+Node: Examples17240
+Node: Limitations17534
+Node: Other Resources18192
+Node: Reporting Bugs18974
+Node: Concept Index19222
+Node: Command and Option Index24931
+
+End Tag Table

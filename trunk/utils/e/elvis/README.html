@@ -1,0 +1,501 @@
+<html><head>
+<title>README.html file for elvis 2.2</title>
+<meta name="description" content="Quick intro to elvis 2.2, with links to source code and binaries">
+<meta name="keywords" content="vi, elvis, unix, linux, msdos, win32, windows95 windowsNT, nt, os2, os/2, editor, source">
+</head><body>
+
+<center>
+<h1>Quick intro to elvis 2.2, with links to source code and binaries</h1>
+</center>
+
+<strong>CONTENTS</strong>
+<ul>
+<li><a HREF="#thisfile">1. About this file</a>
+<li><a HREF="#vi">2. Differences between vi and elvis 2.2</a>
+<li><a HREF="#new">3. Differences between 2.1 and 2.2</a>
+<ul>
+<li><a HREF="#NewEx">3.1 New EX commands</a>
+<li><a HREF="#NewVi">3.2 New VI commands</a>
+<li><a HREF="#NewOptions">3.3 New options</a>
+<li><a HREF="#OldOptions">3.4 Changed or removed options</a>
+</ul>
+<li><a HREF="#links">4. Links to related files</a>
+</ul>
+<pre graphic>
+.---------------------------------------------------------------.
+| <strong>This is not elvis' user manual!</strong>  The <em>real</em> documentation for   |
+| elvis is located in its online help facility.  While running  |
+| elvis, enter the command "<code>:help</code>" to see the table of contents.|
+^---------------------------------------------------------------^</pre>
+
+<h1><a NAME="thisfile">1. About this file</a></h1>
+
+This file is written in the HTML markup language.
+You can view it with any WWW viewer, such as Netscape.
+You can also use elvis 2.2 to view it; this version of elvis
+has the ability to view HTML documents, and print them.
+
+<p>If elvis 2.2 doesn't automatically start up in HTML mode when you
+view this file, then you'll need to force it into HTML mode by
+giving the command "<code>:display html</code>".
+
+<h1><a name="vi">2. Differences between vi and elvis 2.2</a></h1>
+Elvis is a superset of vi.
+It runs on more operating systems than vi,
+it is free,
+and you can obtain the source code.
+Elvis also has many new features.
+These new features are described in the first chapter of the online manual,
+which hypertext links to the other parts of the manual where those features
+are described in detail.
+Here's a just brief list:
+
+<p>
+<ul>
+
+<li>Multiple edit buffers, so you can edit several files at once.
+<li>Multiple windows, so you can see multiple edit buffers, or different
+	parts of the same edit buffer.
+<li>Multiple user interfaces, including graphical interfaces under
+	Windows95/98/NT and X11.
+<li>A variety of display modes, including syntax coloring and HTML.
+<li>Online help, with hypertext links.
+<li>Enhanced tags, to support overloading in C++.
+<li>Network support, so you can load/save files via FTP, or even use elvis 		as a light-weight Web browser.
+<li>Aliases, which allow you to define new ex commands.
+<li>Built-in calculator
+
+</ul>
+
+<p>For a more complete list, with links to detailed descriptions, check the
+online manual.
+You can bring up the online manual by starting elvis and giving the command
+"<code>:help</code>".
+The list of extensions appears after the table of contents and a brief
+introduction.
+
+<h1><a name="new">3. Differences between 2.1 and 2.2</a></h1>
+
+The following is a summary of changes made since the release of elvis 2.1.
+These are in addition to any bug fixes.
+
+<h2><a name="NewEx">3.1 New EX commands</a></h2>
+<dl>
+
+<dt>:alias, :unalias
+<dd>Create, list, alter, or remove aliases.
+Aliases are new ex commands that you create from a sequence of other ex commands.
+
+<dt>:autocmd, :augroup
+<dd>Create, list, alter, or remove autocmds.
+Autocmds are ex command lines that are executed automatically on certain
+events, such as loading a file.
+
+<dt>:check, :words, :wordfile
+<dd>These configure the built-in spell checker.
+
+<dt>:color
+<dd>Not really new, but radically changed.
+The new version is much more powerful.
+
+<dt>:fold, :unfold
+<dd>These define folds, and either close or open them.
+Folds give you a way to hide parts of your text without actually deleting it.
+There is a <strong>:foldc</strong> alias which folds C source pretty well.
+
+<dt>:for, :do
+<dd>This loops over a list of file names, or other values.
+
+<dt>:local
+<dd>Used within a script or alias, this creates a local copy of an option
+so the alias can use it for storing temporary values, without clobbering
+the value that the option had before.
+
+<dt>:map
+<dd>Not new, but significantly changed.
+You can now use keywords to control when and how the map is applied.
+
+<dt>:nohlsearch
+<dd>Temporarily removes the highlighting for the <em>hlsearch</em> option.
+Then next time you search, the highlighting will return.
+
+<dt>:normal
+<dd>When invoked with arguments, Elvis will interpret the arguments as
+vi commands.
+
+<dt>:only
+<dd>Closes all windows except this one.
+
+<dt>:preserve
+<dd>Exit elvis, but don't delete the session file.
+
+<dt>:push
+<dd>This is similar to <strong>:e</strong>, except that <strong>:push</strong>
+saves the cursor's original location on the tag stack, so you can return
+via <strong>:pop</strong> or <kbd>^]</kbd>.
+<dt>:region, :unregion, :chgregion
+<dd>These create, remove, or change highlighted regions.
+The text itself is unchanged.
+Generally you would use :region to highlight text that has changed,
+or is significant for some other reason.
+
+<dt>:safely
+<dd>Run an ex command line with the <em>security</em> option temporarily
+increased to "safer".
+This replaces the <strong>:safer</strong> command which ran a script.
+You can achieve the same effect via "<code>:safely source</code> <var>script</var>".
+<dt>:switch, :case, :default
+<dd>The usual "switch" control structure.
+This is useful in scripts and aliases.
+
+</dl>
+
+<h2><a name="NewVi">3.1 New VI commands</a></h2>
+<dl>
+
+<dt>^I (&lt;Tab&gt;)
+<dd>For "html" mode, this moves forward to the next hypertext link.
+For "normal" and "syntax", it toggles folding of the current line.
+
+<dt>g^I (g&lt;Tab&gt;)
+<dd>Move backward to the preceding hypertext link.
+
+<dt>g^V (g&lt;C-V&gt;)
+<dd>If a rectangle is selected, go to the other corner in the same line.
+
+<dt>g$
+<dd>Move to the end of the current row, taking line wrap into account.
+
+<dt>g%
+<dd>If any text is selected, go to the other end.
+
+<dt>g0
+<dd>Move to the start of the current row, taking line wrap into account.
+
+<dt>g=<var>key</var>
+<dd>Operator.
+Replace old text with an equal number of <var>key</var> characters.
+
+<dt>gD, gd
+<dd>Go to global or local definition of the word at the cursor.
+
+<dt>gI
+<dd>Input at start of line, before indent.
+
+<dt>gJ
+<dd>Join lines without adding whitespace
+
+<dt>gS
+<dd>Move to the end of a spell checker word.
+The spell checker's definition of a word differs from the rest of Elvis
+in that spell checker words may contain an apostrophe, provided there are
+letters on both sides of the apostrophe.
+
+<dt>gU
+<dd>Operator.
+Converts text to all uppercase.
+
+<dt>g^
+<dd>Move to start of current row, after indent, talking line wrap into account.
+
+<dt>gh, gl
+<dd>Move left or right one character, skipping over hidden characters.
+This is handy when viewing text in a markup display mode, since it moves
+over the markups effortlessly.
+
+<dt>gj, gk
+<dd>Move down or up one row, taking line wrap into account.
+
+<dt>gs
+<dd>Move to the next misspelled word.
+If given a count, then before moving it tries to fix the current misspelled
+word using one of the listed alternatives.
+
+<dt>gu
+<dd>Operator.
+Converts text to all lowercase.
+
+<dt>g~
+<dd>Operator.
+Toggles text between uppercase and lowercase.
+
+</dl>
+
+<h2><a name="NewOptions">3.3 New Options</a></h2>
+<dl>
+<dt>antialias, aasqueeze
+<dd>For "x11" only, the <strong>antialias</strong> option controls whether
+elvis will use the Xft library to draw antialiased text.
+Antialiased fonts tend to leave a much larger gap between lines, so the
+<strong>aasqueeze</strong> option gives you a way to reduce that gap, and
+get more lines on the screen.
+
+<dt>auevent, aufilename, and auforce
+<dd>These options are only defined during an autocmd event.
+They describe the event.
+
+<dt>background
+<dd>When Elvis doesn't know the background color (which can only happen when
+using a text-based user interface such as "termcap"), it may use this option
+to help it choose a contrasting foreground color.
+
+<dt>bb
+<dd>This is a buffer option with no built-in purpose.  You can use it to
+store attributes about the buffer, for use by your own maps and aliases.
+
+<dt>binary
+<dd>This is set to indicate that elvis was invoked with a "-b" flag.
+The default <code>elvis.brf</code> uses this to set the <strong>readeol</strong>
+option to "binary" when appropriate.
+
+<dt>blinktime
+<dd>For "x11", this controls the cursor's blink rate.
+Setting it to 0 will disable blinking.
+
+<dt>cleantext
+<dd>Controls when elvis erases old text.
+Its value is a comma-delimited set of keywords, which may include
+"short", "long", "bs", "input", and/or "ex".
+
+<dt>eventerrors, eventignore
+<dd>These affect the handling of autocmd events.
+
+<dt>filenamerules
+<dd>This controls the way file names are parsed and manipulated by Elvis.
+It's value is a comma-delimited list of keywords, which may include
+"dollar", "paren", "space", "special", "tilde", and "wildcard".
+Windows users may want to remove the "space" keyword, which will prevent
+elvis from parsing spaces as name delimiters; this will make it easier to
+enter names with spaces in them.
+
+<dt>folding
+<dd>This is a window option.
+It controls whether folding is active in that window.
+
+<dt>guidewidth
+<dd>This is a buffer option, which draws thin vertical lines between columns
+of text.
+Its value is a comma-delimited list of column widths, similar to the
+<strong>tabstop</strong> and <strong>shiftwidth</strong> options.
+
+<dt>hllayers, hlobject
+<dd>These two options work together to give you a way to highlight text objects
+around the cursor.
+For example, you can highlight the current line via
+"<code>:set hllayers=1 hlobject=al</code>".
+
+<dt>hlsearch
+<dd>This highlights all instances of text that matches the most recent search.
+
+<dt>iconimage
+<dd>This chooses an icon to be used for Elvis' windows.
+
+<dt>includepath
+<dd>In "syntax" display mode, clicking on a #include file will search for
+that file in the includepath.
+
+<dt>incsearch
+<dd>Causes searches to be incremental.
+This means that every time you hit a key while entering the
+search regular expression, Elvis will search on the partial expression
+entered so far.
+
+<dt>listchars
+<dd>Controls the appearance of special characters in <strong>list</strong> mode.
+You can also use it to define arrows to mark long lines when side-scrolling
+is active (i.e., the <strong>wrap</strong> option is off).
+
+<dt>lpcontrast
+<dd>For color printing, this enforces a minimum contrast by darkening
+light colors.
+
+<dt>lpoptions
+<dd>For the "ps" and "ps2" <strong>lptype</strong>s, this can be set to
+a variety of values to tweak the output.
+See "<code>:help set lpoptions</code>".
+
+<dt>magicchar, magicname, magicperl
+<dd>These control the parsing of regular expressions.
+
+<dt>prefersyntax
+<dd>You can set the <strong>prefersyntax</strong> option to one of
+"never", "writable", "local", or "always" to control when elvis should
+start displaying a file in the "syntax" display modes rather than one of
+the markup display modes such as "html".
+For example, after "<code>:set prefersyntax=writable</code>", whenever you edit
+an HTML file that is writable Elvis will start in "syntax html" mode,
+but readonly files (including anything read via the HTTP protocol) will still
+start in "html" display mode.
+
+<dt>scrollbgimage
+<dd>Elvis can use background images in the "windows" and "x11" user interfaces.
+This option controls whether the background image should scroll when the
+text scrolls.
+
+<dt>scrollwheelspeed
+<dd>For wheel mice, this controls the number of lines scrolled for each
+detent of the wheel.
+
+<dt>security
+<dd>This can be set to "normal" for no protection, "safer" to protect you
+from malicious writing by a trojan horse, or "restricted" to protect the
+system from malicious reading by you.
+
+<dt>smartargs
+<dd>This uses the "tags" file to find the arguments for functions.
+When you're in "syntax" display mode and type in a function named followed
+by a '(', Elvis looks up that function name and inserts the formal parameters
+after the cursor.
+You can then overtype the formal parameters with the actual parameters.
+
+<dt>spell, spellautoload, spelldict, and spellsuffix
+<dd>These control Elvis' built-in spell checker.
+
+<dt>ttyitalic, ttyunderline
+<dd>These can be used to disable certain attributes on terminals that
+don't support them very well.
+In particular, the text mode on color VGA screens don't show underlining by
+converting the background to red; this may interfere with your own choice
+for a background color.
+
+<dt>tweaksection
+<dd>This relaxes the definition of a "section" so that the <code>[[</code>
+and <code>]]</code> commands will work well even if you aren't in the habit
+of putting your outer { characters in the first column of a line.
+
+<dt>ww
+<dd>This is a window option with no built-in purpose.  You can use it to
+store attributes about the window, for use by your own maps and aliases.
+
+<dt>xencoding
+<dd>The "x11" interface now allows you to specify fonts as "fontname*size",
+like the "windows" interface.
+When using this notation, Elvis will use the value of <strong>xencoding</strong>
+as the last to elements of the font's long name.
+A typical value is "iso8859-1" to load Latin-1 fonts.
+
+</dl>
+
+<h2><a name="OldOptions">3.4 Changed or removed options</a></h2>
+<dl>
+<dt>commentfont, stringfont, prepfont, keywordfont, functionfont, otherfont,
+and variablefont
+<dd>
+The syntax display mode previously used these options
+to control the appearance of different parts of the language.
+Those options are no longer necessary since the <code>:color</code> command can
+directly assign attributes to text faces named "comment", "string", etc.
+Consequently, those options have been deleted.
+
+<dt>boldstyle, emphasizedstyle, fixedstyle, italicstype, normalstyle,
+and underlinedstyle
+<dd>Similarly, the "windows" interface used these options
+to control the attributes of fonts.
+The have been deleted, since <code>:color</code> does this now.
+
+<dt>underline
+<dd>The "x11" interface used to have an "underline" option to control the
+attributes of the "underline" font.
+This has been deleted.
+
+<dt>normalfont
+<dd>The "x11" interface's <strong>normalfont</strong> has been renamed to
+"<em>font</em>", to be more similar to the "windows" interface.
+
+<dt>lppaper
+<dd>The <strong>lppaper</strong> option has been replaced by a more versatile
+<em>lpoptions</em> option.
+
+<dt>showname, showcmd, showstack and showtag
+<dd>These options have all been replaced by a single <em>show</em> option.
+
+<dt>safer
+<dd>The <strong>safer</strong> option has been replaced by a <em>security</em>
+option, which can be set to "normal", "safer", or "restricted".
+
+<dt>tabstop, shiftwidth
+<dd>These options have been improved.
+You can now set the value to a comma-delimited list of column widths.
+
+</dl>
+
+<h1><a name="links">4. Links to related files</a></h1>
+
+The main download site is
+<a href="ftp://ftp.cs.pdx.edu/pub/elvis/">ftp.cs.pdx.edu</a>.
+The files can also be found at Elvis' home page,
+<a href="http://elvis.vi-editor.org/">http://elvis.vi-editor.org/</a>
+
+<p>Most of the following are binary files, not text or HTML files,
+so you can't view then with your Web browser.
+But you can use your browser to download the files.
+For Netscape, use &lt;Shift-Click&gt;;
+for MSIE, use &lt;RightClick&gt; and "download".
+
+<dl>
+
+<dt><a href="/pub/elvis/untar.c">untar.c</a>
+<dd>This is the complete source code for "untar",
+a little program which extracts files from a gzipped tar archive.
+Comments near the top of "untar.c" describe how to compile and use it.
+If you already have the gzip and tar utilities, then you don't need this.
+
+<dt><a href="ftp://ftp.cs.pdx.edu/pub/elvis/untardos.exe">untardos.exe</a>
+<dd>This is an MS-DOS executable, produced from the above "untar.c" file.
+It can also be run under Windows 3.1, in a Dos-prompt window.
+For brief instructions on how to use <code>untardos,</code>
+run it with no arguments.
+
+<dt><a href="ftp://ftp.cs.pdx.edu/pub/elvis/untarw32.exe">untarw32.exe</a>
+<dd>This is a Win32 executable, produced from the above "untar.c" file.
+It runs under WindowsNT and Windows95.
+It runs somewhat faster than the MS-DOS version.
+It also supports long file names.
+For brief instructions on how to use <code>untarw32,</code>
+run it with no arguments, in a text-mode window.
+
+<p><strong>NOTE:</strong>
+MS-Windows95 and MS-DOS use incompatible methods for mapping long file names
+to short ones.
+So if you extract the files using <code>untarw32.exe</code>,
+DOS programs won't be able to find them with their expected names,
+and vice versa.
+Consequently, you must use <code>untardos.exe</code> to unpack
+<code>elvis-2.2_0-msdos.tar.gz</code>, and <code>untarw32.exe</code> to unpack
+<code>elvis-2.2_0-win32.tar.gz</code>.
+(Actually, I recently added a <strong>-m</strong> flag which forces
+<code>untarw32.exe</code> to convert long file names to short ones using
+the MS-DOS method.)
+
+<dt><a href="ftp://ftp.cs.pdx.edu/pub/elvis/untaros2.exe">untaros2.exe</a>
+<dd>This is an OS/2 executable, produced from the above "untar.c" file.
+For brief instructions on how to use <code>untaros2,</code>
+run it with no arguments.
+
+<dt><a href="elvis-2.2_0.tar.gz">elvis-2.2_0.tar.gz</a>
+<dd>This is a gzipped tar archive of the source code and documentation for
+Elvis 2.2 and its related programs.
+
+<dt><a href="elvis-2.2_0-msdos.tar.gz">elvis-2.2_0-msdos.tar.gz</a>
+<dd>This archive contains the documentation and MS-DOS executables
+for Elvis 2.2.
+
+<dt><a href="elvis-2.2_0-win32.tar.gz">elvis-2.2_0-win32.tar.gz</a>
+<dd>This archive contains the documentation and Win32 executables
+for Elvis 2.2.
+These were compiled and tested under Windows95, but should work under
+WindowsNT 3.51 (or later) as well.
+
+<dt><a href="elvis-2.2_0-os2.tar.gz">elvis-2.2_0-os2.tar.gz</a>
+<dd>This archive contains the documentation and OS/2 executables
+for Elvis 2.2.
+<strong>If this link is broken then look in Herbert's site, below.</strong>
+
+<dt>
+<a href="http://www.fh-wedel.de/pub/fh-wedel/staff/di/elvis/00-index.html">
+http://www.fh-wedel.de/pub/fh-wedel/staff/di/elvis/00-index.html</a>
+<dd>This is where the OS/2 maintainer stores his most up-to-date versions.
+It may be better than the <code>elvis-2.2_0-os2.tar.gz</code> file, above.
+</dl>
+
+</body></html>

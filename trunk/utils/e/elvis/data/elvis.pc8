@@ -1,0 +1,50 @@
+set! nonascii=all
+
+digraph C, Ä
+digraph u" Å
+digraph e' Ç
+digraph a^ É
+digraph a" Ñ
+digraph a` Ö
+digraph a* Ü
+digraph c, á
+digraph e^ à
+digraph e" â
+digraph e` ä
+digraph i" ã
+digraph i^ å
+digraph i` ç
+digraph A" é
+digraph A* è
+
+digraph E' ê
+digraph ae ë
+digraph AE í
+digraph o^ ì
+digraph I" î
+digraph o` ï
+digraph u^ ñ
+digraph u` ó
+digraph y" ò
+digraph O" ô
+digraph U" ö
+digraph c$ õ
+digraph L$ ú
+digraph Y$ ù
+digraph P$ û
+digraph f$ ü
+
+digraph a' †
+digraph i' °
+digraph o' ¢
+digraph u' £
+digraph n~ §
+digraph N~ •
+digraph a- ¶
+digraph o- ß
+digraph ~? ®
+digraph ~! ≠
+digraph << Æ
+digraph >> Ø
+
+digraph CO È

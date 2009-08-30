@@ -1,0 +1,14 @@
+lprq - spool queue examination program
+
+lprq [-l] [-Pprinter] [job # ...] [user ...]
+
+Options:
+
+-P      Specify a particular printer, otherwise the default line printer
+	is used (or the value of the PRINTER variable in the environ-
+	ment). All other arguments supplied are interpreted as user names
+	or job numbers to filter out only those jobs of interest.
+
+-l      Information about each of the files comprising the job entry is
+	printed.  Normally, only as much information as will fit on one
+	line is displayed.

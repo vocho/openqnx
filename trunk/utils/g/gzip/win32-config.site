@@ -1,0 +1,4 @@
+# GZip project defines STDC_HEADERS in tailor.h
+# Configure also defines it and this leads to compiler warnings.
+# Tell configure not to emmit the define in config.h
+ac_cv_header_stdc=no

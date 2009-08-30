@@ -1,0 +1,53 @@
+Adaptive Partitioning Scheduler 
+===============================
+An optional fair-share thread scheduler that guarantees groups of threads 
+guaranteed minimum percentage shares of cpu time. 
+
+http://os.ott.qnx.com/wiki/index.php/Adaptive_partitioning:Contents
+
+file structure: 
+
+aps_alg.c, .h 
+	algorithm for which partition to schedule a thread from 
+
+aps_application_erro.c
+        once function for forcing reboots when a partition goes bankrupt. 
+	(just so the crash message will say "application error" rather than "nano_aps.c") 
+
+aps_config.c 
+        implements the api functions in ker_aps.c to configure the scheduler
+
+
+aps_crit.c, .h 
+	handling of critical time and partition bankruptcy 
+
+aps_data.c, .h 
+	definitions, and init routines, for partition data structures, including the scheduling window
+	also contains the function to create the first partition, System. 
+
+aps_time.c
+	function to time execution of threads: microbill 
+	hook into clock interrupt handler for rotating the scheduling and reporting windows
+
+aps_trace.c
+	tracelogger functions 
+
+init_aps.S 
+	linkage to make the aps scheduler into kernel module: libmod_aps.a 
+	
+ker_aps.c 
+	implements the SchedCtl function for the aps subcommands. Contains parameter checking, 
+	security checking. Invokes functions in aps_config.c once it locks the kernel 
+
+nano_aps.c
+	analog of ker/nano_sched.c. Implementation of scheduling primitives ready(), block_and_ready(),
+	mark_running() and reched() 
+	Also contains code to initialize aps. 
+
+proto_aps.h
+	function prototypes for all of aps.
+
+	
+readme	
+	this file
+	

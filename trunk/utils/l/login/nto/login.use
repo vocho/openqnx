@@ -1,0 +1,19 @@
+%C [-fcup] [-h hostname] [-t timeout] [[username] [env ...]]
+Where:
+ -c			Only use the QNX4 compatible password encryption routine
+ -u			Only use the Unix compatible password encryption routine
+
+			NOTE: By default both password encryption schemes are tried.
+
+ -f			Used to indicate that proper authentication
+			has already been done and no password need 
+			be requested for user username.  Only available
+			to root and when a user is login in as themselves.
+ -q         Quiet, no extraneous output is displayed.
+ -p         Preserve current environment variables. Default is to clear.
+ -t timeout Cancel login if no response within 'timeout' seconds.
+            0 disables timeout, default is 0.
+ -h host	Specify for logging purposes that you are connecting from host
+
+ username   A users' login name.
+ env		Additional environment variables in form VAR or VAR=value

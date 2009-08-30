@@ -1,0 +1,46 @@
+/*
+ * nto.link
+ *	Loader command script for Neutrino
+ *
+ */
+ENTRY(_start)
+PHDRS {
+	text	PT_LOAD;
+	data	PT_LOAD;
+	note	PT_NOTE;
+}
+
+SECTIONS {
+	.text 0x8020000 : {
+		*(.text)
+		etext = .;
+		_etext = .;
+		_fdata = .;
+		*(.rodata_mod_start)
+		module_list_start = .;	
+		*(.rodata_mod)
+		module_list_end = .;	
+		*(.rodata_mod_end)
+		*(.rodata*)
+	}:text
+	.data ALIGN(0x1000) : {
+		*(.data)
+		*(.eh_frame*)
+	}:data
+	.ctors . : {
+		*(.ctors)
+	}
+	.bss . : {
+		*(.bss)
+		*(COMMON)
+		_end = .;
+		__end = .;
+		end = .;
+	}
+	.debug 0x0 : { *(.debug) }:NONE
+	.debug_srcinfo 0x0 : { *(.debug_srcinfo) }:NONE
+	.debug_aranges 0x0 : { *(.debug_aranges) }:NONE
+	.debug_pubnames 0x0 : { *(.debug_pubnames) }:NONE
+	.debug_sfnames 0x0 : { *(.debug_sfnames) }:NONE
+	.line 0x0 : { *(.line) }:NONE
+}

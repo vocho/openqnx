@@ -1,0 +1,74 @@
+" DEFAULT CONFIGURATION FOR THE "X11" USER INTERFACE
+color! statusbar like toolbar
+color! status like tool
+color! scrollbar like toolbar
+color! scroll like tool
+gui Quit:q
+gui Quit?!modified
+gui Quit"Close this window, and maybe exit elvis
+gui Edit;"File to load:" (file) f = filename
+gui Edit:e (f)
+gui Edit"Open a file in this window
+gui Split;"File to load:" (file) f = filename
+gui Split:sp (f)
+gui Split"Open a file in a new window
+gui Save:w
+gui Save?modified && edited && !readonly
+gui Save"Write this buffer out to its file
+gui Save as;"File to write:"(file)f=dirfile(filename);="The default is in the current directory!"
+gui Save as:w (f)
+gui Save as"Write this buffer out to a different file
+gui Reload:e!%
+gui Reload"Re-read this file, discarding all changes
+gui Reload;="Are you sure you want to do this?"
+gui gap
+gui Prev:N
+gui Prev?!modified && current("previous")
+gui Prev"Switch to the previous file in the args list
+gui Next:n
+gui Next?!modified && current("next")
+gui Next"Switch to the next file in the args list
+gui Alt:e#
+gui Alt?!modified && previousfile
+gui Alt"Switch to the alternate file
+gui Back:pop
+gui Back?current("tagstack")
+gui Back"Return to previous position via the tagstack
+gui gap
+gui Make:make
+gui Make?!modified
+gui Make"Compile the program, and collect error messages
+gui Err:errlist
+gui Err?buffer("Elvis error list")
+gui Err"Move to the next error
+gui Search;"plain text to find"s;"direction"(oneof forward backward)d=(d=="backward")?"backward":"forward";ignorecase;wrapscan;autoselect;hlsearch
+if feature("normal")
+then gui Search:eval normal (d=="backward" ? ("?";quote(("?"; magic?magicchar:"^$"), s); "\r") : ("/";quote(("/"; magic?magicchar:"^$"), s); "\r"))
+else gui Search:eval (d=="backward"?"?":"/")(quote((magic?".*/[^$":"/^$"),s))
+gui Search"Search for plain text -- not a regular expression
+gui gap
+gui Normal:no
+gui Normal=display=="normal"
+gui Normal"Select the normal display mode
+gui Hex:dis hex
+gui Hex=display=="hex"
+gui Hex"Select the hex display mode
+gui Syntax:dis syntax
+gui Syntax=display<<6=="syntax"
+gui Syntax"Select the syntax display mode (syntax-coloring)
+gui Other:eval dis (bufdisplay)
+gui Other=display!="normal" && display!="hex" && display<<6!="syntax"
+gui Other?bufdisplay!="normal" && bufdisplay!="hex" && bufdisplay<<6!="syntax"
+gui Other"Select the appropriate text-formatting display mode
+gui Display Options;"display"(oneof normal hex syntax HTML man tex)d=(display=="html"?"HTML":display);wrap;sidescroll;list;showmarkups;number;tabstop;showmatch;nonascii;prefersyntax;spell
+gui Display Options:eval dis (tolower(d))
+gui Display Options"Configure the display options
+gui gap
+gui XV:w !sh -c "cat >tmp$$; (xv tmp$$; rm tmp$$) >/dev/null 2>&1 &"
+gui XV"Send this buffer to the XV image viewer
+if alias("man")
+then gui Man:man \@
+else gui Man:sp !man \@| col -b
+gui Man"Create a new window, showing the man-page for this word
+gui Help:help
+gui Help"Create a new window, showing elvis' manual

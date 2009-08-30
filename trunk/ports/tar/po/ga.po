@@ -1,0 +1,2596 @@
+# Irish translations for tar.
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Kevin Patrick Scannell <scannell@SLU.EDU>, 2003, 2004, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tar 1.16\n"
+"Report-Msgid-Bugs-To: bug-tar@gnu.org\n"
+"POT-Creation-Date: 2007-06-08 11:19+0300\n"
+"PO-Revision-Date: 2006-11-13 08:53-0600\n"
+"Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
+"Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 : "
+"(n>6 && n <11) ? 3 : 4;\n"
+
+#: lib/argmatch.c:134
+#, c-format
+msgid "invalid argument %s for %s"
+msgstr "argóint neamhbhailí %s chun %s"
+
+#: lib/argmatch.c:135
+#, c-format
+msgid "ambiguous argument %s for %s"
+msgstr "argóint dhébhríoch %s chun %s"
+
+#: lib/argmatch.c:154
+#, c-format
+msgid "Valid arguments are:"
+msgstr "Na hargóintí bailí:"
+
+#: lib/argp-help.c:148
+#, c-format
+msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
+msgstr "ARGP_HELP_FMT: luach %s níos lú ná nó cothrom le %s"
+
+#: lib/argp-help.c:221
+#, c-format
+msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
+msgstr "%.*s: Ní mór luach a thabhairt ar an pharaiméadar ARGP_HELP_FMT"
+
+#: lib/argp-help.c:227
+#, c-format
+msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
+msgstr ""
+"%.*s: Ní mór luach deimhneach a bheith ar an pharaiméadar ARGP_HELP_FMT"
+
+#: lib/argp-help.c:236
+#, c-format
+msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
+msgstr "%.*s: Paraiméadar anaithnid ARGP_HELP_FMT"
+
+#: lib/argp-help.c:248
+#, c-format
+msgid "Garbage in ARGP_HELP_FMT: %s"
+msgstr "Bruscar i ARGP_HELP_FMT: %s"
+
+#: lib/argp-help.c:1247
+msgid ""
+"Mandatory or optional arguments to long options are also mandatory or "
+"optional for any corresponding short options."
+msgstr ""
+"Is riachtanach/roghnach le rogha ghearr aon argóint atá riachtanach/roghnach "
+"leis an rogha fhada."
+
+#: lib/argp-help.c:1640
+msgid "Usage:"
+msgstr "Úsáid:"
+
+#: lib/argp-help.c:1644
+msgid "  or: "
+msgstr "  nó: "
+
+#: lib/argp-help.c:1656
+msgid " [OPTION...]"
+msgstr " [ROGHA...]"
+
+#: lib/argp-help.c:1683
+#, c-format
+msgid "Try `%s --help' or `%s --usage' for more information.\n"
+msgstr ""
+"Bain triail as `%s --help' nó `%s --usage' chun tuilleadh eolais a fháil.\n"
+
+#: lib/argp-help.c:1711 src/tar.c:1169
+#, c-format
+msgid "Report bugs to %s.\n"
+msgstr "Seol tuairiscí fabhtanna chuig %s.\n"
+
+#: lib/argp-help.c:1930 lib/error.c:125
+msgid "Unknown system error"
+msgstr "Earráid anaithnid chórais"
+
+#: lib/argp-parse.c:82 src/tar.c:736
+msgid "give this help list"
+msgstr "taispeáin an chabhair seo"
+
+#: lib/argp-parse.c:83 src/tar.c:737
+msgid "give a short usage message"
+msgstr "taispeáin beagán eolais faoin úsáid"
+
+#: lib/argp-parse.c:84 src/tar.c:456 src/tar.c:458 src/tar.c:527
+#: tests/genfile.c:128
+msgid "NAME"
+msgstr "AINM"
+
+#: lib/argp-parse.c:84
+msgid "set the program name"
+msgstr "socraigh ainm an chláir"
+
+#: lib/argp-parse.c:85
+msgid "SECS"
+msgstr "SOIC"
+
+#: lib/argp-parse.c:86 src/tar.c:742
+msgid "hang for SECS seconds (default 3600)"
+msgstr "moill de SOIC soicind (réamhshocrú: 3600)"
+
+#: lib/argp-parse.c:143 src/tar.c:738
+msgid "print program version"
+msgstr "taispeáin leagan an chláir"
+
+#: lib/argp-parse.c:159
+#, c-format
+msgid "(PROGRAM ERROR) No version known!?"
+msgstr "(EARRÁID RÍOMHCHLÁIR) Gan leagan!?"
+
+#: lib/argp-parse.c:612
+#, c-format
+msgid "%s: Too many arguments\n"
+msgstr "%s: An iomarca argóintí\n"
+
+#: lib/argp-parse.c:755
+msgid "(PROGRAM ERROR) Option should have been recognized!?"
+msgstr ""
+"(EARRÁID RÍOMHCHLÁIR) Ba chóir aitheantas a thabhairt ar an rogha seo!?"
+
+#: lib/getopt.c:531 lib/getopt.c:547
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: Tá an rogha `%s' débhríoch\n"
+
+#: lib/getopt.c:580 lib/getopt.c:584
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: ní cheadaítear argóint i ndiaidh na rogha `--%s'\n"
+
+#: lib/getopt.c:593 lib/getopt.c:598
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: ní cheadaítear argóint i ndiaidh na rogha `%c%s'\n"
+
+#: lib/getopt.c:641 lib/getopt.c:660 lib/getopt.c:976 lib/getopt.c:995
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: tá argóint de dhíth i ndiaidh na rogha `%s'\n"
+
+#: lib/getopt.c:698 lib/getopt.c:701
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: rogha anaithnid `--%s'\n"
+
+#: lib/getopt.c:709 lib/getopt.c:712
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: rogha anaithnid `%c%s'\n"
+
+#: lib/getopt.c:764 lib/getopt.c:767
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr "%s: rogha neamhcheadaithe -- %c\n"
+
+#: lib/getopt.c:773 lib/getopt.c:776
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: rogha neamhbhailí -- %c\n"
+
+#: lib/getopt.c:828 lib/getopt.c:844 lib/getopt.c:1048 lib/getopt.c:1066
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: tá argóint de dhíth i ndiaidh na rogha -- %c\n"
+
+#: lib/getopt.c:897 lib/getopt.c:913
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: Tá an rogha `-W %s' débhríoch\n"
+
+#: lib/getopt.c:937 lib/getopt.c:955
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: ní cheadaítear argóint i ndiaidh na rogha `-W %s'\n"
+
+#: lib/human.c:477
+msgid "block size"
+msgstr "méid bloc"
+
+#: lib/obstack.c:424 lib/obstack.c:426 lib/xalloc-die.c:35 src/extract.c:1377
+msgid "memory exhausted"
+msgstr "cuimhne ídithe"
+
+#. TRANSLATORS: %s after `Cannot' is a function name, e.g. `Cannot open'.
+#. Directly translating this to another language will not work, first because
+#. %s itself is not translated.
+#. Translate it as `%s: Function %s failed'.
+#: lib/paxerror.c:58 lib/paxerror.c:71
+#, c-format
+msgid "%s: Cannot %s"
+msgstr "%s: Ní féidir %s"
+
+#. TRANSLATORS: %s after `Cannot' is a function name, e.g. `Cannot open'.
+#. Directly translating this to another language will not work, first because
+#. %s itself is not translated.
+#. Translate it as `%s: Function %s failed'.
+#: lib/paxerror.c:84
+#, c-format
+msgid "%s: Warning: Cannot %s"
+msgstr "%s: Rabhadh: Ní féidir %s"
+
+#: lib/paxerror.c:93
+#, c-format
+msgid "%s: Cannot change mode to %s"
+msgstr "%s: Ní féidir an mód a athrú go %s"
+
+#: lib/paxerror.c:101
+#, c-format
+msgid "%s: Cannot change ownership to uid %lu, gid %lu"
+msgstr "%s: Ní féidir an t-úinéir a athrú go UID %lu, GID %lu"
+
+#: lib/paxerror.c:127
+#, c-format
+msgid "%s: Cannot hard link to %s"
+msgstr "%s: Ní féidir nasc crua a chruthú le %s"
+
+#: lib/paxerror.c:179 lib/paxerror.c:211
+#, c-format
+msgid "%s: Read error at byte %s, while reading %lu byte"
+msgid_plural "%s: Read error at byte %s, while reading %lu bytes"
+msgstr[0] "%s: Earráid léimh ag beart %s, agus %lu beart á léamh"
+msgstr[1] "%s: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+msgstr[2] "%s: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+msgstr[3] "%s: Earráid léimh ag beart %s, agus %lu mbeart á léamh"
+msgstr[4] "%s: Earráid léimh ag beart %s, agus %lu beart á léamh"
+
+#: lib/paxerror.c:192
+#, c-format
+msgid "%s: Warning: Read error at byte %s, while reading %lu byte"
+msgid_plural "%s: Warning: Read error at byte %s, while reading %lu bytes"
+msgstr[0] "%s: Rabhadh: Earráid léimh ag beart %s, agus %lu beart á léamh"
+msgstr[1] "%s: Rabhadh: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+msgstr[2] "%s: Rabhadh: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+msgstr[3] "%s: Rabhadh: Earráid léimh ag beart %s, agus %lu mbeart á léamh"
+msgstr[4] "%s: Rabhadh: Earráid léimh ag beart %s, agus %lu beart á léamh"
+
+#: lib/paxerror.c:259
+#, c-format
+msgid "%s: Cannot seek to %s"
+msgstr "%s: Ní féidir 'seek' a dhéanamh ag %s"
+
+#: lib/paxerror.c:275
+#, c-format
+msgid "%s: Warning: Cannot seek to %s"
+msgstr "%s: Rabhadh: Ní féidir 'seek' a dhéanamh ag %s"
+
+#: lib/paxerror.c:284
+#, c-format
+msgid "%s: Cannot create symlink to %s"
+msgstr "%s: Ní féidir nasc siombalach a chruthú le %s"
+
+#: lib/paxerror.c:349
+#, c-format
+msgid "%s: Wrote only %lu of %lu byte"
+msgid_plural "%s: Wrote only %lu of %lu bytes"
+msgstr[0] "%s: Níor scríobhadh ach %lu as %lu beart"
+msgstr[1] "%s: Níor scríobhadh ach %lu as %lu bheart"
+msgstr[2] "%s: Níor scríobhadh ach %lu as %lu bheart"
+msgstr[3] "%s: Níor scríobhadh ach %lu as %lu mbeart"
+msgstr[4] "%s: Níor scríobhadh ach %lu as %lu beart"
+
+#: lib/paxnames.c:132
+#, c-format
+msgid "Removing leading `%s' from member names"
+msgstr "Gach `%s' tosaigh á bhaint amach as ainmneacha baill"
+
+#: lib/paxnames.c:133
+#, c-format
+msgid "Removing leading `%s' from hard link targets"
+msgstr "Gach `%s' tosaigh á bhaint amach as spriocanna na nasc crua"
+
+#: lib/paxnames.c:146
+msgid "Substituting `.' for empty member name"
+msgstr "Ag cur `.' in ionad ainm baill folamh"
+
+#: lib/paxnames.c:147
+msgid "Substituting `.' for empty hard link target"
+msgstr "Ag cur `.' in ionad sprioc fholamh an naisc crua"
+
+#. TRANSLATORS:
+#. Get translations for open and closing quotation marks.
+#.
+#. The message catalog should translate "`" to a left
+#. quotation mark suitable for the locale, and similarly for
+#. "'".  If the catalog has no translation,
+#. locale_quoting_style quotes `like this', and
+#. clocale_quoting_style quotes "like this".
+#.
+#. For example, an American English Unicode locale should
+#. translate "`" to U+201C (LEFT DOUBLE QUOTATION MARK), and
+#. should translate "'" to U+201D (RIGHT DOUBLE QUOTATION
+#. MARK).  A British English Unicode locale should instead
+#. translate these to U+2018 (LEFT SINGLE QUOTATION MARK) and
+#. U+2019 (RIGHT SINGLE QUOTATION MARK), respectively.
+#.
+#. If you don't know what to put here, please see
+#. <http://en.wikipedia.org/wiki/Quotation_mark#Glyphs>
+#. and use glyphs suitable for your language.
+#: lib/quotearg.c:229
+msgid "`"
+msgstr "`"
+
+#: lib/quotearg.c:230
+msgid "'"
+msgstr "'"
+
+#: lib/rpmatch.c:70
+msgid "^[yY]"
+msgstr "^[yYiIsS]"
+
+#: lib/rpmatch.c:73
+msgid "^[nN]"
+msgstr "^[nN]"
+
+#: lib/rtapelib.c:299
+#, c-format
+msgid "exec/tcp: Service not available"
+msgstr "exec/tcp: Níl an tseirbhís ar fáil"
+
+# cf French -KPS
+#: lib/rtapelib.c:303
+#, c-format
+msgid "stdin"
+msgstr "stdin"
+
+# cf French -KPS
+#: lib/rtapelib.c:306
+#, c-format
+msgid "stdout"
+msgstr "stdout"
+
+#: lib/rtapelib.c:512
+#, c-format
+msgid "Cannot execute remote shell"
+msgstr "Ní féidir cianbhlaosc a rith"
+
+#: rmt/rmt.c:142
+msgid "Input string too long"
+msgstr "Teaghrán ionchurtha rófhada"
+
+#: rmt/rmt.c:161
+msgid "Number syntax error"
+msgstr "Earráid chomhréire in uimhir"
+
+#: rmt/rmt.c:180
+msgid "rmtd: Cannot allocate buffer space\n"
+msgstr "rmtd: Ní féidir maolán a dháileadh\n"
+
+#: rmt/rmt.c:182
+msgid "Cannot allocate buffer space"
+msgstr "Ní féidir maolán a dháileadh"
+
+#: rmt/rmt.c:304
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "Bain triail as `%s --help' chun tuilleadh eolais a fháil.\n"
+
+#: rmt/rmt.c:308
+#, c-format
+msgid ""
+"Usage: %s [OPTION]\n"
+"Manipulate a tape drive, accepting commands from a remote process.\n"
+"\n"
+"  --version  Output version info.\n"
+"  --help     Output this help.\n"
+msgstr ""
+"Úsáid: %s [ROGHA]\n"
+"Láimhseáil tiomántán téipe, agus glac le horduithe ó chianphróiseas.\n"
+"\n"
+"  --version  Taispeáin eolas faoin leagan.\n"
+"  --help     Taispeáin an chabhair seo.\n"
+
+#: rmt/rmt.c:315
+#, c-format
+msgid ""
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"\n"
+"Seol tuairiscí fabhtanna chuig <%s>.\n"
+
+#: rmt/rmt.c:397
+msgid "Seek offset error"
+msgstr "Earráid i bhfritháireamh 'seek'"
+
+#: rmt/rmt.c:406 rmt/rmt.c:547 rmt/rmt.c:557
+msgid "Seek offset out of range"
+msgstr "Fritháireamh 'seek' as raon"
+
+#: rmt/rmt.c:428
+msgid "Seek direction out of range"
+msgstr "Treo 'seek' as raon"
+
+#: rmt/rmt.c:472
+msgid "rmtd: Premature eof\n"
+msgstr "rmtd: Comhadchríoch gan choinne\n"
+
+#: rmt/rmt.c:474
+msgid "Premature end of file"
+msgstr "Comhadchríoch gan choinne"
+
+#: rmt/rmt.c:672
+msgid "Garbage command"
+msgstr "Ordú dramhaíola"
+
+#: src/buffer.c:326 src/buffer.c:335
+msgid "Total bytes written"
+msgstr "Bearta scríofa go hiomlán"
+
+#: src/buffer.c:333 src/buffer.c:347
+msgid "Total bytes read"
+msgstr "Bearta léite go hiomlán"
+
+#: src/buffer.c:337
+#, c-format
+msgid "Total bytes deleted: %s\n"
+msgstr "Bearta scriosta go hiomlán: %s\n"
+
+#: src/buffer.c:426
+msgid "(pipe)"
+msgstr "(píopa)"
+
+#: src/buffer.c:449
+msgid "Invalid value for record_size"
+msgstr "Luach neamhbhailí do record_size"
+
+#: src/buffer.c:452
+msgid "No archive name given"
+msgstr "Ní thugtar ainm na cartlainne"
+
+#: src/buffer.c:496
+msgid "Cannot verify stdin/stdout archive"
+msgstr "Ní féidir cartlann stdin/stdout a fhíorú"
+
+#: src/buffer.c:509
+#, c-format
+msgid "Archive is compressed. Use %s option"
+msgstr "Is cartlann chomhbhrúite í seo. Úsáid an rogha %s"
+
+#: src/buffer.c:556 src/tar.c:2187
+msgid "Cannot update compressed archives"
+msgstr "Ní féidir cartlanna comhbhrúite a nuashonrú"
+
+#. TRANSLATORS: This is a ``checkpoint of write operation'',
+#. *not* ``Writing a checkpoint''.
+#. E.g. in Spanish ``Punto de comprobaci@'on de escritura'',
+#. *not* ``Escribiendo un punto de comprobaci@'on''
+#: src/buffer.c:606
+#, c-format
+msgid "Write checkpoint %u"
+msgstr "Seicphointe scríofa %u"
+
+#. TRANSLATORS: This is a ``checkpoint of read operation'',
+#. *not* ``Reading a checkpoint''.
+#. E.g. in Spanish ``Punto de comprobaci@'on de lectura'',
+#. *not* ``Leyendo un punto de comprobaci@'on''
+#: src/buffer.c:612
+#, c-format
+msgid "Read checkpoint %u"
+msgstr "Seicphointe léimh %u"
+
+#: src/buffer.c:664
+msgid "At beginning of tape, quitting now"
+msgstr "Tosach na téipe, ag scor anois"
+
+#: src/buffer.c:670
+msgid "Too many errors, quitting"
+msgstr "An iomarca earráidí, ag scor"
+
+#: src/buffer.c:698
+#, c-format
+msgid "Unaligned block (%lu byte) in archive"
+msgid_plural "Unaligned block (%lu bytes) in archive"
+msgstr[0] "Bloc neamhailínithe (%lu beart) sa chartlann"
+msgstr[1] "Bloc neamhailínithe (%lu bheart) sa chartlann"
+msgstr[2] "Bloc neamhailínithe (%lu bheart) sa chartlann"
+msgstr[3] "Bloc neamhailínithe (%lu mbeart) sa chartlann"
+msgstr[4] "Bloc neamhailínithe (%lu beart) sa chartlann"
+
+#: src/buffer.c:718
+#, c-format
+msgid "Record size = %lu block"
+msgid_plural "Record size = %lu blocks"
+msgstr[0] "Méid taifid = %lu bloc"
+msgstr[1] "Méid taifid = %lu bhloc"
+msgstr[2] "Méid taifid = %lu bhloc"
+msgstr[3] "Méid taifid = %lu mbloc"
+msgstr[4] "Méid taifid = %lu bloc"
+
+#: src/buffer.c:791
+msgid "Cannot backspace archive file; it may be unreadable without -i"
+msgstr "Ní féidir an chartlann a chúlú; is dócha gur doléite í gan -i"
+
+#: src/buffer.c:823
+msgid "rmtlseek not stopped at a record boundary"
+msgstr "Níor stopadh rmtlseek ag teorainn taifid"
+
+#: src/buffer.c:879
+#, c-format
+msgid "%s: contains invalid volume number"
+msgstr "%s: tá uimhir imleabhair neamhbhailí ann"
+
+#: src/buffer.c:914
+msgid "Volume number overflow"
+msgstr "Uimhir imleabhair thar maoil"
+
+#: src/buffer.c:929
+#, c-format
+msgid "Prepare volume #%d for %s and hit return: "
+msgstr ""
+"Socraigh an t-imleabhar #%d le haghaidh %s agus brúigh an eochair iontrála: "
+
+#: src/buffer.c:935
+msgid "EOF where user reply was expected"
+msgstr "Fuarthas comhadchríoch in áit freagra ón úsáideoir"
+
+#: src/buffer.c:940 src/buffer.c:972
+msgid "WARNING: Archive is incomplete"
+msgstr "RABHADH: Tá an chartlann neamhiomlán"
+
+#: src/buffer.c:954
+#, c-format
+msgid ""
+" n name        Give a new file name for the next (and subsequent) volume(s)\n"
+" q             Abort tar\n"
+" y or newline  Continue operation\n"
+msgstr ""
+" n ainm        Cuir comhadainm nua ar an chéad imleabhar eile (agus gach "
+"ceann ina dhiaidh)\n"
+" q             Tobscoir tar\n"
+" y nó líne nua Lean ar aghaidh\n"
+
+#: src/buffer.c:959
+#, c-format
+msgid " !             Spawn a subshell\n"
+msgstr " !             Sceith fobhlaosc\n"
+
+#: src/buffer.c:960
+#, c-format
+msgid " ?             Print this list\n"
+msgstr " ?             Priontáil an liosta seo\n"
+
+#: src/buffer.c:967
+msgid "No new volume; exiting.\n"
+msgstr "Níl aon imleabhar nua; ag scor.\n"
+
+#: src/buffer.c:1000
+msgid "File name not specified. Try again.\n"
+msgstr "Ainm an chomhaid gan sonrú. Bain triail eile as.\n"
+
+#: src/buffer.c:1013
+#, c-format
+msgid "Invalid input. Type ? for help.\n"
+msgstr "Ionchur neamhbhailí. Iontráil ? chun cabhair a fháil.\n"
+
+#: src/buffer.c:1064
+#, c-format
+msgid "%s command failed"
+msgstr "Theip ar ordú %s"
+
+#: src/buffer.c:1126 src/delete.c:210 src/list.c:167 src/update.c:165
+msgid "This does not look like a tar archive"
+msgstr "Ní cosúil le cartlann `tar' é seo"
+
+#: src/buffer.c:1219
+#, c-format
+msgid "%s is possibly continued on this volume: header contains truncated name"
+msgstr ""
+"Seans go leanann %s ar aghaidh ar an imleabhar seo: tá ainm teasctha sa "
+"cheanntásc"
+
+#: src/buffer.c:1223
+#, c-format
+msgid "%s is not continued on this volume"
+msgstr "Ní leanann %s ar an imleabhar seo"
+
+#: src/buffer.c:1237
+#, c-format
+msgid "%s is the wrong size (%s != %s + %s)"
+msgstr "Níl %s an méid ceart (%s != %s + %s)"
+
+#: src/buffer.c:1247
+msgid "This volume is out of sequence"
+msgstr "Tá an t-imleabhar seo as ord"
+
+#: src/buffer.c:1293
+#, c-format
+msgid "Archive not labeled to match %s"
+msgstr "Lipéad ar chartlann nach comhoiriúnaithe le %s"
+
+#: src/buffer.c:1296
+#, c-format
+msgid "Volume %s does not match %s"
+msgstr "Níl an t-imleabhar %s comhoiriúnaithe le %s"
+
+#: src/buffer.c:1392
+#, c-format
+msgid ""
+"%s: file name too long to be stored in a GNU multivolume header, truncated"
+msgstr ""
+"%s: ní féidir an comhadainm seo a stóráil i gceanntásc il-imleabhar GNU; "
+"teasctha"
+
+#: src/compare.c:96
+#, c-format
+msgid "Could only read %lu of %lu byte"
+msgid_plural "Could only read %lu of %lu bytes"
+msgstr[0] "Níorbh fhéidir ach %lu de %lu beart a léamh"
+msgstr[1] "Níorbh fhéidir ach %lu de %lu bheart a léamh"
+msgstr[2] "Níorbh fhéidir ach %lu de %lu bheart a léamh"
+msgstr[3] "Níorbh fhéidir ach %lu de %lu mbeart a léamh"
+msgstr[4] "Níorbh fhéidir ach %lu de %lu beart a léamh"
+
+#: src/compare.c:106 src/compare.c:388
+msgid "Contents differ"
+msgstr "Tá difríocht idir na hábhair"
+
+#: src/compare.c:132 src/extract.c:790 src/incremen.c:1193 src/list.c:372
+#: src/list.c:1314
+msgid "Unexpected EOF in archive"
+msgstr "Comhadchríoch gan choinne i gcartlann"
+
+#: src/compare.c:180 src/compare.c:196 src/compare.c:314 src/compare.c:412
+msgid "File type differs"
+msgstr "Tá difríocht idir na cineálacha comhaid"
+
+#: src/compare.c:183 src/compare.c:203 src/compare.c:328
+msgid "Mode differs"
+msgstr "Tá difríocht idir na móid"
+
+#: src/compare.c:206
+msgid "Uid differs"
+msgstr "Tá difríocht idir na UIDanna"
+
+#: src/compare.c:208
+msgid "Gid differs"
+msgstr "Tá difríocht idir na GIDanna"
+
+#: src/compare.c:212
+msgid "Mod time differs"
+msgstr "Tá difríocht idir na hamanna modhnaithe"
+
+#: src/compare.c:216 src/compare.c:420
+msgid "Size differs"
+msgstr "Tá difríocht idir na méideanna"
+
+#: src/compare.c:270
+#, c-format
+msgid "Not linked to %s"
+msgstr "Ní ceangailte le %s"
+
+#: src/compare.c:293
+msgid "Symlink differs"
+msgstr "Tá difríocht idir na naisc shiombalacha"
+
+#: src/compare.c:322
+msgid "Device number differs"
+msgstr "Tá difríocht idir na huimhreacha gléis"
+
+#: src/compare.c:462
+#, c-format
+msgid "Verify "
+msgstr "Fíoraigh "
+
+#: src/compare.c:469
+#, c-format
+msgid "%s: Unknown file type `%c', diffed as normal file"
+msgstr "%s: Cineál anaithnid comhaid `%c', déan diff mar ghnáthchomhad"
+
+#: src/compare.c:524
+msgid "Archive contains file names with leading prefixes removed."
+msgstr "Tá comhaid sa chartlann agus a réimíreanna scriosta."
+
+#: src/compare.c:526
+msgid "Verification may fail to locate original files."
+msgstr "Nach féidir i gcónaí na bunchomhaid a aimsiú agus le linn fíoraithe."
+
+#: src/compare.c:596
+#, c-format
+msgid "VERIFY FAILURE: %d invalid header detected"
+msgid_plural "VERIFY FAILURE: %d invalid headers detected"
+msgstr[0] "THEIP AR DHEIMHNIÚ: aimsíodh %d ceanntásc neamhbhailí"
+msgstr[1] "THEIP AR DHEIMHNIÚ: aimsíodh %d cheanntásc neamhbhailí"
+msgstr[2] "THEIP AR DHEIMHNIÚ: aimsíodh %d cheanntásc neamhbhailí"
+msgstr[3] "THEIP AR DHEIMHNIÚ: aimsíodh %d gceanntásc neamhbhailí"
+msgstr[4] "THEIP AR DHEIMHNIÚ: aimsíodh %d ceanntásc neamhbhailí"
+
+#: src/create.c:67
+#, fuzzy, c-format
+msgid "%s: contains a cache directory tag %s; %s"
+msgstr "%s: tá clib chomhadlainne taisce ann; nach dumpáilte"
+
+#: src/create.c:270
+#, c-format
+msgid "value %s out of %s range %s..%s; substituting %s"
+msgstr "tá an luach %s as raon %s: %s..%s; ag cur %s ina ionad"
+
+#: src/create.c:276
+#, c-format
+msgid "value %s out of %s range %s..%s"
+msgstr "tá an luach %s as raon %s: %s..%s"
+
+#: src/create.c:336
+msgid "Generating negative octal headers"
+msgstr "Ceanntásca ochtnártha diúltacha á gcruthú"
+
+#: src/create.c:622 src/create.c:685
+#, c-format
+msgid "%s: file name is too long (max %d); not dumped"
+msgstr "%s: ainm comhaid rófhada (uasmhéid %d); nach dumpáilte"
+
+#: src/create.c:632
+#, c-format
+msgid "%s: file name is too long (cannot be split); not dumped"
+msgstr "%s: ainm comhaid rófhada (ní féidir é a scoilt); nach dumpáilte"
+
+#: src/create.c:659
+#, c-format
+msgid "%s: link name is too long; not dumped"
+msgstr "%s: ainm naisc rófhada; nach dumpáilte"
+
+#: src/create.c:1075
+#, c-format
+msgid "%s: File shrank by %s byte; padding with zeros"
+msgid_plural "%s: File shrank by %s bytes; padding with zeros"
+msgstr[0] "%s: %s beart níos lú sa chomhad; ag stuáil le nialais"
+msgstr[1] "%s: %s bheart níos lú sa chomhad; ag stuáil le nialais"
+msgstr[2] "%s: %s bheart níos lú sa chomhad; ag stuáil le nialais"
+msgstr[3] "%s: %s mbeart níos lú sa chomhad; ag stuáil le nialais"
+msgstr[4] "%s: %s beart níos lú sa chomhad; ag stuáil le nialais"
+
+#: src/create.c:1176
+#, c-format
+msgid "%s: file is on a different filesystem; not dumped"
+msgstr "%s: is ar chóras comhad eile é an comhad; nach dumpáilte"
+
+#: src/create.c:1217 src/create.c:1228
+msgid "contents not dumped"
+msgstr ""
+
+#: src/create.c:1357
+#, c-format
+msgid "%s: Unknown file type; file ignored"
+msgstr "%s: Cineál anaithnid comhaid; ag déanamh neamhshuim air"
+
+#: src/create.c:1458
+#, c-format
+msgid "Missing links to %s.\n"
+msgstr "Naisc le %s ar iarraidh.\n"
+
+#: src/create.c:1529
+#, c-format
+msgid "%s: file is unchanged; not dumped"
+msgstr "tá %s gan athrú; nach dumpáilte"
+
+#: src/create.c:1537
+#, c-format
+msgid "%s: file is the archive; not dumped"
+msgstr "%s: is ionann é agus an chartlann féin; nach dumpáilte"
+
+#: src/create.c:1567
+#, c-format
+msgid "%s: File removed before we read it"
+msgstr "%s: Scriosadh an comhad sular léadh é"
+
+#: src/create.c:1585
+#, fuzzy
+msgid "directory not dumped"
+msgstr "%s: tá clib chomhadlainne taisce ann; nach dumpáilte"
+
+#: src/create.c:1654
+#, c-format
+msgid "%s: file changed as we read it"
+msgstr "%s: athraíodh an comhad agus á léamh"
+
+#: src/create.c:1733
+#, c-format
+msgid "%s: socket ignored"
+msgstr "%s: rinneadh neamhshuim ar an soicéad"
+
+#: src/create.c:1738
+#, c-format
+msgid "%s: door ignored"
+msgstr "%s: rinneadh neamhshuim ar an doras"
+
+#: src/delete.c:216 src/list.c:181 src/update.c:170
+msgid "Skipping to next header"
+msgstr "Ag bogadh go dtí an chéad cheanntásc eile"
+
+#: src/delete.c:281
+msgid "Deleting non-header from archive"
+msgstr "Comhad nach ceanntásc á scriosadh ón chartlann"
+
+#: src/extract.c:198
+#, c-format
+msgid "%s: implausibly old time stamp %s"
+msgstr "%s: ní dócha go bhfuil an stampa ama ársa %s ceart"
+
+#: src/extract.c:215
+#, c-format
+msgid "%s: time stamp %s is %s s in the future"
+msgstr "%s: tá an stampa ama %s %s soicind amach anseo"
+
+#: src/extract.c:395
+#, c-format
+msgid "%s: Unexpected inconsistency when making directory"
+msgstr "%s: Bunoscionntacht gan choinne agus comhadlann á cruthú"
+
+#: src/extract.c:588
+#, c-format
+msgid "%s: Directory renamed before its status could be extracted"
+msgstr ""
+"%s: Athainmníodh an chomhadlann sularbh fhéidir a stádas a bhaint amach"
+
+#: src/extract.c:724
+msgid "Extracting contiguous files as regular files"
+msgstr "Comhaid theorantacha á mbaint amach mar ghnáthchomhaid"
+
+#: src/extract.c:1000
+msgid "Attempting extraction of symbolic links as hard links"
+msgstr ""
+"Ag déanamh iarracht ar naisc shiombalacha a bhaint amach mar naisc chrua"
+
+#: src/extract.c:1057
+#, c-format
+msgid "Reading %s\n"
+msgstr "%s á léamh\n"
+
+#: src/extract.c:1146
+#, c-format
+msgid "%s: Cannot extract -- file is continued from another volume"
+msgstr "%s: Ní féidir an comhad a bhaint amach -- ar lean ó imleabhar eile"
+
+#: src/extract.c:1153 src/list.c:1081
+msgid "Unexpected long name header"
+msgstr "Ceanntásc ainm fada gan choinne"
+
+#: src/extract.c:1159
+#, c-format
+msgid "%s: Unknown file type `%c', extracted as normal file"
+msgstr "%s: Cineál anaithnid comhaid `%c', á bhaint amach mar ghnáthchomhad"
+
+#: src/extract.c:1184
+#, c-format
+msgid "Current %s is newer or same age"
+msgstr "Tá an %s reatha níos nuaí nó ar comhaois"
+
+#: src/extract.c:1230
+#, c-format
+msgid "%s: Was unable to backup this file"
+msgstr "%s: Níorbh fhéidir cúltaca a dhéanamh"
+
+#: src/extract.c:1358
+#, c-format
+msgid "Cannot rename %s to %s"
+msgstr "Ní féidir %s a athainmniú go %s"
+
+#: src/extract.c:1370
+#, c-format
+msgid "Error is not recoverable: exiting now"
+msgstr "Ní féidir biseach a dhéanamh i ndiaidh earráid: ag scor"
+
+#: src/incremen.c:260 src/incremen.c:300
+#, c-format
+msgid "%s: Directory has been renamed from %s"
+msgstr "%s: Athainmníodh an chomhadlann ó %s"
+
+#: src/incremen.c:270
+#, c-format
+msgid "%s: Directory has been renamed"
+msgstr "%s: Athainmníodh an chomhadlann"
+
+#: src/incremen.c:311
+#, c-format
+msgid "%s: Directory is new"
+msgstr "%s: Comhadlann nua"
+
+#: src/incremen.c:699 src/incremen.c:716
+msgid "Invalid time stamp"
+msgstr "Stampa ama neamhbhailí"
+
+#: src/incremen.c:755
+msgid "Invalid modification time (seconds)"
+msgstr "Am neamhbhailí mionathraithe (soicindí)"
+
+#: src/incremen.c:770
+msgid "Invalid modification time (nanoseconds)"
+msgstr "Am neamhbhailí mionathraithe (nanashoicindí)"
+
+#: src/incremen.c:790
+msgid "Invalid device number"
+msgstr "Uimhir neamhbhailí gléis"
+
+#: src/incremen.c:805
+msgid "Invalid inode number"
+msgstr "Uimhir inode as raon"
+
+#: src/incremen.c:856 src/incremen.c:893
+msgid "Field too long while reading snapshot file"
+msgstr "Réimse rófhada agus an comhad roghbhlúire á léamh"
+
+#: src/incremen.c:863 src/incremen.c:901
+msgid "Read error in snapshot file"
+msgstr "Earráid agus an comhad roghbhlúire á léamh"
+
+#: src/incremen.c:865 src/incremen.c:905 src/incremen.c:957
+#: src/incremen.c:1015
+msgid "Unexpected EOF in snapshot file"
+msgstr "Comhadchríoch gan choinne sa chomhad roghbhlúire"
+
+#: src/incremen.c:872 src/incremen.c:912
+msgid "Unexpected field value in snapshot file"
+msgstr "Luach réimse gan choinne sa chomhad roghbhlúire"
+
+#: src/incremen.c:1007
+msgid "Missing record terminator"
+msgstr "Críochnaitheoir taifid ar iarraidh"
+
+#: src/incremen.c:1058 src/incremen.c:1061
+msgid "Bad incremental file format"
+msgstr "Drochfhormáid incriminteach"
+
+#: src/incremen.c:1080
+#, c-format
+msgid "Unsupported incremental format version: %<PRIuMAX>"
+msgstr ""
+"Ní thacaítear leis an leagan seo den fhormáid incriminteach: %<PRIuMAX>"
+
+#: src/incremen.c:1233
+#, c-format
+msgid "Malformed dumpdir: expected '%c' but found %#3o"
+msgstr "dumpdir míchumtha: bhíothas ag súil le '%c' ach fuarthas %#3o"
+
+#: src/incremen.c:1243
+msgid "Malformed dumpdir: 'X' duplicated"
+msgstr "dumpdir míchumtha: 'X' faoi dhó"
+
+#: src/incremen.c:1256
+msgid "Malformed dumpdir: empty name in 'R'"
+msgstr "dumpdir míchumtha: ainm folamh i 'R'"
+
+#: src/incremen.c:1269
+msgid "Malformed dumpdir: 'T' not preceeded by 'R'"
+msgstr "dumpdir míchumtha: 'T' gan 'R' roimhe"
+
+#: src/incremen.c:1275
+msgid "Malformed dumpdir: empty name in 'T'"
+msgstr "dumpdir míchumtha: ainm folamh i 'T'"
+
+#: src/incremen.c:1295
+#, c-format
+msgid "Malformed dumpdir: expected '%c' but found end of data"
+msgstr ""
+"dumpdir míchumtha: bhíothas ag súil le '%c' ach fuarthas deireadh na sonraí"
+
+#: src/incremen.c:1301
+msgid "Malformed dumpdir: 'X' never used"
+msgstr "dumpdir míchumtha: níor úsáideadh 'X' riamh"
+
+#: src/incremen.c:1344
+#, c-format
+msgid "Cannot create temporary directory using template %s"
+msgstr "Ní féidir comhadlann shealadach a chruthú le teimpléad %s"
+
+#: src/incremen.c:1392
+#, c-format
+msgid "%s: Not purging directory: unable to stat"
+msgstr "%s: ní féidir an chomhadlann a stat: nach purgaithe"
+
+#: src/incremen.c:1405
+#, c-format
+msgid "%s: directory is on a different device: not purging"
+msgstr "%s: tá an chomhadlann ar ghléas eile ar fad; nach purgaithe"
+
+#: src/incremen.c:1413
+#, c-format
+msgid "%s: Deleting %s\n"
+msgstr "%s: Ag scriosadh %s\n"
+
+#: src/incremen.c:1418
+#, c-format
+msgid "%s: Cannot remove"
+msgstr "%s: Ní féidir scriosadh a dhéanamh"
+
+#: src/list.c:113
+#, c-format
+msgid "%s: Omitting"
+msgstr "%s: ag fágáil ar lár"
+
+#: src/list.c:131
+#, c-format
+msgid "block %s: ** Block of NULs **\n"
+msgstr "bloc %s: ** bloc de NULanna **\n"
+
+#: src/list.c:144
+#, c-format
+msgid "A lone zero block at %s"
+msgstr "Bloc nialasach scoite ag %s"
+
+#: src/list.c:155
+#, c-format
+msgid "block %s: ** End of File **\n"
+msgstr "bloc %s: ** Deireadh comhaid **\n"
+
+#: src/list.c:178 src/list.c:1054 src/list.c:1282
+#, c-format
+msgid "block %s: "
+msgstr "bloc %s: "
+
+#. TRANSLATORS: %s is type of the value (gid_t, uid_t, etc.)
+#: src/list.c:662
+#, c-format
+msgid "Blanks in header where numeric %s value expected"
+msgstr "Bearnaí sa cheanntásc; ag súil le luach uimhriúil %s"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:717
+#, c-format
+msgid "Archive octal value %.*s is out of %s range; assuming two's complement"
+msgstr ""
+"Tá an luach ochtnártha %.*s as raon %s sa chartlann;\n"
+"ag glacadh le comhlánú dénártha"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:728
+#, c-format
+msgid "Archive octal value %.*s is out of %s range"
+msgstr "Tá an luach ochtnártha %.*s as raon %s sa chartlann"
+
+#: src/list.c:749
+msgid "Archive contains obsolescent base-64 headers"
+msgstr "Tá ceanntásca le bunuimhir 64 i léig sa chartlann"
+
+#: src/list.c:763
+#, c-format
+msgid "Archive signed base-64 string %s is out of %s range"
+msgstr "Teaghrán %s le sín agus bunuimhir 64 as raon %s sa chartlann"
+
+#: src/list.c:794
+#, c-format
+msgid "Archive base-256 value is out of %s range"
+msgstr "Tá an luach le bunuimhir 256 as raon %s sa chartlann"
+
+#. TRANSLATORS: Second %s is a type name (gid_t,uid_t,etc.)
+#: src/list.c:823
+#, c-format
+msgid "Archive contains %.*s where numeric %s value expected"
+msgstr "Tá %.*s sa chartlann; ag súil le luach uimhriúil %s"
+
+#. TRANSLATORS: Second %s is type name (gid_t,uid_t,etc.)
+#: src/list.c:845
+#, c-format
+msgid "Archive value %s is out of %s range %s..%s"
+msgstr "Tá an luach cartlainne %s as raon %s: %s..%s"
+
+#: src/list.c:1217
+#, c-format
+msgid " link to %s\n"
+msgstr " nasc le %s\n"
+
+#: src/list.c:1225
+#, c-format
+msgid " unknown file type %s\n"
+msgstr " cineál anaithnid comhaid %s\n"
+
+#: src/list.c:1243
+#, c-format
+msgid "--Long Link--\n"
+msgstr "--Nasc Fada--\n"
+
+#: src/list.c:1247
+#, c-format
+msgid "--Long Name--\n"
+msgstr "--Ainm Fada--\n"
+
+#: src/list.c:1251
+#, c-format
+msgid "--Volume Header--\n"
+msgstr "--Ceanntásc Imleabhair--\n"
+
+#: src/list.c:1259
+#, c-format
+msgid "--Continued at byte %s--\n"
+msgstr "--Ar lean ag beart %s--\n"
+
+#: src/list.c:1287
+msgid "Creating directory:"
+msgstr "Comhadlann á cruthú:"
+
+#: src/misc.c:456
+#, c-format
+msgid "Renaming %s to %s\n"
+msgstr "%s á athainmniú go %s\n"
+
+#: src/misc.c:465 src/misc.c:483
+#, c-format
+msgid "%s: Cannot rename to %s"
+msgstr "%s: Ní féidir athainmniú go %s"
+
+#: src/misc.c:488
+#, c-format
+msgid "Renaming %s back to %s\n"
+msgstr "%s á athainmniú go %s arís\n"
+
+#: src/misc.c:615
+msgid "Cannot save working directory"
+msgstr "Ní féidir an chomhadlann reatha a shábháil"
+
+#: src/misc.c:621
+msgid "Cannot change working directory"
+msgstr "Ní féidir an chomhadlann reatha a athrú"
+
+#: src/misc.c:711
+msgid "child process"
+msgstr "macphróiseas"
+
+#: src/misc.c:720
+msgid "interprocess channel"
+msgstr "bealach idir próisis"
+
+#. TRANSLATORS: The following three msgids form a single sentence.
+#.
+#: src/names.c:599
+msgid "Pattern matching characters used in file names. Please,"
+msgstr "Aimsíodh saoróga in ainmneacha comhaid."
+
+#: src/names.c:601
+msgid "use --wildcards to enable pattern matching, or --no-wildcards to"
+msgstr "Úsáid --wildcards chun meaitseáil patrún a chumasú, nó --no-wildcards"
+
+#: src/names.c:603
+msgid "suppress this warning."
+msgstr "chun an rabhadh seo a mhúchadh."
+
+#: src/names.c:618 src/names.c:636
+#, c-format
+msgid "%s: Not found in archive"
+msgstr "%s: Ní sa chartlann é"
+
+#: src/names.c:621
+#, c-format
+msgid "%s: Required occurrence not found in archive"
+msgstr "%s: Níl rud riachtanach sa chartlann"
+
+#: src/tar.c:80
+#, c-format
+msgid "Options `-%s' and `-%s' both want standard input"
+msgstr "Tá gá leis an ionchur caighdeánach ar na roghanna `-%s' agus `-%s'"
+
+#: src/tar.c:157
+#, c-format
+msgid "%s: Invalid archive format"
+msgstr "%s: Formáid neamhbhailí chartlainne"
+
+#: src/tar.c:181
+msgid "GNU features wanted on incompatible archive format"
+msgstr "Níl roghanna GNU ar fáil d'fhormáid neamh-chomhoiriúnach chartlainne"
+
+#: src/tar.c:242
+#, c-format
+msgid ""
+"Unknown quoting style `%s'. Try `%s --quoting-style=help' to get a list."
+msgstr ""
+"Stíl anaithnid athfhriotail `%s'. Bain triail as `%s --quoting-style=help' "
+"chun liosta a fheiceáil."
+
+#: src/tar.c:329
+msgid ""
+"GNU `tar' saves many files together into a single tape or disk archive, and "
+"can restore individual files from the archive.\n"
+"\n"
+"Examples:\n"
+"  tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.\n"
+"  tar -tvf archive.tar         # List all files in archive.tar verbosely.\n"
+"  tar -xf archive.tar          # Extract all files from archive.tar.\n"
+msgstr ""
+"Sábhálann GNU tar comhaid le chéile i gcartlann aonair ar théip nó ar "
+"dhiosca, agus is féidir comhaid ar leith a athchóiriú as an gcartlann.\n"
+"\n"
+"Samplaí:\n"
+"  tar -cf cartlann.tar fú barr # Cruthaigh cartlann.tar as comhaid fú 7 "
+"barr.\n"
+"  tar -tvf cartlann.tar       # Taispeáin gach comhad i cartlann.tar "
+"(foclach).\n"
+"  tar -xf cartlann.tar        # Bain gach comhad amach as cartlann.tar.\n"
+
+#: src/tar.c:338
+msgid ""
+"The backup suffix is `~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.\n"
+"The version control may be set with --backup or VERSION_CONTROL, values "
+"are:\n"
+"\n"
+"  none, off       never make backups\n"
+"  t, numbered     make numbered backups\n"
+"  nil, existing   numbered if numbered backups exist, simple otherwise\n"
+"  never, simple   always make simple backups\n"
+msgstr ""
+"Is é `~' an iarmhír chúltaca, mura dtugtar é le --suffix nó le hathróg\n"
+"timpeallachta SIMPLE_BACKUP_SUFFIX.\n"
+"Is féidir an modh rialaithe foinsí a shocrú le --backup nó le hathróg\n"
+"thimpeallachta VERSION_CONTROL.  Is iad seo na luachanna bailí:\n"
+"\n"
+"  none, off       ná déan cúltaca riamh\n"
+"  t, numbered     déan cúltacaí agus uimhreacha orthu\n"
+"  nil, existing   'numbered' má tá uimhreacha orthu anois, 'simple' mura "
+"bhfuil\n"
+"  never, simple   déan cúltacaí simplí i gcónaí\n"
+
+#: src/tar.c:364
+msgid "Main operation mode:"
+msgstr "Príomh-mhód oibre:"
+
+#: src/tar.c:367
+msgid "list the contents of an archive"
+msgstr "taispeáin an t-ábhar i gcartlann"
+
+#: src/tar.c:369
+msgid "extract files from an archive"
+msgstr "bain comhaid as cartlann"
+
+#: src/tar.c:372
+msgid "create a new archive"
+msgstr "cruthaigh cartlann nua"
+
+#: src/tar.c:374
+msgid "find differences between archive and file system"
+msgstr "taispeáin difríochtaí idir cartlann agus córas comhaid"
+
+#: src/tar.c:377
+msgid "append files to the end of an archive"
+msgstr "iarcheangail le deireadh cartlainne"
+
+#: src/tar.c:379
+msgid "only append files newer than copy in archive"
+msgstr "ná hiarcheangail ach comhaid mhionathraithe leis an gcartlann"
+
+#: src/tar.c:381
+msgid "append tar files to an archive"
+msgstr "iarcheangail comhaid tar le cartlann"
+
+#: src/tar.c:384
+msgid "delete from the archive (not on mag tapes!)"
+msgstr "scrios as an gcartlann (nach ar théipeanna maighnéadacha!)"
+
+#: src/tar.c:386
+msgid "test the archive volume label and exit"
+msgstr "tástáil lipéad imleabhair na cartlainne agus scoir"
+
+#: src/tar.c:391
+msgid "Operation modifiers:"
+msgstr "Mionathraitheoirí oibríochta:"
+
+#: src/tar.c:394
+msgid "handle sparse files efficiently"
+msgstr "caith le gannchomhaid go héifeachtach"
+
+#: src/tar.c:395
+msgid "MAJOR[.MINOR]"
+msgstr "PRÍOMH[.MION]"
+
+#: src/tar.c:396
+msgid "set version of the sparse format to use (implies --sparse)"
+msgstr ""
+"socraigh leagan fhormáid na ngannchomhad le húsáid (--sparse intuigthe)"
+
+#: src/tar.c:398
+msgid "handle old GNU-format incremental backup"
+msgstr "déan cúltaca incriminteach de shean-nós GNU"
+
+#: src/tar.c:399 src/tar.c:530 src/tar.c:594 src/tar.c:598 src/tar.c:608
+#: src/tar.c:618 src/tar.c:621 src/tar.c:623 src/tar.c:698 tests/genfile.c:130
+#: tests/genfile.c:178 tests/genfile.c:182 tests/genfile.c:185
+msgid "FILE"
+msgstr "COMHAD"
+
+#: src/tar.c:400
+msgid "handle new GNU-format incremental backup"
+msgstr "déan cúltaca incriminteach nua-aoise GNU"
+
+#: src/tar.c:402
+msgid "do not exit with nonzero on unreadable files"
+msgstr "ná scoir le stádas earráide má tá comhad doléite ann"
+
+#: src/tar.c:403 src/tar.c:525 src/tar.c:540 src/tar.c:651 tests/genfile.c:164
+msgid "NUMBER"
+msgstr "UIMHIR"
+
+#: src/tar.c:404
+msgid ""
+"process only the NUMBERth occurrence of each file in the archive; this "
+"option is valid only in conjunction with one of the subcommands --delete, --"
+"diff, --extract or --list and when a list of files is given either on the "
+"command line or via the -T option; NUMBER defaults to 1"
+msgstr ""
+"ná próiseáil ach an UIMHIRú leagan de gach comhad sa chartlann; níl an rogha "
+"bhailí ach in éineacht le ceann de na fo-orduithe --delete, --diff, --"
+"extract nó --list agus nuair a thugtar liosta comhad ar líne na n-orduithe "
+"nó leis an rogha -T; de réir réamhshocraithe UIMHIR=1"
+
+#: src/tar.c:410
+msgid "archive is seekable"
+msgstr "tá an chartlann inchuardaithe"
+
+#: src/tar.c:415
+msgid "Overwrite control:"
+msgstr "Rialú forscríofa:"
+
+#: src/tar.c:418
+msgid "attempt to verify the archive after writing it"
+msgstr "fíoraigh an chartlann i ndiaidh ag scríobh"
+
+#: src/tar.c:420
+msgid "remove files after adding them to the archive"
+msgstr "scrios comhaid i ndiaidh iad a chur leis an gcartlann"
+
+#: src/tar.c:422
+msgid "don't replace existing files when extracting"
+msgstr "ná forscríobh comhaid atá ann le linn baint amach"
+
+#: src/tar.c:424
+msgid "don't replace existing files that are newer than their archive copies"
+msgstr ""
+"ná forscríobh comhaid atá ann má tá siad níos nuaí ná na cinn sa chartlann"
+
+#: src/tar.c:426
+msgid "overwrite existing files when extracting"
+msgstr "forscríobh comhaid atá ann le linn baint amach"
+
+#: src/tar.c:428
+msgid "remove each file prior to extracting over it"
+msgstr "scrios gach comhaid sula scríobhtar air"
+
+#: src/tar.c:430
+msgid "empty hierarchies prior to extracting directory"
+msgstr "folmhaigh géagchóras sula mbaintear comhadlann amach"
+
+#: src/tar.c:432
+msgid "preserve metadata of existing directories"
+msgstr "ná forscríobh meiteashonraí comhadlainne"
+
+#: src/tar.c:434
+msgid "overwrite metadata of existing directories when extracting (default)"
+msgstr ""
+"forscríobh meiteashonraí de chomhadlanna atá ann agus cartlanna á mbaint "
+"amach (réamhshocrú)"
+
+#: src/tar.c:440
+msgid "Select output stream:"
+msgstr "Roghnaigh sruth aschurtha:"
+
+#: src/tar.c:443
+msgid "extract files to standard output"
+msgstr "bain comhaid amach agus scríobh ar aschur caighdeánach"
+
+#: src/tar.c:444 src/tar.c:503 src/tar.c:505 tests/genfile.c:161
+#: tests/genfile.c:188
+msgid "COMMAND"
+msgstr "ORDÚ"
+
+#: src/tar.c:445
+msgid "pipe extracted files to another program"
+msgstr "píopaigh comhaid bhainte go ríomhchlár eile"
+
+#: src/tar.c:447
+msgid "ignore exit codes of children"
+msgstr "ná bac le cóid scortha na macphróiseas"
+
+#: src/tar.c:449
+msgid "treat non-zero exit codes of children as error"
+msgstr "láimhseáil cóid scortha nach nialas ó mhacphróisis mar earráidí"
+
+#: src/tar.c:454
+msgid "Handling of file attributes:"
+msgstr "Tréithe comhaid á láimhseáil:"
+
+#: src/tar.c:457
+msgid "force NAME as owner for added files"
+msgstr "éiligh AINM mar úinéir de chomhaid bhreise"
+
+#: src/tar.c:459
+msgid "force NAME as group for added files"
+msgstr "éiligh AINM mar ghrúpa de chomhaid bhreise"
+
+#: src/tar.c:460 src/tar.c:637
+msgid "DATE-OR-FILE"
+msgstr "DÁTA-NÓ-COMHAD"
+
+#: src/tar.c:461
+msgid "set mtime for added files from DATE-OR-FILE"
+msgstr "socraigh am mionathraithe na gcomhad nua de réir DÁTA-NÓ-COMHAD"
+
+#: src/tar.c:462
+msgid "CHANGES"
+msgstr "ATHRUITHE"
+
+#: src/tar.c:463
+msgid "force (symbolic) mode CHANGES for added files"
+msgstr "déan ATHRUITHE ar mhód de chomhaid bhreise"
+
+#: src/tar.c:465
+msgid "METHOD"
+msgstr "MODH"
+
+#: src/tar.c:466
+msgid ""
+"preserve access times on dumped files, either by restoring the times after "
+"reading (METHOD='replace'; default) or by not setting the times in the first "
+"place (METHOD='system')"
+msgstr ""
+"coimeád amanna rochtana de chomhaid dhumpáilte, trí athchóiriú na n-amanna i "
+"ndiaidh na comhaid a léamh (MODH='replace', réamhshocraithe), nó gan a "
+"bheith ag socrú na n-amanna sa chéad áit (MODH='system')"
+
+#: src/tar.c:470
+msgid "don't extract file modified time"
+msgstr "ná bain am mionathraithe an chomhaid"
+
+#: src/tar.c:472
+msgid "try extracting files with the same ownership"
+msgstr "bain triail as úinéireacht a choinneáil"
+
+#: src/tar.c:474
+msgid "extract files as yourself"
+msgstr "bain comhaid amach mar thusa féin"
+
+#: src/tar.c:476
+msgid "always use numbers for user/group names"
+msgstr "bain úsáid as uimhreacha d'ainmneacha úsáideora/grúpa"
+
+#: src/tar.c:478
+msgid "extract information about file permissions (default for superuser)"
+msgstr "bain eolas faoi cheadanna (réamhshocrú don fhorúsáideoir)"
+
+#: src/tar.c:482
+msgid ""
+"apply the user's umask when extracting permissions from the archive (default "
+"for ordinary users)"
+msgstr ""
+"cuir umask an úsáideora i bhfeidhm agus ceadanna á mbaint ón chartlann "
+"(réamhshocrú do ghnáthúsáideoirí)"
+
+#: src/tar.c:484
+msgid "sort names to extract to match archive"
+msgstr "sórtáil ainmneacha le cur in oiriúint"
+
+#: src/tar.c:487
+msgid "same as both -p and -s"
+msgstr "ar comhbhrí le -p agus -s araon"
+
+#: src/tar.c:489
+msgid ""
+"delay setting modification times and permissions of extracted directories "
+"until the end of extraction"
+msgstr ""
+"ná socraigh amanna mionathraithe ná ceadanna de na comhadlanna go dtí go "
+"bhfuil an bhaint curtha i gcrích"
+
+#: src/tar.c:492
+msgid "cancel the effect of --delay-directory-restore option"
+msgstr "cealaigh an éifeacht de rogha --delay-directory-restore"
+
+#: src/tar.c:497
+msgid "Device selection and switching:"
+msgstr "Roghnú gléis agus malartú:"
+
+#: src/tar.c:499
+msgid "ARCHIVE"
+msgstr "CARTLANN"
+
+#: src/tar.c:500
+msgid "use archive file or device ARCHIVE"
+msgstr "bain úsáid as cartlann chomhaid nó gléas CARTLANN"
+
+#: src/tar.c:502
+msgid "archive file is local even if it has a colon"
+msgstr "is logánta í an chartlann fiú má tá idirstad ina hainm"
+
+#: src/tar.c:504
+msgid "use given rmt COMMAND instead of rmt"
+msgstr "bain úsáid as ORDÚ in ionad rmt"
+
+#: src/tar.c:506
+msgid "use remote COMMAND instead of rsh"
+msgstr "bain úsáid as ORDÚ cian in ionad rsh"
+
+#: src/tar.c:510
+msgid "specify drive and density"
+msgstr "sonraigh tiomántán agus a dhlús"
+
+#: src/tar.c:524
+msgid "create/list/extract multi-volume archive"
+msgstr "cruthaigh/liostaigh/bain amach cartlann le hiliomad imleabhair"
+
+#: src/tar.c:526
+msgid "change tape after writing NUMBER x 1024 bytes"
+msgstr "athraigh téip i ndiaidh UIMHIR × 1024 beart"
+
+#: src/tar.c:528
+msgid "run script at end of each tape (implies -M)"
+msgstr "rith script i ndiaidh gach téip (-M intuigthe)"
+
+#: src/tar.c:531
+msgid "use/update the volume number in FILE"
+msgstr "úsáid/nuashonraigh an uimhir imleabhair i gCOMHAD"
+
+#: src/tar.c:536
+msgid "Device blocking:"
+msgstr "Blocáil ghléis:"
+
+#: src/tar.c:538
+msgid "BLOCKS"
+msgstr "BLOIC"
+
+#: src/tar.c:539
+msgid "BLOCKS x 512 bytes per record"
+msgstr "BLOIC × 512 beart sa taifead"
+
+#: src/tar.c:541
+msgid "NUMBER of bytes per record, multiple of 512"
+msgstr "UIMHIR beart sa taifead, iolraí de 512"
+
+#: src/tar.c:543
+msgid "ignore zeroed blocks in archive (means EOF)"
+msgstr "déan neamhshuim ar bhloic nialasacha sa chartlann (is ionann le EOF)"
+
+#: src/tar.c:545
+msgid "reblock as we read (for 4.2BSD pipes)"
+msgstr "athbhlocáil le linn léimh (le píopaí 4.2BSD)"
+
+#: src/tar.c:550
+msgid "Archive format selection:"
+msgstr "Roghnú formáide:"
+
+#: src/tar.c:552 tests/genfile.c:151
+msgid "FORMAT"
+msgstr "FORMÁID"
+
+#: src/tar.c:553
+msgid "create archive of the given format"
+msgstr "cruthaigh cartlann san fhormáid seo"
+
+#: src/tar.c:555
+msgid "FORMAT is one of the following:"
+msgstr "Is FORMÁID ceann de na rudaí seo:"
+
+#: src/tar.c:556
+msgid "old V7 tar format"
+msgstr "seanfhormáid V7 tar"
+
+#: src/tar.c:559
+msgid "GNU format as per tar <= 1.12"
+msgstr "formáid de réir GNU tar <= 1.12"
+
+#: src/tar.c:561
+msgid "GNU tar 1.13.x format"
+msgstr "formáid de réir GNU tar 1.13"
+
+#: src/tar.c:563
+msgid "POSIX 1003.1-1988 (ustar) format"
+msgstr "formáid POSIX 1003.1-1988 (ustar)"
+
+#: src/tar.c:565
+msgid "POSIX 1003.1-2001 (pax) format"
+msgstr "formáid POSIX 1003.1-2001 (pax)"
+
+#: src/tar.c:566
+msgid "same as pax"
+msgstr "ar comhbhrí le pax"
+
+#: src/tar.c:569
+msgid "same as --format=v7"
+msgstr "is ionann le --format=v7"
+
+#: src/tar.c:572
+msgid "same as --format=posix"
+msgstr "is ionann le --format=posix"
+
+#: src/tar.c:573
+msgid "keyword[[:]=value][,keyword[[:]=value]]..."
+msgstr "lorgfhocal[[:]=luach][,lorgfhocal[[:]=luach]]..."
+
+#: src/tar.c:574
+msgid "control pax keywords"
+msgstr "rialaigh lorgfhocail pax"
+
+#: src/tar.c:575
+msgid "TEXT"
+msgstr "TÉACS"
+
+#: src/tar.c:576
+msgid ""
+"create archive with volume name TEXT; at list/extract time, use TEXT as a "
+"globbing pattern for volume name"
+msgstr ""
+"cruthaigh cartlann le TÉACS mar ainm imleabhair; úsáid TÉACS mar phatrún "
+"globála ar an ainm imleabhair agus an chartlann á liostú/baint amach"
+
+#: src/tar.c:578
+msgid "filter the archive through bzip2"
+msgstr "scag an chartlann le bzip2"
+
+#: src/tar.c:580
+msgid "filter the archive through gzip"
+msgstr "scag an chartlann le gzip"
+
+#: src/tar.c:584
+msgid "filter the archive through compress"
+msgstr "scag an chartlann le compress"
+
+#: src/tar.c:586
+msgid "PROG"
+msgstr "CLÁR"
+
+#: src/tar.c:587
+msgid "filter through PROG (must accept -d)"
+msgstr "scag le CLÁR (ní foláir -d)"
+
+#: src/tar.c:592
+msgid "Local file selection:"
+msgstr "Roghnú comhaid logánta:"
+
+#: src/tar.c:595
+msgid "add given FILE to the archive (useful if its name starts with a dash)"
+msgstr ""
+"cuir an COMHAD sainithe leis an gcartlann (is áisiúil an rogha seo nuair atá "
+"dais ag tosach an chomhadainm)"
+
+#: src/tar.c:596
+msgid "DIR"
+msgstr "COMHADLANN"
+
+#: src/tar.c:597
+msgid "change to directory DIR"
+msgstr "athraigh go dtí COMHADLANN"
+
+#: src/tar.c:599
+msgid "get names to extract or create from FILE"
+msgstr "tóg ainmneacha le baint/cruthú as comhad COMHAD"
+
+#: src/tar.c:601
+msgid "-T reads null-terminated names, disable -C"
+msgstr "léigh ainmneacha, foirceanta le NULanna; múch -C"
+
+#: src/tar.c:603
+msgid "unquote filenames read with -T (default)"
+msgstr ""
+"bain comharthaí athfhriotail ó chomhadainmneacha a léadh le -T (réamhshocrú)"
+
+#: src/tar.c:605
+msgid "do not unquote filenames read with -T"
+msgstr "ná bain comharthaí athfhriotail ó chomhadainmneacha a léadh le -T"
+
+#: src/tar.c:606 tests/genfile.c:134
+msgid "PATTERN"
+msgstr "PATRÚN"
+
+#: src/tar.c:607
+msgid "exclude files, given as a PATTERN"
+msgstr "fág comhaid as an áireamh, tugtha mar PHATRÚN"
+
+#: src/tar.c:609
+msgid "exclude patterns listed in FILE"
+msgstr "fág as an áireamh aon phatrún atá i gCOMHAD"
+
+#: src/tar.c:611
+#, fuzzy
+msgid ""
+"exclude contents of directories containing CACHEDIR.TAG, except for the tag "
+"file itself"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:614
+#, fuzzy
+msgid "exclude everything under directories containing CACHEDIR.TAG"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:617
+#, fuzzy
+msgid "exclude directories containing CACHEDIR.TAG"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:619
+#, fuzzy
+msgid "exclude contents of directories containing FILE, except for FILE itself"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:622
+#, fuzzy
+msgid "exclude everything under directories containing FILE"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:624
+#, fuzzy
+msgid "exclude directories containing FILE"
+msgstr "gabh thar chomhadlanna a bhfuil clib thaisce iontu"
+
+#: src/tar.c:626
+msgid "avoid descending automatically in directories"
+msgstr "ná téigh isteach i bhfochomhadlanna go huathoibríoch"
+
+#: src/tar.c:628
+msgid "stay in local file system when creating archive"
+msgstr "ná fág an córas comhaid seo agus cartlann á cruthú"
+
+#: src/tar.c:630
+msgid "recurse into directories (default)"
+msgstr "téigh isteach i gcomhadlanna (réamhshocrú)"
+
+#: src/tar.c:632
+msgid "don't strip leading `/'s from file names"
+msgstr "ná struipeáil `/' tosaigh ó ainmneacha comhaid"
+
+#: src/tar.c:634
+msgid "follow symlinks; archive and dump the files they point to"
+msgstr ""
+"lean naisc shiombalacha; cartlannaigh agus dumpáil na comhaid a nascann na "
+"naisc leo"
+
+#: src/tar.c:635
+msgid "MEMBER-NAME"
+msgstr "AINM-BAILL"
+
+#: src/tar.c:636
+msgid "begin at member MEMBER-NAME in the archive"
+msgstr "tosaigh ag ball AINM-BAILL sa chartlann"
+
+#: src/tar.c:638
+msgid "only store files newer than DATE-OR-FILE"
+msgstr "ná sábháil comhaid níos nuaí ná DÁTA-NÓ-COMHAD"
+
+#: src/tar.c:640
+msgid "DATE"
+msgstr "DÁTA"
+
+#: src/tar.c:641
+msgid "compare date and time when data changed only"
+msgstr "déan comparáid le dáta/am modhnaithe"
+
+#: src/tar.c:642
+msgid "CONTROL"
+msgstr "MODH"
+
+#: src/tar.c:643
+msgid "backup before removal, choose version CONTROL"
+msgstr "déan cúltaca sula scriostar, roghnaigh modh oibre maidir le leaganacha"
+
+#: src/tar.c:644 src/tar.c:715 src/tar.c:717 tests/genfile.c:167
+msgid "STRING"
+msgstr "TEAGHRÁN"
+
+#: src/tar.c:645
+msgid ""
+"backup before removal, override usual suffix ('~' unless overridden by "
+"environment variable SIMPLE_BACKUP_SUFFIX)"
+msgstr ""
+"déan cúltaca roimh bhaint, agus sáraigh an gnáth-iarmhír ('~' mura dtugtar é "
+"leis an athróg thimpeallachta SIMPLE_BACKUP_SUFFIX)"
+
+#: src/tar.c:650
+msgid "File name transformations:"
+msgstr "Trasfhoirmiú ainmneacha comhaid:"
+
+#: src/tar.c:652
+msgid "strip NUMBER leading components from file names on extraction"
+msgstr "struipeáil UIMHIR comhpháirt tosaigh ó ainmneacha comhaid"
+
+#: src/tar.c:654
+msgid "EXPRESSION"
+msgstr "SLONN"
+
+#: src/tar.c:655
+msgid "use sed replace EXPRESSION to transform file names"
+msgstr ""
+"Úsáid ordú ionadaíochta SLONN, i bhformáid \"sed\", chun ainmneacha comhaid "
+"a thrasfhoirmiú"
+
+#: src/tar.c:660
+msgid "File name matching options (affect both exclude and include patterns):"
+msgstr ""
+"Roghanna maidir le meaitseáil ainmneacha comhaid (cuirfear iad seo i "
+"bhfeidhm do phatrúin eisiata agus do phatrúin iniata araon):"
+
+#: src/tar.c:663
+msgid "ignore case"
+msgstr "ná bí cásíogair"
+
+# subject is "exclude patterns"
+#: src/tar.c:665
+msgid "patterns match file name start"
+msgstr "meaitseálann patrúin le tosach d'ainmneacha comhaid"
+
+#: src/tar.c:667
+msgid "patterns match after any `/' (default for exclusion)"
+msgstr "meaitseálann patrúin tar éis gach `/' (réamhshocrú i gcás eisiata)"
+
+#: src/tar.c:669
+msgid "case sensitive matching (default)"
+msgstr "dealaigh idir litreacha beaga/móra (réamhshocrú)"
+
+#: src/tar.c:671
+msgid "use wildcards (default for exclusion)"
+msgstr "úsáid saoróga (réamhshocrú do phatrúin eisiata)"
+
+#: src/tar.c:673
+msgid "verbatim string matching"
+msgstr "meaitseáil teaghráin carachtar ar charachtar"
+
+#: src/tar.c:675
+msgid "wildcards do not match `/'"
+msgstr "ní ghlacann saoróga le `/'"
+
+#: src/tar.c:677
+msgid "wildcards match `/' (default for exclusion)"
+msgstr "meaitseálann saoróga le `/' (réamhshocrú le patrúin eisiata)"
+
+#: src/tar.c:682
+msgid "Informative output:"
+msgstr "Aschur faisnéiseach:"
+
+#: src/tar.c:685
+msgid "verbosely list files processed"
+msgstr "taispeáin gach comhad atá próiseáilte, go foclach"
+
+#: src/tar.c:686
+msgid "[.]NUMBER"
+msgstr "[.]UIMHIR"
+
+#: src/tar.c:687
+msgid "display progress messages every NUMBERth record (default 10)"
+msgstr "cuir dul chun cinn ar taispeáint, gach UIMHIRú taifid (réamhshocrú 10)"
+
+#: src/tar.c:690
+msgid "print a message if not all links are dumped"
+msgstr "taispeáin eolas mura bhfuil gach nasc dumpáilte"
+
+#: src/tar.c:691
+msgid "SIGNAL"
+msgstr "COMHARTHA"
+
+#: src/tar.c:692
+msgid ""
+"print total bytes after processing the archive; with an argument - print "
+"total bytes when this SIGNAL is delivered; Allowed signals are: SIGHUP, "
+"SIGQUIT, SIGINT, SIGUSR1 and SIGUSR2; the names without SIG prefix are also "
+"accepted"
+msgstr ""
+"taispeáin líon iomlán na mbeart tar éis na cartlainne a phróiseáil; le "
+"hargóint - taispeáin líon iomlán na mbeart nuair a thugtar an COMHARTHA seo; "
+"Ceadaítear na comharthaí seo a leanas: SIGHUP, SIGQUIT, SIGINT, SIGUSR1 agus "
+"SIGUSR2; glacfar leis na hainmneacha céanna gan an réimír SIG freisin"
+
+#: src/tar.c:697
+msgid "print file modification dates in UTC"
+msgstr "taispeáin dátaí mionathraithe de réir UTC"
+
+#: src/tar.c:699
+msgid "send verbose output to FILE"
+msgstr "scríobh aschur foclach i gCOMHAD"
+
+#: src/tar.c:701
+msgid "show block number within archive with each message"
+msgstr "taispeáin bloc sa chartlann le gach teachtaireacht"
+
+#: src/tar.c:703
+msgid "ask for confirmation for every action"
+msgstr "iarr deimhniú ar gach gníomh"
+
+#: src/tar.c:706
+msgid "show tar defaults"
+msgstr "taispeáin réamhshocruithe tar"
+
+#: src/tar.c:708
+msgid ""
+"when listing or extracting, list each directory that does not match search "
+"criteria"
+msgstr ""
+"agus á liostú nó á bhaint amach, taispeáin gach comhadlann nach meaitseálann "
+"leis an gcuardach"
+
+#: src/tar.c:710
+msgid "show file or archive names after transformation"
+msgstr "taispeáin ainmneacha comhaid/cartlainne i ndiaidh trasfhoirmithe"
+
+#: src/tar.c:713
+msgid "STYLE"
+msgstr "STÍL"
+
+#: src/tar.c:714
+msgid "set name quoting style; see below for valid STYLE values"
+msgstr ""
+"socraigh stíl athfhriotail ainmneacha; féach thíos le haghaidh luachanna "
+"bailí do STÍL"
+
+#: src/tar.c:716
+msgid "additionally quote characters from STRING"
+msgstr "cuir carachtair athfhriotail timpeall na carachtair ó TEAGHRÁN"
+
+#: src/tar.c:718
+msgid "disable quoting for characters from STRING"
+msgstr "ná húsáid comharthaí athfhriotail timpeall carachtair ó TEAGHRÁN"
+
+#: src/tar.c:723
+msgid "Compatibility options:"
+msgstr "Roghanna Comhoiriúnachta:"
+
+#: src/tar.c:726
+msgid ""
+"when creating, same as --old-archive; when extracting, same as --no-same-"
+"owner"
+msgstr ""
+"is ionann le --old-archive le linn cruthaithe; is ionann le --no-same-owner "
+"le linn baint"
+
+#: src/tar.c:731
+msgid "Other options:"
+msgstr "Roghanna eile:"
+
+#: src/tar.c:734
+msgid "disable use of some potentially harmful options"
+msgstr "cuir bac ar úsáid de roghanna gurbh fhéidir leo a bheith urchóideach"
+
+#: src/tar.c:838
+msgid "You may not specify more than one `-Acdtrux' option"
+msgstr "Ná tabhair ach ceann de na roghanna `-Acdtrux'"
+
+#: src/tar.c:848
+msgid "Conflicting compression options"
+msgstr "Roghanna contrártha comhbhrúite"
+
+#: src/tar.c:904
+#, c-format
+msgid "Unknown signal name: %s"
+msgstr "Comhartha anaithnid: %s"
+
+#: src/tar.c:928
+msgid "Date sample file not found"
+msgstr "Comhad samplach dáta gan aimsiú"
+
+#: src/tar.c:936
+#, c-format
+msgid "Substituting %s for unknown date format %s"
+msgstr "Formáid dáta anaithnid; ag baint úsáid as %s in ionad %s"
+
+#: src/tar.c:961
+#, c-format
+msgid "Option %s: Treating date `%s' as %s"
+msgstr "Rogha %s: Ag caitheamh le dáta `%s' mar %s"
+
+#: src/tar.c:1035
+#, c-format
+msgid "%s: file list already read"
+msgstr "%s: léadh an liosta comhad cheana"
+
+#: src/tar.c:1098
+#, c-format
+msgid "%s: file name read contains nul character"
+msgstr "%s: tá carachtar nialasach sa chomhadainm a léadh"
+
+#: src/tar.c:1163
+msgid "Valid arguments for --quoting-style options are:"
+msgstr "Argóintí bailí do roghanna --quoting-style:"
+
+#: src/tar.c:1166
+msgid ""
+"\n"
+"*This* tar defaults to:\n"
+msgstr ""
+"\n"
+"Luachanna réamhshocraithe don tar *seo*:\n"
+
+#: src/tar.c:1199
+msgid "Invalid blocking factor"
+msgstr "Fachtóir bacainneach neamhbhailí"
+
+#: src/tar.c:1271
+msgid "Warning: the -I option is not supported; perhaps you meant -j or -T?"
+msgstr "Rabhadh: níl an rogha -I ar fáil; ar mhaith leat -j nó -T?"
+
+#: src/tar.c:1304
+msgid "Invalid tape length"
+msgstr "Fad téipe neamhbhailí"
+
+#: src/tar.c:1336
+msgid "More than one threshold date"
+msgstr "Níos mó ná spriocdháta amháin"
+
+#: src/tar.c:1391 src/tar.c:1394
+msgid "Invalid sparse version value"
+msgstr "Leagan neamhbhailí ar fhormáid na ngannchomhad"
+
+#: src/tar.c:1479
+msgid "--atime-preserve='system' is not supported on this platform"
+msgstr "ní thacaítear le --atime-preserve='system' ar an chóras seo"
+
+#: src/tar.c:1496
+msgid "--checkpoint value is not an integer"
+msgstr "ní mór do luach --checkpoint a bheith ina slánuimhir"
+
+#: src/tar.c:1589
+#, c-format
+msgid "%s: Invalid group"
+msgstr "%s: Grúpa neamhbhailí"
+
+#: src/tar.c:1596
+msgid "Invalid mode given on option"
+msgstr "Mód neamhbhailí ar rogha"
+
+#: src/tar.c:1649
+msgid "Invalid number"
+msgstr "Uimhir neamhbhailí"
+
+#: src/tar.c:1671
+msgid "Invalid owner"
+msgstr "Úinéir neamhbhailí"
+
+#: src/tar.c:1705
+msgid "Invalid record size"
+msgstr "Méid taifid neamhbhailí"
+
+#: src/tar.c:1708
+#, c-format
+msgid "Record size must be a multiple of %d."
+msgstr "Ní foláir méid taifid a bheith iolraí de %d."
+
+#: src/tar.c:1745
+msgid "Invalid number of elements"
+msgstr "Tá líon na mball neamhbhailí"
+
+#: src/tar.c:1765
+msgid "Only one --to-command option allowed"
+msgstr "Ní cheadaítear ach aon rogha --to-command amháin"
+
+#: src/tar.c:1841
+#, c-format
+msgid "Malformed density argument: %s"
+msgstr "Tá an argóint dlúis míchumtha: %s"
+
+#: src/tar.c:1867
+#, c-format
+msgid "Unknown density: `%c'"
+msgstr "Dlús anaithnid: `%c'"
+
+#: src/tar.c:1884
+#, c-format
+msgid "Options `-[0-7][lmh]' not supported by *this* tar"
+msgstr "Níl na roghanna `-[0-7][lmh]' ar fáil sa leagan seo tar"
+
+#: src/tar.c:1919
+msgid "[FILE]..."
+msgstr "[COMHAD]..."
+
+#: src/tar.c:2022
+#, c-format
+msgid "Old option `%c' requires an argument."
+msgstr "Tá gá le hargóint ar an seanrogha `%c'."
+
+#: src/tar.c:2104
+msgid "--occurrence is meaningless without a file list"
+msgstr "tá an rogha --occurrence gan bhrí in éagmais liosta comhad"
+
+#: src/tar.c:2110
+msgid "--occurrence cannot be used in the requested operation mode"
+msgstr "níl an rogha --occurrence ar fáil sa mhód iarrtha"
+
+#: src/tar.c:2140
+msgid "Multiple archive files require `-M' option"
+msgstr "Ní foláir an rogha `-M' le níos mó ná cartlann amháin"
+
+#: src/tar.c:2145
+msgid "Cannot combine --listed-incremental with --newer"
+msgstr "Ní féidir --listed-incremental a úsáid le --newer"
+
+#: src/tar.c:2162
+#, c-format
+msgid "%s: Volume label is too long (limit is %lu byte)"
+msgid_plural "%s: Volume label is too long (limit is %lu bytes)"
+msgstr[0] "%s: Lipéad imleabhair rófhada (%lu beart ar a mhéad)"
+msgstr[1] "%s: Lipéad imleabhair rófhada (%lu bheart ar a mhéad)"
+msgstr[2] "%s: Lipéad imleabhair rófhada (%lu bheart ar a mhéad)"
+msgstr[3] "%s: Lipéad imleabhair rófhada (%lu mbeart ar a mhéad)"
+msgstr[4] "%s: Lipéad imleabhair rófhada (%lu beart ar a mhéad)"
+
+#: src/tar.c:2175
+msgid "Cannot verify multi-volume archives"
+msgstr "Ní féidir cartlanna le hiliomad imleabhair a fhíorú"
+
+#: src/tar.c:2177
+msgid "Cannot verify compressed archives"
+msgstr "Ní féidir cartlanna comhbhrúite a fhíorú"
+
+#: src/tar.c:2183
+msgid "Cannot use multi-volume compressed archives"
+msgstr "Ní féidir úsáid a bhaint as cartlanna il-ranna comhbhrúite"
+
+#: src/tar.c:2189
+msgid "Cannot concatenate compressed archives"
+msgstr "Ní féidir cartlanna comhbhrúite a iarcheangal"
+
+#: src/tar.c:2201
+msgid "--pax-option can be used only on POSIX archives"
+msgstr "níl an rogha --pax-option le fáil ach le cartlanna POSIX"
+
+#: src/tar.c:2226
+msgid "Cowardly refusing to create an empty archive"
+msgstr "Ní chruthófar cartlann fholamh (go cladhartha)"
+
+#: src/tar.c:2247
+msgid "Options `-Aru' are incompatible with `-f -'"
+msgstr "Níl na roghanna `-Aru' ar fáil in éineacht le `-f -'"
+
+#: src/tar.c:2334
+msgid "You must specify one of the `-Acdtrux' options"
+msgstr "Ní foláir rogha amháin de `-Acdtrux' ar a laghad"
+
+#: src/tar.c:2385
+#, c-format
+msgid "Error exit delayed from previous errors"
+msgstr "Earráid; tobscor moillithe ó earráidí roimhe seo"
+
+#: src/update.c:86
+#, c-format
+msgid "%s: File shrank by %s byte"
+msgid_plural "%s: File shrank by %s bytes"
+msgstr[0] "%s: Chrap an comhad %s beart"
+msgstr[1] "%s: Chrap an comhad %s bheart"
+msgstr[2] "%s: Chrap an comhad %s bheart"
+msgstr[3] "%s: Chrap an comhad %s mbeart"
+msgstr[4] "%s: Chrap an comhad %s beart"
+
+#: src/xheader.c:158
+#, c-format
+msgid "Keyword %s is unknown or not yet implemented"
+msgstr "Tá an lorgfhocal %s anaithnid nó nach bhfuil sé curtha i bhfeidhm fós"
+
+#: src/xheader.c:184
+#, c-format
+msgid "Pattern %s cannot be used"
+msgstr "Ní féidir an patrún %s a úsáid"
+
+#: src/xheader.c:194
+#, c-format
+msgid "Keyword %s cannot be overridden"
+msgstr "Ní féidir an lorgfhocal %s a shárú"
+
+#: src/xheader.c:498
+msgid "Malformed extended header: missing length"
+msgstr "Ceanntásc míchumtha breisithe: fad ar iarraidh"
+
+#: src/xheader.c:506
+msgid "Extended header length is out of allowed range"
+msgstr "Fad an cheanntáisc breisithe as raon"
+
+#: src/xheader.c:513
+#, c-format
+msgid "Extended header length %*s is out of range"
+msgstr "Fad %*s as raon sa cheanntásc breisithe"
+
+#: src/xheader.c:525
+msgid "Malformed extended header: missing blank after length"
+msgstr "Ceanntásc míchumtha breisithe: spás bán ar iarraidh tar éis an fhaid"
+
+#: src/xheader.c:533
+msgid "Malformed extended header: missing equal sign"
+msgstr "Ceanntásc míchumtha breisithe: sín chothroime ar iarraidh"
+
+#: src/xheader.c:539
+msgid "Malformed extended header: missing newline"
+msgstr "Ceanntásc míchumtha breisithe: líne nua ar iarraidh"
+
+#: src/xheader.c:576
+#, c-format
+msgid "Ignoring unknown extended header keyword `%s'"
+msgstr ""
+"Eochairfhocal anaithnid `%s' sa cheanntásc breisithe; ag déanamh neamhshuim "
+"air"
+
+#: src/xheader.c:780
+#, c-format
+msgid "Generated keyword/value pair is too long (keyword=%s, length=%s)"
+msgstr ""
+"Tá an péire a cruthaíodh (eochairfhocal/luach) rófhada (eochairfhocal=%s, "
+"fad=%s)"
+
+#. TRANSLATORS: The first %s is the pax extended header keyword
+#. (atime, gid, etc.).
+#: src/xheader.c:812
+#, c-format
+msgid "Extended header %s=%s is out of range %s..%s"
+msgstr "Tá an ceanntásc breisithe %s=%s as raon %s..%s"
+
+#: src/xheader.c:943 src/xheader.c:973 src/xheader.c:1287
+#, c-format
+msgid "Malformed extended header: invalid %s=%s"
+msgstr "Ceanntásc míchumtha breisithe: %s=%s neamhbhailí"
+
+#: src/xheader.c:1240 src/xheader.c:1265 src/xheader.c:1315
+#, c-format
+msgid "Malformed extended header: excess %s=%s"
+msgstr "Ceanntásc míchumtha breisithe: %s=%s sa bhreis"
+
+#: src/xheader.c:1328
+#, c-format
+msgid "Malformed extended header: invalid %s: unexpected delimiter %c"
+msgstr ""
+"Ceanntásc míchumtha breisithe: %s neamhbhailí: bhíothas ag súil le "
+"teormharcóir %c"
+
+#: src/xheader.c:1338
+#, c-format
+msgid "Malformed extended header: invalid %s: odd number of values"
+msgstr "Ceanntásc míchumtha breisithe: %s neamhbhailí: corruimhir de luachanna"
+
+#: tests/genfile.c:110
+msgid ""
+"genfile manipulates data files for GNU paxutils test suite.\n"
+"OPTIONS are:\n"
+msgstr ""
+"Láimhseálann genfile comhaid shonraí le haghaidh an tsratha tástála GNU "
+"paxutils.\n"
+"Is iad na ROGHANNA:\n"
+
+#: tests/genfile.c:125
+msgid "File creation options:"
+msgstr "Roghanna - cruthú comhad:"
+
+#: tests/genfile.c:126 tests/genfile.c:137
+msgid "SIZE"
+msgstr "MÉID"
+
+#: tests/genfile.c:127
+msgid "Create file of the given SIZE"
+msgstr "Cruthaigh comhad leis an MÉID seo"
+
+#: tests/genfile.c:129
+msgid "Write to file NAME, instead of standard output"
+msgstr "Scríobh i gcomhad AINM, in ionad an aschuir chaighdeánaigh"
+
+#: tests/genfile.c:131
+msgid "Read file names from FILE"
+msgstr "Léigh ainmneacha comhaid ó COMHAD"
+
+#: tests/genfile.c:133
+msgid "-T reads null-terminated names"
+msgstr "Léann -T ainmneacha, foirceanta le NULanna"
+
+#: tests/genfile.c:135
+msgid "Fill the file with the given PATTERN. PATTERN is 'default' or 'zeros'"
+msgstr ""
+"Líon an comhad leis an PATRÚN sonraithe. Is é PATRÚN 'default' nó 'zeros'"
+
+#: tests/genfile.c:138
+msgid "Size of a block for sparse file"
+msgstr "Méid bhloic sa gannchomhad"
+
+#: tests/genfile.c:140
+msgid "Generate sparse file. Rest of the command line gives the file map."
+msgstr ""
+"Cruthaigh gannchomhad. Tugtar an mapa comhaid ar an chuid eile de líne na n-"
+"orduithe."
+
+#: tests/genfile.c:142
+msgid "OFFSET"
+msgstr ""
+
+#: tests/genfile.c:143
+#, fuzzy
+msgid "Seek to the given offset before writing data"
+msgstr "fíoraigh an chartlann i ndiaidh ag scríobh"
+
+#: tests/genfile.c:149
+msgid "File statistics options:"
+msgstr "Roghanna - staitisticí comhaid"
+
+#: tests/genfile.c:152
+msgid "Print contents of struct stat for each given file. Default FORMAT is: "
+msgstr ""
+"Taispeáin inneachar an struct stat le haghaidh gach comhad sonraithe. "
+"FORMÁID réamhshocraithe: "
+
+#: tests/genfile.c:159
+msgid "Synchronous execution options:"
+msgstr "Roghanna - feidhmiú sioncrónach:"
+
+#: tests/genfile.c:162
+msgid ""
+"Execute given COMMAND. Useful with --checkpoint and one of --cut, --append, "
+"--touch"
+msgstr ""
+"Rith an tORDÚ sonraithe. Is áisiúil an rogha seo le --checkpoint agus ceann "
+"de --cut, --append, nó --touch"
+
+#: tests/genfile.c:165
+msgid "Perform given action (see below) upon reaching checkpoint NUMBER"
+msgstr ""
+"Déan an gníomh sonraithe (féach thíos) nuair a shroichtear seicphointe UIMHIR"
+
+#: tests/genfile.c:168
+msgid "Set date for next --touch option"
+msgstr "Socraigh an dáta le haghaidh an chéad rogha --touch eile"
+
+#: tests/genfile.c:171
+msgid "Display executed checkpoints and exit status of COMMAND"
+msgstr "Taispeáin na seicphointí a ritheadh agus stádas scortha den ORDÚ"
+
+#: tests/genfile.c:176
+msgid ""
+"Synchronous execution actions. These are executed when checkpoint number "
+"given by --checkpoint option is reached."
+msgstr ""
+"Gníomhartha rite sioncrónaigh. Ritear iad seo nuair a shroichtear an uimhir "
+"sheicphointe a sonraíodh leis an rogha --checkpoint"
+
+#: tests/genfile.c:179
+msgid ""
+"Truncate FILE to the size specified by previous --length option (or 0, if it "
+"is not given)"
+msgstr ""
+"Teasc COMHAD go dtí an mhéid a sonraíodh leis an rogha --length roimhe seo "
+"(nó teasc go dtí 0, mura sonraítear an rogha seo)"
+
+#: tests/genfile.c:183
+msgid "Append SIZE bytes to FILE. SIZE is given by previous --length option."
+msgstr ""
+"Iarcheangail MÉID beart le COMHAD. Tógtar MÉID ón rogha --length roimhe seo."
+
+#: tests/genfile.c:186
+msgid "Update the access and modification times of FILE"
+msgstr "Nuashonraigh na hamanna rochtana/mionathraithe de CHOMHAD"
+
+#: tests/genfile.c:189
+msgid "Execute COMMAND"
+msgstr "Rith ORDÚ"
+
+#: tests/genfile.c:239
+#, c-format
+msgid "Invalid size: %s"
+msgstr "Méid neamhbhailí: %s"
+
+#: tests/genfile.c:244
+#, c-format
+msgid "Number out of allowed range: %s"
+msgstr "Uimhir as raon: %s"
+
+#: tests/genfile.c:247
+#, c-format
+msgid "Negative size: %s"
+msgstr "Méid diúltach: %s"
+
+#: tests/genfile.c:260 tests/genfile.c:559
+#, c-format
+msgid "stat(%s) failed"
+msgstr "theip ar stat(%s)"
+
+#: tests/genfile.c:354
+#, c-format
+msgid "Error parsing number near `%s'"
+msgstr "Earráid agus uimhir á parsáil i ngar do `%s'"
+
+#: tests/genfile.c:360
+#, c-format
+msgid "Unknown date format"
+msgstr "Formáid anaithnid ar an dáta"
+
+#: tests/genfile.c:383
+msgid "[ARGS...]"
+msgstr "[ARGÓINTÍ...]"
+
+#: tests/genfile.c:420 tests/genfile.c:460 tests/genfile.c:513
+#: tests/genfile.c:663 tests/genfile.c:677
+#, c-format
+msgid "cannot open `%s'"
+msgstr "ní féidir `%s' a oscailt"
+
+#: tests/genfile.c:426
+#, fuzzy, c-format
+msgid "cannot seek: %s"
+msgstr "%s: Ní féidir 'seek' a dhéanamh ag %s"
+
+#: tests/genfile.c:443
+#, c-format
+msgid "file name contains null character"
+msgstr "tá carachtar nialasach sa chomhadainm"
+
+#: tests/genfile.c:508
+#, c-format
+msgid "cannot generate sparse files on standard output, use --file option"
+msgstr ""
+"ní féidir gannchomhaid a chruthú ar an aschur caighdeánach; úsáid rogha --"
+"file"
+
+#: tests/genfile.c:586
+#, c-format
+msgid "incorrect mask (near `%s')"
+msgstr "masc mícheart (i ngar do `%s')"
+
+#: tests/genfile.c:592 tests/genfile.c:625
+#, c-format
+msgid "Unknown field `%s'"
+msgstr "Réimse anaithnid `%s'"
+
+#: tests/genfile.c:652
+#, c-format
+msgid "cannot set time on `%s'"
+msgstr "ní féidir an t-am a shocrú ar `%s'"
+
+#: tests/genfile.c:806
+#, c-format
+msgid "Command exited successfully\n"
+msgstr "D'éirigh leis an ordú\n"
+
+#: tests/genfile.c:808
+#, c-format
+msgid "Command failed with status %d\n"
+msgstr "Theip ar an ordú le stádas %d\n"
+
+#: tests/genfile.c:812
+#, c-format
+msgid "Command terminated on signal %d\n"
+msgstr "Stopadh an t-ordú le comhartha %d\n"
+
+#: tests/genfile.c:814
+#, c-format
+msgid "Command stopped on signal %d\n"
+msgstr "Stopadh an t-ordú ar chomhartha %d\n"
+
+#: tests/genfile.c:817
+#, c-format
+msgid "Command dumped core\n"
+msgstr "Rinne an t-ordú córdhumpa\n"
+
+#: tests/genfile.c:820
+#, c-format
+msgid "Command terminated\n"
+msgstr "Ordú críochnaithe\n"
+
+#: tests/genfile.c:852
+#, c-format
+msgid "--stat requires file names"
+msgstr "Tá ainmneacha comhaid de dhíth ar --stat"
+
+#: tests/genfile.c:865
+#, c-format
+msgid "too many arguments"
+msgstr "an iomarca argóintí"
+
+#~ msgid "%s: Read error at byte %s, reading %lu byte"
+#~ msgid_plural "%s: Read error at byte %s, reading %lu bytes"
+#~ msgstr[0] "%s: Earráid léimh ag beart %s, agus %lu beart á léamh"
+#~ msgstr[1] "%s: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+#~ msgstr[2] "%s: Earráid léimh ag beart %s, agus %lu bheart á léamh"
+#~ msgstr[3] "%s: Earráid léimh ag beart %s, agus %lu mbeart á léamh"
+#~ msgstr[4] "%s: Earráid léimh ag beart %s, agus %lu beart á léamh"
+
+#~ msgid "--Mangled file names--\n"
+#~ msgstr "--Ainmneacha comhaid coscartha--\n"
+
+#~ msgid "Unexpected EOF in mangled names"
+#~ msgstr "Comhadchríoch gan choinne in ainmneacha coscartha"
+
+#~ msgid "Renamed %s to %s"
+#~ msgstr "Athainmníodh %s go %s"
+
+#~ msgid "%s: Cannot symlink to %s"
+#~ msgstr "%s: Ní féidir nasc siombalach a dhéanamh le %s"
+
+#~ msgid "Symlinked %s to %s"
+#~ msgstr "Nasctha %s le %s"
+
+#~ msgid "Unknown demangling command %s"
+#~ msgstr "Ordú anaithnid díchoscartha %s"
+
+#~ msgid "Time stamp out of range"
+#~ msgstr "Stampa ama as raon"
+
+#~ msgid "Modification time (seconds) out of range"
+#~ msgstr "Am mionathraithe (soicindí) as raon"
+
+#~ msgid "Modification time (nanoseconds) out of range"
+#~ msgstr "Am mionathraithe (nanashoicindí) as raon"
+
+#~ msgid "Device number out of range"
+#~ msgstr "Uimhir ghléis as raon"
+
+#~ msgid "Error reading time stamp"
+#~ msgstr "Earráid agus stampa ama á léamh"
+
+#~ msgid "Unexpected EOF"
+#~ msgstr "Comhadchríoch gan choinne"
+
+#~ msgid "same as -N"
+#~ msgstr "ar comhbhrí le -N"
+
+#~ msgid ""
+#~ "creating multi-volume archives in posix format requires using --tape-"
+#~ "length (-L) option"
+#~ msgstr ""
+#~ "Ní mór an rogha --tape-length (-L) a úsáid agus cartlanna il-imleabhair á "
+#~ "gcruthú i bhformáid posix"
+
+#~ msgid "rmtd: Garbage command %c\n"
+#~ msgstr "rmtd: Ordú dramhaíola %c\n"
+
+#~ msgid "Missing file name after -C"
+#~ msgstr "Ainm comhaid ar iarraidh i ndiaidh -C"
+
+#~ msgid "exclude patterns are plain strings"
+#~ msgstr "ná bain úsáid as saoróga i bpatrúin eisiata"
+
+#~ msgid "exclude patterns use wildcards (default)"
+#~ msgstr "bain úsáid as saoróga i bpatrúin (réamhshocrú)"
+
+#~ msgid "print total bytes written while creating archive"
+#~ msgstr "taispeáin líon na mbloc scríofa sa chartlann"
+
+#~ msgid ""
+#~ "When creating archive in verbose mode, list member names as stored in the "
+#~ "archive"
+#~ msgstr ""
+#~ "Agus cartlann á cruthú sa mhód foclach, taispeáin ainmneacha na mball "
+#~ "nuair a chuirtear iad sa chartlann"
+
+#~ msgid "Semantics of -l option will change in the future releases."
+#~ msgstr "Athróidh an bhrí den rogha -l i leaganacha amach anseo."
+
+#~ msgid "Please use --one-file-system option instead."
+#~ msgstr "Bain úsáid as --one-file-system ina ionad, le do thoil."
+
+#~ msgid ""
+#~ "This program comes with NO WARRANTY, to the extent permitted by law.\n"
+#~ "You may redistribute it under the terms of the GNU General Public "
+#~ "License;\n"
+#~ "see the file named COPYING for details."
+#~ msgstr ""
+#~ "Níl baránta AR BITH leis an gclár seo, an oiread atá ceadaithe de réir "
+#~ "dlí.\n"
+#~ "Is féidir leat á scaipeadh de réir na gcoinníollacha den GNU General "
+#~ "Public License;\n"
+#~ "Féach ar an chomhad `COPYING' chun tuilleadh eolais a fháil."
+
+#~ msgid "Quitting now."
+#~ msgstr "Á scor anois."
+
+#~ msgid "WARNING: No volume header"
+#~ msgstr "RABHADH: níl ceanntásc imleabhair ann"
+
+#~ msgid "Visible long name error"
+#~ msgstr "Earráid le hainm fada infheicthe"
+
+#~ msgid "Visible longname error"
+#~ msgstr "Earráid le hainm fada infheicthe"
+
+#~ msgid "don't change access times on dumped files"
+#~ msgstr "ná hathraigh amanna modhnaithe de chomhaid dhumpáilte"
+
+#~ msgid "extract permissions information"
+#~ msgstr "bain eolas faoina ceadanna"
+
+#~ msgid "do not extract permissions information"
+#~ msgstr "ná bain eolas faoina ceadanna"
+
+#~ msgid "dump instead the files symlinks point to"
+#~ msgstr "lean naisc shiombalacha le linn dumpála"
+
+#~ msgid "Print license and exit"
+#~ msgstr "Taispeáin an ceadúnas agus scoir"
+
+#~ msgid ""
+#~ "Based on the work of John Gilmore and Jay Fenlason. See AUTHORS\n"
+#~ "for complete list of authors.\n"
+#~ msgstr ""
+#~ "Bunaithe ar obair de John Gilmore agus Jay Fenlason.  Tá an liosta údar\n"
+#~ "ina iomláine ar fáil sa chomhad AUTHORS.\n"
+
+#~ msgid "Warning: the -y option is not supported; perhaps you meant -j?"
+#~ msgstr "Rabhadh: níl an rogha -y ar fáil; ar mhaith leat -j?"
+
+#~ msgid "Error in writing to standard output"
+#~ msgstr "Earráid le linn scríobh ar aschur caighdeánach"

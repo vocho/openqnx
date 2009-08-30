@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<module name="kdserver">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability>
+			<os name="nto">
+				<cpu isa="x86"/>
+			</os>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>os</GroupOwner>
+	<contents>
+		<package isInternal="true">
+			<component id="kdserver" generated="true">
+				<location basedir="{os}/{cpu}-{o|endian}" runtime="true">kdserver</location>
+		</component>
+		</package>
+	</contents>
+</module>

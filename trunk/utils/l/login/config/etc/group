@@ -1,0 +1,12 @@
+root:x:0:root
+bin:x:1:root,bin
+daemon:x:2:daemon
+sys:x:3:root,bin,adm
+adm:x:4:root,adm,daemon
+tty:x:5:root
+mail:x:40:mail
+news:x:50:news
+uucp:x:60:uucp
+ftp:x:80:ftp
+guest:x:90:
+nobody:x:99:

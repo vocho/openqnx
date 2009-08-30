@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<module name="split">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability supported="true" >
+		  <os name="nto" ><cpu isa="x86" /></os>
+	    </availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+<GroupOwner>tools</GroupOwner>
+<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+	<contents>
+		<package isHost="true">
+		<component id="split" generated="true">
+			<location basedir="{os}/{cpu}/{o|endian}" runtime="true">
+				split
+			</location>
+		</component>
+
+		</package>
+	</contents>
+
+	<requires>
+		<part build="true" location="lib/compat"/>
+	</requires>
+
+</module>

@@ -1,0 +1,72 @@
+# Process this file with autom4te to create testsuite. -*- Autotest -*-
+
+# Test suite for GNU tar.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# The bug occurs when extracting from a tarfile a directory when the directory
+# already exists and the version in the tarfile has more permissive
+# permissions than your umask.  In this case, the permissions of the
+# existing directory will toggle between the version which complies with
+# your umask (which would be correct, without -p) and the version from the
+# tarfile. 
+#
+# Reported by: Ian Jackson <iwj@ubuntu.com>
+#
+# References: <17461.519.640947.664400@davenant.relativity.greenend.org.uk>
+#
+
+AT_SETUP([mode of extracted directories])
+AT_KEYWORDS([extract extract06 directory mode])
+
+AT_TAR_CHECK([
+
+# Force umask
+umask 022
+
+# Make sure user's umask is honored, even if we are superuser
+TAR_OPTIONS="$TAR_OPTIONS --no-same-permissions"
+
+# Create a directory 
+mkdir directory
+chmod 777 directory
+genfile --stat=mode:777 directory
+
+# Archive it
+tar cf arc directory
+
+# Change its permissions ...
+chmod 755 directory
+genfile --stat=mode:777 directory
+
+# ... and attempt to restore it twice
+tar xf arc directory
+genfile --stat=mode:777 directory
+
+tar xf arc directory
+genfile --stat=mode:777 directory
+
+# After both restores, the directory mode should be 755
+],
+[0],
+[777
+755
+755
+755
+])
+
+AT_CLEANUP

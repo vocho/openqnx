@@ -1,0 +1,33 @@
+%C - evaluate arguments as an expression (POSIX)
+
+%C expression
+Where:
+ expression is one of:  defined as:
+  expr1  |  expr2       the result is expr1 if it is not "" and not 0,
+			otherwise the result is expr2
+  expr1  &  expr2       the result is expr1 if both expr1 and expr 2 are
+			not "" and not 0, otherwise the result is 0
+  expr1  =  expr2       integer/string test of equality
+  expr1  >  expr2       integer/string test of greater than
+  expr1  >= expr2       integer/string test of greater than or equal
+  expr1  <  expr2       integer/string test of less than
+  expr1  <= expr2       integer/string test of less than or equal
+  expr1  != expr2       integer/string test of not equal
+  expr1  +  expr2       integer addition
+  expr1  -  expr2       integer subtraction
+  expr1  *  expr2       integer multiplication
+  expr1  /  expr2       integer division
+  expr1  %  expr2       integer modulus
+  expr   :  pattern     string regular expression matching; returns the first
+                        matching subexpression if there is one or the number
+                        of characters that match; note that all patterns are
+			anchored to the beginning of the string.
+  ( expr )              group expressions into a single expression
+
+Note:
+Some operators may need to be escaped for the shell.
+The length, substr, index and match functions are not supported.
+The result is written to the standard output.
+
+These environment variables are not supported:
+LANG, LC_ALL, LC_COLLATE, LC_CTYPE, LC_MESSAGES

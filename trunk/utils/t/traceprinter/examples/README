@@ -1,0 +1,10 @@
+Short description of instrumentation examples
+
+all_classes      - simple example that includes all classes
+one_class        - filtering all but one class
+five_events      - static selective filtering of five events
+ker_calls        - filtering out one particular kernel call
+eh_global        - filtering events with a simple event handler
+eh_simple        - filtering class events with a class event handler
+usr_event_simple - insterting simple user events
+

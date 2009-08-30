@@ -1,0 +1,23 @@
+%C - remove files (POSIX)
+
+%C	[-f] [-i] [-rR] [-l <levels>] [-d] [-v] filename...
+Options:
+ -d          Used with -R, causes files to be removed but the directory
+             tree itself to remain intact. (No rmdirs are done.)
+ -f          Force removal (ignore lack of write permission).
+ -i          Interactive - prompt to stderr requesting confirmation.
+ -l n        Only recurse n levels of a directory tree.
+ -r | -R     Recursive - permits directory trees & contents to be removed.
+ -v          Verbose - prints out files & dir names as they are removed.
+Note:
+ Currently, if POSIX_STRICT is set,  -f and -i will be operationally
+ exclusive - only the last instance of -i or -f will take effect; instances
+ appearing earlier on the command line will be ignored.
+ i.e. rm -i -f *  = force,  rm -f -i * = interactive;  If POSIX_STRICT is
+ not set, -i will require confirmations regardless of whether or not -f is
+ specified.
+
+ In a future release, rm's default behavior will be changed to the
+ POSIX behavior. To work correctly with both current and later
+ versions, either do not use -f and -i together or run rm with 
+ POSIX_STRICT set.

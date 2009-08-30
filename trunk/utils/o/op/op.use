@@ -1,0 +1,6 @@
+%C - run command as someone else
+
+%C <command>
+
+Note that op is designed as an easy way to run commands as root and so must
+be suid root to work properly.

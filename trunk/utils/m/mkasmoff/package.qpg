@@ -1,0 +1,12 @@
+<QPG:Generation>
+   <QPG:Owner file="owner.qpg"/>
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add type="file" file="nto/*/*/mkasmoff" pinfo="mkasmoff.pinfo"/>
+         <QPG:Add hos="solaris" proc="sparc" type="file" install="/usr/bin/" file="solaris/*/*/mkasmoff" pinfo="mkasmoff.pinfo"/>
+         <QPG:Add hos="linux" type="file" install="/usr/bin/" file="linux/*/*/mkasmoff" pinfo="mkasmoff.pinfo"/>
+         <QPG:Add hos="win32" type="file" install="/usr/bin/" file="win32/*/*/mkasmoff.exe" pinfo="mkasmoff.exe.pinfo"/>
+         <QPG:Add type="tree" component="dev" file="public/" install="/usr/include"/>
+      </QPG:Files>
+   </QPG:Values>
+</QPG:Generation>

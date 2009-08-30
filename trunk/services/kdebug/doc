@@ -1,0 +1,74 @@
+********************************************************************
+********************************************************************
+********************************************************************
+THIS IS DOCUMENT IS ALMOST TOTALLY WRONG. IT NEEDS TO BE COMPLETELY
+REWRITTEN.
+********************************************************************
+********************************************************************
+********************************************************************
+
+kdebug - kernel debugger (NTO)
+
+Syntax:
+
+kdebug [-K] [-v] [-Ds[;port[.speed]]] [-Dp[;port]]
+
+Options:
+
+Where:
+
+port		is a (hex) I/O address of a serial or parallel port
+speed		is a (decimal) baud rate
+
+Options include:
+
+	-K		Cause the kernel to trap on the first instruction.
+			This is useful for debugging the Neutrino kernel.
+			
+	-Ds		Debug over a serial port, with optional port and
+			speed specifiers.  If no port is specified the
+			debugger will use the port at address 0x3f8.  When
+			connecting, kdebug will negotiate with the host debugger to
+			determine the fastest baud rate that both can support
+			reliably.  The minimum acceptable baud rate can be specified
+			with the speed parameter.
+			
+	-Dp		Debug over a parallel port.  Optionally specify the
+			port address.  If the port address is less than 4, then
+			the address reported by the BIOS for that printer is used.
+			
+	-v		Operate verbosely.
+			
+Examples:
+
+	To use the kernel debugger on the first parallel port
+	
+		kdebug -Dp
+		
+	To use the kernel debugger on a serial port at address 0x2f8.
+	
+		kdebug '-Ds;2f8'
+		
+	To use the kernel debugger on the second parallel port, with
+	verbose diagnostic output.
+	
+		kdebug -v '-Dp;2'
+		
+	Example buildfile to debug an application:
+	
+		bootpc
+		mmuon
+		kdebug -Dp
+		ProcNto -pr
+		-D myapp
+		
+Description:
+
+	kdebug is a program used to debug processes located in Neutrino
+	images.  It can communicate to a host debugger (wd) using either
+	a serial or parallel link.  When kdebug is included in an image
+	it must be located before ProcNto.  Processes to be debugged
+	should have the mknto '-D' option.  For more information, see the
+	"Debugging Neutrino Applications" in the Neutrino Cookbook.
+	
+	

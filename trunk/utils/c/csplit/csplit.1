@@ -1,0 +1,52 @@
+
+.TH
+NAME
+.LP
+csplit \- context split
+.SH
+SYNOPSIS
+.LP
+csplit [\-ks] [\-f prefix] [\-n number] file arg1 [.. argn]
+.SH
+DESCRIPTION
+.LP
+Csplit splits a file into n+1 sections as prescribed in 
+arg1..argn.  Each argument specifies where a section ends
+in one of the following forms:
+.IP "/rexp/[relno]"
+Copy lines from file until the next line matches rexp.
+A relno may be added to specify a relative line number from
+the matchine line.  This may be positive or negative.
+.IP "%rexp%[relno]"
+Same as above, except the lines are discarded rather than copied.
+.IP "nlines"
+Copy this number of lines from file.
+.IP "{num}"
+Repeat the preceding argument this number of times.
+.SH
+OPTIONS
+.IP "-k"
+Leave previously created files intact.
+.IP "-s"
+Suppress output of file size messages.
+.IP "-f prefix"
+Files created will be prefix00, prefix01...  (default is xx00,xx01,...)
+.IP "-n number"
+Use number decimal digits to suffix filenames (default is 2).
+.SH
+EXAMPLES
+.LP
+extract a uuencoded file from a mail or internet message:
+.IP
+csplit file '%^begin%' '/^end/+1' '%.*%'
+.LP
+which is interpreted as:
+.IP
+discard all lines until one which starts with 'b','e','g','i','n'
+.IP
+copy all lines until one past one which starts with 'e','n','d'
+.IP
+discard all remaining lines.
+.LP
+copy a file into parts of 1 10 100 1000 10000 lines
+csplit file 1 10 100 1000 10000 

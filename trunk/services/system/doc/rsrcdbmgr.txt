@@ -1,0 +1,224 @@
+
+NTO Resource Database.
+
+ The resource database is a manager which is responsible
+for allocating and keeping track of resources on the
+system.  The resources currently tracked are: Memory,
+IRQ's, DMA Channels, IO Ports. Minor device numbers
+are handled with a separate rsrcdbmgr_minor_attach/detach.
+
+There are two main functions which drivers will use
+to communicate with the resource database:
+
+#include <sys/rsrcdbmgr.h>
+#include <sys/rsrcdbmsg.h>
+int rsrcdbmgr_attach(rsrc_request_t *list, int32_t count);
+int rsrcdbmgr_detach(rsrc_request_t *list, int32_t count);
+
+Both functions take an array of resource request structures
+which look like:
+
+typedef struct _rsrc_request {
+	uint64_t			length;		/* Length of resource desired */
+	uint64_t			align;		/* Alignment of resource desired */
+	uint64_t			start;		/* Start of resource range */
+	uint64_t			end;		/* End of resource range */
+	uint32_t			flags;		/* Resource type | Resource flags */
+	uint32_t			zero[3];	/* Reserved */
+} rsrc_request_t;
+
+Mandatory fields are 'length' and a resource type ored into 
+the 'flags' field.  For example:
+
+	rsrc_request_t req;
+	req.length = 1; req.flags = RSRCDBMGR_DMA_CHANNEL;
+	rsrcdbmgr_attach(&req, 1);
+
+Will select one DMA Channel out of the available free
+resources, remove that channel from use by others,
+and return the selected channel to you in the req.start 
+field. For lengths greater than 1, the range 
+req.start-req.end is the area provided to you.
+
+When you are finished with your resource, you must
+return it to the system by issuing a rsrcdbmgr_detach
+with the same start, end and type that you were issued.
+The easiest way to do this is to just return the 
+object your were allocated ie for the above:
+	
+	rsrcdbmgr_detach(&req, 1);
+
+If the resource request can't be filled (or
+returned in the case of a detach), or an error
+occurs then -1 is returned.
+
+Valid flags (in addition to the resource types)
+are:
+
+RSRCDBMGR_FLAG_ALIGN		
+	The 'align' field is valid and any resource
+	request should start with the given alignment.
+
+RSRCDBMGR_FLAG_RANGE		
+	The 'start' and 'end' fields are valid and any
+	resource request should only return a value 
+	between start and end inclusive.
+
+RSRCDBMGR_FLAG_SHARE		
+	When a resource is allocated, don't remove the
+	resource from the system database, but allow
+	other requests to have access to this resource.
+
+RSRCDBMGR_FLAG_TOPDOWN		
+	When searching for a free resource block, search
+	starting at the 'end' and look to 'start' rather
+	than searching from 'start' to 'end'
+
+Examples:
+
+ ie) 4 byte aligned, length 50, any range
+	 list.align = 4 list.length = 50;
+	 list.flags = RSRCMGR_FLAG_ALIGN | RSRMGR_IO_PORT
+	 rsrcmgr_attach(&list, 1);
+ 
+ ie) 1 IO port (io port 0) and 1 IRQ (In range 10-12)
+   list[0].start = list[0].end = 0; list[0].length = 1; 
+   list[0].flags = RSRCMGR_FLAG_RANGE | RSRCMGR_IO_PORT;
+   list[1].start = 10; list[1].end = 12; list[1].length = 1; 
+   list[1].flags =  RSRCMGR_FLAG_RANGE | RSRCMGR_IRQ;
+   rsrcmgr_attach(list, 2);
+
+
+MINOR NUMBERS:
+
+The two functions for minor number management are:
+
+int rsrcdbmgr_attach_minor(int major, int minor_request);
+int rsrcdbmgr_detach_minor(int major, int minor);
+
+In order to request minor numbers, you must first 
+have a valid major number.  To obtain a specific 
+minor number specify that number as your 'minor_request', 
+otherwise specify -1 and the system will allocate a
+free minor number.  The function returns -1 on
+error otherwise it returns your minor number.
+
+When you are finished with a minor number you should
+return it to the system.  Unlike regular resources,
+minor numbers are not reclaimed automatically when
+a process exits.
+
+/***
+ FUNCTIONS -- to go in hiding
+***/
+
+These are functions which are available for manipulating
+the resource database.  Essentially for creating, destroying
+resources in the database and for querying the database.
+These will likely be hidden from view once the database
+becomes established.
+
+/*
+ Basic resource request items
+*/
+typedef struct _rsrc_alloc {
+	uint64_t			start;		/* Start of resource range */
+	uint64_t			end;		/* End of resource range */
+	uint32_t			flags;		/* Resource type | Resource flags */
+} rsrc_alloc_t;
+
+Currently the only flags which are valid are the 
+
+RSRCDBMGR_FLAG_RSVP
+	Used for creating a resource which has a higher
+	priority than other resources and is in effect
+	"reserved".  It is only given out when there are
+	no other valid ranges to give. Only valid for 
+	create.
+
+RSRCDBMGR_FLAG_USED
+	Used for query's to indicate that you want to 
+	query the resources which have been used by
+	this process (as opposed to free resources in
+	the system).
+
+As with requests, you must or a type field in with the
+request.
+
+For creating/destroying resources use:
+
+int rsrcdbmgr_create(rsrc_alloc_t *item, int32_t count);
+int rsrcdbmgr_destroy(rsrc_alloc_t *item, int32_t count);
+
+ie	Create a 0-4K Memory Allocation and 5 DMA Channels
+
+	rsrc_allo_t alloc[2];
+	alloc[0].start = 0; alloc[0].end = 4*1024; 
+	alloc[0].flag = RSRCDBMGR_MEMORY;
+	alloc[1].start = 1; alloc[1].end = 5;
+	alloc[1].flag = RSRCDBMGR_DMA_CHANNEL;
+	rsrcdbmgr_create(alloc, 2);
+
+You can only destroy resources that are free and in
+the database.  These functions return -1 on error.
+
+For querying resources use:
+
+int rsrcdbmgr_query(rsrc_alloc_t *list, int listcnt, int start, uint32_t type);
+
+This returns a list of resources from the database in
+the user supplied array list.  If list = NULL or 
+listcnt = 0 then just the count of elements is returned.
+Otherwise store listcnt number of elements starting
+at a zero based start (as many as possible before the 
+either the end of the resource list, or array is full).
+
+Returns: The number of elements in the resource database
+list.
+
+This example lists all of the MEMORY resource blocks:
+	rsrc_alloc_t	list[20];
+	int				size, count = 0, start = 0;
+
+	while (1) {
+		count = rsrcdbmgr_query(&list, 20, start, RSRCDBMGR_MEMORY);
+		if (count == -1) 
+			break;
+
+		size = MIN(count-start, 20);
+		printf("Retreived %d of a possible %d resource blocks",
+			    size, count);
+
+		for (count=0; count<size; count++) {
+			printf("RSRC[%d] Start %d End %d \n", 
+				start+count, list[count].start, list[count].end);
+		}
+		start += size;
+	}
+
+TODO: Proc interface doced .....
+/*
+ Command can be any of 
+	RSRCDBMGR_REQ_QUERY,  RSRCDBMGR_REQ_CREATE,  RSRCDBMGR_REQ_DESTROY,  
+
+ If command is RSRCDBMGR_REQ_QUERY | type :
+	*list is an array into which count elements can be copied.
+	The type of resource is or'ed into the command and can include 
+	RSRCDB_FLAG_USED for used resources. -1 is returned on failure,
+	otherwise the number of elements stored in the array is returned.
+	By specifying a NULL list and/or count you can retreive the 
+	number of elements in a given list.
+	By specifying a NULL prp you can get the system list (read free) of 
+	elements.
+
+ If command is RSRCDBMGR_REQ_CREATE/DESTROY
+	*list is an array of count elements which are to be placed into/
+	taken out of the resource database.  The start field, prp fields are ignored.
+	Returns -1 on failure
+
+*/
+int rsrcdbmgr_proc_interface(PROCESS *prp, 
+                             rsrc_alloc_t *list, 
+							 int count, 
+							 int start, 
+							 int command);

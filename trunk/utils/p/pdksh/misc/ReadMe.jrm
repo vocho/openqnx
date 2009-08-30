@@ -1,0 +1,118 @@
+BUILDING THE PD KSH
+===================
+
+As usual, there are differences between BSD and System V
+versions.  Ideally, all you have to do is edit the Makefile in
+this directory to set the CONFIG macro to the appropriate value.
+(Actually, you may wish to change the CONFIG macro in all
+Makefiles; if you always invoke make(1) from here, CONFIG will
+be passed down, but if you invoke make(1) from a subdirectory
+you'll want the appropriate definition in that Makefile.)
+
+Of course it's not quite that simple.  You may, however, take
+solace in the knowledge that it used to be worse.
+
+The Compatibility Libraries
+---------------------------
+
+Eric Gisin wrote this shell using ANSI C and POSIX as
+portability guidlines.  Realizing that nobody had a POSIX
+system and almost no one had an ANSI C environment, he provided
+minimal compatibility libraries.
+
+There are two libraries, one for POSIX (libposix.a) and one for
+ANSI C (libstdc.a).
+
+Libposix.a is pretty simple.  Nothing in it has ever broken on
+me, so I'd just leave it.  It provides a version of dup2() for
+System V systems.
+
+Libstdc.a is a bit hairy.  I recommend looking at the routines
+provided and, and editing the std/stdc Makefile and only
+including objects that have routines your system libc.a is
+lacking.  Various of the provided routines are just plain
+flaky, but only when they're not really needed.  The other
+hairy thing he does is craft an ANSI stdio.h from the system
+supplied one and one of his own.  Again, it's better than it
+used to be, but it's still a hack, and you may have to modify
+it by hand.
+
+You will also need a POSIX compatible set of directory reading
+routines.  System V.3 systems have this in libc.a.  The
+std/posix directory provides a something for BSD systems.  I
+use a slightly modified version of Doug Gwyn's PD version.
+
+(The ``slightly modified'' is to work around a bug in Gwyn's version.
+The POSIX routines are documented as returning failure if the file for
+opendir(3) is not a directory.  Gwyn attempts to open(2) the file, and
+then stats it to see if the file is a directory.  However, if the file
+is a special file, and the open(2) doesn't return, you're screwed.  My
+change was to open the file with the O_NDELAY flag, but Gwyn didn't
+feel this was portable (true, but I only do it where it works) and
+that stat-ing before the open would be too slow (true).  The upshot is
+if you use his routines unmodified, don't ever do an "ls -l /dev/*/*".)
+
+The Shell Source
+----------------
+
+The source for the shell itself is in the sh directory.  There you
+will want to edit config.h to determine the configuration options.  Vi
+mode is in kind of rough shape, but does work.  DIRSTACK routines
+aren't implemented yet, so again, why bother.  SWTCH is a bit arcane,
+but it you use shl(1) and you define EMACS or VI you want to define
+this.  JOBS is really only useful on BSD systems.  It might work on
+systems that have POSIX job control, but I wouldn't bet on it.
+SHARPBANG is only useful on systems where the exec() family don't
+honour the #!/prog/path convention.
+
+This is where the shell gets built so you may wish to change
+the OTHERLIBS macro in the Makefile to point to your POSIX
+directory routines, or to use -lc_s, or whatever.
+
+Miscellaneous
+-------------
+
+The Makefiles that actually compile things use the macro
+CCOPTS, so you can change it in individual Makefiles or specify
+it on the command line, eg. "make CCOPTS=-O OTHERLIBS=-lc_s".
+LDOPTS is used in the Makefile where the ksh is actually built.
+
+The very first time on a new system, do a "make clobber"
+
+Good luck.
+
+Documentation
+-------------
+
+The ksh.1 is a man page for the PD ksh, although it lags
+somewhat behind the code.  You get what you pay for.
+
+The ksh88.1 is a man page for AT&T's ksh88 (the latest version)
+provided for comparison.
+
+History
+-------
+
+Much of the shell was written by Eric Gisin at the University
+of Waterloo, using some pieces of other stuff, notably Charles
+Forsythe's V7 shell, and some enhancements from the BRL shell.
+He placed it (in a alpha test state) into the public domain
+while I was at UW.  I snarfed a copy, and got it running on my
+UNIXpc, and later some machines at work.  I sent Gisin some bug
+reports, but he seems to have lost interest in the project.
+This may be because he now does some work for MKS, who produce a
+commercial version of the ksh for MS-DOS machines, so there may
+be a conflict of interest.
+
+So I gave up on getting future versions, and adopted it.  I've
+made some enhancements, and quite a few bug fixes, and various
+people at work have contributed as well.  It remains in the
+public domain, although I imagine the people involved would
+appreciate leaving their names attached (I'm exempt; I haven't
+actually included my name anywhere but here).
+
+The README in the sh directory is Gisin's, and tells a bit of
+the story from his point of view.  Note that his compilation
+instructions don't really apply anymore.
+
+John R. MacMillan

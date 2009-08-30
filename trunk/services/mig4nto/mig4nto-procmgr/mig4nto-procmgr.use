@@ -1,0 +1,8 @@
+%C - QNX 4 to QNX Neutrino migration kit process manager
+
+%C [-ntv] &
+
+  -n network_id   QNX 4 style nid for this node.  Default is 1.
+                  Queried for by things such as qnx_osinfo().
+  -v              Verbose.  Use multiple for more information.
+  -t num_threads  Sets the number of threads for triggering (default 4).

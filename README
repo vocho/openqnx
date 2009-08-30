@@ -1,0 +1,26 @@
+
+Compiling monartis-enhanced openQNX
+-----------------------------------
+
+In order to compile QNX, you have to install Momentics (6.4.0 is ok) locally, because some of files required by the OS
+are not in the basic kernel (recall that openQNX follows a microkernel architecture, and some parts like
+file systems, drivers, etc. do not belong to the kernel).
+
+Then, the files qnx_env and qconf_override_mk must be adapted accordingly.
+
+
+1) change dir to trunk
+
+2) compilation for x86 and nto (neutrino)
+
+make CPULIST=x86 OSLIST=nto hinstall
+make CPULIST=x86 OSLIST=nto install
+
+3) using QNX with QEMU
+
+- Use the build_cmd(_with_create for the first time) script to create an image
+- Type qemu -hda qnxfs.img
+
+
+
+

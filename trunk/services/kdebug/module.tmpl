@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<module name="kdebug">
+
+	<type>Element</type>
+
+	<classification>Runtime</classification>
+
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>os</GroupOwner>
+	<RuntimeComponent>Internal</RuntimeComponent>
+
+
+	<contents>
+		<component id="kdebug" generated="true">
+			<kind type="exe"/>
+				<location basedir="gdb/{cpu}/{o|endian}" runtime="true">
+					gdb_kdebug
+				</location>
+		</component>
+		<component id="kdebug" generated="true">
+			<kind type="exe"/>	
+				<location basedir="gdb/mips/be.32" strip="false" isa="mips" byteorder="be" runtime="true">
+					gdb_kdebug-32
+				</location>
+		</component>
+		<component id="kdebug" generated="true">
+			<kind type="exe"/>
+				<location basedir="gdb/mips/le.32" strip="false" isa="mips" byteorder="le" runtime="true">
+					gdb_kdebug-32
+				</location>
+		</component>
+		<component id="kdebug" generated="true">
+			<kind type="exe"/>
+				<location basedir="wd/x86/o" strip="false" isa="x86" runtime="true">
+					wd_kdebug
+				</location>
+		</component>
+	</contents>
+
+
+	<requires>
+		<part build="false" location="services/system"/>
+		<part build="false" location="hardware/startup/lib"/>
+		<part build="true" location="utils/m/mkasmoff"/>
+		<part build="true" location="lib/elf"/>
+		<part build="true"  location="lib/kdutil"/>
+	</requires>
+
+</module>

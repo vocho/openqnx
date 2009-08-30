@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<module name="qnx43">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<component id="Archive" generated="true">
+			<location basedir="nto/{cpu}/a{.:endian}" os="nto" isa="{cpu}" byteorder="{endian}" runtime="false">
+				libqnx43.a
+			</location>
+			<location basedir="win32/x86/a" os="win32" isa="{cpu}" byteorder="{endian}" runtime="false">
+				libqnx43.a
+			</location>
+		</component>
+
+		<component id="header" generated="false">
+			<kind type="header"/>
+			<source available="true">
+				<location basedir="public" runtime="false" subdirs="true">
+					.
+				</location>
+			</source>
+		</component>
+
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/util"/>
+	</requires>
+
+</module>

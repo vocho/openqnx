@@ -1,0 +1,15 @@
+%C - convert files to QNX2, QNX4, or DOS format (QNX)
+
+%C	-clr [-z] [file...]
+Options:
+ -c    Convert files to DOS format (CRLF).
+ -l    Convert files to QNX 4.0 format (LF).
+ -q    Quiet. Do not write names of files being
+       processed to stdout.
+ -r    Convert files to QNX 2.15 format (RS).
+ -z    Strip all Ctrl-z's from the file.
+ file  Pathname of file to strip. No files, or
+       a file with a pathname of '-', will be taken
+       to mean 'read from standard input/write to
+       standard output'. If no files are specified,
+       -q is implied.

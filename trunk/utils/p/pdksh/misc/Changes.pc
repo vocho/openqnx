@@ -1,0 +1,28 @@
+Changes by Peter Collinson - Hillside Systems/BSDI - July 1992
+
+
+a)	Add select command - this cannot be ksh without that.
+	(It NEEDS typedefs too)
+b)	Remove all the bcopys from vi.c
+	add 
+	#define memmove in sh.h for BSD systems
+c)	Add <Esc>* command to vi mode - expands to a list of files
+	using the menu printing routine
+d)	Add my version of history, that works much like the `proper' ksh
+	storing data in a file that is shared between different invocations
+	of the shell.
+e)	Add the ability to redirect to am expansion... ie
+
+		ls > o*
+	if o* is unique then it puts it into the file that matches
+	otherwise it puts it to a file called o*... this is current
+	behaviour.
+f)	Add alternations, from Csh.d) This is not part of ksh but is something
+	that csh users really miss from the Bourne shell derivatives. The idea
+	is that lists inside curly braces expand to arguments. ie.
+		exampl{a,b,c,d,e}
+	will expand to 5 arguments
+		exampla examplb examplc exampld example
+	Recursive lists are permitted.
+g)	Add suspend as a built-in alias.
+h)	Port to BSD/386 - add _POSIX_TERM and _BSDI as defines.

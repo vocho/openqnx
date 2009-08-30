@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!-- Module name + module type = unique identifier -->
+<module name="backtrace">
+	<type>Element</type>
+	<classification>SDK</classification>
+	<kind type="library"/>
+
+	<!-- Available for what platforms? -->
+	<supports>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<!-- Source for source modules and builds -->
+	<source available="true">
+		<location type="" subdirs="true" relative="true">.</location>
+	</source>
+
+	<!-- Binary packaging info (including public headers -->
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="SharedObj" generated="true">
+			<location type="install">usr/lib</location>
+			<location runtime="true" basedir="{os}/{cpu}/so{.:endian}">libbacktrace.so</location>
+			<location runtime="false" basedir="{os}/{cpu}/a{.:endian}">libbacktrace.a</location>
+		</component>
+
+		<!-- Public headers to include in package -->
+		<component id="headers" basedir="public">
+			<kind type="header"/>
+			<source available="true">
+			<location runtime="false" relative="true" subdirs="false">.</location>
+			</source>
+		</component>
+	</contents>
+
+	<!-- Dependencies -->
+	<requires>
+	</requires>
+</module>

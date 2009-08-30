@@ -1,0 +1,338 @@
+expr '' '=' '' > /dev/null; echo Retval = $?
+expr '' '=' abc > /dev/null; echo Retval = $?
+expr '' '=' def > /dev/null; echo Retval = $?
+expr '' '=' ABC > /dev/null; echo Retval = $?
+expr '' '=' DEF > /dev/null; echo Retval = $?
+expr '' '=' '   ' > /dev/null; echo Retval = $?
+expr '' '=' '!@#' > /dev/null; echo Retval = $?
+expr '' '=' ',.:' > /dev/null; echo Retval = $?
+expr '' '=' \"123\" > /dev/null; echo Retval = $?
+expr '' '=' \"456\" > /dev/null; echo Retval = $?
+expr '' '=' 0 > /dev/null; echo Retval = $?
+expr '' '=' -25 > /dev/null; echo Retval = $?
+expr '' '=' 317 > /dev/null; echo Retval = $?
+expr '' '<' '' > /dev/null; echo Retval = $?
+expr '' '<' abc > /dev/null; echo Retval = $?
+expr '' '<' def > /dev/null; echo Retval = $?
+expr '' '<' ABC > /dev/null; echo Retval = $?
+expr '' '<' DEF > /dev/null; echo Retval = $?
+expr '' '<' '   ' > /dev/null; echo Retval = $?
+expr '' '<' '!@#' > /dev/null; echo Retval = $?
+expr '' '<' ',.:' > /dev/null; echo Retval = $?
+expr '' '<' \"123\" > /dev/null; echo Retval = $?
+expr '' '<' \"456\" > /dev/null; echo Retval = $?
+expr '' '<' 0 > /dev/null; echo Retval = $?
+expr '' '<' -25 > /dev/null; echo Retval = $?
+expr '' '<' 317 > /dev/null; echo Retval = $?
+expr abc '=' '' > /dev/null; echo Retval = $?
+expr abc '=' abc > /dev/null; echo Retval = $?
+expr abc '=' def > /dev/null; echo Retval = $?
+expr abc '=' ABC > /dev/null; echo Retval = $?
+expr abc '=' DEF > /dev/null; echo Retval = $?
+expr abc '=' '   ' > /dev/null; echo Retval = $?
+expr abc '=' '!@#' > /dev/null; echo Retval = $?
+expr abc '=' ',.:' > /dev/null; echo Retval = $?
+expr abc '=' \"123\" > /dev/null; echo Retval = $?
+expr abc '=' \"456\" > /dev/null; echo Retval = $?
+expr abc '=' 0 > /dev/null; echo Retval = $?
+expr abc '=' -25 > /dev/null; echo Retval = $?
+expr abc '=' 317 > /dev/null; echo Retval = $?
+expr abc '<' '' > /dev/null; echo Retval = $?
+expr abc '<' abc > /dev/null; echo Retval = $?
+expr abc '<' def > /dev/null; echo Retval = $?
+expr abc '<' ABC > /dev/null; echo Retval = $?
+expr abc '<' DEF > /dev/null; echo Retval = $?
+expr abc '<' '   ' > /dev/null; echo Retval = $?
+expr abc '<' '!@#' > /dev/null; echo Retval = $?
+expr abc '<' ',.:' > /dev/null; echo Retval = $?
+expr abc '<' \"123\" > /dev/null; echo Retval = $?
+expr abc '<' \"456\" > /dev/null; echo Retval = $?
+expr abc '<' 0 > /dev/null; echo Retval = $?
+expr abc '<' -25 > /dev/null; echo Retval = $?
+expr abc '<' 317 > /dev/null; echo Retval = $?
+expr def '=' '' > /dev/null; echo Retval = $?
+expr def '=' abc > /dev/null; echo Retval = $?
+expr def '=' def > /dev/null; echo Retval = $?
+expr def '=' ABC > /dev/null; echo Retval = $?
+expr def '=' DEF > /dev/null; echo Retval = $?
+expr def '=' '   ' > /dev/null; echo Retval = $?
+expr def '=' '!@#' > /dev/null; echo Retval = $?
+expr def '=' ',.:' > /dev/null; echo Retval = $?
+expr def '=' \"123\" > /dev/null; echo Retval = $?
+expr def '=' \"456\" > /dev/null; echo Retval = $?
+expr def '=' 0 > /dev/null; echo Retval = $?
+expr def '=' -25 > /dev/null; echo Retval = $?
+expr def '=' 317 > /dev/null; echo Retval = $?
+expr def '<' '' > /dev/null; echo Retval = $?
+expr def '<' abc > /dev/null; echo Retval = $?
+expr def '<' def > /dev/null; echo Retval = $?
+expr def '<' ABC > /dev/null; echo Retval = $?
+expr def '<' DEF > /dev/null; echo Retval = $?
+expr def '<' '   ' > /dev/null; echo Retval = $?
+expr def '<' '!@#' > /dev/null; echo Retval = $?
+expr def '<' ',.:' > /dev/null; echo Retval = $?
+expr def '<' \"123\" > /dev/null; echo Retval = $?
+expr def '<' \"456\" > /dev/null; echo Retval = $?
+expr def '<' 0 > /dev/null; echo Retval = $?
+expr def '<' -25 > /dev/null; echo Retval = $?
+expr def '<' 317 > /dev/null; echo Retval = $?
+expr ABC '=' '' > /dev/null; echo Retval = $?
+expr ABC '=' abc > /dev/null; echo Retval = $?
+expr ABC '=' def > /dev/null; echo Retval = $?
+expr ABC '=' ABC > /dev/null; echo Retval = $?
+expr ABC '=' DEF > /dev/null; echo Retval = $?
+expr ABC '=' '   ' > /dev/null; echo Retval = $?
+expr ABC '=' '!@#' > /dev/null; echo Retval = $?
+expr ABC '=' ',.:' > /dev/null; echo Retval = $?
+expr ABC '=' \"123\" > /dev/null; echo Retval = $?
+expr ABC '=' \"456\" > /dev/null; echo Retval = $?
+expr ABC '=' 0 > /dev/null; echo Retval = $?
+expr ABC '=' -25 > /dev/null; echo Retval = $?
+expr ABC '=' 317 > /dev/null; echo Retval = $?
+expr ABC '<' '' > /dev/null; echo Retval = $?
+expr ABC '<' abc > /dev/null; echo Retval = $?
+expr ABC '<' def > /dev/null; echo Retval = $?
+expr ABC '<' ABC > /dev/null; echo Retval = $?
+expr ABC '<' DEF > /dev/null; echo Retval = $?
+expr ABC '<' '   ' > /dev/null; echo Retval = $?
+expr ABC '<' '!@#' > /dev/null; echo Retval = $?
+expr ABC '<' ',.:' > /dev/null; echo Retval = $?
+expr ABC '<' \"123\" > /dev/null; echo Retval = $?
+expr ABC '<' \"456\" > /dev/null; echo Retval = $?
+expr ABC '<' 0 > /dev/null; echo Retval = $?
+expr ABC '<' -25 > /dev/null; echo Retval = $?
+expr ABC '<' 317 > /dev/null; echo Retval = $?
+expr DEF '=' '' > /dev/null; echo Retval = $?
+expr DEF '=' abc > /dev/null; echo Retval = $?
+expr DEF '=' def > /dev/null; echo Retval = $?
+expr DEF '=' ABC > /dev/null; echo Retval = $?
+expr DEF '=' DEF > /dev/null; echo Retval = $?
+expr DEF '=' '   ' > /dev/null; echo Retval = $?
+expr DEF '=' '!@#' > /dev/null; echo Retval = $?
+expr DEF '=' ',.:' > /dev/null; echo Retval = $?
+expr DEF '=' \"123\" > /dev/null; echo Retval = $?
+expr DEF '=' \"456\" > /dev/null; echo Retval = $?
+expr DEF '=' 0 > /dev/null; echo Retval = $?
+expr DEF '=' -25 > /dev/null; echo Retval = $?
+expr DEF '=' 317 > /dev/null; echo Retval = $?
+expr DEF '<' '' > /dev/null; echo Retval = $?
+expr DEF '<' abc > /dev/null; echo Retval = $?
+expr DEF '<' def > /dev/null; echo Retval = $?
+expr DEF '<' ABC > /dev/null; echo Retval = $?
+expr DEF '<' DEF > /dev/null; echo Retval = $?
+expr DEF '<' '   ' > /dev/null; echo Retval = $?
+expr DEF '<' '!@#' > /dev/null; echo Retval = $?
+expr DEF '<' ',.:' > /dev/null; echo Retval = $?
+expr DEF '<' \"123\" > /dev/null; echo Retval = $?
+expr DEF '<' \"456\" > /dev/null; echo Retval = $?
+expr DEF '<' 0 > /dev/null; echo Retval = $?
+expr DEF '<' -25 > /dev/null; echo Retval = $?
+expr DEF '<' 317 > /dev/null; echo Retval = $?
+expr '   ' '=' '' > /dev/null; echo Retval = $?
+expr '   ' '=' abc > /dev/null; echo Retval = $?
+expr '   ' '=' def > /dev/null; echo Retval = $?
+expr '   ' '=' ABC > /dev/null; echo Retval = $?
+expr '   ' '=' DEF > /dev/null; echo Retval = $?
+expr '   ' '=' '   ' > /dev/null; echo Retval = $?
+expr '   ' '=' '!@#' > /dev/null; echo Retval = $?
+expr '   ' '=' ',.:' > /dev/null; echo Retval = $?
+expr '   ' '=' \"123\" > /dev/null; echo Retval = $?
+expr '   ' '=' \"456\" > /dev/null; echo Retval = $?
+expr '   ' '=' 0 > /dev/null; echo Retval = $?
+expr '   ' '=' -25 > /dev/null; echo Retval = $?
+expr '   ' '=' 317 > /dev/null; echo Retval = $?
+expr '   ' '<' '' > /dev/null; echo Retval = $?
+expr '   ' '<' abc > /dev/null; echo Retval = $?
+expr '   ' '<' def > /dev/null; echo Retval = $?
+expr '   ' '<' ABC > /dev/null; echo Retval = $?
+expr '   ' '<' DEF > /dev/null; echo Retval = $?
+expr '   ' '<' '   ' > /dev/null; echo Retval = $?
+expr '   ' '<' '!@#' > /dev/null; echo Retval = $?
+expr '   ' '<' ',.:' > /dev/null; echo Retval = $?
+expr '   ' '<' \"123\" > /dev/null; echo Retval = $?
+expr '   ' '<' \"456\" > /dev/null; echo Retval = $?
+expr '   ' '<' 0 > /dev/null; echo Retval = $?
+expr '   ' '<' -25 > /dev/null; echo Retval = $?
+expr '   ' '<' 317 > /dev/null; echo Retval = $?
+expr '!@#' '=' '' > /dev/null; echo Retval = $?
+expr '!@#' '=' abc > /dev/null; echo Retval = $?
+expr '!@#' '=' def > /dev/null; echo Retval = $?
+expr '!@#' '=' ABC > /dev/null; echo Retval = $?
+expr '!@#' '=' DEF > /dev/null; echo Retval = $?
+expr '!@#' '=' '   ' > /dev/null; echo Retval = $?
+expr '!@#' '=' '!@#' > /dev/null; echo Retval = $?
+expr '!@#' '=' ',.:' > /dev/null; echo Retval = $?
+expr '!@#' '=' \"123\" > /dev/null; echo Retval = $?
+expr '!@#' '=' \"456\" > /dev/null; echo Retval = $?
+expr '!@#' '=' 0 > /dev/null; echo Retval = $?
+expr '!@#' '=' -25 > /dev/null; echo Retval = $?
+expr '!@#' '=' 317 > /dev/null; echo Retval = $?
+expr '!@#' '<' '' > /dev/null; echo Retval = $?
+expr '!@#' '<' abc > /dev/null; echo Retval = $?
+expr '!@#' '<' def > /dev/null; echo Retval = $?
+expr '!@#' '<' ABC > /dev/null; echo Retval = $?
+expr '!@#' '<' DEF > /dev/null; echo Retval = $?
+expr '!@#' '<' '   ' > /dev/null; echo Retval = $?
+expr '!@#' '<' '!@#' > /dev/null; echo Retval = $?
+expr '!@#' '<' ',.:' > /dev/null; echo Retval = $?
+expr '!@#' '<' \"123\" > /dev/null; echo Retval = $?
+expr '!@#' '<' \"456\" > /dev/null; echo Retval = $?
+expr '!@#' '<' 0 > /dev/null; echo Retval = $?
+expr '!@#' '<' -25 > /dev/null; echo Retval = $?
+expr '!@#' '<' 317 > /dev/null; echo Retval = $?
+expr ',.:' '=' '' > /dev/null; echo Retval = $?
+expr ',.:' '=' abc > /dev/null; echo Retval = $?
+expr ',.:' '=' def > /dev/null; echo Retval = $?
+expr ',.:' '=' ABC > /dev/null; echo Retval = $?
+expr ',.:' '=' DEF > /dev/null; echo Retval = $?
+expr ',.:' '=' '   ' > /dev/null; echo Retval = $?
+expr ',.:' '=' '!@#' > /dev/null; echo Retval = $?
+expr ',.:' '=' ',.:' > /dev/null; echo Retval = $?
+expr ',.:' '=' \"123\" > /dev/null; echo Retval = $?
+expr ',.:' '=' \"456\" > /dev/null; echo Retval = $?
+expr ',.:' '=' 0 > /dev/null; echo Retval = $?
+expr ',.:' '=' -25 > /dev/null; echo Retval = $?
+expr ',.:' '=' 317 > /dev/null; echo Retval = $?
+expr ',.:' '<' '' > /dev/null; echo Retval = $?
+expr ',.:' '<' abc > /dev/null; echo Retval = $?
+expr ',.:' '<' def > /dev/null; echo Retval = $?
+expr ',.:' '<' ABC > /dev/null; echo Retval = $?
+expr ',.:' '<' DEF > /dev/null; echo Retval = $?
+expr ',.:' '<' '   ' > /dev/null; echo Retval = $?
+expr ',.:' '<' '!@#' > /dev/null; echo Retval = $?
+expr ',.:' '<' ',.:' > /dev/null; echo Retval = $?
+expr ',.:' '<' \"123\" > /dev/null; echo Retval = $?
+expr ',.:' '<' \"456\" > /dev/null; echo Retval = $?
+expr ',.:' '<' 0 > /dev/null; echo Retval = $?
+expr ',.:' '<' -25 > /dev/null; echo Retval = $?
+expr ',.:' '<' 317 > /dev/null; echo Retval = $?
+expr \"123\" '=' '' > /dev/null; echo Retval = $?
+expr \"123\" '=' abc > /dev/null; echo Retval = $?
+expr \"123\" '=' def > /dev/null; echo Retval = $?
+expr \"123\" '=' ABC > /dev/null; echo Retval = $?
+expr \"123\" '=' DEF > /dev/null; echo Retval = $?
+expr \"123\" '=' '   ' > /dev/null; echo Retval = $?
+expr \"123\" '=' '!@#' > /dev/null; echo Retval = $?
+expr \"123\" '=' ',.:' > /dev/null; echo Retval = $?
+expr \"123\" '=' \"123\" > /dev/null; echo Retval = $?
+expr \"123\" '=' \"456\" > /dev/null; echo Retval = $?
+expr \"123\" '=' 0 > /dev/null; echo Retval = $?
+expr \"123\" '=' -25 > /dev/null; echo Retval = $?
+expr \"123\" '=' 317 > /dev/null; echo Retval = $?
+expr \"123\" '<' '' > /dev/null; echo Retval = $?
+expr \"123\" '<' abc > /dev/null; echo Retval = $?
+expr \"123\" '<' def > /dev/null; echo Retval = $?
+expr \"123\" '<' ABC > /dev/null; echo Retval = $?
+expr \"123\" '<' DEF > /dev/null; echo Retval = $?
+expr \"123\" '<' '   ' > /dev/null; echo Retval = $?
+expr \"123\" '<' '!@#' > /dev/null; echo Retval = $?
+expr \"123\" '<' ',.:' > /dev/null; echo Retval = $?
+expr \"123\" '<' \"123\" > /dev/null; echo Retval = $?
+expr \"123\" '<' \"456\" > /dev/null; echo Retval = $?
+expr \"123\" '<' 0 > /dev/null; echo Retval = $?
+expr \"123\" '<' -25 > /dev/null; echo Retval = $?
+expr \"123\" '<' 317 > /dev/null; echo Retval = $?
+expr \"456\" '=' '' > /dev/null; echo Retval = $?
+expr \"456\" '=' abc > /dev/null; echo Retval = $?
+expr \"456\" '=' def > /dev/null; echo Retval = $?
+expr \"456\" '=' ABC > /dev/null; echo Retval = $?
+expr \"456\" '=' DEF > /dev/null; echo Retval = $?
+expr \"456\" '=' '   ' > /dev/null; echo Retval = $?
+expr \"456\" '=' '!@#' > /dev/null; echo Retval = $?
+expr \"456\" '=' ',.:' > /dev/null; echo Retval = $?
+expr \"456\" '=' \"123\" > /dev/null; echo Retval = $?
+expr \"456\" '=' \"456\" > /dev/null; echo Retval = $?
+expr \"456\" '=' 0 > /dev/null; echo Retval = $?
+expr \"456\" '=' -25 > /dev/null; echo Retval = $?
+expr \"456\" '=' 317 > /dev/null; echo Retval = $?
+expr \"456\" '<' '' > /dev/null; echo Retval = $?
+expr \"456\" '<' abc > /dev/null; echo Retval = $?
+expr \"456\" '<' def > /dev/null; echo Retval = $?
+expr \"456\" '<' ABC > /dev/null; echo Retval = $?
+expr \"456\" '<' DEF > /dev/null; echo Retval = $?
+expr \"456\" '<' '   ' > /dev/null; echo Retval = $?
+expr \"456\" '<' '!@#' > /dev/null; echo Retval = $?
+expr \"456\" '<' ',.:' > /dev/null; echo Retval = $?
+expr \"456\" '<' \"123\" > /dev/null; echo Retval = $?
+expr \"456\" '<' \"456\" > /dev/null; echo Retval = $?
+expr \"456\" '<' 0 > /dev/null; echo Retval = $?
+expr \"456\" '<' -25 > /dev/null; echo Retval = $?
+expr \"456\" '<' 317 > /dev/null; echo Retval = $?
+expr 0 '=' '' > /dev/null; echo Retval = $?
+expr 0 '=' abc > /dev/null; echo Retval = $?
+expr 0 '=' def > /dev/null; echo Retval = $?
+expr 0 '=' ABC > /dev/null; echo Retval = $?
+expr 0 '=' DEF > /dev/null; echo Retval = $?
+expr 0 '=' '   ' > /dev/null; echo Retval = $?
+expr 0 '=' '!@#' > /dev/null; echo Retval = $?
+expr 0 '=' ',.:' > /dev/null; echo Retval = $?
+expr 0 '=' \"123\" > /dev/null; echo Retval = $?
+expr 0 '=' \"456\" > /dev/null; echo Retval = $?
+expr 0 '=' 0 > /dev/null; echo Retval = $?
+expr 0 '=' -25 > /dev/null; echo Retval = $?
+expr 0 '=' 317 > /dev/null; echo Retval = $?
+expr 0 '<' '' > /dev/null; echo Retval = $?
+expr 0 '<' abc > /dev/null; echo Retval = $?
+expr 0 '<' def > /dev/null; echo Retval = $?
+expr 0 '<' ABC > /dev/null; echo Retval = $?
+expr 0 '<' DEF > /dev/null; echo Retval = $?
+expr 0 '<' '   ' > /dev/null; echo Retval = $?
+expr 0 '<' '!@#' > /dev/null; echo Retval = $?
+expr 0 '<' ',.:' > /dev/null; echo Retval = $?
+expr 0 '<' \"123\" > /dev/null; echo Retval = $?
+expr 0 '<' \"456\" > /dev/null; echo Retval = $?
+expr 0 '<' 0 > /dev/null; echo Retval = $?
+expr 0 '<' -25 > /dev/null; echo Retval = $?
+expr 0 '<' 317 > /dev/null; echo Retval = $?
+expr -25 '=' '' > /dev/null; echo Retval = $?
+expr -25 '=' abc > /dev/null; echo Retval = $?
+expr -25 '=' def > /dev/null; echo Retval = $?
+expr -25 '=' ABC > /dev/null; echo Retval = $?
+expr -25 '=' DEF > /dev/null; echo Retval = $?
+expr -25 '=' '   ' > /dev/null; echo Retval = $?
+expr -25 '=' '!@#' > /dev/null; echo Retval = $?
+expr -25 '=' ',.:' > /dev/null; echo Retval = $?
+expr -25 '=' \"123\" > /dev/null; echo Retval = $?
+expr -25 '=' \"456\" > /dev/null; echo Retval = $?
+expr -25 '=' 0 > /dev/null; echo Retval = $?
+expr -25 '=' -25 > /dev/null; echo Retval = $?
+expr -25 '=' 317 > /dev/null; echo Retval = $?
+expr -25 '<' '' > /dev/null; echo Retval = $?
+expr -25 '<' abc > /dev/null; echo Retval = $?
+expr -25 '<' def > /dev/null; echo Retval = $?
+expr -25 '<' ABC > /dev/null; echo Retval = $?
+expr -25 '<' DEF > /dev/null; echo Retval = $?
+expr -25 '<' '   ' > /dev/null; echo Retval = $?
+expr -25 '<' '!@#' > /dev/null; echo Retval = $?
+expr -25 '<' ',.:' > /dev/null; echo Retval = $?
+expr -25 '<' \"123\" > /dev/null; echo Retval = $?
+expr -25 '<' \"456\" > /dev/null; echo Retval = $?
+expr -25 '<' 0 > /dev/null; echo Retval = $?
+expr -25 '<' -25 > /dev/null; echo Retval = $?
+expr -25 '<' 317 > /dev/null; echo Retval = $?
+expr 317 '=' '' > /dev/null; echo Retval = $?
+expr 317 '=' abc > /dev/null; echo Retval = $?
+expr 317 '=' def > /dev/null; echo Retval = $?
+expr 317 '=' ABC > /dev/null; echo Retval = $?
+expr 317 '=' DEF > /dev/null; echo Retval = $?
+expr 317 '=' '   ' > /dev/null; echo Retval = $?
+expr 317 '=' '!@#' > /dev/null; echo Retval = $?
+expr 317 '=' ',.:' > /dev/null; echo Retval = $?
+expr 317 '=' \"123\" > /dev/null; echo Retval = $?
+expr 317 '=' \"456\" > /dev/null; echo Retval = $?
+expr 317 '=' 0 > /dev/null; echo Retval = $?
+expr 317 '=' -25 > /dev/null; echo Retval = $?
+expr 317 '=' 317 > /dev/null; echo Retval = $?
+expr 317 '<' '' > /dev/null; echo Retval = $?
+expr 317 '<' abc > /dev/null; echo Retval = $?
+expr 317 '<' def > /dev/null; echo Retval = $?
+expr 317 '<' ABC > /dev/null; echo Retval = $?
+expr 317 '<' DEF > /dev/null; echo Retval = $?
+expr 317 '<' '   ' > /dev/null; echo Retval = $?
+expr 317 '<' '!@#' > /dev/null; echo Retval = $?
+expr 317 '<' ',.:' > /dev/null; echo Retval = $?
+expr 317 '<' \"123\" > /dev/null; echo Retval = $?
+expr 317 '<' \"456\" > /dev/null; echo Retval = $?
+expr 317 '<' 0 > /dev/null; echo Retval = $?
+expr 317 '<' -25 > /dev/null; echo Retval = $?
+expr 317 '<' 317 > /dev/null; echo Retval = $?

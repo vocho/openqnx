@@ -1,0 +1,87 @@
+
+This utility is designed to show users "all things memory".  This means
+being able to as accurately as possible dig down from the top level of
+total used/free and burrow down to the details of a particular process.
+
+The general design for the code involves: gathering the data, processing
+the data, formatting the particular display.  Due to the nature of the 
+system interfaces, a significant number of allocations are required to
+gather and store the various pieces of memory information.
+
+- MILESTONE 1 -
+Provide a model that looks like this for being able to drill down:
+system information: free/used
+ -> used: per process/shared library/shared memory totals of memory used
+    -> process/shared library totals: code/data/heap/stack/other contributions
+       -> code/data: contributions from shared libraries
+       -> stack: contributions from specific threads
+       -> heap: malloc library statistics/other 
+
+The report based on this model looks like:
+
+-- System Information (0-1) --
+Used Privately:
+Used Shared: 
+Total Used: 
+
+-- Process/Shared Library Information (0-N) --
+Total Code Data Heap Stack Other PID Name
+
+NOTE:
+ PID = -1 for truly shared shared libraries
+
+-- Shared Library Contribution Information (0-N) --
+0 Code Data 0 0 0 PID Name (shared name)
+
+-- Stack Contribution Information (0-N) --
+0 0 0 0 Stack 0 PID Name (stack #)
+
+-- Heap Contribution Information (0-N) --
+TBD: Not sure how to consider this 
+
+- MILESTONE 2 -
+
+An additional goal is to provide an IDE like inspection for a particular 
+single process.
+
+Memory Address Space Information (mapped pages)
+Process
+	Code		vaddr		size		flags
+	Data		vaddr		size		flags
+Shared Libraries
+	Name (code)	vaddr		size 		flags
+	Name (data) vaddr		size		flags
+Stack
+	Thread N	vaddr		size		flags
+	Guard N		vaddr		size		flags
+	Virtual N	vaddr		size		flags
+Heap
+	Name		vaddr		size		flags
+Object
+	Name		vaddr		size		flags
+ 
+- MILESTONE 3 -
+ 
+Extract and display the malloc/allocator statistics
+from a particular process.
+ 
+Malloc Statistics (extracted from process)
+Summary
+	Used:		Overhead: 		Free:
+Calls Made:
+	malloc:		free:			realloc:
+Distribution:
+Byte Range		mallocs		frees		allocated
+0-(N-1)
+N-(M-1)
+M-(O-1)
+...
+
+- MILESTONE 4 -
+
+Provide a physical memory view of the system and of
+a particular process.  This will only become available
+with the new 6.4.0 VM.
+       
+ 
+       

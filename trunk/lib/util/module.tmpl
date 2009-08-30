@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<module name="util">
+
+	<type>Element</type>
+
+	<classification>SDK</classification>
+
+	<supports>
+		<availability ref="toolshosts"/>
+		<availability ref="ostargets"/>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+
+
+	<GroupOwner>tools</GroupOwner>
+	<RuntimeComponent></RuntimeComponent>
+
+
+	<contents>
+		<package isHost="true">
+			<component id="Archive" generated="true">
+				<kind type="library"/>
+				<location basedir="{os}/{cpu}/a{.:endian}" runtime="false">libutil.a</location>
+			</component>
+
+			<component id="header" generated="false">
+				<kind type="header"/>
+				<location basedir="public" runtime="false" subdirs="true">.</location>
+			</component>
+		</package>
+	</contents>
+</module>
