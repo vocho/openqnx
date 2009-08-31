@@ -26,7 +26,7 @@
 #ifndef __NEUTRINO_H_INCLUDED
 #error x86/neutrino.h should not be included directly.
 #endif
-#warning "Hello from neutrino.h"
+
 #define CLOCKCYCLES_INCR_BIT	0
 
 #if defined(__WATCOMC__)

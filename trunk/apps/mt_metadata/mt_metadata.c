@@ -55,7 +55,7 @@ void * mt_meta_ker_events (void *pt0) {
 	_mt_meta_KER_EVENT(0,	"dummy_check",		"");
 
 	/* task/thread events */
-	_mt_meta_KER_EVENT(1, 	"task_create",		"pid %u tid %u");
+	_mt_meta_KER_EVENT(1, 	"task_create",		"pid %u tid %u priority %c");
 	_mt_meta_KER_EVENT(2, 	"task_suspend",		"pid %u tid %u");
 	_mt_meta_KER_EVENT(3, 	"task_resume",		"pid %u tid %u");
 	_mt_meta_KER_EVENT(4, 	"task_delete",		"pid %u tid %u status %d");

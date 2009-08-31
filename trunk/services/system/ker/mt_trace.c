@@ -294,19 +294,22 @@ void mt_trace_dummy_check() {
 	mt_TRACE_FUNK_bottom;
 }
 
-void mt_trace_task_create(unsigned pid, unsigned tid) {
+void mt_trace_task_create(unsigned pid, unsigned tid, char priority) {
 
 	if (!mt_filters.task) return;
 
 	mt_TRACE_FUNK_top(1, 8);
 
+	uint8_t		*pt1;
 	uint32_t	*pt4;
 
 	pt4 = pt0;
 	*pt4++ = pid;
 	*pt4++ = tid;
+	pt1 = pt4;
+	*pt1++ = priority;
 
-	pt0 = pt4;
+	pt0 = pt1;
 
 	mt_TRACE_FUNK_bottom;
 }

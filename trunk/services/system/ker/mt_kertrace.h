@@ -55,7 +55,7 @@
  * We allocate for each traceset a data_ctrl structure to manage data inside the traceset.
  *
  * A ltt_subbuffer_header is 68 B.
- * A trace is 4 + trace_size (8 to 16 till now) B
+ * A trace is 4 + trace_size (0 to 16 till now) B
  * Header26 adds 16 B
  * Header31 adds  4 B
  *
@@ -100,7 +100,7 @@ void mt_send_flush_pulse		();
 
 /* tracing functions */
 void mt_trace_dummy_check		();
-void mt_trace_task_create		(unsigned pid, unsigned tid);
+void mt_trace_task_create		(unsigned pid, unsigned tid, char priority);
 void mt_trace_task_suspend		(unsigned pid, unsigned tid);
 void mt_trace_task_resume		(unsigned pid, unsigned tid);
 void mt_trace_task_delete		(unsigned pid, unsigned tid, int status);

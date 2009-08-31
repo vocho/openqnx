@@ -284,7 +284,7 @@ chk_lock();
 	// Make thread lookups invalid
 	vector_flag(&prp->threads, thp->tid, 1);
 #ifdef _mt_LTT_TRACES_	/* PDB */
-	mt_trace_task_create(prp->pid, tid);
+	mt_trace_task_create(prp->pid, tid, thp->priority);
 #endif
 	_TRACE_TH_EMIT_CREATE(thp);
 	if(thread_create_flags & THREAD_CREATE_BLOCK_FLAG) {
@@ -561,7 +561,7 @@ chk_lock();
 	// Remove any CPU-specific save buffers
 	cpu_thread_destroy(thp);
 #ifdef _mt_LTT_TRACES_	/* PDB */
-	mt_TRACE_DEBUG("2 !");
+	//mt_TRACE_DEBUG("2 !");
 	mt_trace_task_delete(thp->process->pid, thp->tid, 0);
 #endif
 
