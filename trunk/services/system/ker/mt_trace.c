@@ -238,7 +238,7 @@ void mt_list_task_info()
 
 	for (iProc=1; iProc<process_vector.nentries; iProc++)
 		if (VECP(pProcess, &process_vector, iProc))
-			for (iThread=1; iThread<pProcess->threads.nentries; iThread++)
+			for (iThread=0; iThread<pProcess->threads.nentries; iThread++)
 				if (VECP(pThread, &pProcess->threads, iThread))
 
 					mt_trace_task_info(pProcess->pid, pThread->tid, pThread->state, pThread->real_priority);
@@ -294,22 +294,19 @@ void mt_trace_dummy_check() {
 	mt_TRACE_FUNK_bottom;
 }
 
-void mt_trace_task_create(unsigned pid, unsigned tid, char priority) {
+void mt_trace_task_create(unsigned pid, unsigned tid) {
 
 	if (!mt_filters.task) return;
 
 	mt_TRACE_FUNK_top(1, 8);
 
-	uint8_t		*pt1;
 	uint32_t	*pt4;
 
 	pt4 = pt0;
 	*pt4++ = pid;
 	*pt4++ = tid;
-	pt1 = pt4;
-	*pt1++ = priority;
 
-	pt0 = pt1;
+	pt0 = pt4;
 
 	mt_TRACE_FUNK_bottom;
 }
