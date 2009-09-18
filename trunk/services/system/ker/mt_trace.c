@@ -309,6 +309,7 @@ void mt_trace_task_create(unsigned pid, unsigned tid, unsigned char priority) {
 	pt1 = pt4;
 	*pt1++ = priority;
 
+	pt0 = pt4;
 	pt0 = pt1;
 
 	mt_TRACE_FUNK_bottom;
