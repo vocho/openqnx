@@ -41,7 +41,7 @@ static mt_trace_filters_t mt_filters = {
 	.task = 1,
 	.sem = 1,
 	.irq = 1,
-	.debug = 1
+	.debug = 0
 };
 
 /****************************************************************************/
@@ -238,10 +238,10 @@ void mt_list_task_info()
 
 	for (iProc=1; iProc<process_vector.nentries; iProc++)
 		if (VECP(pProcess, &process_vector, iProc))
-			for (iThread=1; iThread<pProcess->threads.nentries; iThread++)
+			for (iThread=0; iThread<pProcess->threads.nentries; iThread++)
 				if (VECP(pThread, &pProcess->threads, iThread))
 
-					mt_trace_task_info(pProcess->pid, pThread->tid, pThread->state, pThread->real_priority);
+					mt_trace_task_info(pProcess->pid, pThread->tid, pThread->state, pThread->priority); /* pThread->real_priority */
 }
 
 void mt_send_flush_pulse()
@@ -294,7 +294,7 @@ void mt_trace_dummy_check() {
 	mt_TRACE_FUNK_bottom;
 }
 
-void mt_trace_task_create(unsigned pid, unsigned tid, char priority) {
+void mt_trace_task_create(unsigned pid, unsigned tid, unsigned char priority) {
 
 	if (!mt_filters.task) return;
 
@@ -387,7 +387,7 @@ void mt_trace_task_periodicity(unsigned pid, unsigned tid, unsigned long long pe
 	mt_TRACE_FUNK_bottom;
 }
 
-void mt_trace_task_priority(unsigned pid, unsigned tid, char priority) {
+void mt_trace_task_priority(unsigned pid, unsigned tid, unsigned char priority) {
 
 	if (!mt_filters.task) return;
 
@@ -408,7 +408,7 @@ void mt_trace_task_priority(unsigned pid, unsigned tid, char priority) {
 	mt_TRACE_FUNK_bottom;
 }
 
-void mt_trace_task_info(unsigned pid, unsigned tid, char state, char priority)
+void mt_trace_task_info(unsigned pid, unsigned tid, unsigned char state, unsigned char priority)
 {
 	if (!mt_filters.task) return;
 
@@ -578,7 +578,6 @@ void mt_trace_sync_destroy(void *sem, int value, unsigned pid, unsigned tid) {
 
 void rdecl
 mt_trace_irq_entry(unsigned irq) {
-
 	if (!mt_filters.irq) return;
 
 	mt_TRACE_FUNK_top(20, 4);	/* parameters are mt_TRACE_FUNK_top(id, size) */
@@ -605,7 +604,7 @@ mt_trace_irq_exit(unsigned irq) {
 	mt_TRACE_FUNK_bottom;
 }
 void rdecl
-mt_trace_irq_handler_entry(unsigned irq/**/) {
+mt_trace_irq_handler_entry(unsigned irq) {
 	if (!mt_filters.irq) return;
 
 	mt_TRACE_FUNK_top(22, 4);	/* parameters are mt_TRACE_FUNK_top(id, size) */
@@ -636,7 +635,6 @@ mt_trace_irq_handler_exit(unsigned irq) {
 }
 void rdecl
 mt_trace_irq_timer_entry() {
-
 	if (!mt_filters.irq) return;
 
 	mt_TRACE_FUNK_top(24, 0);	/* parameters are mt_TRACE_FUNK_top(id, size) */
@@ -644,7 +642,6 @@ mt_trace_irq_timer_entry() {
 }
 void rdecl
 mt_trace_irq_timer_exit() {
-
 	if (!mt_filters.irq) return;
 
 	mt_TRACE_FUNK_top(25, 0);	/* parameters are mt_TRACE_FUNK_top(id, size) */

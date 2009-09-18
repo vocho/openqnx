@@ -61,7 +61,7 @@ void * mt_meta_ker_events (void *pt0) {
 	_mt_meta_KER_EVENT(4, 	"task_delete",		"pid %u tid %u status %d");
 	_mt_meta_KER_EVENT(5, 	"task_periodicity",	"pid %u tid %u period %llu");
 	_mt_meta_KER_EVENT(6, 	"task_priority",	"pid %u tid %u priority %c");
-	_mt_meta_KER_EVENT(7,	"task_info",		"pid %u tid %u state %c priority %c");
+	_mt_meta_KER_EVENT(7,	"task_info",		"pid %u tid %u state %c priority %u");
 	_mt_meta_KER_EVENT(9,	"task_cycle_done",	"pid %u tid %u");
 
 	/* semaphore events */

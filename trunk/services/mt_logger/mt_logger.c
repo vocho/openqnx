@@ -269,9 +269,6 @@ int main(int argc, char *argv[]) /*int main()*/
 	// Allocate memory and start tracing
 	MtCtl(_MT_CTL_INIT_TRACELOGGER, &traceData);
 
-	//TraceEvent( _NTO_TRACE_ADDALLCLASSES );	// PDB: this is responsible for enabling IRQ traces
-	TraceEvent(_NTO_TRACE_ADDCLASS, _NTO_TRACE_INT); // PDB: this is responsible for enabling IRQ traces
-
 	mt_buf = mmap((void *) (unsigned) 0, _MT_ALLOC_SIZE, PROT_READ
 			| PROT_WRITE, (MAP_SHARED | MAP_PHYS), NOFD, shared);
 	if (mt_buf == MAP_FAILED)
@@ -288,9 +285,9 @@ int main(int argc, char *argv[]) /*int main()*/
 	pthread_attr_init(&pattr);
 	pthread_attr_setinheritsched(&pattr, PTHREAD_EXPLICIT_SCHED);
 	sched_getparam(0, &param);
-	param.sched_priority++;
+	param.sched_priority = 60;
 	pthread_attr_setschedparam(&pattr, &param);
-	param.sched_priority--;
+	//param.sched_priority--;
 	if (pthread_create(&sig_thr, NULL, signal_catcher_thread,
 			(void *) param.sched_priority) == -1)
 	{
@@ -323,10 +320,10 @@ int main(int argc, char *argv[]) /*int main()*/
 	printf("*** stats : ***\n");
 	if (full_notified)
 		printf("\tmin_interval was  %12u [ns]\n", (unsigned) (min_interval / 3));
-	printf("\tlog_interval was  %12u [ns]\n", 750000000);
+	//printf("\tlog_interval was  %12u [ns]\n", 750000000);
 	printf("\ttotal_size            = %6u [bytes]\n", total_size);
 	printf("tracesets:\n");
-	printf("\tmt_TRACESET_SIZE   = %6u [bytes]\n", _MT_TRACESET_SIZE);
+	printf("\tmt_TRACESET_SIZE      = %6u [bytes]\n", _MT_TRACESET_SIZE);
 	printf("\ttraceset writing size = %6u [bytes]\n",
 			(unsigned) (_MT_TRACESET_SIZE * _MT_BUFFER_FULL));
 	printf("\tfull_notified = %3u\n", full_notified);

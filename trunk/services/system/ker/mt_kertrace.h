@@ -100,13 +100,13 @@ void mt_send_flush_pulse		();
 
 /* tracing functions */
 void mt_trace_dummy_check		();
-void mt_trace_task_create		(unsigned pid, unsigned tid, char priority);
+void mt_trace_task_create		(unsigned pid, unsigned tid, unsigned char priority);
 void mt_trace_task_suspend		(unsigned pid, unsigned tid);
 void mt_trace_task_resume		(unsigned pid, unsigned tid);
 void mt_trace_task_delete		(unsigned pid, unsigned tid, int status);
 void mt_trace_task_periodicity	(unsigned pid, unsigned tid, unsigned long long period);
-void mt_trace_task_priority		(unsigned pid, unsigned tid, char priority);
-void mt_trace_task_info			(unsigned pid, unsigned tid, char state, char priority);
+void mt_trace_task_priority		(unsigned pid, unsigned tid, unsigned char priority);
+void mt_trace_task_info			(unsigned pid, unsigned tid, unsigned char state, unsigned char priority);
 void mt_trace_task_sig_return	(unsigned pid, unsigned tid);
 void mt_trace_sem_init			(void *sem, int value, unsigned pid, unsigned tid);
 void mt_trace_sem_P				(void *sem, int value, unsigned pid, unsigned tid);
@@ -143,7 +143,7 @@ void mt_trace_debug				(const char *func, unsigned line, const char *txt);
 	mt_data_ctrl_t		*ptdc; \
 	\
 	ptdc = mt_buf_info.in_use; \
-	 \
+	/*lock_kernel();*/ \
 	if (ptdc->status == 0)	/* likely, filling */ \
 		/*ptdc->data_current = mt_write_id(ptdc->data_current, id);*/ \
 		ptdc->data_current = ((clk_cycles - last_clk_cycles < 0x07FFFFFF) ? \
@@ -158,6 +158,7 @@ void mt_trace_debug				(const char *func, unsigned line, const char *txt);
 			ptdc->status = 0; \
 		} else { /* not filling and not empty, guess what, it must be full */ \
 			kprintf("SubBuffer full: Tracing event lost\n"); \
+			/* not tested ((ltt_subbuffer_header_t *) ptdc->buf_begin)->events_lost++;*/ \
 			return; /* could switch to next traceset for next trace...*/ /* should add lost events counter */ \
 		} \
 	} \
@@ -185,7 +186,7 @@ void mt_trace_debug				(const char *func, unsigned line, const char *txt);
 		/* send signal... */ \
 		mt_send_flush_pulse(); \
  	} \
-\
+	/*unlock_kernel();*/ \
 	return
 
 

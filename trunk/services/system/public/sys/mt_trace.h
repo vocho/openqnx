@@ -36,8 +36,25 @@
 
 #define _MT_BUFFER_FULL						0.9	/* relative value, ex: 0.7 --> stop filling at 70 % capacity*/
 #define _MT_TRACESETS_PER_CPU				2 /* !!! ALERT: only 2 are supported yet !!! */
-#define _MT_TRACESET_SIZE					(20 * 1024)
+#define _MT_TRACESET_SIZE					(256 * 1024)
 #define _MT_ALLOC_SIZE						(sizeof(mt_data_ctrl_t) + _MT_TRACESET_SIZE) * _MT_TRACESETS_PER_CPU
+
+/* mt_TRACESET_SIZE is (obviously) the size of ONE traceset.
+ * There are as many tracesets as mt_TRACESETS_PER_CPU number of CUPs.
+ * A traceset contains a "ltt_subbuffer_header" and traces (first one with id 29).
+ * We allocate for each traceset a data_ctrl structure to manage data inside the traceset.
+ *
+ * A ltt_subbuffer_header is 68 B.
+ * A trace is 4 + trace_size (0 to 16 till now) B
+ * Header26 adds 16 B
+ * Header31 adds  4 B
+ *
+ * num_traces = ( mt_TRACESET_SIZE - (ltt_subbuffer_header = 68) - (header16 = 16) ) / trace_average
+ * mt_TRACESET_SIZE = (ltt_subbuffer_header = 68) + (header16 = 16) + num_traces * trace_average
+ *
+ * The trace buffer containes first all the data Scontrol structures, and next the tracesets.
+ * Tracesets are in the same order as their corresponding data control structures.
+ */
 
 typedef struct mtctl_initflush_data
 {
@@ -63,7 +80,7 @@ typedef struct mt_data_ctrl
 	void			*buf_lim;
 } mt_data_ctrl_t;
 
-// from LTTng v0.82: include/linux/ltt-tracer.h :270
+// from LTTng v0.82: include/linux/ltt-tracer.h :270 (see LTTng licence agreement)
 /*
  * We use asm/timex.h : cpu_khz/HZ variable in here : we might have to deal
  * specifically with CPU frequency scaling someday, so using an interpolation
