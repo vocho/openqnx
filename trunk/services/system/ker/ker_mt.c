@@ -72,8 +72,6 @@ ker_mt_ctl(THREAD *act, struct kerargs_mt_ctl *kap)
 			if (!kerisroot(act))
 				return (EPERM);
 
-			mt_trace_dummy_check();
-
 			lock_kernel();
 
 			/////////////////////////////////////////////////////
@@ -99,10 +97,15 @@ ker_mt_ctl(THREAD *act, struct kerargs_mt_ctl *kap)
 
 		for (iProc=1; iProc<process_vector.nentries; iProc++)
 			if (VECP(pProcess, &process_vector, iProc))
+			{
+				kprintf("Process %d : %s\n", iProc, pProcess->debug_name);
+/*
 				for (iThread=1; iThread<pProcess->threads.nentries; iThread++)
 					if (VECP(pThread, &pProcess->threads, iThread))
-
-						mt_trace_task_info(pProcess->pid, pThread->tid, pThread->state, pThread->real_priority);
+					{
+						kprintf("   Task %d : %s\n", iProc, pThread);
+					}
+*/			}
 	}
 	}
 

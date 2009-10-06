@@ -218,27 +218,6 @@ int main(int argc, char *argv[]) /*int main()*/
 		exit(1);
 	}
 
-#if 0
-	/* request I/O privity  */
-	if (ThreadCtl(_NTO_TCTL_IO, 0) == -1)
-	{
-		perror("Requesting I/O Privity");
-		return -1;
-	}
-
-	/* attach appropriate interrupt handler */
-	printf("USR : attaching appropriate interrupt handler...");
-	if ((interrupt_id = InterruptHookTrace(mt_ker_handler, 0)) == -1)
-	{
-		printf("error: Attach Interrupt Handler");
-		perror("Attach Interrupt Handler");
-		close(fic);
-		InterruptDetach(interrupt_id);
-		return -1;
-	}
-	printf("\tsuccess\n");
-#endif
-
 	int c = getopt(argc, argv, "ds:");
 	int filter = 1;
 	switch (c)

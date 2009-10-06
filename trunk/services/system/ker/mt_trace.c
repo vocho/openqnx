@@ -298,7 +298,7 @@ void mt_trace_task_create(unsigned pid, unsigned tid, unsigned char priority) {
 
 	if (!mt_filters.task) return;
 
-	mt_TRACE_FUNK_top(1, 8);
+	mt_TRACE_FUNK_top(1, 9);
 
 	uint8_t		*pt1;
 	uint32_t	*pt4;
@@ -309,7 +309,6 @@ void mt_trace_task_create(unsigned pid, unsigned tid, unsigned char priority) {
 	pt1 = pt4;
 	*pt1++ = priority;
 
-	pt0 = pt4;
 	pt0 = pt1;
 
 	mt_TRACE_FUNK_bottom;
@@ -413,7 +412,7 @@ void mt_trace_task_info(unsigned pid, unsigned tid, unsigned char state, unsigne
 {
 	if (!mt_filters.task) return;
 
-	mt_TRACE_FUNK_top(7, 13);
+	mt_TRACE_FUNK_top(7, 10);
 
 	uint8_t		*pt1;
 	uint32_t	*pt4;
@@ -522,10 +521,10 @@ void mt_trace_mutex_init(void *mutex, unsigned pid, unsigned tid) {
 	pt0 = pt4;
 	mt_TRACE_FUNK_bottom;
 }
-void mt_trace_mutex_lock(void *mutex, unsigned pid, unsigned tid) {
+void mt_trace_mutex_lock(void *mutex, unsigned pid, unsigned tid, unsigned owner) {
 	if (!mt_filters.sem) return;
 
-	mt_TRACE_FUNK_top(14, 12);	/* parameters are mt_TRACE_FUNK_top(id, size) */
+	mt_TRACE_FUNK_top(14, 16);	/* parameters are mt_TRACE_FUNK_top(id, size) */
 
 	void		**ptpt;
 	uint32_t	*pt4;
@@ -535,14 +534,15 @@ void mt_trace_mutex_lock(void *mutex, unsigned pid, unsigned tid) {
 	pt4 = ptpt;
 	*pt4++ = pid;
 	*pt4++ = tid;
+	*pt4++ = owner;
 
 	pt0 = pt4;
 	mt_TRACE_FUNK_bottom;
 }
-void mt_trace_mutex_unlock(void *mutex, unsigned pid, unsigned tid) {
+void mt_trace_mutex_unlock(void *mutex, unsigned pid, unsigned tid, unsigned owner) {
 	if (!mt_filters.sem) return;
 
-	mt_TRACE_FUNK_top(15, 12);	/* parameters are mt_TRACE_FUNK_top(id, size) */
+	mt_TRACE_FUNK_top(15, 16);	/* parameters are mt_TRACE_FUNK_top(id, size) */
 
 	void		**ptpt;
 	uint32_t	*pt4;
@@ -552,6 +552,7 @@ void mt_trace_mutex_unlock(void *mutex, unsigned pid, unsigned tid) {
 	pt4 = ptpt;
 	*pt4++ = pid;
 	*pt4++ = tid;
+	*pt4++ = owner;
 
 	pt0 = pt4;
 	mt_TRACE_FUNK_bottom;

@@ -112,8 +112,8 @@ void mt_trace_sem_init			(void *sem, int value, unsigned pid, unsigned tid);
 void mt_trace_sem_P				(void *sem, int value, unsigned pid, unsigned tid);
 void mt_trace_sem_V				(void *sem, int value, unsigned pid, unsigned tid);
 void mt_trace_mutex_init		(void *mutex, unsigned pid, unsigned tid);
-void mt_trace_mutex_lock		(void *mutex, unsigned pid, unsigned tid);
-void mt_trace_mutex_unlock		(void *mutex, unsigned pid, unsigned tid);
+void mt_trace_mutex_lock		(void *mutex, unsigned pid, unsigned tid, unsigned owner);
+void mt_trace_mutex_unlock		(void *mutex, unsigned pid, unsigned tid, unsigned owner);
 void mt_trace_sync_destroy		(void *sem, int value, unsigned pid, unsigned tid);
 
 void rdecl mt_trace_irq_entry			(unsigned irq);

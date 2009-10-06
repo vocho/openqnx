@@ -452,7 +452,7 @@ ker_sync_mutex_lock(THREAD *act, struct kerargs_sync_mutex_lock *kap) {
 
 #ifdef _mt_LTT_TRACES_	/* PDB */
 	//mt_TRACE_DEBUG("mutex_lock");
-	mt_trace_mutex_lock(sync, act->process->pid, act->tid);
+	mt_trace_mutex_lock(sync, act->process->pid, act->tid, sync->__owner == -1 ? -1 : SYNC_TID(sync->__owner));
 #endif
 
 	sync_mutex_lock(act, sync, 0);
@@ -576,7 +576,7 @@ ker_sync_mutex_unlock(THREAD *act, struct kerargs_sync_mutex_unlock *kap) {
 	sync_t	*sync = kap->sync;
 #ifdef _mt_LTT_TRACES_	/* PDB */
 	//mt_TRACE_DEBUG("mutex_unlock");
-	mt_trace_mutex_unlock(sync, act->process->pid, act->tid);
+	mt_trace_mutex_unlock(sync, act->process->pid, act->tid, sync->__owner == -1 ? -1 : SYNC_TID(sync->__owner));
 #endif
 	sync_mutex_unlock(act, sync, 0);
 	return ENOERROR;
