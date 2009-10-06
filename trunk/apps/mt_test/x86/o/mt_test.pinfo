@@ -1,0 +1,9 @@
+STATE=Experimental
+INSTALLDIR=x86/usr/sbin/
+INSTALLNAME=mt_test
+NAME=mt_test
+USER=stadelj1
+HOST=A05BPC14
+DATE=2009/10/05-11:29:26-CEST
+VERSION=6.4.0
+DESCRIPTION=Monartis tester
