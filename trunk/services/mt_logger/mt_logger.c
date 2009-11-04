@@ -78,7 +78,7 @@ void * signal_catcher_thread( void *arg ) {
 	return NULL;
 }
 
-// This thread is catching pulses (flush, term)
+/* This thread is catching pulses (flush, term) */
 void * pulse_catcher_thread( void *arg ) {
 
 	typedef union
@@ -86,12 +86,12 @@ void * pulse_catcher_thread( void *arg ) {
 		struct _pulse   pulse;
 	} my_message_t;
 
-	// Create the pulse channel
+	/* Create the pulse channel */
 	mtctl_initflush_data_t pulseData;
 	int chid = ChannelCreate(0);
 	pulseData.channel = ConnectAttach(ND_LOCAL_NODE, 0, chid, _NTO_SIDE_CHANNEL, 0);
 
-	// Init the pulse channel
+	/* Init the pulse channel */
 	MtCtl(_MT_CTL_INIT_FLUSH_PULSE, &pulseData);
 
 	my_message_t msg;
@@ -101,7 +101,6 @@ void * pulse_catcher_thread( void *arg ) {
 		{
 			if (_MT_FLUSH_PULSE_CODE == msg.pulse.code)
 			{
-				//printf("Event flush\n");
 				full_notified++;
 				mt_new_trace_to_file(0);
 			}
@@ -178,8 +177,6 @@ void * mt_new_trace_to_file(int ts_num) {
 	pt1_tsb = ptdc->buf_begin;
 	ts_size = (pt1_tse - pt1_tsb);
 
-	//printf("dbg: t2f buf_remaining = %u\n", ptdc->buf_remaining);
-
 	/* get to the traceset, we are still pointing at the control sturcture */
 	pt1 = (uint8_t *) (ptdc + (ptdc->buf_remaining + 1));	/* at the end of all data control structures */
 	pt1 += (_MT_TRACESET_SIZE * (_MT_TRACESETS_PER_CPU - 1 - ptdc->buf_remaining));	/* skipping other trace sets */
@@ -187,8 +184,6 @@ void * mt_new_trace_to_file(int ts_num) {
 	pthd = (ltt_subbuffer_header_t*) pt1;
 	pthd->buf_size = ts_size;
 	write(fic, (void *) pthd, ts_size);
-
-	//printf("USR: size is '%u'\n", ts_size);
 
 	/* reset traceset */
 	ptdc->status = -1;
@@ -201,9 +196,6 @@ void * mt_new_trace_to_file(int ts_num) {
 
 int main(int argc, char *argv[]) /*int main()*/
 {
-//	int interrupt_id;
-	pthread_attr_t pattr;
-	struct sched_param param;
 	pthread_t sig_thr;
 	unsigned runtime = 8;
 	int hPulseThread;
@@ -231,21 +223,21 @@ int main(int argc, char *argv[]) /*int main()*/
 		break;
 	}
 
-	// Create and start the pulse listener thread
+	/* Create and start the pulse listener thread */
 	if (pthread_create(&hPulseThread, NULL, pulse_catcher_thread, NULL))
 	{
 		perror("Creating pulse catcher thread");
 		close(fic);
-//		InterruptDetach(interrupt_id);
 		return -1;
 	}
+	pthread_setschedprio(hPulseThread, 50);
 
 	paddr_t shared;
 	mtctl_inittracelogger_data_t traceData;
 	traceData.filter = filter;
 	traceData.shared_memory = &shared;
 
-	// Allocate memory and start tracing
+	/* Allocate memory and start tracing */
 	MtCtl(_MT_CTL_INIT_TRACELOGGER, &traceData);
 
 	mt_buf = mmap((void *) (unsigned) 0, _MT_ALLOC_SIZE, PROT_READ
@@ -255,31 +247,24 @@ int main(int argc, char *argv[]) /*int main()*/
 		perror("Memory mapping failed");
 		MtCtl(_MT_CTL_TERMINATE_TRACELOGGER, NULL);
 		close(fic);
-//		InterruptDetach(interrupt_id);
 		return -1;
 	}
 
-	/* code below from QNX tracelogger */
-	/* maybe create this guy at higher priority to make sure he is intialized before we continue */
-	pthread_attr_init(&pattr);
-	pthread_attr_setinheritsched(&pattr, PTHREAD_EXPLICIT_SCHED);
-	sched_getparam(0, &param);
-	param.sched_priority = 60;
-	pthread_attr_setschedparam(&pattr, &param);
-	//param.sched_priority--;
-	if (pthread_create(&sig_thr, NULL, signal_catcher_thread,
-			(void *) param.sched_priority) == -1)
+	if (pthread_create(&sig_thr, NULL, signal_catcher_thread, NULL) == -1)
 	{
 		perror("Creating signal catcher thread");
 		MtCtl(_MT_CTL_TERMINATE_TRACELOGGER, NULL);
 		munmap(mt_buf, _MT_ALLOC_SIZE);
 		close(fic);
-//		InterruptDetach(interrupt_id);
 		return -1;
 	} /* end of QNX code */
+	pthread_setschedprio(sig_thr, 50);
 
 	/* set program end delay */
 	alarm(runtime); // Warning: this should be moved before pthread_create()
+
+	/* Boost the current thread priority */
+	pthread_setschedprio(pthread_self(), 50);
 
 	pthread_join(sig_thr, NULL);
 	printf(" going to quit\n");
@@ -289,27 +274,24 @@ int main(int argc, char *argv[]) /*int main()*/
 	mt_new_trace_to_file(2);
 
 	/* unmap / deallocate memory */
-//	InterruptDetach(interrupt_id);
 	munmap(mt_buf, _MT_ALLOC_SIZE);
 	MtCtl(_MT_CTL_TERMINATE_TRACELOGGER, NULL);
 
 	/* file close */
 	close(fic);
-#if 1
+
 	printf("*** stats : ***\n");
 	if (full_notified)
 		printf("\tmin_interval was  %12u [ns]\n", (unsigned) (min_interval / 3));
-	//printf("\tlog_interval was  %12u [ns]\n", 750000000);
 	printf("\ttotal_size            = %6u [bytes]\n", total_size);
 	printf("tracesets:\n");
 	printf("\tmt_TRACESET_SIZE      = %6u [bytes]\n", _MT_TRACESET_SIZE);
-	printf("\ttraceset writing size = %6u [bytes]\n",
-			(unsigned) (_MT_TRACESET_SIZE * _MT_BUFFER_FULL));
+	printf("\ttraceset writing size = %6u [bytes]\n", (unsigned) (_MT_TRACESET_SIZE * _MT_BUFFER_FULL));
 	printf("\tfull_notified = %3u\n", full_notified);
 	printf("\tfull_logged   = %3u\n", full_logged);
 	printf("\tother_logged  = %3u\n", other_logged);
 	printf("\tno_log_needed = %3u\n", no_log_needed);
-#endif
+
 	printf("USR end\n\n");
 	return 0;
 }
