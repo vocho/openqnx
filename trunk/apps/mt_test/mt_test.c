@@ -26,71 +26,161 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <semaphore.h>
+#include <time.h>
+#include <signal.h>
 
 #include <sys/neutrino.h>
 #include <sys/mt_trace.h>
 
-void * thread( void *arg ) {
+/******************* DEADLOCK & INVERSION ******************
+struct syncs {
+	pthread_mutex_t mut1;
+	pthread_mutex_t mut2;
+	sem_t sem1;
+};
+******************* DEADLOCK & INVERSION ******************/
 
-	pthread_mutex_t* pMutex = arg;
-
-	while (1)
-	{
-/*		SyncMutexLock((sync_t *) &pMutex[1]);
-		usleep(random() % 200000);
-		SyncMutexLock((sync_t *) &pMutex[0]);
-		usleep(random() % 200000);
-		SyncMutexUnlock((sync_t *) &pMutex[0]);
-		usleep(random() % 200000);
-		SyncMutexUnlock((sync_t *) &pMutex[1]);
-		usleep(random() % 200000); */
-
-		pthread_mutex_lock(&pMutex[1]);
-		usleep(random() % 200000);
-		pthread_mutex_lock(&pMutex[0]);
-		usleep(random() % 200000);
-		pthread_mutex_unlock(&pMutex[0]);
-		usleep(random() % 200000);
-		pthread_mutex_unlock(&pMutex[1]);
-		usleep(random() % 200000);
-	}
+/******************* DEADLOCK ******************
+void * thread1( void *arg ) {
+	struct syncs* pSync = arg;
+	sem_wait(&pSync->sem1);
+	sleep(1);
+	pthread_mutex_lock(&pSync->mut1);
+	return 0;
 }
+void * thread2( void *arg ) {
+	struct syncs* pSync = arg;
+	pthread_mutex_lock(&pSync->mut2);
+	sleep(1);
+	sem_wait(&pSync->sem1);
+	return 0;
+}
+void * thread3( void *arg ) {
+	struct syncs* pSync = arg;
+	pthread_mutex_lock(&pSync->mut1);
+	sleep(1);
+	pthread_mutex_lock(&pSync->mut2);
+	return 0;
+}
+****************** DEADLOCK *********************/
+
+/******************* INVERSION ******************
+void * thread1( void *arg ) {
+	struct syncs* pSync = arg;
+	pthread_mutex_lock(&pSync->mut1);
+	usleep(500000);
+	sem_wait(&pSync->sem1);
+	return 0;
+}
+void * thread2( void *arg ) {
+	int i;
+	struct syncs* pSync = arg;
+	while (1);
+	return 0;
+}
+void * thread3( void *arg ) {
+	int i;
+	struct syncs* pSync = arg;
+	sem_wait(&pSync->sem1);
+	usleep(5000000);
+	sem_post(&pSync->sem1);
+	return 0;
+}
+******************* INVERSION *******************/
+
+void handler(signo)
+{
+	unsigned int i, j;
+	int x = 20000000;
+	static int bool = 1;
+
+	if (bool) {
+
+		printf("Caught signal\n");
+		//usleep(1300000);
+
+		for (i=1; i<10000; i++) {
+			for (j=1; j<10000; j++) {
+				x /= 3;
+				x += 2;
+				x *= 2;
+			}
+		}
+
+		printf("X = %d\n", x);
+
+		bool = 0;
+	}
+	else
+		bool = 1;
+}
+
 
 int main () {
 
-//	MtCtl(_MT_CTL_DUMMY, NULL);
-
+/******************* DEADLOCK & INVERSION ******************
 	int hThread;
-	pthread_mutex_t mutex[2];
-	pthread_mutex_init(&mutex[0], NULL);
-	pthread_mutex_init(&mutex[1], NULL);
+	struct syncs sync;
 
-	if (pthread_create(&hThread, NULL, thread, mutex))
-	{
-		perror("Creating thread");
-		return -1;
-	}
+	pthread_mutex_init(&sync.mut1, NULL);
+	pthread_mutex_init(&sync.mut2, NULL);
+	sem_init(&sync.sem1, NULL, 1);
+******************* DEADLOCK & INVERSION ******************/
 
-	while (1)
-	{
-/*		SyncMutexLock((sync_t *) &mutex[0]);
-		usleep(random() % 200000);
-		SyncMutexLock((sync_t *) &mutex[1]);
-		usleep(random() % 200000);
-		SyncMutexUnlock((sync_t *) &mutex[1]);
-		usleep(random() % 200000);
-		SyncMutexUnlock((sync_t *) &mutex[0]);
-		usleep(random() % 200000); */
+/* ****************** DEADLOCK ******************
+	pthread_create(&hThread, NULL, thread1, &sync);
+	pthread_create(&hThread, NULL, thread2, &sync);
+	pthread_create(&hThread, NULL, thread3, &sync);
 
-		pthread_mutex_lock(&mutex[0]);
-		usleep(random() % 200000);
-		pthread_mutex_lock(&mutex[1]);
-		usleep(random() % 200000);
-		pthread_mutex_unlock(&mutex[1]);
-		usleep(random() % 200000);
-		pthread_mutex_unlock(&mutex[0]);
-		usleep(random() % 200000);
-	}
+	void* pRet;
+	pthread_join(hThread, &pRet);
+****************** DEADLOCK ****************** */
+
+/******************* INVERSION ******************
+	pthread_mutex_lock(&sync.mut1);
+	pthread_create(&hThread, NULL, thread1, &sync);
+	pthread_setschedprio(hThread, 10);
+	usleep(500000);
+
+	pthread_create(&hThread, NULL, thread2, &sync);
+	pthread_setschedprio(hThread, 8);
+	usleep(500000);
+
+	pthread_create(&hThread, NULL, thread3, &sync);
+	pthread_setschedprio(hThread, 5);
+	usleep(500000);
+
+	pthread_mutex_unlock(&sync.mut1);
+
+	void* pRet;
+	pthread_join(hThread, &pRet);
+******************* INVERSION *******************/
+
+	timer_t timer;
+	struct itimerspec time;
+	struct sigaction act;
+	sigset_t set;
+	int i;
+
+	time.it_value.tv_sec = 1;
+	time.it_value.tv_nsec = 0;
+	time.it_interval.tv_sec = 1;
+	time.it_interval.tv_nsec = 0;
+
+
+	timer_create(CLOCK_REALTIME, NULL, &timer);
+	timer_settime(timer, 0, &time, NULL);
+
+    sigemptyset(&set);
+    sigaddset(&set, SIGALRM);
+    act.sa_flags = 0;
+    act.sa_mask = set;
+    act.sa_handler = &handler;
+	sigaction(SIGALRM, &act, NULL);
+
+	for (i=0; i<5; i++)
+		sleep(10);
 
 	return 0;
 }

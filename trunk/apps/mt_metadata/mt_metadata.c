@@ -70,7 +70,7 @@ void * mt_meta_ker_events (void *pt0) {
 	_mt_meta_KER_EVENT(12,	"sem_V",			"&sem %p value %d pid %u tid %u");
 	_mt_meta_KER_EVENT(13,	"mutex_init",		"&mutex %p pid %u tid %u");
 	_mt_meta_KER_EVENT(14,	"mutex_lock",		"&mutex %p pid %u tid %u owner %u");
-	_mt_meta_KER_EVENT(15,	"mutex_unlock",		"&mutex %p pid %u tid %u");
+	_mt_meta_KER_EVENT(15,	"mutex_unlock",		"&mutex %p pid %u tid %u owner %u");
 	_mt_meta_KER_EVENT(19,	"sync_destroy",		"&sync %p value %d pid %u tid %u");
 
 	/* IRQ events */
